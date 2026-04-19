@@ -738,15 +738,31 @@ function computeScores() {
                + (a.prospect       ? TAG_BONUS.prospect : 0);
     a._age  = a._raw!=null ? Math.min(99,Math.max(1,a._raw+b+tagB)) : null;
 
-    // ── AUTO-APEX: elite on both force AND velocity sides (≥75th pct each) ──
-    if (a.source === 'both' || a.source === 'fp_only') {
-      const forcePcts  = ['cmj_power_bm','iso_force_bm'].map(k=>mp[k]).filter(v=>v!=null);
-      const velPcts    = ['cmj_rsi','cmj_jh_in','best_010','best_2030'].map(k=>mp[k]).filter(v=>v!=null);
-      const forceScore = forcePcts.length  ? Math.max(...forcePcts)  : null;
-      const velScore   = velPcts.length    ? Math.max(...velPcts)    : null;
-      if (forceScore != null && velScore != null && forceScore >= 85 && velScore >= 85) {
-        a.bucket = 'Apex';
+    // ── OBJECTIVE BUCKET CLASSIFICATION (DSI/RSI absolute thresholds, not percentile) ──
+    // Only runs for athletes with force plate data; sprint/vbt-only stay as-is.
+    if ((a.source === 'both' || a.source === 'fp_only') && a.bucket !== 'N/A') {
+      const dsi  = a.dsi;
+      const rsi  = a.cmj_rsi;
+      const pwr  = a.cmj_power_bm;
+      const male = a.gender === 'M';
+
+      if (dsi !== null) {
+        // Standard DSI available (athlete completed ISO + CMJ)
+        // Scale: 0.05–0.12 in this dataset; >0.09 = velocity bias, <0.065 = force/foundation
+        if      (dsi > 0.09 && rsi != null && rsi >= 0.70) { a.bucket = 'Apex'; }
+        else if (dsi > 0.09)                                { a.bucket = 'Velocity Bias'; }
+        else if (dsi >= 0.065 && (rsi == null || rsi >= 0.35)) { a.bucket = 'Force Bias'; }
+        else                                                { a.bucket = 'Foundation'; }
+      } else if (rsi !== null) {
+        // Modified — use RSI + CMJ power as proxy for velocity/force balance
+        const apexPwr = male ? 58 : 48;
+        const fbPwr   = male ? 42 : 38;
+        if      (rsi >= 0.80 && pwr != null && pwr >= apexPwr) { a.bucket = 'Apex'; }
+        else if (rsi >= 0.60)                                   { a.bucket = 'Velocity Bias'; }
+        else if (rsi >= 0.38 && pwr != null && pwr >= fbPwr)   { a.bucket = 'Force Bias'; }
+        else                                                    { a.bucket = 'Foundation'; }
       }
+      // If neither DSI nor RSI is available, keep manually-assigned bucket from data array
     }
   });
 }
@@ -889,11 +905,13 @@ function getExRecs(a) {
     strength.push('Overcoming ISO holds — ankle/knee/hip (Natera protocol)');
   }
 
-  // ── DSI-based additions ──
-  if (dsi !== null && dsi < 0.60) {
+  // ── DSI-based additions (thresholds match dataset scale 0.05–0.12) ──
+  if (dsi !== null && dsi < 0.065) {
+    // Force-dominant: ISO > CMJ → needs ballistic/RFD expression
     jump.push('⚡ RFD priority: Ballistic contrast — heavy pull → immediate jump');
     speed.push('Overspeed work — tubing-assisted acceleration (top-speed emphasis)');
-  } else if (dsi !== null && dsi > 0.80) {
+  } else if (dsi !== null && dsi > 0.09) {
+    // Velocity-dominant: CMJ > ISO → needs absolute strength base
     strength.push('⚡ Strength priority: Supramaximal eccentrics (8–10s Phase 3 protocol)');
     strength.push('Isometric overcoming protocol — 10s max effort holds at sticking points');
   }
@@ -991,9 +1009,9 @@ function renderCoachProfile(a) {
   // ── DSI interpretation ──
   let dsiNote = '';
   if (a.dsi != null) {
-    if (a.dsi < 0.60) dsiNote = '⚡ Force-deficient: High ISO strength but low ballistic expression. Prioritize RFD and reactive training.';
-    else if (a.dsi < 0.80) dsiNote = '✅ Balanced: Good force-velocity profile. Standard power production programming applies.';
-    else dsiNote = '⚡ Ballistic-deficient: Good jump expression but needs a stronger absolute strength base.';
+    if      (a.dsi > 0.09)  dsiNote = '⚡ Velocity-dominant: CMJ expression exceeds ISO base. Maintain ballistic capacity — prioritize absolute strength foundation.';
+    else if (a.dsi >= 0.065) dsiNote = '✅ Balanced: Good force-velocity profile. Standard power production programming applies.';
+    else                     dsiNote = '⚡ Force-dominant: High ISO relative to CMJ output. Prioritize RFD and reactive/ballistic expression.';
   }
   const dsiSection = dsiNote ? `<div class="cp-dsi-row"><span class="cp-dsi-label">DSI Interpretation</span><span class="cp-dsi-val" style="font-size:11px;max-width:55%;text-align:right">${dsiNote}</span></div>` : '';
 
