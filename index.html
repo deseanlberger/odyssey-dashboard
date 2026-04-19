@@ -628,10 +628,14 @@ function resetFilters() {
   render();
 }
 function switchTab(t) {
-  ['rankings','compare'].forEach(p=>{
-    document.getElementById('tab-'+p).classList.toggle('active',p===t);
+  ['rankings','compare','1rm','velocity','forty'].forEach(p=>{
+    const el = document.getElementById('tab-'+p);
+    if(el) el.classList.toggle('active', p===t);
   });
-  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['rankings','compare'][i]===t));
+  const allTabs = document.querySelectorAll('.tab');
+  ['rankings','compare','1rm','velocity','forty'].forEach((p,i)=>{
+    if(allTabs[i]) allTabs[i].classList.toggle('active', p===t);
+  });
 }
 function cs(y) { return y ? `Class of '${String(y).slice(2)}` : ''; }
 function bucketClass(b) { return{Elite:'bElite',Rabbit:'bRabbit',Diesel:'bDiesel',Foundation:'bFoundation'}[b]||'bNA'; }
