@@ -1066,8 +1066,7 @@ async function pinSubmit() {
     document.getElementById('coach-indicator').style.display = 'flex';
     document.getElementById('mode-label').textContent = masterMode
       ? 'Master view — Desean Berger' : `Coach view — ${currentCoach}`;
-    document.getElementById('staff-tab-btn').style.display = '';
-    if (masterMode) document.getElementById('pb-tab-btn').style.display = '';
+    if (masterMode) document.getElementById('pb-custom-lib-btn-wrap').style.display = 'block';
     renderStaffTab();
     render();
   } else {
@@ -1097,8 +1096,7 @@ function logoutCoach() {
   document.getElementById('coach-btn').classList.remove('active');
   document.getElementById('coach-indicator').style.display = 'none';
   document.getElementById('mode-label').textContent = 'Public view — coach login required to see body weight';
-  document.getElementById('staff-tab-btn').style.display = 'none';
-  document.getElementById('pb-tab-btn').style.display = 'none';
+  document.getElementById('pb-custom-lib-btn-wrap').style.display = 'none';
   switchTab('rankings');
   render();
 }
@@ -1238,17 +1236,7 @@ function resetFilters() {
   const fs = document.getElementById('f-search'); if(fs) fs.value='';
   render();
 }
-function switchTab(t) {
-  ['rankings','compare','1rm','velocity','forty','staff'].forEach(p=>{
-    const el = document.getElementById('tab-'+p);
-    if(el) el.classList.toggle('active', p===t);
-  });
-  document.querySelectorAll('.tab').forEach(btn=>{
-    const onclick = btn.getAttribute('onclick')||'';
-    const m = onclick.match(/switchTab\('(\w+)'\)/);
-    if(m) btn.classList.toggle('active', m[1]===t);
-  });
-}
+// switchTab defined below near tools wheel
 function cs(y) { return y ? `Class of '${String(y).slice(2)}` : ''; }
 function bucketClass(b) { return{'Apex':'bApex','Velocity Bias':'bVelocityBias','Force Bias':'bForceBias','Foundation':'bFoundation'}[b]||'bNA'; }
 
@@ -1294,17 +1282,13 @@ const COACHES = [
 // ═══════════════════════════════════════════════════════════════
 function openPB() {
   if (!masterMode) return;
-  // populate athlete dropdown
-  const sel = document.getElementById('pb-athlete');
-  sel.innerHTML = '<option value="">Select athlete…</option>';
-  [...A].sort((a,b)=>a.name.localeCompare(b.name)).forEach((a,i)=>{
-    const opt = document.createElement('option');
-    opt.value = A.indexOf(a);
-    opt.textContent = `${a.name} — ${a.sport||'—'} (${a.bucket||'N/A'})`;
-    sel.appendChild(opt);
-  });
-  document.getElementById('pb-output').innerHTML = '<div style="color:#3a5a7a;font-size:12px;text-align:center;padding:20px">Select an athlete to generate their program.</div>';
+  pbSelectedAthlete = null;
+  document.getElementById('pb-search').value = '';
+  document.getElementById('pb-athlete-badge').style.display = 'none';
+  document.getElementById('pb-output').innerHTML = '<div style="color:#3a5a7a;font-size:12px;text-align:center;padding:20px">Search for an athlete above, then generate their session plan.</div>';
   document.getElementById('pb-print-btn').style.display = 'none';
+  document.getElementById('pb-custom-lib-btn-wrap').style.display = masterMode ? 'block' : 'none';
+  pbUpdateBlocks();
   document.getElementById('pb-overlay').classList.add('open');
 }
 function closePB() { document.getElementById('pb-overlay').classList.remove('open'); }
