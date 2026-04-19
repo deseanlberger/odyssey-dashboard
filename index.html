@@ -3,925 +3,569 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Odyssey Performance Lab — Dashboard v2</title>
+<title>Odyssey Performance Dashboard</title>
 <style>
-:root{
-  --navy:#0D1B2A;--navy2:#152236;--navy3:#1d2e47;
-  --orange:#F4762A;--orange2:#e85f10;
-  --bg:#f0f2f8;--card:#ffffff;--card2:#f8f9fc;
-  --bdr:#e2e5ef;--bdr2:#d0d5e8;
-  --txt:#1a1d2e;--txt-med:#4a4f6a;--txt-light:#8890b0;--txt-white:#e8eaf6;--txt-mut:#a0a8c8;
-  --f:#56b4e9;--fs:#e8f5fd;--d:#ef4444;--ds:#fde8e8;
-  --r:#22c55e;--rs:#e8fdf0;--e:#f59e0b;--es:#fdf5e8;
-  --na:#6b7280;--nas:#f3f4f6;
-  --spd-elite:#f59e0b;--spd-great:#22c55e;--spd-good:#3b82f6;--spd-decent:#f97316;--spd-needs:#ef4444;
-  --std-col:#8b5cf6;--mod-col:#d97706;
-  --flag-red:#ef4444;--flag-org:#f97316;--flag-yel:#eab308;--flag-grn:#22c55e;
-  --radius:12px;--radius-sm:8px;
-  --shadow:0 2px 12px rgba(13,27,42,0.08);--shadow-lg:0 8px 32px rgba(13,27,42,0.18);
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0D1B2A;color:#fff;min-height:100vh}
 
 /* HEADER */
-.header{background:var(--navy);padding:18px 24px 0;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,0.35)}
-.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:12px}
-.brand-logo{width:42px;height:42px;background:var(--orange);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.15rem;color:#fff;flex-shrink:0;letter-spacing:-1px}
-.brand-text h1{font-size:1.2rem;font-weight:800;color:#fff;letter-spacing:-0.02em}
-.brand-text h1 span{color:var(--orange)}
-.brand-text p{font-size:0.68rem;color:var(--txt-mut);margin-top:2px}
-.hstats{display:flex;gap:7px;flex-wrap:wrap}
-.hst{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:5px 11px;text-align:center}
-.hst .hn{font-size:1rem;font-weight:800;color:#fff;line-height:1.1}
-.hst .hl{font-size:0.58rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--txt-mut);margin-top:1px}
-.hst.hf .hn{color:var(--f)}.hst.hd .hn{color:var(--d)}.hst.hr .hn{color:var(--r)}.hst.he .hn{color:var(--e)}
+.header{background:linear-gradient(180deg,#0a1520 0%,#0D1B2A 100%);padding:20px 24px 16px;border-bottom:2px solid #F4762A}
+.header-top{display:flex;align-items:center;gap:14px;margin-bottom:4px}
+.logo{width:48px;height:48px;background:#F4762A;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#0D1B2A;flex-shrink:0;letter-spacing:-1px}
+.header-title h1{font-size:22px;font-weight:800;letter-spacing:-0.5px}
+.header-title p{font-size:12px;color:#6a8aa8;margin-top:2px}
 
-/* NAV TABS */
-.nav-tabs{display:flex;gap:2px}
-.nav-tab{padding:9px 18px;font-size:0.8rem;font-weight:600;color:var(--txt-mut);cursor:pointer;border-radius:8px 8px 0 0;transition:all 0.13s;border:none;background:transparent;white-space:nowrap}
-.nav-tab:hover{color:var(--txt-white);background:rgba(255,255,255,0.06)}
-.nav-tab.active{background:var(--bg);color:var(--navy);font-weight:700}
+/* TABS */
+.tabs{display:flex;background:#0a1520;border-bottom:1px solid #1e3a5f}
+.tab{padding:12px 20px;font-size:13px;font-weight:600;cursor:pointer;color:#6a8aa8;border-bottom:2px solid transparent;transition:all .15s}
+.tab.active{color:#F4762A;border-bottom-color:#F4762A}
+.tab:hover:not(.active){color:#ccc}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
 
-/* MAIN */
-.main{padding:22px;max-width:1440px;margin:0 auto}
+/* FILTERS */
+.filters{position:sticky;top:0;z-index:100;background:#112233;padding:12px 20px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid #1e3a5f}
+.filter-group{display:flex;align-items:center;gap:5px}
+.filter-label{font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+select{background:#0D1B2A;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px 8px;font-size:12px;cursor:pointer;outline:none}
+select:focus{border-color:#F4762A}
+.sort-toggle{margin-left:auto;display:flex;background:#0D1B2A;border-radius:8px;padding:3px;border:1px solid #2a4a6a}
+.sort-btn{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;color:#6a8aa8;background:transparent;transition:all .15s}
+.sort-btn.active{background:#F4762A;color:#fff}
+.reset-btn{background:transparent;border:1px solid #2a4a6a;color:#6a8aa8;border-radius:6px;padding:6px 10px;font-size:11px;cursor:pointer;transition:all .15s}
+.reset-btn:hover{border-color:#F4762A;color:#F4762A}
 
-/* STAT GRID */
-.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:9px;margin-bottom:22px}
-.stat-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--radius-sm);padding:12px;text-align:center;box-shadow:var(--shadow)}
-.stat-card .sn{font-size:1.7rem;font-weight:800;line-height:1}
-.stat-card .sl{font-size:0.6rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--txt-light);margin-top:4px}
-.stat-card.sf .sn{color:var(--f)}.stat-card.sd .sn{color:var(--d)}.stat-card.sr .sn{color:var(--r)}.stat-card.se .sn{color:var(--e)}
-.stat-card.sstd .sn{color:var(--std-col)}.stat-card.smod .sn{color:var(--mod-col)}.stat-card.sred .sn{color:var(--flag-red)}
+/* STATS BAR */
+.stats-bar{padding:8px 20px;font-size:11px;color:#6a8aa8;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+.stats-bar b{color:#F4762A}
 
-/* SECTION LABEL */
-.sec-label{font-size:0.66rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--txt-light);margin:24px 0 11px;display:flex;align-items:center;gap:8px}
-.sec-label::after{content:'';flex:1;height:1px;background:var(--bdr)}
-.sec-label .acc{color:var(--orange)}
+/* CONTENT */
+.content{padding:14px 20px;max-width:860px;margin:0 auto}
 
-/* DSI BOXES */
-.dsi-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px}
-@media(max-width:600px){.dsi-grid{grid-template-columns:1fr}}
-.dsi-box{border-radius:var(--radius-sm);padding:15px;border:1px solid transparent}
-.dsi-box.std{background:#f5f3ff;border-color:#c4b5fd}
-.dsi-box.mod{background:#fffbeb;border-color:#fcd34d}
-.dsi-box h3{font-size:0.85rem;font-weight:700;margin-bottom:5px}
-.dsi-box.std h3{color:var(--std-col)}.dsi-box.mod h3{color:var(--mod-col)}
-.dsi-box p{font-size:0.74rem;color:var(--txt-med);line-height:1.5}
-.dsi-box .formula{font-family:monospace;font-size:0.7rem;margin-top:8px;background:rgba(0,0,0,0.05);padding:6px 10px;border-radius:5px;color:var(--txt);line-height:1.5}
-
-/* BUCKET LEGEND */
-.bucket-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px}
-@media(max-width:700px){.bucket-grid{grid-template-columns:repeat(2,1fr)}}
-.bucket-card{border-radius:var(--radius-sm);padding:13px;border:2px solid transparent;box-shadow:var(--shadow)}
-.bucket-card.f{background:var(--fs);border-color:var(--f)}.bucket-card.d{background:var(--ds);border-color:var(--d)}
-.bucket-card.r{background:var(--rs);border-color:var(--r)}.bucket-card.e{background:var(--es);border-color:var(--e)}
-.bucket-card h3{font-size:0.83rem;font-weight:700;margin-bottom:4px}
-.bucket-card.f h3{color:#1d6fa0}.bucket-card.d h3{color:#b91c1c}.bucket-card.r h3{color:#15803d}.bucket-card.e h3{color:#b45309}
-.bucket-card p{font-size:0.7rem;color:var(--txt-med);line-height:1.4}
-.bucket-card .rng{font-size:0.63rem;margin-top:6px;font-family:monospace;color:var(--txt-light)}
-.bucket-card .rng span{display:block}
-
-/* CHART CARDS */
-.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px}
-@media(max-width:900px){.chart-grid{grid-template-columns:1fr}}
-.chart-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--radius);padding:17px;box-shadow:var(--shadow)}
-.chart-card h4{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--txt-light);margin-bottom:13px;display:flex;align-items:center;gap:6px}
-.gh-badge{font-size:0.62rem;padding:2px 8px;border-radius:4px;font-weight:700}
-.gh-badge.m{background:#dbeafe;color:#1d4ed8}.gh-badge.f{background:#fce7f3;color:#be185d}
-.mr{display:flex;align-items:center;gap:6px;font-size:0.68rem;margin-bottom:5px}
-.ml{width:110px;text-align:right;color:var(--txt-med);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
-.mb{flex:1;height:13px;background:var(--bg);border-radius:3px;overflow:hidden;position:relative}
-.mf{height:100%;border-radius:3px;display:flex;align-items:center;padding-left:5px;font-size:0.61rem;font-weight:700;color:rgba(255,255,255,0.95);white-space:nowrap}
-
-/* SPEED LEGEND */
-.spd-legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:13px}
-.sl-item{display:flex;align-items:center;gap:5px;font-size:0.67rem;color:var(--txt-med)}
-.sl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-
-/* FLAGS */
-.flags-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:8px;margin-bottom:22px}
-.flag-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--radius-sm);padding:11px 14px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);cursor:pointer;transition:all 0.13s}
-.flag-card:hover{transform:translateY(-1px);box-shadow:var(--shadow-lg)}
-.flag-card.rc{border-color:#fca5a5;background:#fff5f5}.flag-card.oc{border-color:#fdba74;background:#fff8f0}.flag-card.yc{border-color:#fde047;background:#fefce8}
-.fi{font-size:1.25rem}.fn{font-size:0.79rem;font-weight:600}.fd{font-size:0.67rem;color:var(--txt-med);margin-top:2px}
-
-/* ROSTER CONTROLS */
-.filter-tabs{display:flex;gap:5px;margin-bottom:13px;flex-wrap:wrap}
-.filter-tab{padding:6px 14px;border-radius:20px;font-size:0.76rem;font-weight:600;cursor:pointer;border:1px solid var(--bdr);background:var(--card);color:var(--txt-med);transition:all 0.13s}
-.filter-tab:hover{border-color:var(--orange);color:var(--txt)}
-.filter-tab.active{background:var(--orange);border-color:var(--orange);color:#fff}
-.roster-controls{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
-.roster-controls input,.roster-controls select{background:var(--card);border:1px solid var(--bdr);border-radius:var(--radius-sm);padding:7px 11px;color:var(--txt);font-size:0.79rem;outline:none;transition:border-color 0.15s}
-.roster-controls input{min-width:195px}
-.roster-controls input:focus,.roster-controls select:focus{border-color:var(--orange)}
-#rosterCount{font-size:0.74rem;color:var(--txt-med);margin-bottom:11px}
-
-/* ATHLETE CARDS */
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
-.athlete-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--radius);padding:15px;cursor:pointer;transition:all 0.15s;box-shadow:var(--shadow);position:relative;overflow:hidden}
-.athlete-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-.athlete-card.Foundation::before{background:var(--f)}.athlete-card.Diesel::before{background:var(--d)}
-.athlete-card.Rabbit::before{background:var(--r)}.athlete-card.Elite::before{background:var(--e)}.athlete-card.NA::before{background:var(--na)}
-.athlete-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);border-color:var(--orange)}
-.card-name{font-size:0.9rem;font-weight:700;margin-bottom:5px}
-.card-badges{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
-.card-metrics{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}
-.card-metric{background:var(--bg);border-radius:6px;padding:8px}
-.cm-label{font-size:0.59rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--txt-light);margin-bottom:3px}
-.cm-value{font-size:0.86rem;font-weight:700;font-family:monospace}
-.cm-bar{height:3px;background:var(--bdr);border-radius:2px;margin-top:4px;overflow:hidden}
-.cm-fill{height:100%;border-radius:2px}
-.card-hint{text-align:center;font-size:0.61rem;color:var(--txt-light);margin-top:9px;padding-top:8px;border-top:1px solid var(--bdr)}
-
-/* TABLE */
-.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--bdr);box-shadow:var(--shadow)}
-table{width:100%;border-collapse:collapse;font-size:0.76rem;background:var(--card)}
-thead th{background:var(--navy);color:var(--txt-mut);padding:10px 12px;text-align:left;font-size:0.62rem;text-transform:uppercase;letter-spacing:0.07em;cursor:pointer;white-space:nowrap;user-select:none;transition:color 0.1s}
-thead th:hover{color:var(--txt-white)}
-thead th.sa::after{content:' ↑';color:var(--orange)}thead th.sd::after{content:' ↓';color:var(--orange)}
-tbody tr{border-top:1px solid var(--bdr);transition:background 0.1s;cursor:pointer}
-tbody tr:hover{background:#f5f6ff}
-tbody td{padding:8px 12px;vertical-align:middle;white-space:nowrap}
-
-/* PILLS & BADGES */
-.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:0.64rem;font-weight:600}
-.pill.Foundation{background:var(--fs);color:#1d6fa0;border:1px solid var(--f)}
-.pill.Diesel{background:var(--ds);color:#b91c1c;border:1px solid var(--d)}
-.pill.Rabbit{background:var(--rs);color:#15803d;border:1px solid var(--r)}
-.pill.Elite{background:var(--es);color:#b45309;border:1px solid var(--e)}
-.pill.na{background:var(--nas);color:var(--na);border:1px solid #d1d5db}
-.gbadge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:0.6rem;font-weight:700}
-.gbadge.M{background:#dbeafe;color:#1d4ed8}.gbadge.F{background:#fce7f3;color:#be185d}
-.dtag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:0.58rem;font-weight:700;margin-left:4px}
-.dtag.std{background:#f5f3ff;color:var(--std-col);border:1px solid #c4b5fd}
-.dtag.mod{background:#fffbeb;color:var(--mod-col);border:1px solid #fcd34d}
-.src-tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:0.57rem;font-weight:600;margin-left:4px}
-.src-tag.both{background:#e0f2fe;color:#0369a1;border:1px solid #7dd3fc}
-.src-tag.fp{background:#f5f3ff;color:#7c3aed;border:1px solid #c4b5fd}
-.src-tag.sprint{background:#dcfce7;color:#15803d;border:1px solid #86efac}
-.slvl{display:inline-block;padding:1px 5px;border-radius:3px;font-size:0.57rem;font-weight:700;margin-left:3px}
-.slvl.Elite{background:#fef3c7;color:#b45309;border:1px solid #fcd34d}
-.slvl.Great{background:#dcfce7;color:#15803d;border:1px solid #86efac}
-.slvl.Good{background:#dbeafe;color:#1d4ed8;border:1px solid #93c5fd}
-.slvl.Decent{background:#ffedd5;color:#c2410c;border:1px solid #fdba74}
-.slvl.NeedsImp{background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5}
-.sprofile{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.62rem;font-weight:600}
-.sprofile.Balanced{background:#dcfce7;color:#15803d;border:1px solid #86efac}
-.sprofile.PowerStarter{background:#dbeafe;color:#1d4ed8;border:1px solid #93c5fd}
-.sprofile.LateBloomer{background:#fef3c7;color:#b45309;border:1px solid #fcd34d}
-.bw{display:flex;align-items:center;gap:5px;min-width:88px}
-.bbg{flex:1;height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
-.bf{height:100%;border-radius:3px}
-.bv{font-size:0.73rem;min-width:36px;text-align:right;font-family:monospace;font-weight:700}
-
-/* LEADERBOARDS */
-.lb-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-@media(max-width:900px){.lb-grid{grid-template-columns:1fr}}
-.lb-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
-.lb-title{background:var(--navy);padding:12px 16px;font-size:0.78rem;font-weight:700;color:var(--txt-white);display:flex;align-items:center;gap:8px}
-.lb-title span{color:var(--orange)}
-.lb-gender-tabs{display:flex;border-bottom:1px solid var(--bdr)}
-.lb-gtab{flex:1;padding:8px;font-size:0.72rem;font-weight:600;text-align:center;cursor:pointer;color:var(--txt-med);background:var(--card2);transition:all 0.13s;border:none}
-.lb-gtab.active.m{background:#dbeafe;color:#1d4ed8}.lb-gtab.active.f{background:#fce7f3;color:#be185d}
-.lb-entry{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--bdr);transition:background 0.1s;cursor:pointer}
-.lb-entry:last-child{border-bottom:none}.lb-entry:hover{background:var(--bg)}
-.lb-rank{width:24px;height:24px;border-radius:50%;font-size:0.67rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.lb-rank.r1{background:#fef3c7;color:#b45309}.lb-rank.r2{background:#f3f4f6;color:#374151}.lb-rank.r3{background:#ffedd5;color:#c2410c}.lb-rank.rn{background:var(--bg);color:var(--txt-med)}
-.lb-name{flex:1;font-size:0.79rem;font-weight:600}
-.lb-val{font-family:monospace;font-size:0.82rem;font-weight:700;color:var(--orange)}
+/* ATHLETE CARD */
+.athlete-card{background:#fff;color:#0D1B2A;border-radius:12px;padding:13px 15px;margin-bottom:9px;display:grid;grid-template-columns:42px 1fr auto;gap:11px;align-items:center;cursor:pointer;transition:transform .1s,box-shadow .1s;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.athlete-card:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(0,0,0,.25)}
+.athlete-card.elite{border-left:4px solid #F4762A}
+.rank{width:38px;height:38px;border-radius:50%;background:#0D1B2A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.rank.gold{background:#F4762A}
+.rank.silver{background:#536878}
+.rank.bronze{background:#8B6914}
+.athlete-name{font-size:15px;font-weight:700;display:flex;align-items:center;gap:5px;line-height:1.2}
+.athlete-meta{font-size:11px;color:#5a7a8a;margin-top:3px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.grade-chip{background:#e8f0f7;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700;color:#0D1B2A;white-space:nowrap}
+.class-chip{background:#0D1B2A;color:#F4762A;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700;white-space:nowrap}
+.metrics-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.metric-pill{background:#f2f5f8;border-radius:4px;padding:2px 7px;font-size:10px;color:#3a5568;font-weight:500}
+.metric-pill.hot{background:#fff0e6;color:#c94a00;font-weight:700}
+.score-col{text-align:right;flex-shrink:0}
+.score-main{font-size:26px;font-weight:900;color:#0D1B2A;line-height:1}
+.score-label{font-size:9px;color:#8899aa;text-transform:uppercase;letter-spacing:.5px}
+.score-sub{font-size:10px;color:#aaa;margin-top:1px}
+.no-score{font-size:11px;color:#bbb;text-align:right;line-height:1.4}
+.bucket-badge{display:inline-block;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.bElite{background:#ffd700;color:#000}
+.bRabbit{background:#F4762A;color:#fff}
+.bDiesel{background:#1a6e3c;color:#fff}
+.bFoundation{background:#3a7bd5;color:#fff}
+.bNA{background:#e8eef2;color:#8899aa}
 
 /* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(13,27,42,0.72);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity 0.2s}
-.modal-overlay.open{opacity:1;pointer-events:all}
-.modal{background:var(--card);border-radius:16px;width:100%;max-width:700px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);transform:translateY(20px);transition:transform 0.2s}
-.modal-overlay.open .modal{transform:translateY(0)}
-.modal-header{background:var(--navy);padding:18px 22px 15px;border-radius:16px 16px 0 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:10}
-.modal-name{font-size:1.15rem;font-weight:800;color:#fff}
-.modal-meta{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;align-items:center}
-.modal-close{background:rgba(255,255,255,0.1);border:none;color:var(--txt-white);font-size:1.1rem;width:30px;height:30px;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.15s}
-.modal-close:hover{background:rgba(255,255,255,0.2)}
-.modal-body{padding:18px 22px 22px}
-.modal-bucket-banner{border-radius:var(--radius-sm);padding:13px 15px;margin-bottom:16px;border:1px solid transparent}
-.modal-bucket-banner.Foundation{background:var(--fs);border-color:var(--f)}
-.modal-bucket-banner.Diesel{background:var(--ds);border-color:var(--d)}
-.modal-bucket-banner.Rabbit{background:var(--rs);border-color:var(--r)}
-.modal-bucket-banner.Elite{background:var(--es);border-color:var(--e)}
-.modal-bucket-banner.NA{background:var(--nas);border-color:#d1d5db}
-.mbb-bucket{font-size:1rem;font-weight:800;margin-bottom:3px}
-.mbb-bucket.Foundation{color:#1d6fa0}.mbb-bucket.Diesel{color:#b91c1c}.mbb-bucket.Rabbit{color:#15803d}.mbb-bucket.Elite{color:#b45309}.mbb-bucket.NA{color:var(--na)}
-.mbb-desc{font-size:0.73rem;color:var(--txt-med);line-height:1.4}
-.radar-container{width:100%;height:280px;position:relative;margin-bottom:8px}
-.radar-no-data{text-align:center;padding:28px;color:var(--txt-light);font-size:0.8rem;border:2px dashed var(--bdr);border-radius:var(--radius-sm);margin-bottom:16px}
-.radar-note{text-align:center;font-size:0.61rem;color:var(--txt-light);margin-bottom:16px}
-.modal-sections{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:480px){.modal-sections{grid-template-columns:1fr}}
-.modal-section{background:var(--bg);border-radius:var(--radius-sm);padding:13px}
-.modal-section h5{font-size:0.63rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--txt-light);margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.modal-section h5::after{content:'';flex:1;height:1px;background:var(--bdr)}
-.modal-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--bdr);font-size:0.77rem;gap:8px}
-.modal-row:last-child{border-bottom:none}
-.mr-label{color:var(--txt-med);flex-shrink:0}
-.mr-val-wrap{text-align:right}
-.mr-val{font-weight:700;font-family:monospace}
-.modal-bar{height:3px;background:var(--bdr);border-radius:2px;margin-top:3px;overflow:hidden}
-.modal-fill{height:100%;border-radius:2px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.overlay.open{display:flex;align-items:flex-start;justify-content:center;padding:20px}
+.modal{background:#fff;color:#0D1B2A;border-radius:16px;padding:24px;max-width:540px;width:100%;margin:auto;position:relative}
+.modal-close{position:absolute;top:14px;right:14px;background:#f0f4f8;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center}
+.modal-name{font-size:22px;font-weight:800;margin-bottom:4px}
+.modal-meta{font-size:12px;color:#667788;margin-bottom:18px;line-height:1.5}
+.score-row{display:flex;gap:12px;margin-bottom:18px}
+.score-box{flex:1;border-radius:10px;padding:12px;text-align:center}
+.score-box-orange{background:#fff3e6;border:2px solid #F4762A}
+.score-box-navy{background:#f0f4f8}
+.score-box .big{font-size:30px;font-weight:900;line-height:1}
+.score-box .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+.score-box-orange .big{color:#F4762A}
+.score-box-orange .lbl{color:#c94a00}
+.score-box-navy .big{color:#0D1B2A}
+.score-box-navy .lbl{color:#8899aa}
+.msect{margin-bottom:16px}
+.msect-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#8899aa;margin-bottom:8px}
+.mrow{display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:1px solid #f0f4f8;gap:8px}
+.mrow:last-child{border-bottom:none}
+.mrow-inner{flex:1}
+.mname{font-size:13px;color:#667788}
+.mval{font-size:13px;font-weight:700;white-space:nowrap}
+.pbar-wrap{background:#f0f4f8;border-radius:3px;height:5px;margin-top:4px;overflow:hidden}
+.pbar{height:100%;background:#F4762A;border-radius:3px}
+.pct-lbl{font-size:10px;color:#aaa;margin-top:2px}
 
-/* TAB PANELS */
-.tab-panel{display:none}.tab-panel.active{display:block}
+/* COMPARE TOOL */
+.compare-section{max-width:860px;margin:0 auto;padding:20px}
+.compare-card{background:#112233;border-radius:16px;padding:24px;border:1px solid #1e3a5f}
+.compare-title{font-size:20px;font-weight:800;margin-bottom:6px}
+.compare-subtitle{font-size:13px;color:#6a8aa8;margin-bottom:20px}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.compare-field label{display:block;font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.compare-field input,.compare-field select{width:100%;background:#0D1B2A;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:10px 12px;font-size:14px;outline:none}
+.compare-field input:focus,.compare-field select:focus{border-color:#F4762A}
+.compare-field input::placeholder{color:#4a6a8a}
+.compare-btn{width:100%;background:#F4762A;color:#fff;border:none;border-radius:10px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;transition:background .15s}
+.compare-btn:hover{background:#e56618}
+.compare-results{margin-top:24px;display:none}
+.compare-results.show{display:block}
+.compare-result-header{font-size:18px;font-weight:800;margin-bottom:16px;text-align:center}
+.cr-stat{background:#0D1B2A;border-radius:10px;padding:14px;margin-bottom:10px}
+.cr-stat-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.cr-stat-name{font-size:13px;color:#6a8aa8}
+.cr-stat-val{font-size:16px;font-weight:800;color:#F4762A}
+.cr-bar-wrap{background:#1e3a5f;border-radius:4px;height:8px;position:relative;overflow:hidden}
+.cr-bar{height:100%;background:#F4762A;border-radius:4px;transition:width .6s ease}
+.cr-bar-you{position:absolute;top:0;height:100%;width:3px;background:#fff;border-radius:2px;transform:translateX(-50%)}
+.cr-rank{font-size:12px;color:#6a8aa8;margin-top:6px}
+.cr-overall{background:linear-gradient(135deg,#F4762A,#c94a00);border-radius:12px;padding:20px;text-align:center;margin-bottom:16px}
+.cr-overall-score{font-size:52px;font-weight:900;line-height:1}
+.cr-overall-lbl{font-size:13px;opacity:.85;margin-top:4px}
+.cr-athletes-near{margin-top:16px}
+.cr-near-title{font-size:11px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.cr-near-card{background:#0D1B2A;border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.cr-near-name{font-size:13px;font-weight:600}
+.cr-near-score{font-size:13px;color:#F4762A;font-weight:700}
+.cr-grade-note{background:#1e3a5f;border-radius:8px;padding:10px 14px;font-size:12px;color:#8ab0cc;text-align:center;margin-top:12px;line-height:1.5}
 
-/* MOBILE: show cards, hide table; DESKTOP: opposite */
-.cards-view{display:none}.table-view{display:block}
-@media(max-width:900px){.cards-view{display:block}.table-view{display:none}}
+/* EMPTY */
+.empty{text-align:center;padding:60px 20px;color:#6a8aa8}
+.empty h3{font-size:18px;margin-bottom:8px}
 
-/* FOOTER */
-.footer{margin-top:36px;padding:14px 24px;background:var(--navy);font-size:0.66rem;color:var(--txt-mut);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px}
+/* MOBILE */
+@media(max-width:600px){
+  .content{padding:10px 14px}
+  .filters{padding:10px 14px}
+  .compare-section{padding:14px}
+  .athlete-card{grid-template-columns:36px 1fr auto;gap:9px;padding:11px 12px}
+  .score-main{font-size:22px}
+  .athlete-name{font-size:14px}
+  .sort-toggle{margin-left:0;width:100%}
+  .compare-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header class="header">
+<div class="header">
   <div class="header-top">
-    <div class="brand">
-      <div class="brand-logo">OP</div>
-      <div class="brand-text">
-        <h1>Odyssey <span>Performance Lab</span></h1>
-        <p>Athlete Dashboard v2 · April 18, 2026 · Force Plate + Sprint · Coaches excluded</p>
-      </div>
-    </div>
-    <div class="hstats" id="headerStats"></div>
-  </div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showTab('overview',this)">📊 Overview</button>
-    <button class="nav-tab" onclick="showTab('roster',this)">👥 Full Roster</button>
-    <button class="nav-tab" onclick="showTab('leaderboards',this)">🏆 Leaderboards</button>
-  </div>
-</header>
-
-<main class="main">
-
-<!-- OVERVIEW TAB -->
-<div class="tab-panel active" id="tab-overview">
-  <div class="sec-label">Summary <span class="acc">◆</span></div>
-  <div class="stat-grid" id="statGrid"></div>
-
-  <div class="sec-label">DSI Classification Methods <span class="acc">◆</span></div>
-  <div class="dsi-grid">
-    <div class="dsi-box std">
-      <h3>Standard DSI</h3>
-      <p>True Dynamic Strength Index using isometric squat hold as the strength baseline. Most accurate classification. Collected for 8 athletes currently.</p>
-      <div class="formula">DSI = CMJ Concentric Impulse [N·s] ÷ ISOSQT Peak Force [N]<br>Foundation &lt;0.07 · Diesel 0.07–0.10 · Rabbit 0.10–0.14 · Elite ≥0.14</div>
-    </div>
-    <div class="dsi-box mod">
-      <h3>Modified DSI <span style="font-weight:400;font-size:.75rem;color:#92400e">— directional only</span></h3>
-      <p>Proxy classification using CMJ RSI-modified when no isometric baseline exists. Directional guidance until ISOSQT data is collected. Treat as approximate.</p>
-      <div class="formula">Proxy = CMJ RSI-modified [m/s]<br>Foundation &lt;0.35 · Diesel 0.35–0.60 · Rabbit 0.60–0.85 · Elite ≥0.85</div>
+    <div class="logo">OP</div>
+    <div class="header-title">
+      <h1>Odyssey Performance</h1>
+      <p>North County San Diego · Athlete Rankings</p>
     </div>
   </div>
-
-  <div class="sec-label">Training Buckets <span class="acc">◆</span></div>
-  <div class="bucket-grid">
-    <div class="bucket-card f"><h3>Foundation</h3><p>Strength-dominant. Reactive capacity is the priority. Plyometric + reactive training emphasis.</p><div class="rng"><span>STD: DSI &lt; 0.07</span><span>MOD: RSI &lt; 0.35</span></div></div>
-    <div class="bucket-card d"><h3>Diesel</h3><p>Balanced profile. Develop both force production and reactive qualities.</p><div class="rng"><span>STD: DSI 0.07–0.10</span><span>MOD: RSI 0.35–0.60</span></div></div>
-    <div class="bucket-card r"><h3>Rabbit</h3><p>Speed/reactive dominant. Strength base is the priority. Load + force development emphasis.</p><div class="rng"><span>STD: DSI 0.10–0.14</span><span>MOD: RSI 0.60–0.85</span></div></div>
-    <div class="bucket-card e"><h3>Elite</h3><p>High output across both qualities. Sport-specific refinement focus.</p><div class="rng"><span>STD: DSI ≥ 0.14</span><span>MOD: RSI ≥ 0.85</span></div></div>
-  </div>
-
-  <div class="sec-label">Performance Overview — Force Plate <span class="acc">◆</span></div>
-  <div class="chart-grid">
-    <div class="chart-card"><h4>CMJ Jump Height (in) · Force Plate Athletes</h4><div id="jhChart"></div></div>
-    <div class="chart-card"><h4>DSI Values · Standard (ISOSQT) Athletes Only</h4><div id="dsiChart"></div></div>
-  </div>
-
-  <div class="sec-label">Sprint Performance — 0–10 Acceleration <span class="acc">◆</span></div>
-  <div class="spd-legend">
-    <div class="sl-item"><div class="sl-dot" style="background:var(--spd-elite)"></div>Elite</div>
-    <div class="sl-item"><div class="sl-dot" style="background:var(--spd-great)"></div>Great</div>
-    <div class="sl-item"><div class="sl-dot" style="background:var(--spd-good)"></div>Good</div>
-    <div class="sl-item"><div class="sl-dot" style="background:var(--spd-decent)"></div>Decent</div>
-    <div class="sl-item"><div class="sl-dot" style="background:var(--spd-needs)"></div>Needs Imp.</div>
-    <div class="sl-item" style="margin-left:10px;font-size:.62rem;color:var(--txt-light)">Lower = faster</div>
-  </div>
-  <div class="chart-grid">
-    <div class="chart-card"><h4><span class="gh-badge m">MALE</span>&nbsp;0–10 Acceleration (s)</h4><div id="s010M"></div></div>
-    <div class="chart-card"><h4><span class="gh-badge f">FEMALE</span>&nbsp;0–10 Acceleration (s)</h4><div id="s010F"></div></div>
-  </div>
-
-  <div class="sec-label">Sprint Performance — 20–30 Fly <span class="acc">◆</span></div>
-  <div class="chart-grid">
-    <div class="chart-card"><h4><span class="gh-badge m">MALE</span>&nbsp;20–30 Fly (s)</h4><div id="s2030M"></div></div>
-    <div class="chart-card"><h4><span class="gh-badge f">FEMALE</span>&nbsp;20–30 Fly (s)</h4><div id="s2030F"></div></div>
-  </div>
-
-  <div class="sec-label">Unilateral Flags · SLJ Asymmetry <span class="acc">◆</span> <span style="font-size:.62rem;font-weight:400;color:var(--txt-light)">🔴 &gt;25% · 🟠 23–25% · 🟡 20–22%</span></div>
-  <div class="flags-grid" id="flagsGrid"></div>
 </div>
 
-<!-- ROSTER TAB -->
-<div class="tab-panel" id="tab-roster">
-  <div class="filter-tabs">
-    <button class="filter-tab active" onclick="setFilter('all',this)">All (74)</button>
-    <button class="filter-tab" onclick="setFilter('both',this)">FP + Sprint</button>
-    <button class="filter-tab" onclick="setFilter('fp_only',this)">Force Plate Only</button>
-    <button class="filter-tab" onclick="setFilter('sprint_only',this)">Sprint Only</button>
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('rankings')">📊 Rankings</div>
+  <div class="tab" onclick="switchTab('compare')">⚡ How Do You Stack Up?</div>
+</div>
+
+<!-- RANKINGS TAB -->
+<div id="tab-rankings" class="tab-panel active">
+
+<div class="filters">
+  <div class="filter-group">
+    <span class="filter-label">Sport</span>
+    <select id="f-sport" onchange="render()"><option value="">All Sports</option></select>
   </div>
-  <div class="roster-controls">
-    <input type="text" id="searchBox" placeholder="🔍  Search athlete name…" oninput="renderRoster()">
-    <select id="bucketFilter" onchange="renderRoster()">
-      <option value="">All Buckets</option>
-      <option value="Foundation">Foundation</option>
-      <option value="Diesel">Diesel</option>
-      <option value="Rabbit">Rabbit</option>
-      <option value="Elite">Elite</option>
-      <option value="N/A">Sprint Only (No FP)</option>
-    </select>
-    <select id="dsiFilter" onchange="renderRoster()">
-      <option value="">All DSI Types</option>
-      <option value="Standard">Standard (ISOSQT)</option>
-      <option value="Modified">Modified (RSI Proxy)</option>
-      <option value="N/A">No DSI Data</option>
-    </select>
-    <select id="genderFilter" onchange="renderRoster()">
-      <option value="">All Genders</option>
-      <option value="M">Male</option>
+  <div class="filter-group">
+    <span class="filter-label">Gender</span>
+    <select id="f-gender" onchange="render()">
+      <option value="">All</option>
       <option value="F">Female</option>
-    </select>
-    <select id="flagFilter" onchange="renderRoster()">
-      <option value="">All Flags</option>
-      <option value="RED">🔴 Red (&gt;25%)</option>
-      <option value="ORANGE">🟠 Orange (23–25%)</option>
-      <option value="YELLOW">🟡 Yellow (20–22%)</option>
+      <option value="M">Male</option>
     </select>
   </div>
-  <div id="rosterCount"></div>
-  <div class="cards-view" id="cardsGrid"></div>
-  <div class="table-view">
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th onclick="srt('name')">Athlete</th>
-          <th>G</th>
-          <th onclick="srt('bucket')">Bucket</th>
-          <th>DSI / Proxy</th>
-          <th onclick="srt('cmj_jh_in')">JH (in)</th>
-          <th onclick="srt('cmj_rsi')">RSI-mod</th>
-          <th onclick="srt('cmj_power_bm')">Pwr/BW</th>
-          <th onclick="srt('iso_force_bm')">ISO N/kg</th>
-          <th onclick="srt('uni_asym_pct')">SLJ Asym</th>
-          <th>Uni Flag</th>
-          <th onclick="srt('best_010')">0–10 (s)</th>
-          <th onclick="srt('best_2030')">20–30 (s)</th>
-          <th>Speed Profile</th>
-        </tr></thead>
-        <tbody id="tbody"></tbody>
-      </table>
-    </div>
+  <div class="filter-group">
+    <span class="filter-label">Class</span>
+    <select id="f-grade" onchange="render()">
+      <option value="">All Classes</option>
+      <option value="2030">8th Grade ('30)</option>
+      <option value="2029">Freshman ('29)</option>
+      <option value="2028">Sophomore ('28)</option>
+      <option value="2027">Junior ('27)</option>
+      <option value="2026">Senior ('26)</option>
+      <option value="2025">College ('25)</option>
+    </select>
+  </div>
+  <button class="reset-btn" onclick="resetFilters()">Reset</button>
+  <div class="sort-toggle">
+    <button class="sort-btn active" id="btn-age" onclick="setSort('age')">Age-Adj</button>
+    <button class="sort-btn" id="btn-raw" onclick="setSort('raw')">Raw</button>
   </div>
 </div>
 
-<!-- LEADERBOARDS TAB -->
-<div class="tab-panel" id="tab-leaderboards">
-  <div id="leaderboardsContent"></div>
+<div class="stats-bar">
+  Showing <b id="count">65</b> athletes &nbsp;·&nbsp;
+  ⭐ = Odyssey Elite &nbsp;·&nbsp;
+  <span style="color:#6a8aa8">Age-Adj boosts younger athletes with same metrics</span>
 </div>
 
-</main>
+<div class="content" id="content"></div>
 
-<!-- MODAL -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModalOnBg(event)">
-  <div class="modal">
-    <div class="modal-header">
-      <div>
-        <div class="modal-name" id="modalName"></div>
-        <div class="modal-meta" id="modalMeta"></div>
+</div><!-- end rankings tab -->
+
+<!-- COMPARE TAB -->
+<div id="tab-compare" class="tab-panel">
+<div class="compare-section">
+  <div class="compare-card">
+    <div class="compare-title">⚡ How Do You Stack Up?</div>
+    <div class="compare-subtitle">Enter your stats and see how you rank against Odyssey athletes</div>
+
+    <div class="compare-grid">
+      <div class="compare-field">
+        <label>Your Name</label>
+        <input type="text" id="c-name" placeholder="First Last">
       </div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="compare-field">
+        <label>Gender</label>
+        <select id="c-gender">
+          <option value="F">Female</option>
+          <option value="M">Male</option>
+        </select>
+      </div>
+      <div class="compare-field">
+        <label>Grade</label>
+        <select id="c-grade">
+          <option value="2030">8th Grade</option>
+          <option value="2029">Freshman</option>
+          <option value="2028" selected>Sophomore</option>
+          <option value="2027">Junior</option>
+          <option value="2026">Senior</option>
+        </select>
+      </div>
+      <div class="compare-field">
+        <label>Sport</label>
+        <input type="text" id="c-sport" placeholder="e.g. Softball">
+      </div>
+      <div class="compare-field">
+        <label>0–10 Sprint (seconds)</label>
+        <input type="number" id="c-010" placeholder="e.g. 1.75" step="0.01" min="1" max="3">
+      </div>
+      <div class="compare-field">
+        <label>20–30 Sprint (seconds)</label>
+        <input type="number" id="c-2030" placeholder="e.g. 1.20" step="0.01" min="0.8" max="2">
+      </div>
+      <div class="compare-field">
+        <label>CMJ Jump Height (inches)</label>
+        <input type="number" id="c-cmj" placeholder="e.g. 14.0" step="0.1" min="1" max="40">
+      </div>
+      <div class="compare-field">
+        <label>CMJ Power / BW (W/kg)</label>
+        <input type="number" id="c-power" placeholder="e.g. 50.0" step="0.1" min="10" max="120">
+      </div>
     </div>
-    <div class="modal-body" id="modalBody"></div>
+
+    <button class="compare-btn" onclick="runCompare()">See My Ranking →</button>
+
+    <div class="compare-results" id="compare-results"></div>
   </div>
 </div>
+</div><!-- end compare tab -->
 
-<footer class="footer">
-  <span>Odyssey Performance Lab · v2 · Coaches excluded: Desean Berger, Ty Cox, Jake Bishop, Matthew DeSouza</span>
-  <span>STD = ISOSQT-based True DSI · MOD = CMJ RSI-mod proxy · Asym threshold raised to 20% (softball baseline)</span>
-</footer>
+<!-- ATHLETE DETAIL MODAL -->
+<div class="overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal" id="modal-inner"></div>
+</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-/* =====================================================
-   ATHLETE DATA
-   ===================================================== */
 const A=[{"name":"Addison Erro","gender":"F","bw_kg":61.47,"cmj_jh_in":11.5,"cmj_rsi":0.45,"cmj_power_bm":43.6,"iso_force_bm":26.73,"dsi":0.1197,"bucket":"Rabbit","uni_flag":"OK","uni_asym_pct":1.8,"source":"both","best_010":1.94,"best_2030":1.36,"dsi_type":"Standard","sport":"Softball","grade":"freshman","grad_year":2029},{"name":"Alexia Rosas","gender":"F","bw_kg":64.6,"cmj_jh_in":10.0,"cmj_rsi":0.26,"cmj_power_bm":39.3,"iso_force_bm":39.41,"dsi":0.056,"bucket":"Foundation","uni_flag":"OK","uni_asym_pct":16.0,"source":"both","best_010":1.92,"best_2030":1.39,"dsi_type":"Standard","sport":"Softball","grade":"sophomore","grad_year":2028},{"name":"Alexis Hastert","gender":"F","bw_kg":62.18,"cmj_jh_in":10.1,"cmj_rsi":0.7,"cmj_power_bm":43.8,"iso_force_bm":null,"dsi":null,"bucket":"Rabbit","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":null,"best_2030":1.38,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028},{"name":"Anthony Tatar","gender":"M","bw_kg":80.46,"cmj_jh_in":9.5,"cmj_rsi":0.24,"cmj_power_bm":33.4,"iso_force_bm":null,"dsi":null,"bucket":"Foundation","uni_flag":"YELLOW","uni_asym_pct":21.0,"source":"fp_only","best_010":null,"best_2030":null,"dsi_type":"Modified","sport":"Football","grade":"freshman","grad_year":2029},{"name":"Ariannah Turrubiartes","gender":"F","bw_kg":73.19,"cmj_jh_in":6.9,"cmj_rsi":0.6,"cmj_power_bm":41.3,"iso_force_bm":null,"dsi":null,"bucket":"Rabbit","uni_flag":"ORANGE","uni_asym_pct":23.0,"source":"both","best_010":2.197,"best_2030":null,"dsi_type":"Modified","sport":"Softball","grade":"freshman","grad_year":2029},{"name":"Brayden Dent","gender":"M","bw_kg":71.41,"cmj_jh_in":18.2,"cmj_rsi":0.62,"cmj_power_bm":64.0,"iso_force_bm":null,"dsi":null,"bucket":"Rabbit","uni_flag":"OK","uni_asym_pct":18.0,"source":"both","best_010":1.58,"best_2030":1.04,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027,"elite_star":true},{"name":"Callie Angulo","gender":"F","bw_kg":64.03,"cmj_jh_in":14.1,"cmj_rsi":0.67,"cmj_power_bm":50.7,"iso_force_bm":null,"dsi":null,"bucket":"Rabbit","uni_flag":"OK","uni_asym_pct":8.9,"source":"both","best_010":1.81,"best_2030":null,"dsi_type":"Modified","sport":"Volleyball","grade":"junior","grad_year":2027},{"name":"Carter Garcia","gender":"M","bw_kg":68.78,"cmj_jh_in":13.7,"cmj_rsi":0.68,"cmj_power_bm":55.4,"iso_force_bm":44.67,"dsi":0.0576,"bucket":"Foundation","uni_flag":"OK","uni_asym_pct":11.0,"source":"both","best_010":1.64,"best_2030":null,"dsi_type":"Standard","sport":"Football","grade":"freshman","grad_year":2029,"elite_star":true},{"name":"Carter Schmidt","gender":"M","bw_kg":79.11,"cmj_jh_in":14.4,"cmj_rsi":0.66,"cmj_power_bm":44.1,"iso_force_bm":null,"dsi":null,"bucket":"Rabbit","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":1.71,"best_2030":1.38,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027},{"name":"Chloe Jensen","gender":"F","bw_kg":54.91,"cmj_jh_in":8.9,"cmj_rsi":0.33,"cmj_power_bm":45.3,"iso_force_bm":null,"dsi":null,"bucket":"Foundation","uni_flag":"YELLOW","uni_asym_pct":20.0,"source":"fp_only","best_010":null,"best_2030":null,"dsi_type":"Modified","sport":"Softball","grade":"freshman","grad_year":2029},{"name":"Ciera Walters","gender":"F","bw_kg":59.16,"cmj_jh_in":11.9,"cmj_rsi":0.4,"cmj_power_bm":44.8,"iso_force_bm":null,"dsi":null,"bucket":"Diesel","uni_flag":"OK","uni_asym_pct":3.1,"source":"both","best_010":1.69,"best_2030":1.3,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028},{"name":"Edward Patolo","gender":"M","bw_kg":81.84,"cmj_jh_in":14.1,"cmj_rsi":0.46,"cmj_power_bm":46.1,"iso_force_bm":39.59,"dsi":0.0626,"bucket":"Foundation","uni_flag":"RED","uni_asym_pct":32.0,"source":"both","best_010":1.66,"best_2030":1.27,"dsi_type":"Standard","sport":"Rugby/Football","grade":"freshman","grad_year":2029},{"name":"Emma Royko","gender":"F","bw_kg":54.52,"cmj_jh_in":13.4,"cmj_rsi":0.44,"cmj_power_bm":51.1,"iso_force_bm":null,"dsi":null,"bucket":"Diesel","uni_flag":"OK","uni_asym_pct":8.8,"source":"fp_only","best_010":null,"best_2030":null,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028},{"name":"Jack Dellinger","gender":"M","bw_kg":66.26,"cmj_jh_in":14.8,"cmj_rsi":0.84,"cmj_power_bm":62.2,"iso_force_bm":null,"dsi":null,"bucket":"Rabbit","uni_flag":"OK","uni_asym_pct":9.0,"source":"both","best_010":null,"best_2030":1.09,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027,"elite_star":true},{"name":"Justian Richardson","gender":"M","bw_kg":77.16,"cmj_jh_in":20.3,"cmj_rsi":0.82,"cmj_power_bm":66.7,"iso_force_bm":null,"dsi":null,"bucket":"Rabbit","uni_flag":"OK","uni_asym_pct":4.6,"source":"both","best_010":1.35,"best_2030":1.03,"dsi_type":"Modified","sport":"Track & Field","grade":"senior","grad_year":2026,"position":"Triple Jump"},{"name":"Katie Hemerick","gender":"F","bw_kg":67.81,"cmj_jh_in":10.3,"cmj_rsi":0.54,"cmj_power_bm":39.8,"iso_force_bm":null,"dsi":null,"bucket":"Diesel","uni_flag":"OK","uni_asym_pct":11.0,"source":"both","best_010":1.76,"best_2030":1.32,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028},{"name":"Landon Simantel","gender":"M","bw_kg":61.84,"cmj_jh_in":12.8,"cmj_rsi":0.43,"cmj_power_bm":58.8,"iso_force_bm":null,"dsi":null,"bucket":"Diesel","uni_flag":"OK","uni_asym_pct":18.0,"source":"both","best_010":1.603,"best_2030":1.06,"dsi_type":"Modified","sport":"Football","grade":"freshman","grad_year":2029},{"name":"Lola Carson","gender":"F","bw_kg":55.03,"cmj_jh_in":15.0,"cmj_rsi":0.58,"cmj_power_bm":52.1,"iso_force_bm":null,"dsi":0.0645,"bucket":"Foundation","uni_flag":"OK","uni_asym_pct":7.5,"source":"both","best_010":null,"best_2030":1.2,"dsi_type":"Standard","sport":"Softball","grade":"senior","grad_year":2026,"elite_star":true},{"name":"Lola Coker","gender":"F","bw_kg":84.56,"cmj_jh_in":8.9,"cmj_rsi":0.49,"cmj_power_bm":42.9,"iso_force_bm":null,"dsi":null,"bucket":"Diesel","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":1.83,"best_2030":null,"dsi_type":"Modified","sport":"Track & Field","grade":"sophomore","grad_year":2028,"position":"Shot Put"},{"name":"Maddie Waldron","gender":"F","bw_kg":58.37,"cmj_jh_in":12.3,"cmj_rsi":0.44,"cmj_power_bm":47.8,"iso_force_bm":null,"dsi":null,"bucket":"Diesel","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":1.774,"best_2030":null,"dsi_type":"Modified","sport":"Volleyball","grade":"junior","grad_year":2027,"elite_star":true},{"name":"Malia Lyons","gender":"F","bw_kg":58.38,"cmj_jh_in":11.0,"cmj_rsi":0.51,"cmj_power_bm":46.4,"iso_force_bm":null,"dsi":null,"bucket":"Diesel","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":null,"best_2030":null,"dsi_type":"Modified","sport":"Track & Field","grade":"junior","grad_year":2027,"position":"Triple Jump"},{"name":"Marissa Chapman","gender":"F","bw_kg":68.17,"cmj_jh_in":6.1,"cmj_rsi":0.13,"cmj_power_bm":30.5,"iso_force_bm":25.57,"dsi":0.0671,"bucket":"Foundation","uni_flag":"RED","uni_asym_pct":50.0,"source":"both","best_010":2.12,"best_2030":1.7,"dsi_type":"Standard","sport":"Lacrosse","grade":"freshman","grad_year":2029},{"name":"Mimi Botticelli","gender":"F","bw_kg":73.57,"cmj_jh_in":6.6,"cmj_rsi":0.22,"cmj_power_bm":32.4,"iso_force_bm":25.82,"dsi":0.07,"bucket":"Foundation","uni_flag":"OK","uni_asym_pct":11.0,"source":"both","best_010":1.83,"best_2030":1.44,"dsi_type":"Standard","sport":"Softball","grade":"senior","grad_year":2026},{"name":"Nicolas Countreman","gender":"M","bw_kg":116.87,"cmj_jh_in":10.7,"cmj_rsi":0.32,"cmj_power_bm":47.5,"iso_force_bm":null,"dsi":null,"bucket":"Foundation","uni_flag":"OK","uni_asym_pct":16.0,"source":"both","best_010":1.78,"best_2030":1.21,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027},{"name":"Riley McGee","gender":"M","bw_kg":62.85,"cmj_jh_in":11.8,"cmj_rsi":0.42,"cmj_power_bm":46.0,"iso_force_bm":32.07,"dsi":0.0752,"bucket":"Diesel","uni_flag":"RED","uni_asym_pct":47.0,"source":"both","best_010":null,"best_2030":1.23,"dsi_type":"Standard","sport":"Softball","grade":"sophomore","grad_year":2028,"position":"Catcher","elite_star":true},{"name":"Rowan Nishimoto","gender":"M","bw_kg":70.34,"cmj_jh_in":15.5,"cmj_rsi":1.09,"cmj_power_bm":68.1,"iso_force_bm":null,"dsi":null,"bucket":"Elite","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":1.564,"best_2030":1.1,"dsi_type":"Modified","sport":"Baseball","grade":"8th","grad_year":2030,"position":"Pitcher"},{"name":"Sam McCoy","gender":"M","bw_kg":72.18,"cmj_jh_in":17.0,"cmj_rsi":0.68,"cmj_power_bm":60.1,"iso_force_bm":null,"dsi":null,"bucket":"Rabbit","uni_flag":"OK","uni_asym_pct":2.4,"source":"both","best_010":1.58,"best_2030":1.019,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027,"position":"Pitcher"},{"name":"Violet Todd","gender":"F","bw_kg":67.73,"cmj_jh_in":8.9,"cmj_rsi":0.19,"cmj_power_bm":40.0,"iso_force_bm":null,"dsi":null,"bucket":"Foundation","uni_flag":"RED","uni_asym_pct":26.0,"source":"both","best_010":null,"best_2030":1.43,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028,"position":"Infielder"},{"name":"Abigail Burris","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.701,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"junior","grad_year":2027,"position":"Setter"},{"name":"Aiden Abelardo","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.7,"best_2030":1.26,"dsi_type":"N/A","sport":"Basketball","position":"Guard","grade":"sophomore","grad_year":2028},{"name":"Aj Gonzales","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.82,"best_2030":1.3,"dsi_type":"N/A","sport":"Softball/Basketball","grade":"junior","grad_year":2027,"position":"2B / Shooting Guard"},{"name":"Allison Keusch","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.79,"best_2030":1.28,"dsi_type":"N/A","sport":"Softball","grade":"junior","grad_year":2027,"position":"Pitcher","elite_star":true},{"name":"Camren Smith","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.7,"best_2030":null,"dsi_type":"N/A","sport":"Baseball","grade":"college","grad_year":2025,"position":"Outfielder"},{"name":"Cohen Mugford","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.63,"best_2030":null,"dsi_type":"N/A","sport":"Football","grade":"freshman","grad_year":2029,"position":"Receiver"},{"name":"Eddie Lucero","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.7,"best_2030":1.22,"dsi_type":"N/A","sport":"Baseball","grade":"junior","grad_year":2027,"position":"Pitcher"},{"name":"Ella Chadwick","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.21,"dsi_type":"N/A","sport":"Softball","grade":"freshman","grad_year":2029,"position":"Outfielder"},{"name":"Gabby Nevarez","gender":"F","bw_kg":70.3,"cmj_jh_in":16.2,"cmj_rsi":null,"cmj_power_bm":52.9,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":true,"uni_asym_pct":13,"source":"sprint_only","best_010":1.69,"best_2030":1.23,"dsi_type":"N/A","sport":"Softball","grade":"senior","grad_year":2026,"position":"Center Field","elite_star":true},{"name":"Kaimana Coleman","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":2.0,"best_2030":null,"dsi_type":"N/A","sport":"Softball","grade":"junior","grad_year":2027,"position":"Catcher","elite_star":true},{"name":"Kassidy King","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.7,"best_2030":1.17,"dsi_type":"N/A","sport":"Softball","grade":"junior","grad_year":2027,"position":"Pitcher","elite_star":true},{"name":"Lillian Ford","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.83,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"junior","grad_year":2027,"position":"Middle Hitter"},{"name":"Lily Barstad","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.3,"dsi_type":"N/A","sport":"Softball","grade":"sophomore","grad_year":2028,"position":"Catcher"},{"name":"Lucas Black","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.72,"best_2030":1.23,"dsi_type":"N/A","sport":"Volleyball","grade":"freshman","grad_year":2029,"position":"Libero"},{"name":"Maizie Smith","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.9,"best_2030":1.36,"dsi_type":"N/A","sport":"Softball","grade":"sophomore","grad_year":2028,"position":"3B"},{"name":"Malia Jones","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.48,"best_2030":1.14,"dsi_type":"N/A","sport":"Track & Field","grade":"junior","grad_year":2027,"position":"Sprinter"},{"name":"Maximus Marchi","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.81,"best_2030":1.26,"dsi_type":"N/A","sport":"Cross Country","grade":"senior","grad_year":2026,"position":"Distance Runner"},{"name":"Mckayla Zuber","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.77,"best_2030":null,"dsi_type":"N/A","sport":"Soccer","grade":"sophomore","grad_year":2028,"position":"Defender"},{"name":"Mya Gonzalez","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.78,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"sophomore","grad_year":2028,"position":"Libero"},{"name":"Peyton Cantu","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.61,"best_2030":1.3,"dsi_type":"N/A","sport":"Lacrosse","grade":"senior","grad_year":2026,"position":"Goalie"},{"name":"Robert Ghazaryan","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.7,"best_2030":null,"dsi_type":"N/A","sport":"Basketball","grade":"freshman","grad_year":2029,"position":"Forward"},{"name":"Ryan Chenoweth","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.56,"best_2030":1.14,"dsi_type":"N/A","sport":"Baseball","grade":"freshman","grad_year":2029,"position":"Pitcher"},{"name":"Serenity Humphrey","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.992,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"junior","grad_year":2027,"position":"Middle Hitter"},{"name":"Skylar Gosselin","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.86,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"junior","grad_year":2027,"position":"Outside Hitter"},{"name":"Sophia Covarrubias","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.86,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"freshman","grad_year":2029,"position":"Outside Hitter"},{"name":"Sophia Reilly","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.91,"best_2030":1.37,"dsi_type":"N/A","sport":"Softball/Track & Field","grade":"junior","grad_year":2027,"position":"Outfielder"},{"name":"Travis Perry","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.59,"best_2030":1.07,"dsi_type":"N/A","sport":"Baseball","grade":"senior","grad_year":2026,"position":"Catcher"},{"name":"Caden dearth","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.14,"dsi_type":"N/A","sport":"Basketball","grade":"junior","grad_year":2027,"position":"Guard"},{"name":"Connor Bishop","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.17,"dsi_type":"N/A","sport":"Soccer","grade":"senior","grad_year":2026,"position":"Forward"},{"name":"Gavin Seeman","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.18,"dsi_type":"N/A","sport":"Basketball","grade":"freshman","grad_year":2029,"position":"Forward"},{"name":"Hank Brown","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.3,"dsi_type":"N/A","sport":"Baseball","grade":"sophomore","grad_year":2028,"position":"Pitcher"},{"name":"Jack Johnson","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.21,"dsi_type":"N/A","sport":"Wrestling","grade":"freshman","grad_year":2029},{"name":"KJ Mendiola","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.34,"dsi_type":"N/A","sport":"Soccer","grade":"junior","grad_year":2027,"position":"Forward"},{"name":"Kam Labauve","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.21,"dsi_type":"N/A","sport":"Baseball","grade":"freshman","grad_year":2029,"position":"Pitcher"},{"name":"Mia Reynoso","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.26,"dsi_type":"N/A","sport":"Softball","grade":"senior","grad_year":2026,"position":"Infielder"},{"name":"Peter Graves","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.21,"dsi_type":"N/A","sport":"Basketball","grade":"freshman","grad_year":2029,"position":"Forward"},{"name":"Kai Fennell","gender":"M","bw_kg":62.21,"cmj_jh_in":11.3,"cmj_rsi":0.41,"cmj_power_bm":45.2,"iso_force_bm":null,"dsi":null,"bucket":"Diesel","uni_flag":"OK","uni_asym_pct":19.0,"source":"both","best_010":1.781,"best_2030":null,"dsi_type":"Modified","sport":"Lacrosse","grade":"freshman","grad_year":2029,"position":"Attacker"}];
 
-/* =====================================================
-   CONSTANTS
-   ===================================================== */
-const BC={Foundation:'#56b4e9',Diesel:'#ef4444',Rabbit:'#22c55e',Elite:'#f59e0b','N/A':'#9ca3af'};
-const SPD_THR={M:{'010':[1.55,1.62,1.68,1.74],'2030':[1.02,1.06,1.12,1.20]},F:{'010':[1.68,1.75,1.82,1.89],'2030':[1.11,1.17,1.25,1.35]}};
-const SPD_LVL=['Elite','Great','Good','Decent','Needs Imp.'];
-const SPD_COL={Elite:'#f59e0b',Great:'#22c55e',Good:'#3b82f6',Decent:'#f97316','Needs Imp.':'#ef4444'};
-const BUCKET_DESCS={
-  Foundation:'Strength-dominant. Priority: reactive capacity. Prescribe plyometric + reactive training.',
-  Diesel:'Balanced profile. Develop both force production and reactive qualities.',
-  Rabbit:'Speed/reactive dominant. Priority: strength base. Prescribe loading + force development.',
-  Elite:'High output across both qualities. Sport-specific refinement focus.',
-  'N/A':'Sprint data only. No force plate classification available.'
-};
-
-let sortCol='name',sortDir=1,activeFilter='all',radarChart=null;
-
-/* =====================================================
-   RANGES for percentile scoring
-   ===================================================== */
-const RNG={
-  cmj_jh_in:A.map(a=>a.cmj_jh_in).filter(v=>v!=null),
-  cmj_rsi:A.map(a=>a.cmj_rsi).filter(v=>v!=null),
-  cmj_power_bm:A.map(a=>a.cmj_power_bm).filter(v=>v!=null),
-  iso_force_bm:A.map(a=>a.iso_force_bm).filter(v=>v!=null),
-  best_010_M:A.filter(a=>a.gender==='M').map(a=>a.best_010).filter(v=>v!=null),
-  best_010_F:A.filter(a=>a.gender==='F').map(a=>a.best_010).filter(v=>v!=null),
-  best_2030_M:A.filter(a=>a.gender==='M').map(a=>a.best_2030).filter(v=>v!=null),
-  best_2030_F:A.filter(a=>a.gender==='F').map(a=>a.best_2030).filter(v=>v!=null),
-};
-
-function pctScore(v,arr,invert){
-  if(v==null||!arr.length)return null;
-  const mn=Math.min(...arr),mx=Math.max(...arr);
-  if(mx===mn)return 50;
-  const s=(v-mn)/(mx-mn)*100;
-  return invert?100-s:s;
-}
-
-function getScore(a,metric){
-  switch(metric){
-    case'speed_010':return pctScore(a.best_010,RNG[`best_010_${a.gender}`],true);
-    case'speed_2030':return pctScore(a.best_2030,RNG[`best_2030_${a.gender}`],true);
-    case'cmj_jh_in':return pctScore(a.cmj_jh_in,RNG.cmj_jh_in,false);
-    case'cmj_power_bm':return pctScore(a.cmj_power_bm,RNG.cmj_power_bm,false);
-    case'iso_force_bm':return pctScore(a.iso_force_bm,RNG.iso_force_bm,false);
-    case'cmj_rsi':return pctScore(a.cmj_rsi,RNG.cmj_rsi,false);
-    default:return null;
-  }
-}
-
-/* =====================================================
-   UTILITIES
-   ===================================================== */
-function speedLevel(t,gender,test){
-  if(t==null)return null;
-  const thr=SPD_THR[gender==='M'?'M':'F'][test];
-  if(t<thr[0])return'Elite';
-  if(t<=thr[1])return'Great';
-  if(t<=thr[2])return'Good';
-  if(t<=thr[3])return'Decent';
-  return'Needs Imp.';
-}
-function speedProfile(l1,l2){
-  if(!l1||!l2)return null;
-  const i0=SPD_LVL.indexOf(l1),i2=SPD_LVL.indexOf(l2);
-  if(i0<0||i2<0)return null;
-  const d=i0-i2;
-  if(Math.abs(d)<=1)return{label:'Balanced',cls:'Balanced'};
-  if(d<=-2)return{label:'Power Starter',cls:'PowerStarter'};
-  return{label:'Late Bloomer',cls:'LateBloomer'};
-}
-function hex2rgba(hex,a){
-  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
-  return`rgba(${r},${g},${b},${a})`;
-}
-
-/* =====================================================
-   TAB NAVIGATION
-   ===================================================== */
-function showTab(tab,el){
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+tab).classList.add('active');
-  el.classList.add('active');
-  if(tab==='leaderboards')buildLeaderboards();
-  if(tab==='roster')renderRoster();
-}
-
-/* =====================================================
-   HEADER STATS
-   ===================================================== */
-function buildHeaderStats(){
-  const M=A.filter(a=>a.gender==='M').length,F=A.filter(a=>a.gender==='F').length;
-  const c={Foundation:0,Diesel:0,Rabbit:0,Elite:0};
-  A.forEach(a=>{if(a.bucket in c)c[a.bucket]++;});
-  document.getElementById('headerStats').innerHTML=`
-    <div class="hst"><div class="hn">${A.length}</div><div class="hl">Total</div></div>
-    <div class="hst"><div class="hn">${M}M / ${F}F</div><div class="hl">Split</div></div>
-    <div class="hst hf"><div class="hn">${c.Foundation}</div><div class="hl">Foundation</div></div>
-    <div class="hst hd"><div class="hn">${c.Diesel}</div><div class="hl">Diesel</div></div>
-    <div class="hst hr"><div class="hn">${c.Rabbit}</div><div class="hl">Rabbit</div></div>
-    <div class="hst he"><div class="hn">${c.Elite}</div><div class="hl">Elite</div></div>`;
-}
-
-/* =====================================================
-   STAT GRID
-   ===================================================== */
-function buildStatGrid(){
-  const c={Foundation:0,Diesel:0,Rabbit:0,Elite:0};
-  let rf=0,of_=0,yf=0,std=0,mod=0;
-  const M=A.filter(a=>a.gender==='M').length,F=A.filter(a=>a.gender==='F').length;
-  A.forEach(a=>{
-    if(a.bucket in c)c[a.bucket]++;
-    if(a.uni_flag==='RED')rf++;
-    if(a.uni_flag==='ORANGE')of_++;
-    if(a.uni_flag==='YELLOW')yf++;
-    if(a.dsi_type==='Standard')std++;
-    if(a.dsi_type==='Modified')mod++;
-  });
-  document.getElementById('statGrid').innerHTML=`
-    <div class="stat-card"><div class="sn">${A.length}</div><div class="sl">Athletes</div></div>
-    <div class="stat-card"><div class="sn">${M}</div><div class="sl">Male</div></div>
-    <div class="stat-card"><div class="sn">${F}</div><div class="sl">Female</div></div>
-    <div class="stat-card sstd"><div class="sn">${std}</div><div class="sl">Std DSI</div></div>
-    <div class="stat-card smod"><div class="sn">${mod}</div><div class="sl">Mod DSI</div></div>
-    <div class="stat-card sf"><div class="sn">${c.Foundation}</div><div class="sl">Foundation</div></div>
-    <div class="stat-card sd"><div class="sn">${c.Diesel}</div><div class="sl">Diesel</div></div>
-    <div class="stat-card sr"><div class="sn">${c.Rabbit}</div><div class="sl">Rabbit</div></div>
-    <div class="stat-card se"><div class="sn">${c.Elite}</div><div class="sl">Elite</div></div>
-    <div class="stat-card sred"><div class="sn">${rf}</div><div class="sl">🔴 Red</div></div>
-    <div class="stat-card" style="border-color:#fdba74"><div class="sn" style="color:#f97316">${of_}</div><div class="sl">🟠 Orange</div></div>
-    <div class="stat-card" style="border-color:#fde047"><div class="sn" style="color:#eab308">${yf}</div><div class="sl">🟡 Yellow</div></div>`;
-}
-
-/* =====================================================
-   OVERVIEW CHARTS
-   ===================================================== */
-function miniBar(elId,data,keyFn,colorFn,labelFn,scaleMax){
-  const d=[...data].filter(a=>keyFn(a)!=null).sort((a,b)=>keyFn(b)-keyFn(a));
-  const mx=scaleMax||Math.max(...d.map(a=>keyFn(a)));
-  document.getElementById(elId).innerHTML=d.length
-    ?d.map(a=>{const v=keyFn(a),p=(v/mx*100).toFixed(1),c=colorFn(a),nm=a.name.split(' ')[0];
-      return`<div class="mr"><div class="ml" title="${a.name}">${nm}</div><div class="mb"><div class="mf" style="width:${p}%;background:${c}">${labelFn(a,v)}</div></div></div>`;
-    }).join('')
-    :`<p style="color:var(--txt-light);font-size:.8rem;padding:8px 0">No data</p>`;
-}
-
-function buildCharts(){
-  miniBar('jhChart',A,a=>a.cmj_jh_in,a=>BC[a.bucket]||'#9ca3af',(a,v)=>`${v.toFixed(1)}"`,25);
-  const dsiA=[...A].filter(a=>a.dsi).sort((a,b)=>b.dsi-a.dsi);
-  const T=[{v:0.07,c:'#56b4e9'},{v:0.10,c:'#22c55e'},{v:0.14,c:'#f59e0b'}];
-  document.getElementById('dsiChart').innerHTML=dsiA.map(a=>{
-    const p=Math.min(a.dsi/0.18*100,100).toFixed(1),c=BC[a.bucket]||'#9ca3af';
-    const marks=T.map(t=>`<div style="position:absolute;left:${(t.v/0.18*100).toFixed(1)}%;top:0;bottom:0;width:1px;background:${t.c};opacity:.5;z-index:1"></div>`).join('');
-    return`<div class="mr"><div class="ml" title="${a.name}">${a.name.split(' ')[0]} ${(a.name.split(' ')[1]||'')[0]}.</div><div class="mb">${marks}<div class="mf" style="width:${p}%;background:${c};position:relative;z-index:2">${a.dsi.toFixed(4)}</div></div></div>`;
-  }).join('');
-  function sprintChart(elId,gender,key){
-    const d=[...A].filter(a=>a[key]&&a.gender===gender).sort((a,b)=>a[key]-b[key]);
-    const mn=d.length?Math.min(...d.map(a=>a[key])):0;
-    const mx=d.length?Math.max(...d.map(a=>a[key])):1;
-    document.getElementById(elId).innerHTML=d.length
-      ?d.map(a=>{
-          const v=a[key],lvl=speedLevel(v,gender,key==='best_010'?'010':'2030'),col=SPD_COL[lvl]||'#9ca3af';
-          const p=((v-mn)/(mx-mn+.001)*75+10).toFixed(1);
-          const nm=a.name.split(' ')[0]+' '+(a.name.split(' ')[1]||'')[0]+'.';
-          return`<div class="mr"><div class="ml" title="${a.name}">${nm}</div><div class="mb"><div class="mf" style="width:${p}%;background:${col}">${v.toFixed(3)}s <span style="opacity:.8;font-size:.58rem">${lvl}</span></div></div></div>`;
-        }).join('')
-      :`<p style="color:var(--txt-light);font-size:.8rem;padding:8px 0">No data</p>`;
-  }
-  sprintChart('s010M','M','best_010');sprintChart('s010F','F','best_010');
-  sprintChart('s2030M','M','best_2030');sprintChart('s2030F','F','best_2030');
-}
-
-function buildFlags(){
-  const f=[...A].filter(a=>a.uni_flag&&a.uni_flag!=='OK').sort((a,b)=>(b.uni_asym_pct||0)-(a.uni_asym_pct||0));
-  const el=document.getElementById('flagsGrid');
-  if(!f.length){el.innerHTML='<p style="color:var(--txt-light);font-size:.8rem">No flags.</p>';return;}
-  el.innerHTML=f.map(a=>{
-    const emoji=a.uni_flag==='RED'?'🔴':a.uni_flag==='ORANGE'?'🟠':'🟡';
-    const cls=a.uni_flag==='RED'?'rc':a.uni_flag==='ORANGE'?'oc':'yc';
-    const thr=a.uni_flag==='RED'?'>25%':a.uni_flag==='ORANGE'?'23–25%':'20–22%';
-    const ai=A.indexOf(a);
-    return`<div class="flag-card ${cls}" onclick="openModal(A[${ai}])"><div class="fi">${emoji}</div><div><div class="fn">${a.name}</div><div class="fd">SLJ Asym: <strong>${a.uni_asym_pct}%</strong> · ${thr}</div></div></div>`;
-  }).join('');
-}
-
-/* =====================================================
-   ROSTER
-   ===================================================== */
-function setFilter(f,el){
-  activeFilter=f;
-  document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  renderRoster();
-}
-function srt(col){
-  if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=-1;}
-  renderRoster();
-}
-function getFiltered(){
-  const s=(document.getElementById('searchBox')?.value||'').toLowerCase();
-  const bf=document.getElementById('bucketFilter')?.value||'';
-  const dsif=document.getElementById('dsiFilter')?.value||'';
-  const gf=document.getElementById('genderFilter')?.value||'';
-  const flf=document.getElementById('flagFilter')?.value||'';
-  return[...A].filter(a=>{
-    if(s&&!a.name.toLowerCase().includes(s))return false;
-    if(activeFilter!=='all'&&a.source!==activeFilter)return false;
-    if(bf==='N/A'&&a.bucket!=='N/A')return false;
-    if(bf&&bf!=='N/A'&&a.bucket!==bf)return false;
-    if(dsif&&a.dsi_type!==dsif)return false;
-    if(gf&&a.gender!==gf)return false;
-    if(flf&&a.uni_flag!==flf)return false;
-    return true;
-  }).sort((a,b)=>{
-    let av=a[sortCol],bv=b[sortCol];
-    if(av==null)av=sortDir>0?Infinity:-Infinity;
-    if(bv==null)bv=sortDir>0?Infinity:-Infinity;
-    if(typeof av==='string')return av.localeCompare(bv)*sortDir;
-    return(av-bv)*sortDir;
-  });
-}
-
-function renderRoster(){
-  const data=getFiltered();
-  const cntEl=document.getElementById('rosterCount');
-  if(cntEl)cntEl.textContent=`Showing ${data.length} of ${A.length} athletes`;
-
-  // CARDS (mobile)
-  const cg=document.getElementById('cardsGrid');
-  if(cg){
-    cg.innerHTML=data.map(a=>{
-      const bk=a.bucket==='N/A'?'NA':a.bucket;
-      const sc010=getScore(a,'speed_010'),scJH=getScore(a,'cmj_jh_in'),scRSI=getScore(a,'cmj_rsi'),sc2030=getScore(a,'speed_2030');
-      const lvl010=speedLevel(a.best_010,a.gender,'010'),lvl2030=speedLevel(a.best_2030,a.gender,'2030');
-      const col010=lvl010?SPD_COL[lvl010]:'#9ca3af',col2030=lvl2030?SPD_COL[lvl2030]:'#9ca3af';
-      const bc=BC[a.bucket]||'#9ca3af';
-      const ai=A.indexOf(a);
-      function mblock(label,val,score,color){
-        return`<div class="card-metric"><div class="cm-label">${label}</div><div class="cm-value" style="color:${score!=null?color:'var(--txt-light)'}">${val}</div>${score!=null?`<div class="cm-bar"><div class="cm-fill" style="width:${score.toFixed(0)}%;background:${color}"></div></div>`:''}</div>`;
-      }
-      return`<div class="athlete-card ${bk}" onclick="openModal(A[${ai}])">
-        <div class="card-name">${a.name}</div>
-        <div class="card-badges">
-          <span class="gbadge ${a.gender}">${a.gender}</span>
-          <span class="pill ${a.bucket==='N/A'?'na':a.bucket}">${a.bucket==='N/A'?'—':a.bucket}</span>
-          ${a.dsi_type==='Standard'?'<span class="dtag std">STD</span>':a.dsi_type==='Modified'?'<span class="dtag mod">MOD</span>':''}
-        </div>
-        <div class="card-metrics">
-          ${mblock('CMJ Height',a.cmj_jh_in?a.cmj_jh_in.toFixed(1)+'"':'—',scJH,bc)}
-          ${mblock('RSI-mod',a.cmj_rsi?a.cmj_rsi.toFixed(2):'—',scRSI,'#8b5cf6')}
-          ${mblock('0–10 (s)',a.best_010?a.best_010.toFixed(3):'—',sc010,col010)}
-          ${mblock('20–30 (s)',a.best_2030?a.best_2030.toFixed(3):'—',sc2030,col2030)}
-        </div>
-        <div class="card-hint">Tap to view full profile →</div>
-      </div>`;
-    }).join('');
-  }
-
-  // TABLE (desktop)
-  const colMap=['name','gender','bucket','','cmj_jh_in','cmj_rsi','cmj_power_bm','iso_force_bm','uni_asym_pct','','best_010','best_2030',''];
-  document.querySelectorAll('thead th').forEach((th,i)=>{
-    th.classList.remove('sa','sd');
-    if(colMap[i]===sortCol)th.classList.add(sortDir>0?'sa':'sd');
-  });
-  const SLM={both:'both',fp_only:'fp',sprint_only:'sprint'};
-  const tb=document.getElementById('tbody');
-  if(!tb)return;
-  tb.innerHTML=data.map(a=>{
-    const bk=a.bucket==='N/A'?'na':a.bucket;
-    const bpill=`<span class="pill ${bk}">${a.bucket==='N/A'?'—':a.bucket}</span>`;
-    const dtag=a.dsi_type==='Standard'?'<span class="dtag std">STD</span>':a.dsi_type==='Modified'?'<span class="dtag mod">MOD</span>':'';
-    const srcTag=`<span class="src-tag ${SLM[a.source]||'fp'}">${a.source==='both'?'FP+S':a.source==='fp_only'?'FP':'SPR'}</span>`;
-    const gbadge=`<span class="gbadge ${a.gender}">${a.gender}</span>`;
-    let dsiCell;
-    if(a.dsi){
-      const p=Math.min(a.dsi/0.18*100,100).toFixed(1),c=BC[a.bucket]||'#9ca3af';
-      dsiCell=`<div class="bw"><div class="bbg"><div class="bf" style="width:${p}%;background:${c}"></div></div><span class="bv" style="color:${c}">${a.dsi.toFixed(4)}</span></div>`;
-    }else if(a.cmj_rsi&&a.dsi_type==='Modified'){
-      dsiCell=`<span style="color:var(--mod-col);font-family:monospace;font-size:.76rem">RSI:${a.cmj_rsi.toFixed(2)}</span>`;
-    }else{
-      dsiCell=`<span style="color:var(--txt-light)">—</span>`;
-    }
-    let fc=`<span style="color:var(--txt-light)">—</span>`;
-    if(a.uni_flag==='RED')fc=`<span style="color:var(--flag-red);font-weight:700">🔴 ${a.uni_asym_pct}%</span>`;
-    else if(a.uni_flag==='ORANGE')fc=`<span style="color:var(--flag-org);font-weight:700">🟠 ${a.uni_asym_pct}%</span>`;
-    else if(a.uni_flag==='YELLOW')fc=`<span style="color:var(--flag-yel);font-weight:700">🟡 ${a.uni_asym_pct}%</span>`;
-    else if(a.uni_flag==='OK')fc=`<span style="color:var(--flag-grn);font-weight:700">✅ ${a.uni_asym_pct}%</span>`;
-    function spCell(v,test){
-      if(v==null)return'<span style="color:var(--txt-light)">—</span>';
-      const lvl=speedLevel(v,a.gender,test),cls=lvl==='Needs Imp.'?'NeedsImp':lvl.replace(' ',''),col=SPD_COL[lvl]||'#9ca3af';
-      return`<span style="font-family:monospace;font-size:.8rem;font-weight:700;color:${col}">${v.toFixed(3)}</span><span class="slvl ${cls}">${lvl}</span>`;
-    }
-    const lvl010=speedLevel(a.best_010,a.gender,'010'),lvl2030=speedLevel(a.best_2030,a.gender,'2030');
-    const prof=speedProfile(lvl010,lvl2030);
-    const profCell=prof?`<span class="sprofile ${prof.cls}">${prof.label}</span>`:`<span style="color:var(--txt-light)">—</span>`;
-    const ai=A.indexOf(a);
-    return`<tr onclick="openModal(A[${ai}])">
-      <td><strong>${a.name}</strong>${dtag}${srcTag}</td>
-      <td>${gbadge}</td><td>${bpill}</td><td>${dsiCell}</td>
-      <td>${a.cmj_jh_in?a.cmj_jh_in.toFixed(1)+'"':'—'}</td>
-      <td>${a.cmj_rsi?a.cmj_rsi.toFixed(2):'—'}</td>
-      <td>${a.cmj_power_bm?a.cmj_power_bm.toFixed(1):'—'}</td>
-      <td>${a.iso_force_bm?a.iso_force_bm.toFixed(1):'—'}</td>
-      <td>${a.uni_asym_pct!=null?a.uni_asym_pct+'%':'—'}</td>
-      <td>${fc}</td>
-      <td>${spCell(a.best_010,'010')}</td>
-      <td>${spCell(a.best_2030,'2030')}</td>
-      <td>${profCell}</td>
-    </tr>`;
-  }).join('');
-}
-
-/* =====================================================
-   LEADERBOARDS
-   ===================================================== */
-const LB_CATS=[
-  {id:'speed010',title:'⚡ Fastest 0–10 Acceleration',metric:'best_010',unit:'s',invert:true,dec:3},
-  {id:'speed2030',title:'🚀 Fastest 20–30 Fly',metric:'best_2030',unit:'s',invert:true,dec:3},
-  {id:'cmjH',title:'📏 Highest CMJ Jump Height',metric:'cmj_jh_in',unit:'"',invert:false,dec:1},
-  {id:'rsi',title:'⚡ Highest RSI-Modified',metric:'cmj_rsi',unit:'',invert:false,dec:2},
-  {id:'pwr',title:'💪 Highest Power / BW',metric:'cmj_power_bm',unit:' W/kg',invert:false,dec:1},
+// =====================================================
+// SCORING
+// =====================================================
+const METRICS=[
+  {key:'best_010',   higher:false, label:'0–10 Sprint',   unit:'s',    w:1.5},
+  {key:'best_2030',  higher:false, label:'20–30 Sprint',  unit:'s',    w:1.5},
+  {key:'cmj_jh_in',  higher:true,  label:'CMJ Height',    unit:'"',    w:1.5},
+  {key:'cmj_power_bm',higher:true, label:'CMJ Power',     unit:' W/kg',w:1.0},
+  {key:'cmj_rsi',    higher:true,  label:'RSI',           unit:'',     w:1.0},
+  {key:'iso_force_bm',higher:true, label:'ISO Force',     unit:' N/kg',w:1.0},
 ];
 
-function buildLeaderboards(){
-  document.getElementById('leaderboardsContent').innerHTML=`<div class="lb-grid">${LB_CATS.map(cat=>`
-    <div class="lb-card">
-      <div class="lb-title">${cat.title}</div>
-      <div class="lb-gender-tabs">
-        <button class="lb-gtab active m" onclick="lbSwitch('${cat.id}','M',this)">Male</button>
-        <button class="lb-gtab f" onclick="lbSwitch('${cat.id}','F',this)">Female</button>
+const AGE_BONUS={2025:-3,2026:0,2027:4,2028:9,2029:14,2030:20};
+const GRADE_LABEL={2030:'8th Grade',2029:'Freshman',2028:'Sophomore',2027:'Junior',2026:'Senior',2025:'College'};
+
+function pctOf(val,arr,hi){
+  const v=arr.filter(x=>x!=null&&!isNaN(x));
+  if(!v.length||val==null)return null;
+  const below=v.filter(x=>hi?x<val:x>val).length;
+  return Math.round(below/v.length*100);
+}
+
+function computeScores(){
+  const F=A.filter(a=>a.gender==='F'), M=A.filter(a=>a.gender==='M');
+  A.forEach(a=>{
+    const peers=a.gender==='F'?F:M;
+    let ws=0,wt=0,mp={};
+    METRICS.forEach(m=>{
+      if(a[m.key]==null)return;
+      const p=pctOf(a[m.key],peers.map(x=>x[m.key]),m.higher);
+      if(p==null)return;
+      mp[m.key]=p; ws+=p*m.w; wt+=m.w;
+    });
+    a._pcts=mp;
+    a._raw=wt>0?Math.round(ws/wt):null;
+    const b=AGE_BONUS[a.grad_year]??0;
+    a._age=a._raw!=null?Math.min(99,Math.max(1,a._raw+b)):null;
+  });
+}
+
+// =====================================================
+// TABS
+// =====================================================
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach((el,i)=>{
+    const panels=['rankings','compare'];
+    el.classList.toggle('active',panels[i]===t);
+    document.getElementById('tab-'+panels[i]).classList.toggle('active',panels[i]===t);
+  });
+}
+
+// =====================================================
+// FILTERS + RENDER
+// =====================================================
+let sortMode='age';
+
+function setSort(m){
+  sortMode=m;
+  document.getElementById('btn-age').classList.toggle('active',m==='age');
+  document.getElementById('btn-raw').classList.toggle('active',m==='raw');
+  render();
+}
+
+function resetFilters(){
+  ['f-sport','f-gender','f-grade'].forEach(id=>document.getElementById(id).value='');
+  render();
+}
+
+function bucketClass(b){
+  return{Elite:'bElite',Rabbit:'bRabbit',Diesel:'bDiesel',Foundation:'bFoundation'}[b]||'bNA';
+}
+
+function classStr(y){return y?`'${String(y).slice(2)}`:''}
+
+function render(){
+  const fs=document.getElementById('f-sport').value;
+  const fg=document.getElementById('f-gender').value;
+  const fy=document.getElementById('f-grade').value;
+
+  let list=A.filter(a=>{
+    if(fs&&a.sport!==fs)return false;
+    if(fg&&a.gender!==fg)return false;
+    if(fy&&String(a.grad_year)!==fy)return false;
+    return true;
+  });
+
+  const sk=sortMode==='age'?'_age':'_raw';
+  list.sort((a,b)=>(b[sk]??-1)-(a[sk]??-1));
+  document.getElementById('count').textContent=list.length;
+
+  const el=document.getElementById('content');
+  if(!list.length){
+    el.innerHTML='<div class="empty"><h3>No athletes match</h3><p>Try adjusting your filters</p></div>';
+    return;
+  }
+
+  el.innerHTML=list.map((a,i)=>{
+    const r=i+1;
+    const sc=a[sk];
+    const rankCls=r===1?'gold':r===2?'silver':r===3?'bronze':'';
+    const chips=METRICS.filter(m=>a[m.key]!=null).slice(0,3).map(m=>{
+      const hot=(a._pcts?.[m.key]??0)>=70;
+      return`<span class="metric-pill${hot?' hot':''}">${m.label}: ${a[m.key]}${m.unit}</span>`;
+    }).join('');
+    const bkt=a.bucket&&a.bucket!=='N/A'?`<span class="bucket-badge ${bucketClass(a.bucket)}">${a.bucket}</span>`:'';
+    const scoreHtml=sc!=null
+      ?`<div class="score-main">${sc}</div>
+         <div class="score-label">${sortMode==='age'?'Age-Adj':'Raw'}</div>
+         ${sortMode==='age'&&a._raw!=null?`<div class="score-sub">Raw: ${a._raw}</div>`:''}
+         ${sortMode==='raw'&&a._age!=null?`<div class="score-sub">Adj: ${a._age}</div>`:''}`
+      :`<div class="no-score">Sprint<br>only</div>`;
+    return`<div class="athlete-card${a.elite_star?' elite':''}" onclick="openModal(${A.indexOf(a)})">
+      <div class="rank ${rankCls}">${r}</div>
+      <div>
+        <div class="athlete-name">${a.elite_star?'⭐ ':''}${a.name}</div>
+        <div class="athlete-meta">
+          <span>${a.sport||'—'}</span>
+          ${a.position?`<span style="color:#bbb">·</span><span>${a.position}</span>`:''}
+          <span style="color:#bbb">·</span>
+          <span class="grade-chip">${GRADE_LABEL[a.grad_year]||''}</span>
+          <span class="class-chip">Class of ${classStr(a.grad_year)}</span>
+          ${bkt}
+        </div>
+        ${chips?`<div class="metrics-row">${chips}</div>`:''}
       </div>
-      <div id="lb-${cat.id}"></div>
-    </div>`).join('')}</div>`;
-  LB_CATS.forEach(cat=>renderLb(cat.id,'M'));
-}
-
-function lbSwitch(id,gender,el){
-  const card=el.closest('.lb-card');
-  card.querySelectorAll('.lb-gtab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  renderLb(id,gender);
-}
-
-function renderLb(catId,gender){
-  const cat=LB_CATS.find(c=>c.id===catId);
-  let d=[...A].filter(a=>a.gender===gender&&a[cat.metric]!=null);
-  d.sort((a,b)=>cat.invert?a[cat.metric]-b[cat.metric]:b[cat.metric]-a[cat.metric]);
-  d=d.slice(0,10);
-  const el=document.getElementById('lb-'+catId);
-  if(!d.length){el.innerHTML=`<div style="padding:16px;text-align:center;color:var(--txt-light);font-size:.8rem">No data</div>`;return;}
-  el.innerHTML=d.map((a,i)=>{
-    const rc=i===0?'r1':i===1?'r2':i===2?'r3':'rn';
-    const bk=a.bucket==='N/A'?'na':a.bucket;
-    const ai=A.indexOf(a);
-    return`<div class="lb-entry" onclick="openModal(A[${ai}])">
-      <div class="lb-rank ${rc}">${i+1}</div>
-      <div class="lb-name">${a.name}<br><span class="pill ${bk}" style="font-size:.56rem;margin-top:2px;display:inline-block">${a.bucket==='N/A'?'—':a.bucket}</span></div>
-      <div class="lb-val">${a[cat.metric].toFixed(cat.dec)}${cat.unit}</div>
+      <div class="score-col">${scoreHtml}</div>
     </div>`;
   }).join('');
 }
 
-/* =====================================================
-   ATHLETE MODAL
-   ===================================================== */
-function openModal(athlete){
-  if(!athlete)return;
-  const bk=athlete.bucket==='N/A'?'NA':athlete.bucket;
-  const lvl010=speedLevel(athlete.best_010,athlete.gender,'010');
-  const lvl2030=speedLevel(athlete.best_2030,athlete.gender,'2030');
-  const prof=speedProfile(lvl010,lvl2030);
-  const SLM={'both':'FP + Sprint','fp_only':'Force Plate Only','sprint_only':'Sprint Only'};
-
-  document.getElementById('modalName').textContent=athlete.name;
-  document.getElementById('modalMeta').innerHTML=`
-    <span class="gbadge ${athlete.gender}">${athlete.gender==='M'?'Male':'Female'}</span>
-    <span class="pill ${athlete.bucket==='N/A'?'na':athlete.bucket}" style="font-size:.7rem">${athlete.bucket==='N/A'?'No FP Data':athlete.bucket}</span>
-    ${athlete.dsi_type==='Standard'?'<span class="dtag std" style="margin-left:0">STD DSI</span>':athlete.dsi_type==='Modified'?'<span class="dtag mod" style="margin-left:0">MOD DSI</span>':''}
-    <span style="font-size:.67rem;color:var(--txt-mut)">${SLM[athlete.source]||''}</span>`;
-
-  // Radar metrics
-  const radarM=[
-    {label:'Speed\n(0–10)',key:'speed_010'},
-    {label:'Max\nVelocity',key:'speed_2030'},
-    {label:'Explosive-\nness',key:'cmj_jh_in'},
-    {label:'Power\n/BW',key:'cmj_power_bm'},
-    {label:'Strength\n/BW',key:'iso_force_bm'},
-    {label:'Reactivity\n(RSI)',key:'cmj_rsi'},
-  ];
-  const scores=radarM.map(m=>({...m,score:getScore(athlete,m.key)}));
-  const validCount=scores.filter(s=>s.score!=null).length;
-  const showRadar=validCount>=3;
-
-  function mRow(label,val,score,color,unit=''){
-    const display=val!=null?`${typeof val==='number'?val.toFixed(2):val}${unit}`:'—';
-    const colored=val!=null&&color?`color:${color}`:'color:var(--txt-light)';
-    return`<div class="modal-row">
-      <span class="mr-label">${label}</span>
-      <div class="mr-val-wrap">
-        <span class="mr-val" style="${colored}">${display}</span>
-        ${score!=null?`<div class="modal-bar"><div class="modal-fill" style="width:${score.toFixed(0)}%;background:${color}"></div></div>`:''}
+// =====================================================
+// ATHLETE MODAL
+// =====================================================
+function openModal(idx){
+  const a=A[idx];
+  const inn=document.getElementById('modal-inner');
+  const fpHtml=METRICS.filter(m=>a[m.key]!=null).map(m=>{
+    const p=a._pcts?.[m.key]??null;
+    return`<div class="mrow">
+      <div class="mrow-inner">
+        <div style="display:flex;justify-content:space-between">
+          <span class="mname">${m.label}</span>
+          <span class="mval">${a[m.key]}${m.unit}</span>
+        </div>
+        ${p!=null?`<div class="pbar-wrap"><div class="pbar" style="width:${p}%"></div></div>
+        <div class="pct-lbl">${p}th percentile vs same gender</div>`:''}
       </div>
     </div>`;
-  }
+  }).join('');
 
-  const bc=BC[athlete.bucket]||'#9ca3af';
-  document.getElementById('modalBody').innerHTML=`
-    <div class="modal-bucket-banner ${bk}">
-      <div class="mbb-bucket ${bk}">${athlete.bucket==='N/A'?'Sprint Only':athlete.bucket+' Athlete'}</div>
-      <div class="mbb-desc">${BUCKET_DESCS[athlete.bucket]||''}</div>
+  const scoreRow=`<div class="score-row">
+    ${a._age!=null?`<div class="score-box score-box-orange"><div class="big">${a._age}</div><div class="lbl">Age-Adjusted</div></div>`:''}
+    ${a._raw!=null?`<div class="score-box score-box-navy"><div class="big">${a._raw}</div><div class="lbl">Raw Score</div></div>`:''}
+  </div>`;
+
+  inn.innerHTML=`<button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-name">${a.elite_star?'⭐ ':''}${a.name}</div>
+    <div class="modal-meta">
+      ${a.sport||''}${a.position?' · '+a.position:''} &nbsp;·&nbsp; 
+      ${GRADE_LABEL[a.grad_year]||''} &nbsp;·&nbsp; 
+      Class of ${classStr(a.grad_year)} &nbsp;·&nbsp;
+      ${a.gender==='F'?'Female':'Male'}
     </div>
-    ${showRadar?`<div class="radar-container"><canvas id="radarCanvas"></canvas></div>
-    <p class="radar-note">Scores relative to full roster (gender-adjusted for sprint metrics)</p>`
-    :`<div class="radar-no-data">📊 Need 3+ metrics for performance radar · Collect more data for this athlete</div>`}
-    <div class="modal-sections">
-      <div class="modal-section">
-        <h5>Sprint</h5>
-        ${mRow('0–10 (s)',athlete.best_010,getScore(athlete,'speed_010'),athlete.best_010?SPD_COL[lvl010]||'#9ca3af':null)}
-        ${mRow('20–30 Fly (s)',athlete.best_2030,getScore(athlete,'speed_2030'),athlete.best_2030?SPD_COL[lvl2030]||'#9ca3af':null)}
-        ${lvl010?`<div class="modal-row"><span class="mr-label">0–10 Level</span><span class="slvl ${lvl010==='Needs Imp.'?'NeedsImp':lvl010.replace(' ','')} mr-val">${lvl010}</span></div>`:''}
-        ${lvl2030?`<div class="modal-row"><span class="mr-label">20–30 Level</span><span class="slvl ${lvl2030==='Needs Imp.'?'NeedsImp':lvl2030.replace(' ','')} mr-val">${lvl2030}</span></div>`:''}
-        ${prof?`<div class="modal-row"><span class="mr-label">Profile</span><span class="sprofile ${prof.cls}">${prof.label}</span></div>`:''}
-      </div>
-      <div class="modal-section">
-        <h5>Force Plate</h5>
-        ${mRow('CMJ Height',athlete.cmj_jh_in,getScore(athlete,'cmj_jh_in'),bc,'"')}
-        ${mRow('RSI-Modified',athlete.cmj_rsi,getScore(athlete,'cmj_rsi'),'#8b5cf6')}
-        ${mRow('Power / BW',athlete.cmj_power_bm,getScore(athlete,'cmj_power_bm'),'#06b6d4',' W/kg')}
-        ${mRow('ISO Force / BW',athlete.iso_force_bm,getScore(athlete,'iso_force_bm'),'#f59e0b')}
-        ${athlete.dsi?`<div class="modal-row"><span class="mr-label">DSI (Std)</span><span class="mr-val" style="color:${bc}">${athlete.dsi.toFixed(4)}</span></div>`:''}
-      </div>
-      <div class="modal-section">
-        <h5>Unilateral</h5>
-        ${mRow('SLJ Asymmetry',athlete.uni_asym_pct!=null?athlete.uni_asym_pct:null,null,null,'%')}
-        <div class="modal-row"><span class="mr-label">Flag</span><span class="mr-val">${athlete.uni_flag==='RED'?'🔴 Red (>25%)':athlete.uni_flag==='ORANGE'?'🟠 Orange (23-25%)':athlete.uni_flag==='YELLOW'?'🟡 Yellow (20-22%)':athlete.uni_flag==='OK'?'✅ OK':'—'}</span></div>
-      </div>
-      <div class="modal-section">
-        <h5>Classification</h5>
-        <div class="modal-row"><span class="mr-label">DSI Type</span><span class="mr-val">${athlete.dsi_type==='Standard'?'<span class="dtag std" style="margin-left:0">Standard</span>':athlete.dsi_type==='Modified'?'<span class="dtag mod" style="margin-left:0">Modified</span>':'—'}</span></div>
-        <div class="modal-row"><span class="mr-label">Source</span><span class="mr-val" style="font-size:.75rem">${SLM[athlete.source]||'—'}</span></div>
-        ${athlete.bw_kg?`<div class="modal-row"><span class="mr-label">BW (kg)</span><span class="mr-val">${athlete.bw_kg.toFixed(1)}</span></div>`:''}
-      </div>
-    </div>`;
+    ${scoreRow}
+    ${fpHtml?`<div class="msect"><div class="msect-title">Force Plate Metrics</div>${fpHtml}</div>`:''}
+    ${(a.best_010||a.best_2030)?`<div class="msect"><div class="msect-title">Sprint Times</div>
+      ${a.best_010?`<div class="mrow"><span class="mname">0–10 Sprint</span><span class="mval">${a.best_010}s</span></div>`:''}
+      ${a.best_2030?`<div class="mrow"><span class="mname">20–30 Sprint</span><span class="mval">${a.best_2030}s</span></div>`:''}
+    </div>`:''}
+    ${a.uni_asym_pct!=null?`<div class="msect"><div class="msect-title">Symmetry</div>
+      <div class="mrow"><span class="mname">Asymmetry</span>
+        <span class="mval" style="color:${a.uni_asym_pct>15?'#c0392b':'#27ae60'}">${a.uni_asym_pct}%${a.uni_asym_pct>15?' ⚠️':' ✓'}</span>
+      </div></div>`:''}
+    ${(a.bucket&&a.bucket!=='N/A')?`<div class="msect"><div class="msect-title">DSI Profile</div>
+      <div class="mrow"><span class="mname">Tier</span><span class="bucket-badge ${bucketClass(a.bucket)}">${a.bucket}</span></div>
+      ${a.dsi!=null?`<div class="mrow"><span class="mname">DSI</span><span class="mval">${a.dsi}</span></div>`:''}
+      ${a.bw_kg!=null?`<div class="mrow"><span class="mname">Body Weight</span><span class="mval">${a.bw_kg} kg (${Math.round(a.bw_kg*2.205)} lbs)</span></div>`:''}
+    </div>`:''}`;
 
-  if(showRadar){
-    if(radarChart){radarChart.destroy();radarChart=null;}
-    setTimeout(()=>{
-      const ctx=document.getElementById('radarCanvas');
-      if(!ctx)return;
-      const labels=scores.map(s=>s.label);
-      const vals=scores.map(s=>s.score!=null?parseFloat(s.score.toFixed(1)):0);
-      radarChart=new Chart(ctx,{
-        type:'radar',
-        data:{
-          labels,
-          datasets:[{
-            label:athlete.name,
-            data:vals,
-            backgroundColor:hex2rgba(bc,0.15),
-            borderColor:bc,
-            borderWidth:2.5,
-            pointBackgroundColor:scores.map((s,i)=>s.score!=null?bc:'transparent'),
-            pointRadius:scores.map(s=>s.score!=null?5:0),
-            pointHoverRadius:7,
-          }]
-        },
-        options:{
-          responsive:true,
-          maintainAspectRatio:false,
-          scales:{r:{
-            beginAtZero:true,max:100,
-            ticks:{stepSize:25,display:false},
-            grid:{color:'rgba(0,0,0,0.07)'},
-            angleLines:{color:'rgba(0,0,0,0.1)'},
-            pointLabels:{font:{size:10,weight:'600'},color:'#4a4f6a'},
-          }},
-          plugins:{
-            legend:{display:false},
-            tooltip:{callbacks:{label:ctx=>`Score: ${ctx.raw}/100`}}
-          }
-        }
-      });
-    },60);
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(e){
+  if(!e||e.target===document.getElementById('modal'))
+    document.getElementById('modal').classList.remove('open');
+}
+
+// =====================================================
+// COMPARE TOOL
+// =====================================================
+function runCompare(){
+  const name=document.getElementById('c-name').value||'You';
+  const gender=document.getElementById('c-gender').value;
+  const gradYear=parseInt(document.getElementById('c-grade').value);
+  const v010=parseFloat(document.getElementById('c-010').value)||null;
+  const v2030=parseFloat(document.getElementById('c-2030').value)||null;
+  const vcmj=parseFloat(document.getElementById('c-cmj').value)||null;
+  const vpow=parseFloat(document.getElementById('c-power').value)||null;
+
+  const you={best_010:v010,best_2030:v2030,cmj_jh_in:vcmj,cmj_power_bm:vpow,grad_year:gradYear,gender};
+  const peers=A.filter(a=>a.gender===gender);
+
+  let ws=0,wt=0,results=[];
+  const cmpMetrics=[
+    {key:'best_010',  higher:false,label:'0–10 Sprint',unit:'s'},
+    {key:'best_2030', higher:false,label:'20–30 Sprint',unit:'s'},
+    {key:'cmj_jh_in', higher:true, label:'CMJ Height',unit:'"'},
+    {key:'cmj_power_bm',higher:true,label:'CMJ Power',unit:' W/kg'},
+  ];
+
+  cmpMetrics.forEach(m=>{
+    if(you[m.key]==null)return;
+    const peerVals=peers.map(p=>p[m.key]);
+    const p=pctOf(you[m.key],peerVals,m.higher);
+    if(p==null)return;
+    results.push({...m,val:you[m.key],pct:p});
+    ws+=p*1.5; wt+=1.5;
+  });
+
+  if(!results.length){
+    alert('Enter at least one stat to compare!');
+    return;
   }
 
-  document.getElementById('modalOverlay').classList.add('open');
-  document.body.style.overflow='hidden';
+  const rawScore=Math.round(ws/wt);
+  const bonus=AGE_BONUS[gradYear]??0;
+  const adjScore=Math.min(99,Math.max(1,rawScore+bonus));
+
+  // Find athletes with similar scores
+  const youFull={...you,_raw:rawScore,_age:adjScore};
+  const ranked=[...peers.filter(a=>a._age!=null)].sort((a,b)=>b._age-a._age);
+  const yourRank=ranked.filter(a=>a._age>adjScore).length+1;
+  const nearby=ranked.filter(a=>Math.abs(a._age-adjScore)<=8).slice(0,4);
+
+  const statHtml=results.map(r=>{
+    const barPct=r.pct;
+    return`<div class="cr-stat">
+      <div class="cr-stat-top">
+        <span class="cr-stat-name">${r.label}</span>
+        <span class="cr-stat-val">${r.val}${r.unit}</span>
+      </div>
+      <div class="cr-bar-wrap">
+        <div class="cr-bar" style="width:${barPct}%"></div>
+        <div class="cr-bar-you" style="left:${barPct}%"></div>
+      </div>
+      <div class="cr-rank">Better than ${barPct}% of ${gender==='F'?'female':'male'} athletes</div>
+    </div>`;
+  }).join('');
+
+  const nearbyHtml=nearby.length?`<div class="cr-athletes-near">
+    <div class="cr-near-title">Athletes Near Your Level</div>
+    ${nearby.map(a=>`<div class="cr-near-card">
+      <div>
+        <div class="cr-near-name">${a.name}</div>
+        <div style="font-size:11px;color:#6a8aa8">${a.sport||''} · ${GRADE_LABEL[a.grad_year]||''}</div>
+      </div>
+      <div class="cr-near-score">${a._age}</div>
+    </div>`).join('')}
+  </div>`:'';
+
+  const ageNote=bonus>0?`Age bonus: +${bonus} pts — you're a ${GRADE_LABEL[gradYear]}, so your score is boosted because you have more development ahead.`
+    :bonus<0?`You've already graduated — compared against current athletes.`
+    :`You're a senior — your score is your raw performance, no age bonus.`;
+
+  const resEl=document.getElementById('compare-results');
+  resEl.innerHTML=`<div class="compare-result-header">${name}'s Results</div>
+    <div class="cr-overall">
+      <div class="cr-overall-score">${adjScore}</div>
+      <div class="cr-overall-lbl">Age-Adjusted Score (Raw: ${rawScore}) · Rank #${yourRank} of ${ranked.length} ${gender==='F'?'female':'male'} athletes with data</div>
+    </div>
+    ${statHtml}
+    ${nearbyHtml}
+    <div class="cr-grade-note">${ageNote}</div>`;
+  resEl.classList.add('show');
+  resEl.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-function closeModal(){
-  document.getElementById('modalOverlay').classList.remove('open');
-  document.body.style.overflow='';
-  if(radarChart){radarChart.destroy();radarChart=null;}
+// =====================================================
+// INIT
+// =====================================================
+function init(){
+  computeScores();
+  // Populate sport filter
+  const sel=document.getElementById('f-sport');
+  [...new Set(A.map(a=>a.sport).filter(Boolean))].sort().forEach(s=>{
+    const o=document.createElement('option');
+    o.value=s; o.textContent=s; sel.appendChild(o);
+  });
+  render();
 }
-function closeModalOnBg(e){if(e.target===document.getElementById('modalOverlay'))closeModal();}
-
-// Keyboard close
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
-
-/* =====================================================
-   INIT
-   ===================================================== */
-buildHeaderStats();
-buildStatGrid();
-buildCharts();
-buildFlags();
-renderRoster();
+init();
 </script>
 </body>
 </html>
