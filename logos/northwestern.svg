@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
+  <rect width="80" height="80" rx="8" fill="#4E2A84"/>
+  <text x="40" y="36" font-family="Arial,sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">NORTH</text>
+  <text x="40" y="50" font-family="Arial,sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">WESTERN</text>
+  <text x="40" y="67" font-family="Arial,sans-serif" font-size="9" fill="#C9A228" text-anchor="middle">BIG TEN</text>
+</svg>
