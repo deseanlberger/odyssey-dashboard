@@ -107,6 +107,61 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .bench-val{color:#e6edf3;font-weight:700}
 .bench-you{color:#C9A228;font-weight:800}
 .calc-note{font-size:11px;color:#6a8aa8;margin-top:10px;line-height:1.5}
+
+/* ===== COACH PROFILE MODAL ===== */
+.cp-section{margin-bottom:18px}
+.cp-section-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#6a8aa8;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid #1e3a5f}
+.cp-bucket-card{border-radius:10px;padding:14px 16px;margin-bottom:4px}
+.cp-bucket-rabbit{background:linear-gradient(135deg,#0a2e1a,#0f3d22);border:1px solid #2d7a4a}
+.cp-bucket-diesel{background:linear-gradient(135deg,#1a1a0a,#2e2e0f);border:1px solid #7a6a2d}
+.cp-bucket-foundation{background:linear-gradient(135deg,#0a1a2e,#0f2040);border:1px solid #2d4a7a}
+.cp-bucket-na{background:#161b22;border:1px solid #21262d}
+.cp-bucket-name{font-size:18px;font-weight:900;margin-bottom:3px}
+.cp-bucket-rabbit .cp-bucket-name{color:#4cdf7a}
+.cp-bucket-diesel .cp-bucket-name{color:#e8c440}
+.cp-bucket-foundation .cp-bucket-name{color:#6e8efb}
+.cp-bucket-na .cp-bucket-name{color:#6a8aa8}
+.cp-bucket-desc{font-size:11px;line-height:1.5;color:rgba(255,255,255,.7)}
+.cp-metrics-grid{display:grid;grid-template-columns:1fr;gap:6px}
+.cp-metric-row{display:flex;flex-direction:column;gap:3px}
+.cp-metric-top{display:flex;justify-content:space-between;align-items:center}
+.cp-metric-name{font-size:12px;color:#8a9bb0}
+.cp-metric-val{font-size:13px;font-weight:700;color:#e6edf3}
+.cp-pbar-wrap{height:4px;background:#1e3a5f;border-radius:2px;overflow:hidden}
+.cp-pbar{height:100%;border-radius:2px;background:#C9A228;transition:width .4s}
+.cp-pct-lbl{font-size:9px;color:#6a8aa8;text-align:right}
+.cp-asym-flag{border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:10px}
+.cp-asym-red{background:#2a0a0a;border:1px solid #7a2020}
+.cp-asym-orange{background:#2a1a0a;border:1px solid #7a4a20}
+.cp-asym-yellow{background:#2a2a0a;border:1px solid #7a6a20}
+.cp-asym-ok{background:#0a1a0a;border:1px solid #1a4a1a}
+.cp-asym-icon{font-size:20px;flex-shrink:0}
+.cp-asym-text{}
+.cp-asym-label{font-size:12px;font-weight:700}
+.cp-asym-red .cp-asym-label{color:#ef5350}
+.cp-asym-orange .cp-asym-label{color:#ff9800}
+.cp-asym-yellow .cp-asym-label{color:#ffc107}
+.cp-asym-ok .cp-asym-label{color:#4caf50}
+.cp-asym-detail{font-size:11px;color:#8a9bb0;margin-top:2px}
+.cp-rx-grid{display:grid;gap:8px}
+.cp-rx-card{background:#0d1b2a;border-radius:8px;padding:10px 12px;border:1px solid #1e3a5f}
+.cp-rx-cat{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px}
+.cp-rx-speed{color:#6e8efb}
+.cp-rx-jump{color:#4caf50}
+.cp-rx-strength{color:#C9A228}
+.cp-rx-item{font-size:11px;color:#c9d1d9;line-height:1.6;padding-left:10px;position:relative}
+.cp-rx-item::before{content:"•";position:absolute;left:0;color:#6a8aa8}
+.cp-dsi-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #1e3a5f;font-size:12px}
+.cp-dsi-row:last-child{border-bottom:none}
+.cp-dsi-label{color:#8a9bb0}
+.cp-dsi-val{color:#e6edf3;font-weight:700}
+.cp-sprint-est{background:#0d1b2a;border-radius:8px;padding:10px;border:1px solid #1e3a5f;display:grid;grid-template-columns:1fr 1fr;gap:6px;text-align:center}
+.cp-sprint-cell-big{grid-column:1/-1;padding:8px;background:#C9A228;border-radius:6px}
+.cp-sprint-cell{padding:8px;background:#161b22;border-radius:6px;border:1px solid #21262d}
+.cp-sprint-time{font-size:18px;font-weight:900;color:#fff}
+.cp-sprint-cell .cp-sprint-time{color:#C9A228}
+.cp-sprint-label{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.7);margin-top:2px}
+.cp-sprint-cell .cp-sprint-label{color:#6a8aa8}
 .acc-guide{background:#0d1b2a;border:1px solid #1e3a5f;border-radius:10px;padding:12px 14px;margin-bottom:16px}
 .acc-guide-title{font-size:9px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.7px;font-weight:700;margin-bottom:8px}
 .acc-guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
@@ -771,6 +826,234 @@ function render() {
 // =====================================================
 // ATHLETE MODAL
 // =====================================================
+// ── Exercise Recommendation Engine ──
+function getExRecs(a) {
+  const speed = [], jump = [], strength = [];
+  const bkt = a.bucket || 'N/A';
+  const asym = a.uni_asym_pct || 0;
+  const dsi = a.dsi;
+  const rsi = a.cmj_rsi;
+  const cmjH = a.cmj_jh_in;
+  const iso = a.iso_force_bm;
+  const maleLow = a.gender === 'M' ? 16 : 12;
+
+  // ── Bucket base prescriptions ──
+  if (bkt === 'Rabbit') {
+    speed.push('Flying 10s at 90–95% intent (max velocity focus)');
+    speed.push('Wicket runs — stride length & hip height mechanics');
+    jump.push('Drop jumps — reactive GCT under 0.25s');
+    jump.push('Continuous hurdle hops (ankle stiffness circuit)');
+    strength.push('Trap Bar Jump — peak velocity ≥ 2.4 m/s (power phase)');
+    strength.push('Power Clean — peak velocity 2.2–2.5 m/s');
+  } else if (bkt === 'Diesel') {
+    speed.push('Heavy sled 30–50% BW — acceleration transition work');
+    speed.push('Block starts / wall drive — horizontal push mechanics');
+    jump.push('CMJ contrast sets (heavy Trap Bar → immediate CMJ)');
+    jump.push('Broad jumps — horizontal force expression');
+    strength.push('Density sets at RPE 8–8.5 (Back Squat or Trap Bar DL)');
+    strength.push('Hang Clean — peak velocity 2.3–2.6 m/s');
+  } else if (bkt === 'Foundation') {
+    speed.push('Heavy sled 80–100% BW — first 4-step aggressive push');
+    speed.push('Resisted sprint starts — horizontal force development');
+    jump.push('Box jumps — two-foot landing mechanics (load acceptance)');
+    jump.push('Squat jumps — static-start RFD from bottom position');
+    strength.push('Triphasic eccentrics — 3–5s eccentric lower body focus');
+    strength.push('Overcoming ISO holds — ankle/knee/hip (Natera protocol)');
+  }
+
+  // ── DSI-based additions ──
+  if (dsi !== null && dsi < 0.60) {
+    jump.push('⚡ RFD priority: Ballistic contrast — heavy pull → immediate jump');
+    speed.push('Overspeed work — tubing-assisted acceleration (top-speed emphasis)');
+  } else if (dsi !== null && dsi > 0.80) {
+    strength.push('⚡ Strength priority: Supramaximal eccentrics (8–10s Phase 3 protocol)');
+    strength.push('Isometric overcoming protocol — 10s max effort holds at sticking points');
+  }
+
+  // ── Asymmetry-based ──
+  if (asym >= 30) {
+    jump.push('⚠️ Single-leg broad jump (weak side 2× volume)');
+    jump.push('⚠️ Single-leg box drop — unilateral landing stiffness');
+    strength.push('⚠️ Priority: BB Reverse lunge or Split Squat (weak side lead)');
+    strength.push('⚠️ Single-leg RDL — posterior chain symmetry correction');
+  } else if (asym >= 15) {
+    strength.push('Unilateral priority: B-stance RDL or single-leg press');
+    jump.push('Single-leg landing drills — reinforce symmetrical deceleration');
+  }
+
+  // ── Low RSI ──
+  if (rsi !== null && rsi < 0.40) {
+    jump.push('Ankle pogo progression (bilateral → single-leg → skipping)');
+    jump.push('Low hurdle continuous hops — reactive ankle stiffness');
+  }
+
+  // ── Low jump height ──
+  if (cmjH !== null && cmjH < maleLow) {
+    jump.push('Hip extension drills — glute bridge → SL glute bridge → hip thrust');
+    jump.push('Box jump with pause — emphasize triple extension at top');
+  }
+
+  // ── Low ISO force ──
+  if (iso !== null && iso < 25) {
+    strength.push('Isometric squat hold — 10s max effort (ankle/knee/hip progression)');
+    strength.push('Heavy Trap Bar DL isometric pause off the floor — build joint stiffness');
+  }
+
+  return { speed, jump, strength };
+}
+
+function renderCoachProfile(a) {
+  const recs = getExRecs(a);
+
+  // ── Bucket card ──
+  const bkt = a.bucket || 'N/A';
+  const bucketInfo = {
+    Rabbit: { cls:'cp-bucket-rabbit', icon:'🐰', desc:'Elastic, tendon-dominant athlete. High RSI and reactive strength. Best adapted to velocity-phase VBT, reactive plyometrics, and top-end speed mechanics. Priority: keep GCT under 0.25s on all jumps.' },
+    Diesel: { cls:'cp-bucket-diesel', icon:'⚙️', desc:'Strength-speed dominant. Good absolute force but lower RSI relative to strength base. Best adapted to contrast training, Olympic lift power phase, and acceleration mechanics. Priority: express that strength as explosive power.' },
+    Foundation: { cls:'cp-bucket-foundation', icon:'🏗️', desc:'Force-limited base. Needs structural capacity before speed or power expression. Priority: Triphasic eccentrics, overcoming isometric protocols, and heavy sled acceleration mechanics.' },
+    'N/A': { cls:'cp-bucket-na', icon:'📊', desc:'Insufficient force plate data to classify. Sprint-only or VBT-only profile.' },
+  };
+  const bi = bucketInfo[bkt] || bucketInfo['N/A'];
+  const bucketHtml = `<div class="cp-section">
+    <div class="cp-section-title">Athletic Profile</div>
+    <div class="cp-bucket-card ${bi.cls}">
+      <div class="cp-bucket-name">${bi.icon} ${bkt === 'N/A' ? 'Unclassified' : bkt + ' Profile'}</div>
+      <div class="cp-bucket-desc">${bi.desc}</div>
+    </div>
+  </div>`;
+
+  // ── Metrics ──
+  const metricDefs = [
+    {key:'cmj_jh_in',   label:'CMJ Jump Height', unit:'"',    higher:true},
+    {key:'cmj_rsi',     label:'RSI (CMJ)',        unit:'',     higher:true},
+    {key:'cmj_power_bm',label:'CMJ Power/BM',    unit:' W/kg',higher:true},
+    {key:'iso_force_bm',label:'ISO Force/BM',    unit:' N/kg',higher:true},
+    {key:'dsi',         label:'DSI',              unit:'',     higher:false},
+    {key:'best_010',    label:'0–10 Sprint',      unit:'s',    higher:false},
+    {key:'best_2030',   label:'20–30 Fly',        unit:'s',    higher:false},
+    {key:'bw_kg',       label:'Body Weight',      unit:' kg',  higher:false},
+  ];
+  const peers = A.filter(x => x.gender === a.gender && x.source !== 'vbt_only');
+  function cpPct(key, val, higher) {
+    const vals = peers.map(x => x[key]).filter(v => v !== null && v !== undefined);
+    if (!vals.length) return null;
+    const below = vals.filter(v => higher ? v < val : v > val).length;
+    return Math.round(below / vals.length * 100);
+  }
+  const metricsHtml = metricDefs.filter(m => a[m.key] != null).map(m => {
+    const p = cpPct(m.key, a[m.key], m.higher);
+    const barW = p != null ? p : 0;
+    const barCol = barW >= 70 ? '#4caf50' : barW >= 40 ? '#ffc107' : '#ef5350';
+    return `<div class="cp-metric-row">
+      <div class="cp-metric-top">
+        <span class="cp-metric-name">${m.label}</span>
+        <span class="cp-metric-val">${a[m.key]}${m.unit}</span>
+      </div>
+      ${p != null ? `<div class="cp-pbar-wrap"><div class="cp-pbar" style="width:${barW}%;background:${barCol}"></div></div>
+      <div class="cp-pct-lbl">${p}th pct · ${a.gender==='F'?'female':'male'} athletes</div>` : ''}
+    </div>`;
+  }).join('');
+
+  const metricsSection = metricsHtml ? `<div class="cp-section">
+    <div class="cp-section-title">Performance Metrics</div>
+    <div class="cp-metrics-grid">${metricsHtml}</div>
+  </div>` : '';
+
+  // ── DSI interpretation ──
+  let dsiNote = '';
+  if (a.dsi != null) {
+    if (a.dsi < 0.60) dsiNote = '⚡ Force-deficient: High ISO strength but low ballistic expression. Prioritize RFD and reactive training.';
+    else if (a.dsi < 0.80) dsiNote = '✅ Balanced: Good force-velocity profile. Standard power production programming applies.';
+    else dsiNote = '⚡ Ballistic-deficient: Good jump expression but needs a stronger absolute strength base.';
+  }
+  const dsiSection = dsiNote ? `<div class="cp-dsi-row"><span class="cp-dsi-label">DSI Interpretation</span><span class="cp-dsi-val" style="font-size:11px;max-width:55%;text-align:right">${dsiNote}</span></div>` : '';
+
+  // ── Sprint estimate (if sprint data available) ──
+  let sprintEstHtml = '';
+  if (a.best_010 || a.best_2030) {
+    let t010 = a.best_010, t1020, t2030 = a.best_2030;
+    if (t2030 && !t010) { t1020 = t2030 * 1.07; t010 = t1020 * 1.35; }
+    else if (t010 && !t2030) { t1020 = t010 * 0.84; t2030 = t1020 * 0.935; }
+    else { t1020 = t2030 ? t2030 * 1.07 : t010 * 0.84; }
+    if (!t2030) t2030 = t1020 * 0.935;
+    if (!t010) t010 = t1020 * 1.35;
+    const forty = t010 + t1020 + t2030 + t2030;
+    const sixty = t010 + t1020 + t2030 + t2030 * 3;
+    const twenty = t010 + t1020;
+    const mph40 = (40 / forty * 3600 / 1760).toFixed(1);
+    sprintEstHtml = `<div class="cp-section">
+      <div class="cp-section-title">Sprint Estimates</div>
+      <div class="cp-sprint-est">
+        <div class="cp-sprint-cell-big">
+          <div class="cp-sprint-time">${forty.toFixed(2)}s · ${mph40} mph</div>
+          <div class="cp-sprint-label">40-Yard Est · Football</div>
+        </div>
+        <div class="cp-sprint-cell">
+          <div class="cp-sprint-time">${sixty.toFixed(2)}s</div>
+          <div class="cp-sprint-label">60-Yard · Baseball</div>
+        </div>
+        <div class="cp-sprint-cell">
+          <div class="cp-sprint-time">${twenty.toFixed(2)}s</div>
+          <div class="cp-sprint-label">20-Yard · Softball</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // ── Asymmetry flag ──
+  let asymHtml = '';
+  if (a.uni_flag && a.uni_flag !== 'OK') {
+    const flagMap = {
+      RED: { cls:'cp-asym-red', icon:'🚨', label:'HIGH ASYMMETRY — Injury Risk', detail:`${a.uni_asym_pct}% unilateral imbalance. Requires immediate corrective focus before advancing load. Unilateral priority programming.` },
+      ORANGE: { cls:'cp-asym-orange', icon:'⚠️', label:'MODERATE ASYMMETRY — Monitor', detail:`${a.uni_asym_pct}% unilateral imbalance. Supplement bilateral work with single-leg corrective exercises.` },
+      YELLOW: { cls:'cp-asym-yellow', icon:'⚡', label:'MILD ASYMMETRY — Note', detail:`${a.uni_asym_pct}% imbalance. Within manageable range. Continue monitoring across training blocks.` },
+    };
+    const fi = flagMap[a.uni_flag];
+    if (fi) asymHtml = `<div class="cp-section">
+      <div class="cp-section-title">Unilateral Assessment</div>
+      <div class="cp-asym-flag ${fi.cls}">
+        <div class="cp-asym-icon">${fi.icon}</div>
+        <div class="cp-asym-text">
+          <div class="cp-asym-label">${fi.label}</div>
+          <div class="cp-asym-detail">${fi.detail}</div>
+        </div>
+      </div>
+    </div>`;
+  } else if (a.uni_flag === 'OK') {
+    asymHtml = `<div class="cp-section">
+      <div class="cp-section-title">Unilateral Assessment</div>
+      <div class="cp-asym-flag cp-asym-ok">
+        <div class="cp-asym-icon">✅</div>
+        <div class="cp-asym-text">
+          <div class="cp-asym-label">SYMMETRICAL — No Flag</div>
+          <div class="cp-asym-detail">${a.uni_asym_pct != null ? a.uni_asym_pct + '% asymmetry — within acceptable range.' : 'Bilateral movement patterns appear balanced.'}</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // ── Exercise prescriptions ──
+  const rxHtml = `<div class="cp-section">
+    <div class="cp-section-title">Exercise Prescription</div>
+    <div class="cp-rx-grid">
+      ${recs.speed.length ? `<div class="cp-rx-card">
+        <div class="cp-rx-cat cp-rx-speed">🏃 Speed / Acceleration</div>
+        ${recs.speed.map(r=>`<div class="cp-rx-item">${r}</div>`).join('')}
+      </div>` : ''}
+      ${recs.jump.length ? `<div class="cp-rx-card">
+        <div class="cp-rx-cat cp-rx-jump">⬆️ Plyometrics / Jumps</div>
+        ${recs.jump.map(r=>`<div class="cp-rx-item">${r}</div>`).join('')}
+      </div>` : ''}
+      ${recs.strength.length ? `<div class="cp-rx-card">
+        <div class="cp-rx-cat cp-rx-strength">🏋️ Strength Accessories</div>
+        ${recs.strength.map(r=>`<div class="cp-rx-item">${r}</div>`).join('')}
+      </div>` : ''}
+    </div>
+  </div>`;
+
+  return bucketHtml + metricsSection + (dsiSection ? `<div class="cp-section"><div class="cp-section-title">DSI Analysis</div><div class="cp-dsi-row">${dsiSection}</div></div>` : '') + sprintEstHtml + asymHtml + rxHtml;
+}
+
 function openModal(idx) {
   const a = A[idx];
   const inn = document.getElementById('modal-inner');
@@ -781,34 +1064,38 @@ function openModal(idx) {
   </div>`;
 
   let body = '';
-  // All stats are public — only body weight is coach-gated
-  const fpHtml = METRICS.filter(m=>a[m.key]!=null).map(m=>{
-    const p = a._pcts?.[m.key]??null;
-    return`<div class="mrow"><div class="mrow-inner">
-      <div style="display:flex;justify-content:space-between">
-        <span class="mname">${m.label}</span>
-        <span class="mval">${a[m.key]}${m.unit}</span>
-      </div>
-      ${p!=null?`<div class="pbar-wrap"><div class="pbar" style="width:${p}%"></div></div>
-      <div class="pct-lbl">${p}th percentile vs same gender</div>`:''}
-    </div></div>`;
-  }).join('');
-  const sprintHtml = (a.best_010||a.best_2030)?`<div class="msect"><div class="msect-title">Sprint Times</div>
-    ${a.best_010?`<div class="mrow"><span class="mname">0–10 Sprint</span><span class="mval">${a.best_010}s</span></div>`:''}
-    ${a.best_2030?`<div class="mrow"><span class="mname">20–30 Sprint</span><span class="mval">${a.best_2030}s</span></div>`:''}
-  </div>`:'';
-  const asymHtml = a.uni_asym_pct!=null?`<div class="msect"><div class="msect-title">Symmetry</div>
-    <div class="mrow"><span class="mname">Asymmetry</span>
-      <span class="mval" style="color:${a.uni_asym_pct>15?'#c0392b':'#27ae60'}">${a.uni_asym_pct}%${a.uni_asym_pct>15?' ⚠️':' ✓'}</span>
-    </div></div>`:'';
-  const dsiHtml = (a.bucket&&a.bucket!=='N/A')?`<div class="msect"><div class="msect-title">DSI Profile</div>
-    <div class="mrow"><span class="mname">Tier</span><span class="bucket-badge ${bucketClass(a.bucket)}">${a.bucket}</span></div>
-    ${a.dsi!=null?`<div class="mrow"><span class="mname">DSI</span><span class="mval">${a.dsi}</span></div>`:''}
-    ${coachMode&&a.bw_kg!=null?`<div class="mrow"><span class="mname">Body Weight</span><span class="mval">${a.bw_kg} kg · ${Math.round(a.bw_kg*2.205)} lbs</span></div>`:''}
-  </div>`:'';
-  body = `${fpHtml?`<div class="msect"><div class="msect-title">Force Plate</div>${fpHtml}</div>`:''}${sprintHtml}${asymHtml}${dsiHtml}`;
-  if (!body.trim() || body === '') {
-    body = '<div style="text-align:center;color:#8a9bb0;padding:24px 0;font-size:13px">No performance data on file yet.</div>';
+  if (coachMode) {
+    // ── COACH VIEW: full profile ──
+    body = renderCoachProfile(a);
+  } else {
+    // ── PUBLIC VIEW: metrics + basic stats ──
+    const fpHtml = METRICS.filter(m=>a[m.key]!=null).map(m=>{
+      const p = a._pcts?.[m.key]??null;
+      return`<div class="mrow"><div class="mrow-inner">
+        <div style="display:flex;justify-content:space-between">
+          <span class="mname">${m.label}</span>
+          <span class="mval">${a[m.key]}${m.unit}</span>
+        </div>
+        ${p!=null?`<div class="pbar-wrap"><div class="pbar" style="width:${p}%"></div></div>
+        <div class="pct-lbl">${p}th percentile vs same gender</div>`:''}
+      </div></div>`;
+    }).join('');
+    const sprintHtml = (a.best_010||a.best_2030)?`<div class="msect"><div class="msect-title">Sprint Times</div>
+      ${a.best_010?`<div class="mrow"><span class="mname">0–10 Sprint</span><span class="mval">${a.best_010}s</span></div>`:''}
+      ${a.best_2030?`<div class="mrow"><span class="mname">20–30 Sprint</span><span class="mval">${a.best_2030}s</span></div>`:''}
+    </div>`:'';
+    const asymHtml = a.uni_asym_pct!=null?`<div class="msect"><div class="msect-title">Symmetry</div>
+      <div class="mrow"><span class="mname">Asymmetry</span>
+        <span class="mval" style="color:${a.uni_asym_pct>15?'#c0392b':'#27ae60'}">${a.uni_asym_pct}%${a.uni_asym_pct>15?' ⚠️':' ✓'}</span>
+      </div></div>`:'';
+    const dsiHtml = (a.bucket&&a.bucket!=='N/A')?`<div class="msect"><div class="msect-title">Profile</div>
+      <div class="mrow"><span class="mname">Tier</span><span class="bucket-badge ${bucketClass(a.bucket)}">${a.bucket}</span></div>
+      ${a.dsi!=null?`<div class="mrow"><span class="mname">DSI</span><span class="mval">${a.dsi}</span></div>`:''}
+    </div>`:'';
+    body = `${fpHtml?`<div class="msect"><div class="msect-title">Force Plate</div>${fpHtml}</div>`:''}${sprintHtml}${asymHtml}${dsiHtml}`;
+    if (!body.trim()) {
+      body = '<div style="text-align:center;color:#8a9bb0;padding:24px 0;font-size:13px">No performance data on file yet.</div>';
+    }
   }
 
   inn.innerHTML = `<button class="modal-close" onclick="closeModal()">✕</button>
