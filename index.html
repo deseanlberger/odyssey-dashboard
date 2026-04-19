@@ -225,6 +225,9 @@ select:focus{border-color:#C9A228}
 /* PUBLIC composite bar on card */
 .pub-bar-wrap{margin-top:6px;background:#f0f4f8;border-radius:4px;height:6px;overflow:hidden}
 .pub-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,#C9A228,#c94a00)}
+.card-completeness{display:flex;align-items:center;gap:5px;margin-top:5px;background:#e8eef4;border-radius:4px;height:5px;overflow:visible;position:relative}
+.card-comp-bar{height:5px;border-radius:4px;transition:width .3s}
+.card-comp-pct{font-size:9px;font-weight:700;white-space:nowrap;position:absolute;right:-28px;top:-2px}
 
 /* MODAL */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;overflow-y:auto;-webkit-overflow-scrolling:touch}
@@ -988,6 +991,7 @@ function render() {
         </div>` : ''}
         </div>
         ${chips ? `<div class="metrics-row">${chips}</div>` : pubBar}
+        ${(()=>{const {pct}=profileCompleteness(a);const clr=pct>=75?'#4caf50':pct>=40?'#ffc107':'#ef5350';return`<div class="card-completeness"><div class="card-comp-bar" style="width:${pct}%;background:${clr}"></div><span class="card-comp-pct" style="color:${clr}">${pct}%</span></div>`;})()}
       </div>
       <div class="score-col">${scoreHtml}</div>
     </div>`;
