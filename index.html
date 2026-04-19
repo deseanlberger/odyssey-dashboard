@@ -288,7 +288,7 @@ select:focus{border-color:#F4762A}
 </div>
 <div class="stats-bar">
   Showing <b id="count">65</b> athletes &nbsp;·&nbsp; ELITE = Odyssey Elite &nbsp;·&nbsp; PROSPECT = Top-ranked uncommitted &nbsp;·&nbsp;
-  <span style="color:#6a8aa8" id="mode-label">Public view — log in as coach to see full stats</span>
+  <span style="color:#6a8aa8" id="mode-label">Public view — coach login required to see body weight</span>
 </div>
 <div class="content" id="content"></div>
 </div>
@@ -568,7 +568,7 @@ function logoutCoach() {
   document.getElementById('coach-btn').textContent = '🔒 Coach Login';
   document.getElementById('coach-btn').classList.remove('active');
   document.getElementById('coach-indicator').style.display = 'none';
-  document.getElementById('mode-label').textContent = 'Public view — log in as coach to see full stats';
+  document.getElementById('mode-label').textContent = 'Public view — coach login required to see body weight';
   render();
 }
 
@@ -666,14 +666,14 @@ function render() {
     const rankCls = r===1?'gold':r===2?'silver':r===3?'bronze':'';
     const bkt = a.bucket&&a.bucket!=='N/A' ? `<span class="bucket-badge ${bucketClass(a.bucket)}">${a.bucket}</span>` : '';
 
-    // Cards: show metric pills only in coach mode
-    const chips = coachMode ? METRICS.filter(m=>a[m.key]!=null).slice(0,3).map(m=>{
+    // Always show metric pills; fall back to composite bar when no data
+    const chips = METRICS.filter(m=>a[m.key]!=null).slice(0,3).map(m=>{
       const hot=(a._pcts?.[m.key]??0)>=70;
       return`<span class="metric-pill${hot?' hot':''}">${m.label}: ${a[m.key]}${m.unit}</span>`;
-    }).join('') : '';
+    }).join('');
 
-    // Public: show composite bar
-    const pubBar = !coachMode && sc!=null ? `<div class="pub-bar-wrap"><div class="pub-bar" style="width:${sc}%"></div></div>` : '';
+    // Show composite bar when no metric pills available
+    const pubBar = !chips && sc!=null ? `<div class="pub-bar-wrap"><div class="pub-bar" style="width:${sc}%"></div></div>` : '';
 
     const scoreHtml = sc!=null
       ? `<div class="score-main">${sc}</div>
@@ -712,53 +712,39 @@ function openModal(idx) {
   </div>`;
 
   let body = '';
-  if (coachMode) {
-    // FULL STATS
-    const fpHtml = METRICS.filter(m=>a[m.key]!=null).map(m=>{
-      const p = a._pcts?.[m.key]??null;
-      return`<div class="mrow"><div class="mrow-inner">
-        <div style="display:flex;justify-content:space-between">
-          <span class="mname">${m.label}</span>
-          <span class="mval">${a[m.key]}${m.unit}</span>
-        </div>
-        ${p!=null?`<div class="pbar-wrap"><div class="pbar" style="width:${p}%"></div></div>
-        <div class="pct-lbl">${p}th percentile vs same gender</div>`:''}
-      </div></div>`;
-    }).join('');
-    const sprintHtml = (a.best_010||a.best_2030)?`<div class="msect"><div class="msect-title">Sprint Times</div>
-      ${a.best_010?`<div class="mrow"><span class="mname">0–10 Sprint</span><span class="mval">${a.best_010}s</span></div>`:''}
-      ${a.best_2030?`<div class="mrow"><span class="mname">20–30 Sprint</span><span class="mval">${a.best_2030}s</span></div>`:''}
-    </div>`:'';
-    const asymHtml = a.uni_asym_pct!=null?`<div class="msect"><div class="msect-title">Symmetry</div>
-      <div class="mrow"><span class="mname">Asymmetry</span>
-        <span class="mval" style="color:${a.uni_asym_pct>15?'#c0392b':'#27ae60'}">${a.uni_asym_pct}%${a.uni_asym_pct>15?' ⚠️':' ✓'}</span>
-      </div></div>`:'';
-    const dsiHtml = (a.bucket&&a.bucket!=='N/A')?`<div class="msect"><div class="msect-title">DSI Profile</div>
-      <div class="mrow"><span class="mname">Tier</span><span class="bucket-badge ${bucketClass(a.bucket)}">${a.bucket}</span></div>
-      ${a.dsi!=null?`<div class="mrow"><span class="mname">DSI</span><span class="mval">${a.dsi}</span></div>`:''}
-      ${a.bw_kg!=null?`<div class="mrow"><span class="mname">Body Weight</span><span class="mval">${a.bw_kg} kg · ${Math.round(a.bw_kg*2.205)} lbs</span></div>`:''}
-    </div>`:'';
-    body = `${fpHtml?`<div class="msect"><div class="msect-title">Force Plate</div>${fpHtml}</div>`:''}${sprintHtml}${asymHtml}${dsiHtml}`;
-  } else {
-    // PUBLIC: percentile bars, no numbers
-    const bars = METRICS.filter(m=>a[m.key]!=null).map(m=>{
-      const p = a._pcts?.[m.key]??null;
-      if (p==null) return '';
-      return`<div class="pub-metric-row">
-        <div class="pub-metric-label">${m.label}</div>
-        <div class="pub-pbar-wrap"><div class="pub-pbar" style="width:${p}%"></div></div>
-      </div>`;
-    }).filter(Boolean).join('');
-    const lockMsg = `<div class="pub-lock">
-      <div class="pub-lock-icon">🔒</div>
-      <p>Exact stats are visible to coaches only.<br>Are you a coach? <a href="#" onclick="closeThenLogin()" style="color:#F4762A;font-weight:600">Log in here</a>.</p>
-    </div>`;
-    body = bars ? `<div class="msect"><div class="msect-title">Performance Profile</div>${bars}</div>${lockMsg}` : lockMsg;
+  // All stats are public — only body weight is coach-gated
+  const fpHtml = METRICS.filter(m=>a[m.key]!=null).map(m=>{
+    const p = a._pcts?.[m.key]??null;
+    return`<div class="mrow"><div class="mrow-inner">
+      <div style="display:flex;justify-content:space-between">
+        <span class="mname">${m.label}</span>
+        <span class="mval">${a[m.key]}${m.unit}</span>
+      </div>
+      ${p!=null?`<div class="pbar-wrap"><div class="pbar" style="width:${p}%"></div></div>
+      <div class="pct-lbl">${p}th percentile vs same gender</div>`:''}
+    </div></div>`;
+  }).join('');
+  const sprintHtml = (a.best_010||a.best_2030)?`<div class="msect"><div class="msect-title">Sprint Times</div>
+    ${a.best_010?`<div class="mrow"><span class="mname">0–10 Sprint</span><span class="mval">${a.best_010}s</span></div>`:''}
+    ${a.best_2030?`<div class="mrow"><span class="mname">20–30 Sprint</span><span class="mval">${a.best_2030}s</span></div>`:''}
+  </div>`:'';
+  const asymHtml = a.uni_asym_pct!=null?`<div class="msect"><div class="msect-title">Symmetry</div>
+    <div class="mrow"><span class="mname">Asymmetry</span>
+      <span class="mval" style="color:${a.uni_asym_pct>15?'#c0392b':'#27ae60'}">${a.uni_asym_pct}%${a.uni_asym_pct>15?' ⚠️':' ✓'}</span>
+    </div></div>`:'';
+  const dsiHtml = (a.bucket&&a.bucket!=='N/A')?`<div class="msect"><div class="msect-title">DSI Profile</div>
+    <div class="mrow"><span class="mname">Tier</span><span class="bucket-badge ${bucketClass(a.bucket)}">${a.bucket}</span></div>
+    ${a.dsi!=null?`<div class="mrow"><span class="mname">DSI</span><span class="mval">${a.dsi}</span></div>`:''}
+    ${coachMode&&a.bw_kg!=null?`<div class="mrow"><span class="mname">Body Weight</span><span class="mval">${a.bw_kg} kg · ${Math.round(a.bw_kg*2.205)} lbs</span></div>`:''}
+  </div>`:'';
+  body = `${fpHtml?`<div class="msect"><div class="msect-title">Force Plate</div>${fpHtml}</div>`:''}${sprintHtml}${asymHtml}${dsiHtml}`;
+  if (!body.trim() || body === '') {
+    body = '<div style="text-align:center;color:#8a9bb0;padding:24px 0;font-size:13px">No performance data on file yet.</div>';
   }
 
   inn.innerHTML = `<button class="modal-close" onclick="closeModal()">✕</button>
     <div class="modal-name">${a.elite_star?'<span class="elite-tag">ELITE</span> ':''}${a.prospect?'<span class="prospect-tag">PROSPECT</span> ':''}${a.name}</div>
-    <div class="modal-meta">${a.sport||''}${a.position?' · '+a.position:''} &nbsp;·&nbsp; ${cs(a.grad_year)} &nbsp;·&nbsp; ${a.gender==='F'?'Female':'Male'}${a.college_commit&&coachMode?' &nbsp;·&nbsp; <span style="color:#F4762A;font-weight:700">✓ '+a.college_commit+'</span>':''}</div>
+    <div class="modal-meta">${a.sport||''}${a.position?' · '+a.position:''} &nbsp;·&nbsp; ${cs(a.grad_year)} &nbsp;·&nbsp; ${a.gender==='F'?'Female':'Male'}${a.college_commit?' &nbsp;·&nbsp; <span style="color:#F4762A;font-weight:700">✓ '+a.college_commit+'</span>':''}</div>
     ${scoreRow}${body}`;
 
   document.getElementById('modal').classList.add('open');
