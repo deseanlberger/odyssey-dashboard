@@ -1260,29 +1260,35 @@ const COACHES = [
 // ODYSSEY EXERCISE LIBRARY (OLIB + Custom)
 // ═══════════════════════════════════════════════════════════════
 const OLIB = {
-  T1_total: ['Power Clean','Hang Clean','Power Snatch','Clean Pull','Hang Snatch','Trap Bar Deadlift'],
-  T2_total: ['Hang Clean Below Knee','Clean High Pull','Snatch High Pull','Trap Bar Jump Squat','Hang Power Clean','Hang Power Snatch'],
-  T3_total: ['Mid-Thigh Clean Pull','High-Hang Power Clean','DB Power Clean','High-Hang Snatch Pull','Dumbbell Snatch','Clean Pull from Blocks'],
-  T4_total: ['KB Swing','KB Clean','Barbell Hip Thrust Jump','Med Ball Rotational Throw','Banded Jump Squat','KB Sumo High Pull'],
-  T5_total: ['Med Ball Chest Pass','Med Ball Overhead Slam','Loaded Carry — Farmer Walk','Suitcase Carry','Bear Hug Carry','Sandbag Clean'],
-  L1_lower: ['Back Squat','Front Squat','Safety Bar Squat','Barbell Box Squat'],
-  L2_lower: ['Romanian Deadlift','Trap Bar Deadlift','Hex Bar RDL','Sumo Deadlift'],
-  L3_lower: ['Bulgarian Split Squat','B-Stance RDL','Rear-Foot Elevated Split Squat','Step-Up'],
-  L4_lower: ['Nordic Curl','GHR Hamstring Curl','Single-Leg Press','Leg Curl'],
-  L5_lower: ['Glute Bridge','Hip Thrust','Single-Leg Hip Thrust','Calf Raise'],
-  U1_upper: ['Barbell Bench Press','Push Press','DB Shoulder Press','Landmine Press'],
-  U2_upper: ['DB Incline Press','Cable Row','Barbell Row','Seated Row'],
-  U3_upper: ['DB Lateral Raise','Face Pull','Band Pull-Apart','Cable External Rotation'],
-  U4_upper: ['Push-Up','Ring Row','Chin-Up','Pull-Up'],
-  U5_upper: ['Plank','Side Plank','Dead Bug','Pallof Press'],
-  jump_bilateral: ['CMJ — max height','Broad Jump — max horizontal','Box Jump — controlled landing','Seated Box Jump (no SSC)','Hurdle Jump × 3','Depth Drop to Jump — stick landing','Triple Broad Jump'],
-  jump_unilateral: ['Single-Leg Broad Jump','Single-Leg Box Jump','Single-Leg Hurdle Jump','B-Stance CMJ','Single-Leg Depth Drop → Stick','Lateral Single-Leg Bound','Alt Bounding × 20yd'],
-  jump_rsi: ['Drop Jump — GCT < 0.25s','Continuous Hurdle Hops × 8','Ankle Pogo — rapid rebound 3×20s','Reactive Vertical Jump × 5','Repeated Broad Jump × 5','Double-Leg Reactive Bound','Rate Coding — Double Leg 3×10s'],
-  speed_accel: ['3-Point Start × 20yd','A-Skip × 20yd','Wall Drive × 10/side','Heavy Sled Sprint 40% BW × 20yd','Block Start × 10yd','Wicket Drill × 20yd (tight spacing)'],
-  speed_topend: ['Flying 10yd Sprint','A-Run × 30yd','B-Skip × 30yd','Wicket Run × 30yd (wide spacing)','Sled March \u2192 Release','Stride-Out × 30yd @ 90%'],
-  speed_trans: ['Sled Release Fly 10','30yd Build-Up Sprint','French Contrast: Sled \u2192 Sprint','Acceleration to Max-V 30yd','Resisted \u2192 Unresisted Sprint'],
-  stability: ['Ankle Pogo 3×20s','Single-Leg Balance Reach × 10/side','Hip Flexor March × 10yd','T-Spine Rotation × 8/side','Copenhagen Adductor Hold 3×10s','Dead Bug 3×8','Pallof Press 3×10/side'],
-  support: ['Hip Thrust 3×12','Copenhagen Adductor 3×10/side','Nordic Curl 3×5','GHR 3×8','Calf Raise w/ pause 3×12','Single-Leg RDL 3×8/side','Band Clamshell 2×15/side']
+  // ── TOTAL BODY (Olympic / Power tier 1–5) ──────────────────────
+  T1_total: ['Power Clean','Hang Clean','Squat Clean','Hang Squat Clean','Clean and Jerk','Rack/Block Power Clean','Power Snatch','Hang Power Snatch','Clean Pull'],
+  T2_total: ['Hang Clean w/ No Jump','Clean High Pull from Hang','DB Hang Clean High Pulls','Landmine Split Clean','Ballistic Landmine High Pull','Low Hang Clean','Landmine Drop Screwdriver','Hang Snatch High Pull'],
+  T3_total: ['High-Hang Power Clean','DB Power Clean','Dumbbell Snatch','KB Clean','High-Hang Snatch Pull','Landmine Coiled High-Pull','Clean Shrug Pull from Hang','Muscle Clean'],
+  T4_total: ['KB Swing','Dual KB Swing','Banded Jump Squat','KB Sumo High Pull','Med Ball Slam','D-Ball Backward Toss','Sandbag Clean','Trap Bar Jump'],
+  T5_total: ['Med Ball Chest Pass','Med Ball Overhead Slam','Med Ball Rotational Throw','D-Ball Shot Toss','Rebound Chest Pass','Kneeling Soccer Toss','Soccer Toss','Dynamic Soccer Toss'],
+  // ── LOWER BODY (bilateral / unilateral / posterior / glutes / calves) ──
+  L1_lower: ['Back Squat','Front Squat','Box Squat','Sumo Squat','Overhead Squat','Goblet Squat','Goblet Cossack Squat','Triphasic Squat','Pin Squat','Speed Front Squat','Speed Back Squat','Oscillatory Squat'],
+  L2_lower: ['Trap Bar Deadlift','Romanian DL','Deadlift','Sumo Deadlift','Snatch Grip Deadlift','KB Deadlift','KB Sumo Deadlift','Low Handle Trap Bar Deadlift','Dimmel Deadlift','Deficit Deadlift','Rack Pulls','Staggered Stance Trap Bar DL'],
+  L3_lower: ['Bulgarian Split Squat','Reverse Lunge','Walking Lunge','Step Ups','Forward Lunge','Overhead Lunge','Elevated Reverse Lunge','DB Lateral Lunge','Sled March','Sled Sprint','Decel Step Ups','Single Leg Box Squat'],
+  L4_lower: ['Nordic Hamstring Curl','GHR Hamstring Curl','Swiss Ball Hamstring Curl','Banded Hamstring Curl','Iso Nordic Hamstring Curl','Hamstring Roller Curls','Hamstring Slides','Banded Single-Leg Hamstring Heel Drags'],
+  L5_lower: ['Hip Thrust','SL Hip Thrust','Glute Bridge','Banded Hip Thrust','Iso SL Hip Thrust','Reverse Hyperextension','Single-Leg Elevated Hip Thrust','Adductor Pull-Through','KB Tib Raise'],
+  // ── UPPER BODY (push horizontal / pull horizontal / push vertical / pull vertical / shoulders) ──
+  U1_upper: ['Bench Press','DB Bench Press','DB Neutral Press','Floor Press','Close Grip Bench Press','DB Floor Press','Incline Bench Press','Incline Hex Press','Larsen Bench Press','Single-Arm Bench Press'],
+  U2_upper: ['Bent Over Row','DB Bent Over Row','Cable Row','Inverted Row','Incline Row','Single-Arm Cable Row','Single-Arm Row','Renegade Row','Chest-Supported Incline DB Row','ISO Chest-Supported Row','Landmine Row'],
+  U3_upper: ['Overhead Press','DB Overhead Press','Push Press','Z Press','Landmine Press','DB Z Press','KB Push Press','Tall Kneeling Weighted Push Press','Seated Landmine Press','Half-Kneeling Single-Arm Press','Seated Arnold Press'],
+  U4_upper: ['Pull-Up','Chin-Up','Lat Pulldown','Band Lat Pulldown','Neutral Grip Pull-Up','Staggered Grip Pull-Up','Weighted Chin Pull-Up','Pull-Up Negatives','Chin-Up Negatives','Rope Pull-Ups'],
+  U5_upper: ['Face Pull','Lateral Raise','Scarecrows','Band Pull-Apart','DB Front Raise','Rear Delt Raise','Band Scarecrows','Incline Rear Delt w/ External Rotation','Inverted Face Pulls','Upright Row','Seal Walks'],
+  // ── JUMP / PLYOMETRIC ──────────────────────────────────────────
+  jump_bilateral: ['CMJ — max height','Broad Jump — max horizontal','Box Jump — controlled landing','Seated Box Jump (no SSC)','Hurdle Jump — stick landing','Approach Box Jump','Approach Vertical Jump','Rebound Box Jump','Half-Kneeling Broad Jump','Double Broad Jump','Triple Broad Jump','Tuck Jump','Rebound Hurdle Jumps','Depth Drop to Jump','Knee Jump','Med Ball Box Jump','Weighted Box Jump'],
+  jump_unilateral: ['Single-Leg Broad Jump','Single-Leg Box Jump','Single-Leg Vertical Jump','Single-Leg Approach Box Jump','Single-Leg Lateral Box Jump','Single-Leg Lateral Broad Jump','SL Approach Vertical Jump','Skater Jumps','Ascending Skater Jumps','Reactive Skater Jumps','Lateral Single-Leg Bound','Alt Bounding × 20yd','B-Stance CMJ','Single-Leg Double Broad Jump'],
+  jump_rsi: ['Stationary Pogo Jump','Linear Pogo Jumps','Pulsing Pogos','Ankle Dribbles','Calf Dribbles','Knee Dribbles','Achilles Spring Combo','Continuous Hurdle Jumps','Rebound Vertical Jump','Drop Jump — GCT < 0.25s','Repeated Broad Jump × 5','Reactive Vertical Jump × 5','Plyo Bound','Resisted Pogo Jump','Linear Alternating Pogo Jump','Plate Pogos'],
+  // ── SPEED ──────────────────────────────────────────────────────
+  speed_accel: ['3-Point Start','Sled March','Sled Resisted Sprint','Band Resisted Sprint','Band Piston Sprint','Wall Switch 1-2','Wall Pistons','A-Skip','Falling Starts','Half-Kneeling Start','Mountain Climber Start','Broad Jump to Sprint','Heavy Resistance 5-Yd Sprint','Accel Single-Leg Wall Push','Shoulder Harness Accel March','Accel March Bound Run','Acceleration Isos','Deceleration Progressions','Posture Hold'],
+  speed_topend: ['A-Walk','A-March','A-Switch','B-Skip','Build-Up Sprint','Overspeed Run','Parachute Sprints','Flying Sprints','Wicket Runs','40-Yard Sprint','High Knee / Butt Kick Run','Arm Pump Drill','Single-Leg High Knees','Straight-Leg Bounds','Single-Leg Cycling','Max Velocity Series','Stride-Out × 30yd @ 90%','A-Walk w/ Med Ball'],
+  speed_trans: ['Sprint to Backpedal','Backpedal to Accelerate','Carioca Run','Lateral Shuffle to Sprint','Crossover Sprint','Line Accel/Decel','Curve Run — Full Arc','Crossover Run','Resisted/Assisted Crossover Run','Acceleration Series 1 (12 min)','Cat and Mouse','Line Rotation Agility','V-Run COD','3D Band First Step','Curvilinear Run Level 1'],
+  // ── STABILITY / SUPPORT ────────────────────────────────────────
+  stability: ['Plank','Side Plank','Copenhagen ISO Plank','Dead Bug','Dead Bug Rocker Series','Pallof Press','Pallof Press Walkouts','Bird Dog','Hollow Holds','Rotation Plank','SIDE PLANK BAND ROW','Stir the Pot','Dragon Flags','Reverse Crunch Progressions','Copenhagen Adductor Hold','Hip Flexor March × 10yd','T-Spine Rotation × 8/side','Single-Leg Balance Reach × 10/side'],
+  support: ['Sled Push','Sled Sprint','Nordic Curl','GHR Hamstring Curl','Single-Leg RDL','Hip Thrust','Standing Calf Raise','Seated Calf Raise','Band Clamshell','Farmer Carry','Suitcase Carry','Keg Carry','Overhead Carry','Tire Flip','Sandbag Load','Half Mile Run','Fit Run']
 };
 let CLIB = {};
 function gEx(t) { return [...(OLIB[t]||[]), ...(CLIB[t]||[])]; }
