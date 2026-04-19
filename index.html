@@ -38,6 +38,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .tools-launch-btn{width:100%;padding:11px;background:#1e3a5f;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:background .15s}
 .tools-launch-btn:hover{background:#C9A228}
 /* PB v2 */
+
+.tsub-btn{padding:10px 14px;font-size:11px;font-weight:700;cursor:pointer;color:#6a8aa8;border:none;border-bottom:2px solid transparent;transition:all .15s;flex-shrink:0;background:transparent;white-space:nowrap}
+.tsub-btn:hover:not(.tsub-active){color:#ccc}
+.tsub-btn.tsub-active{color:#C9A228;border-bottom-color:#C9A228}
+.tools-panel{display:block}
+
 .pb-stars-block{background:#0a1520;border:1px solid #1e3a5f;border-radius:10px;padding:10px 14px;margin-bottom:8px}
 .pb-stars-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px}
 .pb-stars-items{font-size:12px;color:#c0d4e8;line-height:1.7}
@@ -374,24 +380,39 @@ select:focus{border-color:#C9A228}
 </div>
 
 <div class="nav-strip">
-  <button class="nav-tab active" id="nav-rankings" onclick="navSwitch('rankings')">📊 Dashboard</button>
+  <button class="nav-tab active" id="nav-lookup" onclick="navSwitch('lookup')">🔍 Athlete Lookup</button>
   <button class="nav-tab" id="nav-compare" onclick="navSwitch('compare')">⚡ Stack Up</button>
-  <button class="nav-tab" id="nav-forty" onclick="navSwitch('forty')">🏃 40-Yard Est</button>
-  <button class="nav-tab" id="nav-leaderboards" onclick="navSwitch('leaderboards')">🏆 Boards</button>
-  <button class="nav-tools-btn" onclick="openTools()">🛠️ Tools</button>
+  <button class="nav-tab" id="nav-tools" onclick="navSwitch('tools')">🛠️ Tools</button>
 </div>
 
-<!-- RANKINGS TAB -->
-<div id="tab-rankings" class="tab-panel active">
-<!-- Public landing (shown when not in coach/master mode) -->
-<div id="public-landing" style="display:none;padding:24px 16px;text-align:center">
-  <div style="font-size:28px;font-weight:900;color:#C9A228;letter-spacing:-0.5px;margin-bottom:4px">ODYSSEY</div>
-  <div style="font-size:12px;color:#6a8aa8;letter-spacing:2px;margin-bottom:24px">ATHLETE PERFORMANCE</div>
+<!-- ATHLETE LOOKUP TAB -->
+<div id="tab-lookup" class="tab-panel active">
+<!-- Public landing search (always visible) -->
+<div id="public-landing" style="display:block;padding:24px 16px;text-align:center">
+  <!-- Big Logo -->
+  <div style="margin-bottom:18px;display:flex;flex-direction:column;align-items:center;gap:6px">
+    <div class="logo-img-wrap" style="height:72px;padding:6px 14px;border-radius:14px;background:#fff;margin-bottom:2px">
+      <img class="header-logo" src="odyssey-logo.png" alt="Odyssey Performance" style="height:60px;width:auto;display:block" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <div style="display:none;font-size:22px;font-weight:900;color:#0d1b2a;letter-spacing:-1px;line-height:1">ODYSSEY</div>
+    </div>
+    <div style="font-size:30px;font-weight:900;color:#C9A228;letter-spacing:-0.5px;line-height:1">ODYSSEY</div>
+    <div style="font-size:11px;color:#6a8aa8;letter-spacing:3px;text-transform:uppercase">Performance Dashboard</div>
+  </div>
   <div style="font-size:15px;font-weight:700;color:#e6edf3;margin-bottom:12px">Find an Athlete Profile</div>
   <div style="max-width:400px;margin:0 auto 16px">
     <input type="text" id="pub-search" placeholder="Type athlete name…" oninput="renderPublicSearch()" style="background:#0d1b2a;color:#fff;border:2px solid #2a4a6a;border-radius:10px;padding:10px 14px;font-size:14px;outline:none;width:100%;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='#C9A228'" onblur="this.style.borderColor='#2a4a6a'">
   </div>
   <div id="pub-results" style="max-width:500px;margin:0 auto;text-align:left"></div>
+  <!-- Public Leaderboard (top 5, visible to all) -->
+  <div id="pub-lb-section" style="max-width:680px;margin:24px auto 0;text-align:left">
+    <div style="font-size:16px;font-weight:900;color:#C9A228;letter-spacing:-0.3px;margin-bottom:6px">🏆 Top 5 Leaderboards</div>
+    <div style="font-size:11px;color:#6a8aa8;margin-bottom:12px">Odyssey Performance · All-time best per category · Tap gender to switch</div>
+    <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
+      <button id="pub-lb-male-btn" onclick="pubLbSetGender('M')" style="background:#1e3a5f;border:2px solid #C9A228;color:#C9A228;border-radius:8px;padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer">♂ Male</button>
+      <button id="pub-lb-female-btn" onclick="pubLbSetGender('F')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer">♀ Female</button>
+    </div>
+    <div id="pub-lb-output"></div>
+  </div>
 </div>
 <!-- Coach/master filters (hidden in public mode) -->
 <div id="coach-filters" class="filters">
@@ -440,289 +461,299 @@ select:focus{border-color:#C9A228}
   <span style="color:#6a8aa8" id="mode-label">Public view — coach login required to see body weight</span>
 </div>
 <div class="content" id="content"></div>
-</div>
+</div><!-- end tab-lookup -->
 
-<!-- LEADERBOARDS TAB (public) -->
-<div id="tab-leaderboards" class="tab-panel">
-<div style="padding:16px">
-  <div style="font-size:20px;font-weight:900;color:#C9A228;letter-spacing:-0.5px;margin-bottom:2px">🏆 Leaderboards</div>
-  <div style="font-size:11px;color:#6a8aa8;margin-bottom:16px">Odyssey Performance · All-time top 10 per category</div>
-  <!-- Gender toggle -->
-  <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
-    <div style="display:flex;gap:4px">
-      <button id="lb-male-btn" onclick="lbSetGender('M')" style="background:#1e3a5f;border:2px solid #C9A228;color:#C9A228;border-radius:8px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer">♂ Male</button>
-      <button id="lb-female-btn" onclick="lbSetGender('F')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer">♀ Female</button>
-    </div>
-    <!-- Sport filter -->
-    <select id="lb-sport-filter" onchange="renderLeaderboards()" style="background:#0a1520;color:#e6edf3;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:11px;cursor:pointer">
-      <option value="">All Sports</option>
-    </select>
-    <!-- Grad year group filter -->
-    <select id="lb-age-filter" onchange="renderLeaderboards()" style="background:#0a1520;color:#e6edf3;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:11px;cursor:pointer">
-      <option value="">All Classes</option>
-      <option value="2031-2035">Class of '31–'35 (Youth)</option>
-      <option value="2029-2030">Class of '29–'30 (Freshman)</option>
-      <option value="2027-2028">Class of '27–'28 (Soph / JR)</option>
-      <option value="2025-2026">Class of '25–'26 (Senior)</option>
-      <option value="2022-2024">Class of '22–'24 (Alumni)</option>
-    </select>
-  </div>
-  <div id="lb-output"></div>
-</div>
-</div>
 
-<!-- COMPARE TAB -->
+<!-- STACK UP (COMPARE) TAB -->
 <div id="tab-compare" class="tab-panel">
-<div class="compare-section">
-  <div class="compare-card">
-    <div class="compare-title">⚡ How Do You Stack Up?</div>
-    <div class="compare-subtitle">Enter your stats and see how you rank against Odyssey athletes</div>
-    <div class="compare-grid">
-      <div class="compare-field">
+<div style="padding:16px">
+  <div style="font-size:20px;font-weight:900;color:#C9A228;letter-spacing:-0.5px;margin-bottom:2px">⚡ Stack Up</div>
+  <div style="font-size:11px;color:#6a8aa8;margin-bottom:18px">See how your numbers compare against Odyssey athletes</div>
+
+  <div class="calc-card" style="margin-bottom:0">
+    <div class="calc-grid">
+      <div class="calc-field">
         <label>Your Name</label>
-        <input type="text" id="c-name" placeholder="First Last">
+        <input type="text" id="c-name" placeholder="e.g. John Smith">
       </div>
-      <div class="compare-field">
+      <div class="calc-field">
         <label>Gender</label>
         <select id="c-gender">
-          <option value="F">Female</option>
           <option value="M">Male</option>
+          <option value="F">Female</option>
         </select>
       </div>
-      <div class="compare-field">
+      <div class="calc-field">
         <label>Graduating Class</label>
         <select id="c-grade">
+          <option value="2036">Class of '36</option>
+          <option value="2035">Class of '35</option>
+          <option value="2034">Class of '34</option>
+          <option value="2033">Class of '33</option>
           <option value="2032">Class of '32</option>
           <option value="2031">Class of '31</option>
           <option value="2030">Class of '30</option>
           <option value="2029">Class of '29</option>
-          <option value="2028" selected>Class of '28</option>
+          <option value="2028">Class of '28</option>
           <option value="2027">Class of '27</option>
           <option value="2026">Class of '26</option>
           <option value="2025">Class of '25</option>
           <option value="2024">Class of '24</option>
         </select>
       </div>
-      <div class="compare-field">
-        <label>Sport</label>
-        <input type="text" id="c-sport" placeholder="e.g. Softball">
-      </div>
-      <div class="compare-field">
-        <label>0–10 Sprint (seconds)</label>
-        <input type="number" id="c-010" placeholder="e.g. 1.75" step="0.01" min="1" max="3">
-      </div>
-      <div class="compare-field">
-        <label>20–30 Sprint (seconds)</label>
-        <input type="number" id="c-2030" placeholder="e.g. 1.20" step="0.01" min="0.8" max="2">
-      </div>
-      <div class="compare-field">
-        <label>CMJ Jump Height (inches)</label>
-        <input type="number" id="c-cmj" placeholder="e.g. 14.0" step="0.1" min="1" max="40">
-      </div>
-      <div class="compare-field">
-        <label>CMJ Power / BW (W/kg)</label>
-        <input type="number" id="c-power" placeholder="e.g. 50.0" step="0.1" min="10" max="120">
-      </div>
     </div>
-    <button class="compare-btn" onclick="runCompare()">See My Ranking →</button>
-    <div class="compare-results" id="compare-results"></div>
-  </div>
-</div>
-</div>
 
-
-<!-- 1RM CALCULATOR TAB -->
-<div id="tab-1rm" class="tab-panel">
-<div class="calc-section">
-  <div class="calc-card">
-    <div class="calc-title">🏋️ 1-Rep Max Calculator</div>
-    <div class="calc-sub">Enter the weight you lifted and how many reps you completed to estimate your 1RM and a full loading chart.</div>
+    <div style="font-size:11px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin:14px 0 10px">Enter Your Stats (fill in what you have)</div>
     <div class="calc-grid">
       <div class="calc-field">
-        <label>Weight Lifted (lbs)</label>
-        <input type="number" id="rm-weight" placeholder="e.g. 225" min="1" max="1500" step="1">
+        <label>0–10 Sprint (sec)</label>
+        <input type="number" id="c-010" placeholder="e.g. 1.65" min="1.0" max="3.5" step="0.001">
       </div>
       <div class="calc-field">
-        <label>Reps Completed</label>
-        <input type="number" id="rm-reps" placeholder="e.g. 5" min="1" max="30" step="1">
+        <label>20–30 Sprint (sec)</label>
+        <input type="number" id="c-2030" placeholder="e.g. 1.05" min="0.6" max="2.0" step="0.001">
+      </div>
+      <div class="calc-field">
+        <label>CMJ Height (inches)</label>
+        <input type="number" id="c-cmj" placeholder="e.g. 28.5" min="5" max="60" step="0.1">
+      </div>
+      <div class="calc-field">
+        <label>CMJ Power (W/kg)</label>
+        <input type="number" id="c-power" placeholder="e.g. 42.0" min="10" max="100" step="0.1">
       </div>
     </div>
-    <div class="calc-field" style="margin-bottom:16px">
-      <label>Exercise (optional — for context)</label>
-      <select id="rm-exercise">
-        <option value="">Select Exercise</option>
-        <option>Back Squat</option>
-        <option>Trap Bar Deadlift</option>
-        <option>Conventional Deadlift</option>
-        <option>Bench Press</option>
-        <option>Power Clean</option>
-        <option>Other</option>
-      </select>
-    </div>
-    <button class="calc-btn" onclick="calc1RM()">Calculate 1RM →</button>
-    <div class="calc-result" id="rm-result">
-      <div class="result-headline" id="rm-headline"></div>
-      <div class="result-sub" id="rm-subline"></div>
-      <table class="pct-table">
-        <thead><tr><th>% of 1RM</th><th>Training Zone</th><th>Weight (lbs)</th><th>Target Reps</th></tr></thead>
-        <tbody id="rm-table-body"></tbody>
-      </table>
-      <div class="calc-note">Estimated using the Epley + Brzycki average formula. Best accuracy at 1–10 reps.</div>
-    </div>
+
+    <button class="calc-btn" onclick="runCompare()">See My Ranking →</button>
+    <div class="calc-result" id="compare-results"></div>
   </div>
 </div>
-</div>
+</div><!-- end tab-compare -->
 
-<!-- VELOCITY ZONE ESTIMATOR TAB -->
-<div id="tab-velocity" class="tab-panel">
-<div class="calc-section">
-  <div class="calc-card">
-    <div class="calc-title">⚡ Velocity Zone Estimator</div>
-    <div class="calc-sub">Input your lift, load, and average bar velocity to identify your training zone — and get a recommended weight for any target zone.</div>
-    <div class="calc-grid">
-      <div class="calc-field">
-        <label>Exercise</label>
-        <select id="vz-exercise" onchange="vzUpdateProfile()">
-          <option value="squat">Back Squat</option>
-          <option value="bench">Bench Press</option>
-          <option value="deadlift">Conventional Deadlift</option>
-          <option value="tbdl">Trap Bar Deadlift</option>
-          <option value="pclean">Power Clean</option>
-          <option value="tbjump">Trap Bar Jump</option>
-        </select>
-      </div>
-      <div class="calc-field">
-        <label>Weight on Bar (lbs)</label>
-        <input type="number" id="vz-weight" placeholder="e.g. 185" min="1" max="1000" step="1">
-      </div>
-      <div class="calc-field">
-        <label>Average Velocity (m/s)</label>
-        <input type="number" id="vz-vel" placeholder="e.g. 0.82" min="0.1" max="3.0" step="0.01">
-      </div>
-      <div class="calc-field">
-        <label>Target Zone</label>
-        <select id="vz-target">
-          <option value="abs">Absolute Strength (&lt;0.50 m/s)</option>
-          <option value="str">Strength (0.50–0.75 m/s)</option>
-          <option value="ss">Strength-Speed (0.75–1.00 m/s)</option>
-          <option value="pwr" selected>Power (1.00–1.30 m/s)</option>
-          <option value="spd">Speed-Strength (1.30–1.60 m/s)</option>
-          <option value="ball">Ballistic / Speed (&gt;1.60 m/s)</option>
-        </select>
-      </div>
+<!-- TOOLS TAB -->
+<div id="tab-tools" class="tab-panel">
+<div style="padding:10px 0 0">
+  <!-- Tools sub-nav -->
+  <div id="tools-subnav" style="display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:10px 14px 0;-webkit-overflow-scrolling:touch;border-bottom:1px solid #1e3a5f;margin-bottom:0">
+    <button onclick="toolsSub('boards')" id="tsub-boards" class="tsub-btn tsub-active">🏆 Boards</button>
+    <button onclick="toolsSub('forty')" id="tsub-forty" class="tsub-btn">🏃 40-Yard</button>
+    <button onclick="toolsSub('1rm')" id="tsub-1rm" class="tsub-btn">🏋️ 1RM</button>
+    <button onclick="toolsSub('vbt')" id="tsub-vbt" class="tsub-btn">📈 VBT Zones</button>
+    <button onclick="toolsSub('dashboard')" id="tsub-dashboard" class="tsub-btn tools-coach-only" style="display:none">📊 Dashboard</button>
+    <button onclick="toolsSub('staff')" id="tsub-staff" class="tsub-btn tools-coach-only" style="display:none">👨‍💼 Staff</button>
+    <button onclick="toolsSub('program')" id="tsub-program" class="tsub-btn tools-master-only" style="display:none">📋 Program</button>
+    <button onclick="toolsSub('teamplan')" id="tsub-teamplan" class="tsub-btn tools-master-only" style="display:none">🗂️ Team Plan</button>
+  </div>
+
+  <!-- Boards (leaderboards) panel -->
+  <div id="tpanel-boards" class="tools-panel">
+  <div style="padding:14px">
+  <div style="font-size:20px;font-weight:900;color:#C9A228;letter-spacing:-0.5px;margin-bottom:2px">🏆 Leaderboards</div>
+  <div style="font-size:11px;color:#6a8aa8;margin-bottom:16px">Odyssey Performance · All-time top 5 per category</div>
+  <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
+    <div style="display:flex;gap:4px">
+      <button id="lb-male-btn" onclick="lbSetGender('M')" style="background:#1e3a5f;border:2px solid #C9A228;color:#C9A228;border-radius:8px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer">♂ Male</button>
+      <button id="lb-female-btn" onclick="lbSetGender('F')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer">♀ Female</button>
     </div>
-    <button class="calc-btn" onclick="calcVelocity()">Analyze Zone →</button>
-    <div class="calc-result" id="vz-result">
-      <div style="margin-bottom:8px;font-size:12px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;font-weight:700">Current Zone</div>
-      <div class="result-zone" id="vz-zone-badge"></div>
-      <div style="font-size:12px;color:#8a9bb0;margin-bottom:16px" id="vz-zone-desc"></div>
-      <div style="font-size:11px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:10px">Estimated % of 1RM</div>
-      <div class="rec-grid">
-        <div class="rec-card">
-          <div class="rec-card-title">Current Load</div>
-          <div class="rec-card-val" id="vz-pct-cur"></div>
-          <div class="rec-card-sub" id="vz-lbs-cur"></div>
-        </div>
-        <div class="rec-card">
-          <div class="rec-card-title">Target Zone Load</div>
-          <div class="rec-card-val" id="vz-pct-tgt"></div>
-          <div class="rec-card-sub" id="vz-lbs-tgt"></div>
+    <select id="lb-sport-filter" onchange="renderLeaderboards()" style="background:#0a1520;color:#e6edf3;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:11px;cursor:pointer">
+      <option value="">All Sports</option>
+    </select>
+    <select id="lb-age-filter" onchange="renderLeaderboards()" style="background:#0a1520;color:#e6edf3;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:11px;cursor:pointer">
+      <option value="">All Classes</option>
+      <option value="2036">Class of '36</option>
+      <option value="2035">Class of '35</option>
+      <option value="2034">Class of '34</option>
+      <option value="2033">Class of '33</option>
+      <option value="2032">Class of '32</option>
+      <option value="2031">Class of '31</option>
+      <option value="2030">Class of '30</option>
+      <option value="2029">Class of '29</option>
+      <option value="2028">Class of '28</option>
+      <option value="2027">Class of '27</option>
+      <option value="2026">Class of '26</option>
+      <option value="2025">Class of '25</option>
+      <option value="2024">Class of '24</option>
+    </select>
+  </div>
+  <div id="lb-output"></div>
+  </div>
+  </div>
+
+  <!-- 40-Yard panel -->
+  <div id="tpanel-forty" class="tools-panel" style="display:none">
+  <div class="calc-section">
+    <div class="calc-card">
+      <div class="calc-title">🏃 Sprint Time Estimator</div>
+      <div class="calc-sub">Enter any splits you have. All fields optional — more splits = better accuracy.</div>
+      <div class="acc-guide">
+        <div class="acc-guide-title">ACCURACY BY INPUT</div>
+        <div class="acc-guide-grid">
+          <div class="acc-guide-row"><span class="acc-dot acc-high"></span><span class="acc-guide-label">All 3 splits</span><span class="acc-guide-pct acc-high">~92%</span></div>
+          <div class="acc-guide-row"><span class="acc-dot acc-mid"></span><span class="acc-guide-label">0–10 + 20–30</span><span class="acc-guide-pct acc-mid">~82%</span></div>
+          <div class="acc-guide-row"><span class="acc-dot acc-mid"></span><span class="acc-guide-label">Any 2 adjacent</span><span class="acc-guide-pct acc-mid">~80%</span></div>
+          <div class="acc-guide-row"><span class="acc-dot acc-mid"></span><span class="acc-guide-label">0–10 only</span><span class="acc-guide-pct acc-mid">~72%</span></div>
+          <div class="acc-guide-row"><span class="acc-dot acc-low"></span><span class="acc-guide-label">10–20 only</span><span class="acc-guide-pct acc-low">~68%</span></div>
+          <div class="acc-guide-row"><span class="acc-dot acc-low"></span><span class="acc-guide-label">20–30 only</span><span class="acc-guide-pct acc-low">~65%</span></div>
         </div>
       </div>
-      <div id="vz-velocity-chart" style="margin-top:16px"></div>
-      <div class="calc-note" id="vz-note"></div>
+      <div class="calc-grid">
+        <div class="calc-field">
+          <label>0–10 yd Split (sec)</label>
+          <input type="number" id="f-010" placeholder="e.g. 1.65" min="1.0" max="3.5" step="0.001">
+        </div>
+        <div class="calc-field">
+          <label>10–20 yd Fly (sec)</label>
+          <input type="number" id="f-1020" placeholder="e.g. 1.10" min="0.7" max="2.0" step="0.001">
+        </div>
+        <div class="calc-field">
+          <label>20–30 yd Fly (sec)</label>
+          <input type="number" id="f-2030" placeholder="e.g. 1.05" min="0.6" max="1.8" step="0.001">
+        </div>
+        <div class="calc-field">
+          <label>Gender</label>
+          <select id="sprint-gender">
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+          </select>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calcForty()">Estimate Sprint Times →</button>
+      <div class="calc-result" id="forty-result">
+        <div class="sprint-outputs" id="sprint-outputs"></div>
+        <div class="forty-splits-grid" id="forty-splits"></div>
+        <div id="forty-benchmarks-wrap" style="display:none">
+          <div class="bench-title" id="forty-bench-title"></div>
+          <div id="forty-benchmarks"></div>
+        </div>
+        <div class="calc-note" id="forty-note"></div>
+      </div>
     </div>
   </div>
-</div>
-</div>
+  </div>
 
-<!-- 40-YARD DASH ESTIMATOR TAB -->
-<div id="tab-forty" class="tab-panel">
-<div class="calc-section">
-  <div class="calc-card">
-    <div class="calc-title">🏃 Sprint Time Estimator</div>
-    <div class="calc-sub">Enter any splits you have. All fields optional — more splits = better accuracy.</div>
-
-    <div class="acc-guide">
-      <div class="acc-guide-title">ACCURACY BY INPUT</div>
-      <div class="acc-guide-grid">
-        <div class="acc-guide-row"><span class="acc-dot acc-high"></span><span class="acc-guide-label">All 3 splits</span><span class="acc-guide-pct acc-high">~92%</span></div>
-        <div class="acc-guide-row"><span class="acc-dot acc-mid"></span><span class="acc-guide-label">0–10 + 20–30</span><span class="acc-guide-pct acc-mid">~82%</span></div>
-        <div class="acc-guide-row"><span class="acc-dot acc-mid"></span><span class="acc-guide-label">Any 2 adjacent</span><span class="acc-guide-pct acc-mid">~80%</span></div>
-        <div class="acc-guide-row"><span class="acc-dot acc-mid"></span><span class="acc-guide-label">0–10 only</span><span class="acc-guide-pct acc-mid">~72%</span></div>
-        <div class="acc-guide-row"><span class="acc-dot acc-low"></span><span class="acc-guide-label">10–20 only</span><span class="acc-guide-pct acc-low">~68%</span></div>
-        <div class="acc-guide-row"><span class="acc-dot acc-low"></span><span class="acc-guide-label">20–30 only</span><span class="acc-guide-pct acc-low">~65%</span></div>
+  <!-- 1RM Calculator panel -->
+  <div id="tpanel-1rm" class="tools-panel" style="display:none">
+  <div class="calc-section">
+    <div class="calc-card">
+      <div class="calc-title">🏋️ 1RM Calculator</div>
+      <div class="calc-sub">Enter the weight lifted and number of reps to estimate your one-rep max and load recommendations across training zones.</div>
+      <div class="calc-grid">
+        <div class="calc-field">
+          <label>Weight Lifted (lbs)</label>
+          <input type="number" id="rm-weight" placeholder="e.g. 225" min="1" max="1500" step="1">
+        </div>
+        <div class="calc-field">
+          <label>Reps Completed</label>
+          <input type="number" id="rm-reps" placeholder="e.g. 5" min="1" max="30" step="1">
+        </div>
+        <div class="calc-field" style="grid-column:1/-1">
+          <label>Exercise</label>
+          <select id="rm-exercise">
+            <option value="Back Squat">Back Squat</option>
+            <option value="Bench Press">Bench Press</option>
+            <option value="Deadlift">Deadlift</option>
+            <option value="Trap Bar Deadlift">Trap Bar Deadlift</option>
+            <option value="Power Clean">Power Clean</option>
+            <option value="Overhead Press">Overhead Press</option>
+            <option value="Romanian Deadlift">Romanian Deadlift</option>
+          </select>
+        </div>
       </div>
-    </div>
-
-    <div class="calc-grid">
-      <div class="calc-field">
-        <label>0–10 yd Split (sec)</label>
-        <input type="number" id="f-010" placeholder="e.g. 1.65" min="1.0" max="3.5" step="0.001">
+      <button class="calc-btn" onclick="calc1RM()">Calculate 1RM →</button>
+      <div class="calc-result" id="rm-result">
+        <div id="rm-headline" style="font-size:20px;font-weight:900;color:#C9A228;margin-bottom:4px"></div>
+        <div id="rm-subline" style="font-size:12px;color:#6a8aa8;margin-bottom:16px"></div>
+        <table style="width:100%;border-collapse:collapse;font-size:12px">
+          <thead>
+            <tr style="color:#6a8aa8;text-transform:uppercase;font-size:10px;letter-spacing:.5px">
+              <th style="text-align:left;padding:6px 4px;border-bottom:1px solid #1e3a5f">% 1RM</th>
+              <th style="text-align:left;padding:6px 4px;border-bottom:1px solid #1e3a5f">Zone</th>
+              <th style="text-align:right;padding:6px 4px;border-bottom:1px solid #1e3a5f">Load (lbs)</th>
+              <th style="text-align:right;padding:6px 4px;border-bottom:1px solid #1e3a5f">Reps</th>
+            </tr>
+          </thead>
+          <tbody id="rm-table-body"></tbody>
+        </table>
       </div>
-      <div class="calc-field">
-        <label>10–20 yd Fly (sec)</label>
-        <input type="number" id="f-1020" placeholder="e.g. 1.10" min="0.7" max="2.0" step="0.001">
-      </div>
-      <div class="calc-field">
-        <label>20–30 yd Fly (sec)</label>
-        <input type="number" id="f-2030" placeholder="e.g. 1.05" min="0.6" max="1.8" step="0.001">
-      </div>
-      <div class="calc-field">
-        <label>Gender</label>
-        <select id="sprint-gender">
-          <option value="M">Male</option>
-          <option value="F">Female</option>
-        </select>
-      </div>
-    </div>
-    <button class="calc-btn" onclick="calcForty()">Estimate Sprint Times →</button>
-    <div class="calc-result" id="forty-result">
-      <div class="sprint-outputs" id="sprint-outputs"></div>
-      <div class="forty-splits-grid" id="forty-splits"></div>
-      <div id="forty-benchmarks-wrap" style="display:none">
-        <div class="bench-title" id="forty-bench-title"></div>
-        <div id="forty-benchmarks"></div>
-      </div>
-      <div class="calc-note" id="forty-note"></div>
     </div>
   </div>
-</div>
-</div>
-
-
-<!-- STAFF TAB -->
-<div id="tab-staff" class="tab-panel">
-<div class="calc-section">
-  <div style="padding:18px 0 10px;text-align:center">
-    <div style="font-size:13px;color:#6a8aa8;letter-spacing:1px;text-transform:uppercase;font-weight:700">Coaching Staff</div>
-    <div style="font-size:11px;color:#3a5a7a;margin-top:4px">Profiles visible in coach mode only</div>
   </div>
-  <div id="staff-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;padding:0 16px 20px"></div>
-</div>
-</div>
 
-<!-- ATHLETE MODAL -->
-<div class="overlay" id="modal" onclick="closeModal(event)">
-  <div class="modal" id="modal-inner"></div>
-</div>
-
-<!-- PASSWORD MODAL -->
-<div class="pw-overlay" id="pw-overlay" onclick="closePwModal(event)">
-  <div class="pw-modal">
-    <div style="font-size:32px;margin-bottom:8px">🔒</div>
-    <h2>Staff Login</h2>
-    <p>Enter your 4-digit PIN</p>
-    <div style="display:flex;gap:8px;justify-content:center;margin-bottom:14px">
-      <input class="pin-digit" type="password" maxlength="1" id="pin0" inputmode="numeric" pattern="[0-9]" oninput="pinNext(this,1)" onkeydown="pinBack(event,this,null)">
-      <input class="pin-digit" type="password" maxlength="1" id="pin1" inputmode="numeric" pattern="[0-9]" oninput="pinNext(this,2)" onkeydown="pinBack(event,this,0)">
-      <input class="pin-digit" type="password" maxlength="1" id="pin2" inputmode="numeric" pattern="[0-9]" oninput="pinNext(this,3)" onkeydown="pinBack(event,this,1)">
-      <input class="pin-digit" type="password" maxlength="1" id="pin3" inputmode="numeric" pattern="[0-9]" oninput="pinSubmit()" onkeydown="pinBack(event,this,2)">
+  <!-- VBT Zones panel -->
+  <div id="tpanel-vbt" class="tools-panel" style="display:none">
+  <div class="calc-section">
+    <div class="calc-card">
+      <div class="calc-title">⚡ Velocity Zone Estimator</div>
+      <div class="calc-sub">Input your lift, load, and average bar velocity to identify your training zone — and get a recommended weight for any target zone.</div>
+      <div class="calc-grid">
+        <div class="calc-field">
+          <label>Exercise</label>
+          <select id="vz-exercise" onchange="vzUpdateProfile()">
+            <option value="squat">Back Squat</option>
+            <option value="bench">Bench Press</option>
+            <option value="deadlift">Conventional Deadlift</option>
+            <option value="tbdl">Trap Bar Deadlift</option>
+            <option value="pclean">Power Clean</option>
+            <option value="tbjump">Trap Bar Jump</option>
+          </select>
+        </div>
+        <div class="calc-field">
+          <label>Weight on Bar (lbs)</label>
+          <input type="number" id="vz-weight" placeholder="e.g. 185" min="1" max="1000" step="1">
+        </div>
+        <div class="calc-field">
+          <label>Average Velocity (m/s)</label>
+          <input type="number" id="vz-vel" placeholder="e.g. 0.82" min="0.1" max="3.0" step="0.01">
+        </div>
+        <div class="calc-field">
+          <label>Target Zone</label>
+          <select id="vz-target">
+            <option value="abs">Absolute Strength (&lt;0.50 m/s)</option>
+            <option value="str">Strength (0.50–0.75 m/s)</option>
+            <option value="ss">Strength-Speed (0.75–1.00 m/s)</option>
+            <option value="pwr" selected>Power (1.00–1.30 m/s)</option>
+            <option value="spd">Speed-Strength (1.30–1.60 m/s)</option>
+            <option value="ball">Ballistic / Speed (&gt;1.60 m/s)</option>
+          </select>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calcVelocity()">Analyze Zone →</button>
+      <div class="calc-result" id="vz-result">
+        <div style="margin-bottom:8px;font-size:12px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;font-weight:700">Current Zone</div>
+        <div class="result-zone" id="vz-zone-badge"></div>
+        <div style="font-size:12px;color:#8a9bb0;margin-bottom:16px" id="vz-zone-desc"></div>
+        <div style="font-size:11px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:10px">Estimated % of 1RM</div>
+        <div class="rec-grid">
+          <div class="rec-card">
+            <div class="rec-card-title">Current Load</div>
+            <div class="rec-card-val" id="vz-pct-cur"></div>
+            <div class="rec-card-sub" id="vz-lbs-cur"></div>
+          </div>
+          <div class="rec-card">
+            <div class="rec-card-title">Target Zone Load</div>
+            <div class="rec-card-val" id="vz-pct-tgt"></div>
+            <div class="rec-card-sub" id="vz-lbs-tgt"></div>
+          </div>
+        </div>
+        <div id="vz-velocity-chart" style="margin-top:16px"></div>
+        <div class="calc-note" id="vz-note"></div>
+      </div>
     </div>
-    <div class="pw-error" id="pw-error">Incorrect PIN. Try again.</div>
-    <button class="pw-cancel" onclick="closePwModal()">Cancel</button>
   </div>
+  </div>
+
+  <!-- Dashboard panel (coach only) -->
+  <div id="tpanel-dashboard" class="tools-panel" style="display:none">
+    <div style="padding:14px">
+      <div style="font-size:16px;font-weight:800;color:#C9A228;margin-bottom:6px">📊 Athlete Dashboard</div>
+<div style="font-size:12px;color:#6a8aa8">Visible to coaches — use filters to search athletes</div>
+    </div>
+  </div>
+
+  <!-- Staff panel -->
+  <div id="tpanel-staff" class="tools-panel" style="display:none">
+
 </div>
+
 
 <!-- PROGRAM BUILDER MODAL -->
 <div class="pw-overlay" id="pb-overlay" onclick="if(event.target===this)closePB()">
@@ -953,6 +984,9 @@ select:focus{border-color:#C9A228}
         <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Sport</label>
         <select id="tp-sport-sel" onchange="tpUpdateSportInfo()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
           <option value="multi">Multi-Sport / General</option>
+          <option value="advanced">Advanced Group</option>
+          <option value="intermediate">Intermediate Group</option>
+          <option value="beginners">Beginners Group (Ages 8–11)</option>
           <option value="baseball">Baseball</option>
           <option value="softball">Softball</option>
           <option value="football">Football</option>
@@ -1028,7 +1062,62 @@ select:focus{border-color:#C9A228}
 </div>
 
 <script>
-const A=[{"name":"Addison Erro","gender":"F","bw_kg":61.47,"cmj_jh_in":12.8,"cmj_rsi":0.56,"cmj_power_bm":45.1,"iso_force_bm":24.39,"dsi":0.1197,"bucket":"Velocity Bias","uni_flag":"RED","uni_asym_pct":32.0,"source":"both","best_010":1.94,"best_2030":1.36,"dsi_type":"Standard","sport":"Softball","grade":"freshman","grad_year":2029,"has_vbt":null},{"name":"Alexia Rosas","gender":"F","bw_kg":64.6,"cmj_jh_in":10.0,"cmj_rsi":0.26,"cmj_power_bm":39.3,"iso_force_bm":41.08,"dsi":0.056,"bucket":"Foundation","uni_flag":"ORANGE","uni_asym_pct":16.0,"source":"both","best_010":1.92,"best_2030":1.39,"dsi_type":"Standard","sport":"Softball","grade":"sophomore","grad_year":2028,"has_vbt":true},{"name":"Alexis Hastert","gender":"F","bw_kg":62.18,"cmj_jh_in":10.9,"cmj_rsi":0.75,"cmj_power_bm":44.0,"iso_force_bm":null,"dsi":null,"bucket":"Velocity Bias","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":null,"best_2030":1.38,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028,"has_vbt":true},{"name":"Anthony Tatar","gender":"M","bw_kg":80.46,"cmj_jh_in":10.7,"cmj_rsi":0.26,"cmj_power_bm":34.2,"iso_force_bm":null,"dsi":null,"bucket":"Foundation","uni_flag":"OK","uni_asym_pct":0.9,"source":"fp_only","best_010":null,"best_2030":null,"dsi_type":"Modified","sport":"Football","grade":"freshman","grad_year":2029,"has_vbt":null},{"name":"Ariannah Turrubiartes","gender":"F","bw_kg":73.19,"cmj_jh_in":7.6,"cmj_rsi":0.63,"cmj_power_bm":42.2,"iso_force_bm":null,"dsi":null,"bucket":"Velocity Bias","uni_flag":"ORANGE","uni_asym_pct":16.0,"source":"both","best_010":2.197,"best_2030":null,"dsi_type":"Modified","sport":"Softball","grade":"freshman","grad_year":2029,"has_vbt":true},{"name":"Brayden Dent","gender":"M","bw_kg":71.41,"cmj_jh_in":19.2,"cmj_rsi":0.75,"cmj_power_bm":68.1,"iso_force_bm":null,"dsi":null,"bucket":"Velocity Bias","uni_flag":"ORANGE","uni_asym_pct":19.0,"source":"both","best_010":1.58,"best_2030":1.04,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027,"elite_star":true,"prospect":true,"has_vbt":true},{"name":"Callie Angulo","gender":"F","bw_kg":64.03,"cmj_jh_in":15.1,"cmj_rsi":0.87,"cmj_power_bm":53.8,"iso_force_bm":null,"dsi":null,"bucket":"Velocity Bias","uni_flag":"OK","uni_asym_pct":5.2,"source":"both","best_010":1.81,"best_2030":null,"dsi_type":"Modified","sport":"Volleyball","grade":"junior","grad_year":2027,"prospect":true,"has_vbt":true},{"name":"Carter Garcia","gender":"M","bw_kg":68.78,"cmj_jh_in":14.6,"cmj_rsi":0.96,"cmj_power_bm":58.9,"iso_force_bm":47.66,"dsi":0.0576,"bucket":"Foundation","uni_flag":"OK","uni_asym_pct":1.2,"source":"both","best_010":1.64,"best_2030":null,"dsi_type":"Standard","sport":"Football","grade":"freshman","grad_year":2029,"elite_star":true,"has_vbt":true},{"name":"Carter Schmidt","gender":"M","bw_kg":79.11,"cmj_jh_in":14.4,"cmj_rsi":0.66,"cmj_power_bm":44.1,"iso_force_bm":null,"dsi":null,"bucket":"Velocity Bias","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":1.71,"best_2030":1.38,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027,"has_vbt":true},{"name":"Chloe Jensen","gender":"F","bw_kg":54.91,"cmj_jh_in":9.1,"cmj_rsi":0.41,"cmj_power_bm":49.0,"iso_force_bm":null,"dsi":null,"bucket":"Foundation","uni_flag":"RED","uni_asym_pct":51.0,"source":"fp_only","best_010":null,"best_2030":null,"dsi_type":"Modified","sport":"Softball","grade":"freshman","grad_year":2029,"has_vbt":null},{"name":"Ciera Walters","gender":"F","bw_kg":59.16,"cmj_jh_in":12.5,"cmj_rsi":0.43,"cmj_power_bm":47.1,"iso_force_bm":null,"dsi":null,"bucket":"Force Bias","uni_flag":"OK","uni_asym_pct":2.2,"source":"both","best_010":1.69,"best_2030":1.3,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028,"has_vbt":true},{"name":"Edward Patolo","gender":"M","bw_kg":81.84,"cmj_jh_in":14.8,"cmj_rsi":0.5,"cmj_power_bm":48.5,"iso_force_bm":41.07,"dsi":0.0626,"bucket":"Foundation","uni_flag":"RED","uni_asym_pct":32.0,"source":"both","best_010":1.66,"best_2030":1.27,"dsi_type":"Standard","sport":"Rugby/Football","grade":"freshman","grad_year":2029,"has_vbt":true},{"name":"Emma Royko","gender":"F","bw_kg":54.52,"cmj_jh_in":13.5,"cmj_rsi":0.48,"cmj_power_bm":52.0,"iso_force_bm":null,"dsi":null,"bucket":"Force Bias","uni_flag":"ORANGE","uni_asym_pct":16.0,"source":"fp_only","best_010":null,"best_2030":null,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028,"prospect":true,"has_vbt":null},{"name":"Jack Dellinger","gender":"M","bw_kg":66.26,"cmj_jh_in":18.6,"cmj_rsi":1.1,"cmj_power_bm":66.7,"iso_force_bm":null,"dsi":null,"bucket":"Velocity Bias","uni_flag":"OK","uni_asym_pct":3.2,"source":"both","best_010":null,"best_2030":1.09,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027,"elite_star":true,"prospect":true,"has_vbt":true,"injuries":[{"condition":"Foot Fracture (Rehab)","severity":"high","notes":"Broken foot \u2014 currently rehabbing. No impact loading. Focus on intrinsic foot strength, ankle mobility, and non-weight-bearing upper body/core work"}]},{"name":"Justian Richardson","gender":"M","bw_kg":77.16,"cmj_jh_in":21.9,"cmj_rsi":1.05,"cmj_power_bm":67.9,"iso_force_bm":28.19,"dsi":null,"bucket":"Velocity Bias","uni_flag":"ORANGE","uni_asym_pct":17.0,"source":"both","best_010":1.35,"best_2030":1.019,"dsi_type":"Standard","sport":"Track & Field","grade":"senior","grad_year":2026,"position":"Triple Jump","elite_star":true,"has_vbt":true},{"name":"Katie Hemerick","gender":"F","bw_kg":67.81,"cmj_jh_in":12.9,"cmj_rsi":0.65,"cmj_power_bm":42.6,"iso_force_bm":null,"dsi":null,"bucket":"Force Bias","uni_flag":"OK","uni_asym_pct":7.0,"source":"both","best_010":1.76,"best_2030":1.32,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028,"has_vbt":true},{"name":"Landon Simantel","gender":"M","bw_kg":61.84,"cmj_jh_in":14.3,"cmj_rsi":0.61,"cmj_power_bm":59.5,"iso_force_bm":null,"dsi":null,"bucket":"Force Bias","uni_flag":"OK","uni_asym_pct":7.9,"source":"both","best_010":1.603,"best_2030":1.06,"dsi_type":"Modified","sport":"Football","grade":"freshman","grad_year":2029,"prospect":true,"has_vbt":true},{"name":"Lola Carson","gender":"F","bw_kg":55.03,"cmj_jh_in":15.1,"cmj_rsi":0.63,"cmj_power_bm":52.9,"iso_force_bm":40.31,"dsi":0.0645,"bucket":"Foundation","uni_flag":"OK","uni_asym_pct":3.8,"source":"both","best_010":null,"best_2030":1.2,"dsi_type":"Standard","sport":"Softball","grade":"senior","grad_year":2026,"elite_star":true,"college_commit":"UC Santa Barbara","has_vbt":true,"injuries":[{"condition":"Lower Back Pain","severity":"moderate","notes":"Chronic lower back pain \u2014 monitor loading on all hip hinge and spinal compression movements"}]},{"name":"Lola Coker","gender":"F","bw_kg":84.56,"cmj_jh_in":9.5,"cmj_rsi":0.54,"cmj_power_bm":45.0,"iso_force_bm":null,"dsi":null,"bucket":"Force Bias","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":1.83,"best_2030":null,"dsi_type":"Modified","sport":"Track & Field","grade":"sophomore","grad_year":2028,"position":"Shot Put","has_vbt":true},{"name":"Maddie Waldron","gender":"F","bw_kg":58.37,"cmj_jh_in":12.8,"cmj_rsi":0.48,"cmj_power_bm":49.4,"iso_force_bm":null,"dsi":null,"bucket":"Force Bias","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":1.774,"best_2030":null,"dsi_type":"Modified","sport":"Volleyball","grade":"junior","grad_year":2027,"elite_star":true,"college_commit":"Mercer University","has_vbt":true},{"name":"Malia Lyons","gender":"F","bw_kg":58.38,"cmj_jh_in":11.8,"cmj_rsi":0.64,"cmj_power_bm":47.6,"iso_force_bm":null,"dsi":null,"bucket":"Force Bias","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":null,"best_2030":null,"dsi_type":"Modified","sport":"Track & Field","grade":"junior","grad_year":2027,"position":"Triple Jump","has_vbt":true},{"name":"Marissa Chapman","gender":"F","bw_kg":68.17,"cmj_jh_in":6.3,"cmj_rsi":0.14,"cmj_power_bm":31.2,"iso_force_bm":27.99,"dsi":0.0671,"bucket":"Foundation","uni_flag":"RED","uni_asym_pct":48.0,"source":"both","best_010":2.12,"best_2030":1.7,"dsi_type":"Standard","sport":"Lacrosse","grade":"freshman","grad_year":2029,"has_vbt":"partial"},{"name":"Mimi Botticelli","gender":"F","bw_kg":72.51,"cmj_jh_in":6.3,"cmj_rsi":0.3,"cmj_power_bm":32.2,"iso_force_bm":30.05,"dsi":0.07,"bucket":"Foundation","uni_flag":"OK","uni_asym_pct":8.0,"source":"both","best_010":1.83,"best_2030":1.44,"dsi_type":"Standard","sport":"Softball","grade":"senior","grad_year":2026,"college_commit":"Boise State","has_vbt":true,"injuries":[{"condition":"Hip Mobility Restriction","severity":"moderate","notes":"Poor hip mobility \u2014 affects mechanics across all lower-body movements. Corrective work required before each training session"}]},{"name":"Nicolas Countreman","gender":"M","bw_kg":116.87,"cmj_jh_in":11.8,"cmj_rsi":0.36,"cmj_power_bm":48.2,"iso_force_bm":null,"dsi":null,"bucket":"Foundation","uni_flag":"ORANGE","uni_asym_pct":20.0,"source":"both","best_010":1.78,"best_2030":1.21,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027,"has_vbt":true},{"name":"Riley McGee","gender":"F","bw_kg":62.85,"cmj_jh_in":12.2,"cmj_rsi":0.54,"cmj_power_bm":49.8,"iso_force_bm":42.24,"dsi":0.0752,"bucket":"Force Bias","uni_flag":"RED","uni_asym_pct":75.0,"source":"both","best_010":null,"best_2030":1.23,"dsi_type":"Standard","sport":"Softball","grade":"sophomore","grad_year":2028,"position":"Catcher","elite_star":true,"has_vbt":true,"injuries":[{"condition":"Hamstring Strain (Active)","severity":"high","notes":"Suspected hamstring pull \u2014 active injury. NO sprinting or heavy hip hinge loading. Isometric and pain-free range only until cleared"}]},{"name":"Rowan Nishimoto","gender":"M","bw_kg":70.34,"cmj_jh_in":16.3,"cmj_rsi":1.14,"cmj_power_bm":68.1,"iso_force_bm":null,"dsi":null,"bucket":"Velocity Bias","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":1.564,"best_2030":1.1,"dsi_type":"Modified","sport":"Baseball","grade":"8th","grad_year":2030,"position":"Pitcher","prospect":true,"has_vbt":true},{"name":"Sam McCoy","gender":"M","bw_kg":72.18,"cmj_jh_in":17.0,"cmj_rsi":0.71,"cmj_power_bm":63.2,"iso_force_bm":null,"dsi":null,"bucket":"Velocity Bias","uni_flag":"OK","uni_asym_pct":0.9,"source":"both","best_010":1.58,"best_2030":1.019,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027,"position":"Pitcher","prospect":true,"has_vbt":true},{"name":"Violet Todd","gender":"F","bw_kg":67.73,"cmj_jh_in":9.1,"cmj_rsi":0.2,"cmj_power_bm":40.6,"iso_force_bm":null,"dsi":null,"bucket":"Foundation","uni_flag":"RED","uni_asym_pct":26.0,"source":"both","best_010":null,"best_2030":1.43,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028,"position":"Infielder","has_vbt":null},{"name":"Abigail Burris","gender":"F","bw_kg":65.35,"cmj_jh_in":12.6,"cmj_rsi":0.83,"cmj_power_bm":46.4,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":"RED","uni_asym_pct":65.0,"source":"both","best_010":1.701,"best_2030":null,"dsi_type":"Modified","sport":"Volleyball","grade":"junior","grad_year":2027,"position":"Setter","has_vbt":true},{"name":"Aiden Abelardo","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.7,"best_2030":1.26,"dsi_type":"N/A","sport":"Basketball","position":"Guard","grade":"sophomore","grad_year":2028,"has_vbt":"partial"},{"name":"Aj Gonzales","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.82,"best_2030":1.3,"dsi_type":"N/A","sport":"Softball/Basketball","grade":"junior","grad_year":2027,"position":"2B / Shooting Guard","has_vbt":true},{"name":"Allison Keusch","gender":"F","bw_kg":77.61,"cmj_jh_in":12.1,"cmj_rsi":0.46,"cmj_power_bm":46.5,"iso_force_bm":35.32,"dsi":null,"bucket":"N/A","uni_flag":"ORANGE","uni_asym_pct":16.0,"source":"both","best_010":1.79,"best_2030":1.28,"dsi_type":"Standard","sport":"Softball","grade":"junior","grad_year":2027,"position":"Pitcher","elite_star":true,"college_commit":"Idaho State","has_vbt":true,"injuries":[{"condition":"Hip Mobility Restriction","severity":"moderate","notes":"Poor hip mobility \u2014 limits squat depth and pitching hip-shoulder separation. Priority corrective before any loaded hip hinge or squat work"}]},{"name":"Camren Smith","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.7,"best_2030":null,"dsi_type":"N/A","sport":"Baseball","grade":"college","grad_year":2025,"position":"Outfielder","college_commit":"Edmonds College","has_vbt":"partial"},{"name":"Cohen Mugford","gender":"M","bw_kg":80.74,"cmj_jh_in":16.6,"cmj_rsi":0.91,"cmj_power_bm":57.3,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":"OK","uni_asym_pct":3.2,"source":"both","best_010":1.63,"best_2030":null,"dsi_type":"Modified","sport":"Football","grade":"freshman","grad_year":2029,"position":"Receiver","prospect":true,"has_vbt":null,"injuries":[{"condition":"Low Back Pain — Landing Mechanics","severity":"moderate","notes":"Leaning outside his frame on landings \u2014 lateral torso deviation causing lumbar loading. Reinforce midline stability on all landing and deceleration work. No heavy axial loading until pattern is corrected. Priority: single-leg landing drills, hip hinge pattern, anterior core bracing cues."}]},{"name":"Eddie Lucero","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.7,"best_2030":1.22,"dsi_type":"N/A","sport":"Baseball","grade":"junior","grad_year":2027,"position":"Pitcher","has_vbt":true},{"name":"Ella Chadwick","gender":"F","bw_kg":59.57,"cmj_jh_in":13.3,"cmj_rsi":0.9,"cmj_power_bm":50.7,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":"OK","uni_asym_pct":0.9,"source":"both","best_010":null,"best_2030":1.21,"dsi_type":"Modified","sport":"Softball","grade":"freshman","grad_year":2029,"position":"Outfielder","prospect":true,"has_vbt":true},{"name":"Gabby Nevarez","gender":"F","bw_kg":68.13,"cmj_jh_in":16.2,"cmj_rsi":0.55,"cmj_power_bm":54.7,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":"RED","uni_asym_pct":41.0,"source":"both","best_010":1.69,"best_2030":1.23,"dsi_type":"Modified","sport":"Softball","grade":"senior","grad_year":2026,"position":"Center Field","elite_star":true,"college_commit":"University of Arizona","has_vbt":true},{"name":"Kaimana Coleman","gender":"F","bw_kg":66.18,"cmj_jh_in":17.1,"cmj_rsi":0.66,"cmj_power_bm":55.0,"iso_force_bm":32.25,"dsi":null,"bucket":"Velocity Bias","uni_flag":"OK","uni_asym_pct":8.4,"source":"both","best_010":1.742,"best_2030":1.281,"dsi_type":"Standard","sport":"Softball","grade":"junior","grad_year":2027,"position":"Catcher","elite_star":true,"college_commit":"Northwestern","has_vbt":true,"injuries":[{"condition":"Low Back Pain (Intermittent)","severity":"low","notes":"Intermittent low back pain \u2014 monitor during heavy loaded movements. Reinforce anterior core stability and hip hinge pattern"}]},{"name":"Kassidy King","gender":"F","bw_kg":68.47,"cmj_jh_in":16.7,"cmj_rsi":0.54,"cmj_power_bm":54.4,"iso_force_bm":34.79,"dsi":null,"bucket":"N/A","uni_flag":"ORANGE","uni_asym_pct":18.0,"source":"both","best_010":1.7,"best_2030":1.17,"dsi_type":"Standard","sport":"Softball","grade":"junior","grad_year":2027,"position":"Pitcher","elite_star":true,"college_commit":"Idaho State","has_vbt":true,"injuries":[{"condition":"Trap/Neck Tightness","severity":"low","notes":"Tight upper traps \u2014 likely from pitching mechanics and posture. Impacts shoulder range of motion and throwing arm health"}]},{"name":"Lillian Ford","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.83,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"junior","grad_year":2027,"position":"Middle Hitter","has_vbt":null},{"name":"Lily Barstad","gender":"F","bw_kg":94.18,"cmj_jh_in":12.6,"cmj_rsi":0.33,"cmj_power_bm":42.7,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":"RED","uni_asym_pct":31.0,"source":"both","best_010":null,"best_2030":1.3,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028,"position":"Catcher","has_vbt":true},{"name":"Lucas Black","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.72,"best_2030":1.23,"dsi_type":"N/A","sport":"Volleyball","grade":"freshman","grad_year":2029,"position":"Libero","has_vbt":"partial"},{"name":"Maizie Smith","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.9,"best_2030":1.36,"dsi_type":"N/A","sport":"Softball","grade":"sophomore","grad_year":2028,"position":"3B","has_vbt":true},{"name":"Malia Jones","gender":"F","bw_kg":56.41,"cmj_jh_in":16.2,"cmj_rsi":0.61,"cmj_power_bm":54.7,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":"ORANGE","uni_asym_pct":16.0,"source":"both","best_010":1.48,"best_2030":1.14,"dsi_type":"Modified","sport":"Track & Field","grade":"junior","grad_year":2027,"position":"Long Jump / Triple Jump / Sprints","prospect":true,"has_vbt":true},{"name":"Maximus Marchi","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.81,"best_2030":1.26,"dsi_type":"N/A","sport":"Cross Country","grade":"senior","grad_year":2026,"position":"Distance Runner","has_vbt":true},{"name":"Mckayla Zuber","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.77,"best_2030":null,"dsi_type":"N/A","sport":"Soccer","grade":"sophomore","grad_year":2028,"position":"Defender","prospect":true,"has_vbt":true},{"name":"Mya Gonzalez","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.78,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"sophomore","grad_year":2028,"position":"Libero","has_vbt":true},{"name":"Peyton Cantu","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.61,"best_2030":1.3,"dsi_type":"N/A","sport":"Lacrosse","grade":"senior","grad_year":2026,"position":"Goalie","has_vbt":true},{"name":"Robert Ghazaryan","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.7,"best_2030":null,"dsi_type":"N/A","sport":"Basketball","grade":"freshman","grad_year":2029,"position":"Forward","has_vbt":"partial"},{"name":"Ryan Chenoweth","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.56,"best_2030":1.14,"dsi_type":"N/A","sport":"Baseball","grade":"freshman","grad_year":2029,"position":"Pitcher","prospect":true,"has_vbt":true},{"name":"Serenity Humphrey","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.992,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"junior","grad_year":2027,"position":"Middle Hitter","has_vbt":true},{"name":"Skylar Gosselin","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.86,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"junior","grad_year":2027,"position":"Outside Hitter","has_vbt":true},{"name":"Sophia Covarrubias","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.86,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"freshman","grad_year":2029,"position":"Outside Hitter","has_vbt":"partial"},{"name":"Sophia Reilly","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.91,"best_2030":1.37,"dsi_type":"N/A","sport":"Softball/Track & Field","grade":"junior","grad_year":2027,"position":"Outfielder","has_vbt":true},{"name":"Travis Perry","gender":"M","bw_kg":90.55,"cmj_jh_in":19.6,"cmj_rsi":0.7,"cmj_power_bm":62.0,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":"RED","uni_asym_pct":31.0,"source":"both","best_010":1.59,"best_2030":1.07,"dsi_type":"Modified","sport":"Baseball","grade":"senior","grad_year":2026,"position":"Catcher","college_commit":"Regis College","elite_star":true,"has_vbt":true},{"name":"Caden dearth","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.14,"dsi_type":"N/A","sport":"Basketball","grade":"junior","grad_year":2027,"position":"Guard","has_vbt":true},{"name":"Connor Bishop","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.17,"dsi_type":"N/A","sport":"Soccer","grade":"senior","grad_year":2026,"position":"Forward","has_vbt":null},{"name":"Gavin Seeman","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.18,"dsi_type":"N/A","sport":"Basketball","grade":"freshman","grad_year":2029,"position":"Forward","prospect":true,"has_vbt":true},{"name":"Hank Brown","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.3,"dsi_type":"N/A","sport":"Baseball","grade":"sophomore","grad_year":2028,"position":"Pitcher","has_vbt":true},{"name":"Jack Johnson","gender":"M","bw_kg":59.81,"cmj_jh_in":15.7,"cmj_rsi":0.58,"cmj_power_bm":60.9,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":"OK","uni_asym_pct":5.2,"source":"both","best_010":null,"best_2030":1.21,"dsi_type":"Modified","sport":"Wrestling","grade":"freshman","grad_year":2029,"has_vbt":true},{"name":"KJ Mendiola","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.34,"dsi_type":"N/A","sport":"Soccer","grade":"junior","grad_year":2027,"position":"Forward","has_vbt":"partial"},{"name":"Kam Labauve","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.21,"dsi_type":"N/A","sport":"Baseball","grade":"freshman","grad_year":2029,"position":"Pitcher","has_vbt":"partial"},{"name":"Mia Reynoso","gender":"F","bw_kg":67.68,"cmj_jh_in":10.6,"cmj_rsi":0.53,"cmj_power_bm":49.5,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":"RED","uni_asym_pct":53.0,"source":"both","best_010":null,"best_2030":1.26,"dsi_type":"Modified","sport":"Softball","grade":"senior","grad_year":2026,"position":"Infielder","has_vbt":null},{"name":"Peter Graves","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.21,"dsi_type":"N/A","sport":"Basketball","grade":"freshman","grad_year":2029,"position":"Forward","has_vbt":"partial"},{"name":"Kai Fennell","gender":"M","bw_kg":62.21,"cmj_jh_in":12.5,"cmj_rsi":0.58,"cmj_power_bm":50.5,"iso_force_bm":null,"dsi":null,"bucket":"Force Bias","uni_flag":"RED","uni_asym_pct":36.0,"source":"both","best_010":1.781,"best_2030":null,"dsi_type":"Modified","sport":"Lacrosse","grade":"freshman","grad_year":2029,"position":"Attacker","has_vbt":"partial"},{"name":"Addy Raphael","bw_kg":57.04,"source":"both","bucket":"N/A","dsi_type":"Standard","cmj_jh_in":12.8,"cmj_rsi":0.44,"cmj_power_bm":48.1,"iso_force_bm":28.58,"dsi":null,"uni_flag":"OK","uni_asym_pct":2.3,"best_010":null,"best_2030":null,"sport":"Softball","grade":"junior","grad_year":2027,"position":"Outfielder","elite_star":true,"gender":"F","college_commit":"Idaho State","has_vbt":true,"injuries":[{"condition":"Lower Back Pain","severity":"moderate","notes":"Lower back pain \u2014 prioritize anterior core activation and hip hinge motor pattern quality"}]},{"name":"Caden Morente","bw_kg":57.1,"source":"vbt_only","bucket":"N/A","dsi_type":"N/A","cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"uni_flag":null,"uni_asym_pct":null,"best_010":null,"best_2030":null,"sport":"Basketball","grade":"sophomore","grad_year":2028,"position":"Guard","gender":"M","has_vbt":"partial"},{"name":"Caleb Peters","bw_kg":79.4,"source":"vbt_only","bucket":"N/A","dsi_type":"N/A","cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"uni_flag":null,"uni_asym_pct":null,"best_010":null,"best_2030":null,"sport":"Basketball","grade":"sophomore","grad_year":2028,"position":"Guard","gender":"M","has_vbt":"partial"},{"name":"Christiana Samuel","bw_kg":null,"source":"vbt_only","bucket":"N/A","dsi_type":"N/A","cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"uni_flag":null,"uni_asym_pct":null,"best_010":null,"best_2030":null,"sport":"Basketball","grade":"junior","grad_year":2027,"position":"Forward","gender":"F","has_vbt":null},{"name":"Christine Pham","bw_kg":null,"source":"vbt_only","bucket":"N/A","dsi_type":"N/A","cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"uni_flag":null,"uni_asym_pct":null,"best_010":null,"best_2030":null,"sport":"Basketball","grade":"sophomore","grad_year":2028,"position":"Guard","gender":"F","has_vbt":"partial"},{"name":"Greyden Kress","bw_kg":70.3,"source":"vbt_only","bucket":"N/A","dsi_type":"N/A","cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"uni_flag":null,"uni_asym_pct":null,"best_010":null,"best_2030":null,"sport":"Basketball","grade":"sophomore","grad_year":2028,"position":"Guard","gender":"M","has_vbt":null},{"name":"Jordyn Raphael","bw_kg":56.7,"source":"vbt_only","bucket":"N/A","dsi_type":"N/A","cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"uni_flag":null,"uni_asym_pct":null,"best_010":null,"best_2030":null,"sport":"Volleyball","grade":"freshman","grad_year":2029,"position":"Outside Hitter","gender":"F","has_vbt":"partial"},{"name":"Will Pearson","bw_kg":null,"source":"vbt_only","bucket":"N/A","dsi_type":"N/A","cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"uni_flag":null,"uni_asym_pct":null,"best_010":null,"best_2030":null,"sport":"Lacrosse","grade":"junior","grad_year":2027,"position":"Attacker","gender":"M","has_vbt":true}];;;;;
+// ─── ADVANCED/INTERMEDIATE ATHLETES ──────────────────────────────────────────
+const A=[{"name":"Addison Erro","gender":"F","bw_kg":61.47,"cmj_jh_in":12.8,"cmj_rsi":0.56,"cmj_power_bm":45.1,"iso_force_bm":24.39,"dsi":0.1197,"bucket":"Velocity Bias","uni_flag":"RED","uni_asym_pct":32.0,"source":"both","best_010":1.94,"best_2030":1.36,"dsi_type":"Standard","sport":"Softball","grade":"freshman","grad_year":2029,"has_vbt":null},{"name":"Alexia Rosas","gender":"F","bw_kg":64.6,"cmj_jh_in":10.0,"cmj_rsi":0.26,"cmj_power_bm":39.3,"iso_force_bm":41.08,"dsi":0.056,"bucket":"Foundation","uni_flag":"ORANGE","uni_asym_pct":16.0,"source":"both","best_010":1.92,"best_2030":1.39,"dsi_type":"Standard","sport":"Softball","grade":"sophomore","grad_year":2028,"has_vbt":true},{"name":"Alexis Hastert","gender":"F","bw_kg":62.18,"cmj_jh_in":10.9,"cmj_rsi":0.75,"cmj_power_bm":44.0,"iso_force_bm":null,"dsi":null,"bucket":"Velocity Bias","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":null,"best_2030":1.38,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028,"has_vbt":true},{"name":"Anthony Tatar","gender":"M","bw_kg":80.46,"cmj_jh_in":10.7,"cmj_rsi":0.26,"cmj_power_bm":34.2,"iso_force_bm":null,"dsi":null,"bucket":"Foundation","uni_flag":"OK","uni_asym_pct":0.9,"source":"fp_only","best_010":null,"best_2030":null,"dsi_type":"Modified","sport":"Football","grade":"freshman","grad_year":2029,"has_vbt":null},{"name":"Ariannah Turrubiartes","gender":"F","bw_kg":73.19,"cmj_jh_in":7.6,"cmj_rsi":0.63,"cmj_power_bm":42.2,"iso_force_bm":null,"dsi":null,"bucket":"Velocity Bias","uni_flag":"ORANGE","uni_asym_pct":16.0,"source":"both","best_010":2.197,"best_2030":null,"dsi_type":"Modified","sport":"Softball","grade":"freshman","grad_year":2029,"has_vbt":true},{"name":"Brayden Dent","gender":"M","bw_kg":71.41,"cmj_jh_in":19.2,"cmj_rsi":0.75,"cmj_power_bm":68.1,"iso_force_bm":null,"dsi":null,"bucket":"Velocity Bias","uni_flag":"ORANGE","uni_asym_pct":19.0,"source":"both","best_010":1.58,"best_2030":1.04,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027,"elite_star":true,"prospect":true,"has_vbt":true},{"name":"Callie Angulo","gender":"F","bw_kg":64.03,"cmj_jh_in":15.1,"cmj_rsi":0.87,"cmj_power_bm":53.8,"iso_force_bm":null,"dsi":null,"bucket":"Velocity Bias","uni_flag":"OK","uni_asym_pct":5.2,"source":"both","best_010":1.81,"best_2030":null,"dsi_type":"Modified","sport":"Volleyball","grade":"junior","grad_year":2027,"prospect":true,"has_vbt":true},{"name":"Carter Garcia","gender":"M","bw_kg":68.78,"cmj_jh_in":14.6,"cmj_rsi":0.96,"cmj_power_bm":58.9,"iso_force_bm":47.66,"dsi":0.0576,"bucket":"Foundation","uni_flag":"OK","uni_asym_pct":1.2,"source":"both","best_010":1.64,"best_2030":null,"dsi_type":"Standard","sport":"Football","grade":"freshman","grad_year":2029,"elite_star":true,"has_vbt":true},{"name":"Carter Schmidt","gender":"M","bw_kg":79.11,"cmj_jh_in":14.4,"cmj_rsi":0.66,"cmj_power_bm":44.1,"iso_force_bm":null,"dsi":null,"bucket":"Velocity Bias","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":1.71,"best_2030":1.38,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027,"has_vbt":true},{"name":"Chloe Jensen","gender":"F","bw_kg":54.91,"cmj_jh_in":9.1,"cmj_rsi":0.41,"cmj_power_bm":49.0,"iso_force_bm":null,"dsi":null,"bucket":"Foundation","uni_flag":"RED","uni_asym_pct":51.0,"source":"fp_only","best_010":null,"best_2030":null,"dsi_type":"Modified","sport":"Softball","grade":"freshman","grad_year":2029,"has_vbt":null},{"name":"Ciera Walters","gender":"F","bw_kg":59.16,"cmj_jh_in":12.5,"cmj_rsi":0.43,"cmj_power_bm":47.1,"iso_force_bm":null,"dsi":null,"bucket":"Force Bias","uni_flag":"OK","uni_asym_pct":2.2,"source":"both","best_010":1.69,"best_2030":1.3,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028,"has_vbt":true},{"name":"Edward Patolo","gender":"M","bw_kg":81.84,"cmj_jh_in":14.8,"cmj_rsi":0.5,"cmj_power_bm":48.5,"iso_force_bm":41.07,"dsi":0.0626,"bucket":"Foundation","uni_flag":"RED","uni_asym_pct":32.0,"source":"both","best_010":1.66,"best_2030":1.27,"dsi_type":"Standard","sport":"Rugby/Football","grade":"freshman","grad_year":2029,"has_vbt":true},{"name":"Emma Royko","gender":"F","bw_kg":54.52,"cmj_jh_in":13.5,"cmj_rsi":0.48,"cmj_power_bm":52.0,"iso_force_bm":null,"dsi":null,"bucket":"Force Bias","uni_flag":"ORANGE","uni_asym_pct":16.0,"source":"fp_only","best_010":null,"best_2030":null,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028,"prospect":true,"has_vbt":null},{"name":"Jack Dellinger","gender":"M","bw_kg":66.26,"cmj_jh_in":18.6,"cmj_rsi":1.1,"cmj_power_bm":66.7,"iso_force_bm":null,"dsi":null,"bucket":"Velocity Bias","uni_flag":"OK","uni_asym_pct":3.2,"source":"both","best_010":null,"best_2030":1.09,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027,"elite_star":true,"prospect":true,"has_vbt":true,"injuries":[{"condition":"Foot Fracture (Rehab)","severity":"high","notes":"Broken foot \u2014 currently rehabbing. No impact loading. Focus on intrinsic foot strength, ankle mobility, and non-weight-bearing upper body/core work"}]},{"name":"Justian Richardson","gender":"M","bw_kg":77.16,"cmj_jh_in":21.9,"cmj_rsi":1.05,"cmj_power_bm":67.9,"iso_force_bm":28.19,"dsi":null,"bucket":"Velocity Bias","uni_flag":"ORANGE","uni_asym_pct":17.0,"source":"both","best_010":1.35,"best_2030":1.019,"dsi_type":"Standard","sport":"Track & Field","grade":"senior","grad_year":2026,"position":"Triple Jump","elite_star":true,"has_vbt":true},{"name":"Katie Hemerick","gender":"F","bw_kg":67.81,"cmj_jh_in":12.9,"cmj_rsi":0.65,"cmj_power_bm":42.6,"iso_force_bm":null,"dsi":null,"bucket":"Force Bias","uni_flag":"OK","uni_asym_pct":7.0,"source":"both","best_010":1.76,"best_2030":1.32,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028,"has_vbt":true},{"name":"Landon Simantel","gender":"M","bw_kg":61.84,"cmj_jh_in":14.3,"cmj_rsi":0.61,"cmj_power_bm":59.5,"iso_force_bm":null,"dsi":null,"bucket":"Force Bias","uni_flag":"OK","uni_asym_pct":7.9,"source":"both","best_010":1.603,"best_2030":1.06,"dsi_type":"Modified","sport":"Football","grade":"freshman","grad_year":2029,"prospect":true,"has_vbt":true},{"name":"Lola Carson","gender":"F","bw_kg":55.03,"cmj_jh_in":15.1,"cmj_rsi":0.63,"cmj_power_bm":52.9,"iso_force_bm":40.31,"dsi":0.0645,"bucket":"Foundation","uni_flag":"OK","uni_asym_pct":3.8,"source":"both","best_010":null,"best_2030":1.2,"dsi_type":"Standard","sport":"Softball","grade":"senior","grad_year":2026,"elite_star":true,"college_commit":"UC Santa Barbara","has_vbt":true,"injuries":[{"condition":"Lower Back Pain","severity":"moderate","notes":"Chronic lower back pain \u2014 monitor loading on all hip hinge and spinal compression movements"}]},{"name":"Lola Coker","gender":"F","bw_kg":84.56,"cmj_jh_in":9.5,"cmj_rsi":0.54,"cmj_power_bm":45.0,"iso_force_bm":null,"dsi":null,"bucket":"Force Bias","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":1.83,"best_2030":null,"dsi_type":"Modified","sport":"Track & Field","grade":"sophomore","grad_year":2028,"position":"Shot Put","has_vbt":true},{"name":"Maddie Waldron","gender":"F","bw_kg":58.37,"cmj_jh_in":12.8,"cmj_rsi":0.48,"cmj_power_bm":49.4,"iso_force_bm":null,"dsi":null,"bucket":"Force Bias","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":1.774,"best_2030":null,"dsi_type":"Modified","sport":"Volleyball","grade":"junior","grad_year":2027,"elite_star":true,"college_commit":"Mercer University","has_vbt":true},{"name":"Malia Lyons","gender":"F","bw_kg":58.38,"cmj_jh_in":11.8,"cmj_rsi":0.64,"cmj_power_bm":47.6,"iso_force_bm":null,"dsi":null,"bucket":"Force Bias","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":null,"best_2030":null,"dsi_type":"Modified","sport":"Track & Field","grade":"junior","grad_year":2027,"position":"Triple Jump","has_vbt":true},{"name":"Marissa Chapman","gender":"F","bw_kg":68.17,"cmj_jh_in":6.3,"cmj_rsi":0.14,"cmj_power_bm":31.2,"iso_force_bm":27.99,"dsi":0.0671,"bucket":"Foundation","uni_flag":"RED","uni_asym_pct":48.0,"source":"both","best_010":2.12,"best_2030":1.7,"dsi_type":"Standard","sport":"Lacrosse","grade":"freshman","grad_year":2029,"has_vbt":"partial"},{"name":"Mimi Botticelli","gender":"F","bw_kg":72.51,"cmj_jh_in":6.3,"cmj_rsi":0.3,"cmj_power_bm":32.2,"iso_force_bm":30.05,"dsi":0.07,"bucket":"Foundation","uni_flag":"OK","uni_asym_pct":8.0,"source":"both","best_010":1.83,"best_2030":1.44,"dsi_type":"Standard","sport":"Softball","grade":"senior","grad_year":2026,"college_commit":"Boise State","has_vbt":true,"injuries":[{"condition":"Hip Mobility Restriction","severity":"moderate","notes":"Poor hip mobility \u2014 affects mechanics across all lower-body movements. Corrective work required before each training session"}]},{"name":"Nicolas Countreman","gender":"M","bw_kg":116.87,"cmj_jh_in":11.8,"cmj_rsi":0.36,"cmj_power_bm":48.2,"iso_force_bm":null,"dsi":null,"bucket":"Foundation","uni_flag":"ORANGE","uni_asym_pct":20.0,"source":"both","best_010":1.78,"best_2030":1.21,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027,"has_vbt":true},{"name":"Riley McGee","gender":"F","bw_kg":62.85,"cmj_jh_in":12.2,"cmj_rsi":0.54,"cmj_power_bm":49.8,"iso_force_bm":42.24,"dsi":0.0752,"bucket":"Force Bias","uni_flag":"RED","uni_asym_pct":75.0,"source":"both","best_010":null,"best_2030":1.23,"dsi_type":"Standard","sport":"Softball","grade":"sophomore","grad_year":2028,"position":"Catcher","elite_star":true,"has_vbt":true,"injuries":[{"condition":"Hamstring Strain (Active)","severity":"high","notes":"Suspected hamstring pull \u2014 active injury. NO sprinting or heavy hip hinge loading. Isometric and pain-free range only until cleared"}]},{"name":"Rowan Nishimoto","gender":"M","bw_kg":70.34,"cmj_jh_in":16.3,"cmj_rsi":1.14,"cmj_power_bm":68.1,"iso_force_bm":null,"dsi":null,"bucket":"Velocity Bias","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":1.564,"best_2030":1.1,"dsi_type":"Modified","sport":"Baseball","grade":"8th","grad_year":2030,"position":"Pitcher","prospect":true,"has_vbt":true},{"name":"Sam McCoy","gender":"M","bw_kg":72.18,"cmj_jh_in":17.0,"cmj_rsi":0.71,"cmj_power_bm":63.2,"iso_force_bm":null,"dsi":null,"bucket":"Velocity Bias","uni_flag":"OK","uni_asym_pct":0.9,"source":"both","best_010":1.58,"best_2030":1.019,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027,"position":"Pitcher","prospect":true,"has_vbt":true},{"name":"Violet Todd","gender":"F","bw_kg":67.73,"cmj_jh_in":9.1,"cmj_rsi":0.2,"cmj_power_bm":40.6,"iso_force_bm":null,"dsi":null,"bucket":"Foundation","uni_flag":"RED","uni_asym_pct":26.0,"source":"both","best_010":null,"best_2030":1.43,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028,"position":"Infielder","has_vbt":null},{"name":"Abigail Burris","gender":"F","bw_kg":65.35,"cmj_jh_in":12.6,"cmj_rsi":0.83,"cmj_power_bm":46.4,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":"RED","uni_asym_pct":65.0,"source":"both","best_010":1.701,"best_2030":null,"dsi_type":"Modified","sport":"Volleyball","grade":"junior","grad_year":2027,"position":"Setter","has_vbt":true},{"name":"Aiden Abelardo","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.7,"best_2030":1.26,"dsi_type":"N/A","sport":"Basketball","position":"Guard","grade":"sophomore","grad_year":2028,"has_vbt":"partial"},{"name":"Aj Gonzales","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.82,"best_2030":1.3,"dsi_type":"N/A","sport":"Softball/Basketball","grade":"junior","grad_year":2027,"position":"2B / Shooting Guard","has_vbt":true},{"name":"Allison Keusch","gender":"F","bw_kg":77.61,"cmj_jh_in":12.1,"cmj_rsi":0.46,"cmj_power_bm":46.5,"iso_force_bm":35.32,"dsi":null,"bucket":"N/A","uni_flag":"ORANGE","uni_asym_pct":16.0,"source":"both","best_010":1.79,"best_2030":1.28,"dsi_type":"Standard","sport":"Softball","grade":"junior","grad_year":2027,"position":"Pitcher","elite_star":true,"college_commit":"Idaho State","has_vbt":true,"injuries":[{"condition":"Hip Mobility Restriction","severity":"moderate","notes":"Poor hip mobility \u2014 limits squat depth and pitching hip-shoulder separation. Priority corrective before any loaded hip hinge or squat work"}]},{"name":"Camren Smith","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.7,"best_2030":null,"dsi_type":"N/A","sport":"Baseball","grade":"college","grad_year":2025,"position":"Outfielder","college_commit":"Edmonds College","has_vbt":"partial"},{"name":"Cohen Mugford","gender":"M","bw_kg":80.74,"cmj_jh_in":16.6,"cmj_rsi":0.91,"cmj_power_bm":57.3,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":"OK","uni_asym_pct":2.1,"source":"both","best_010":1.63,"best_2030":null,"dsi_type":"Modified","sport":"Football","grade":"freshman","grad_year":2029,"position":"Receiver","prospect":true,"has_vbt":true,"dj_rsi":1.62,"sqj_power_bm":58.6,"slj_l_wkg":36.8,"slj_r_wkg":37.6,"injuries":[{"condition":"Low Back Pain — Landing Mechanics","severity":"moderate","notes":"Leaning outside his frame on landings \u2014 lateral torso deviation causing lumbar loading. Reinforce midline stability on all landing and deceleration work. No heavy axial loading until pattern is corrected. Priority: single-leg landing drills, hip hinge pattern, anterior core bracing cues."}]},{"name":"Eddie Lucero","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.7,"best_2030":1.22,"dsi_type":"N/A","sport":"Baseball","grade":"junior","grad_year":2027,"position":"Pitcher","has_vbt":true},{"name":"Ella Chadwick","gender":"F","bw_kg":59.57,"cmj_jh_in":13.3,"cmj_rsi":0.9,"cmj_power_bm":50.7,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":"OK","uni_asym_pct":0.9,"source":"both","best_010":null,"best_2030":1.21,"dsi_type":"Modified","sport":"Softball","grade":"freshman","grad_year":2029,"position":"Outfielder","prospect":true,"has_vbt":true},{"name":"Gabby Nevarez","gender":"F","bw_kg":68.13,"cmj_jh_in":16.2,"cmj_rsi":0.55,"cmj_power_bm":54.7,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":"RED","uni_asym_pct":41.0,"source":"both","best_010":1.69,"best_2030":1.23,"dsi_type":"Modified","sport":"Softball","grade":"senior","grad_year":2026,"position":"Center Field","elite_star":true,"college_commit":"University of Arizona","has_vbt":true},{"name":"Kaimana Coleman","gender":"F","bw_kg":66.18,"cmj_jh_in":17.1,"cmj_rsi":0.66,"cmj_power_bm":55.0,"iso_force_bm":32.25,"dsi":null,"bucket":"Velocity Bias","uni_flag":"OK","uni_asym_pct":8.4,"source":"both","best_010":1.742,"best_2030":1.281,"dsi_type":"Standard","sport":"Softball","grade":"junior","grad_year":2027,"position":"Catcher","elite_star":true,"college_commit":"Northwestern","has_vbt":true,"injuries":[{"condition":"Low Back Pain (Intermittent)","severity":"low","notes":"Intermittent low back pain \u2014 monitor during heavy loaded movements. Reinforce anterior core stability and hip hinge pattern"}]},{"name":"Kassidy King","gender":"F","bw_kg":68.47,"cmj_jh_in":16.7,"cmj_rsi":0.54,"cmj_power_bm":54.4,"iso_force_bm":34.79,"dsi":null,"bucket":"N/A","uni_flag":"ORANGE","uni_asym_pct":18.0,"source":"both","best_010":1.7,"best_2030":1.17,"dsi_type":"Standard","sport":"Softball","grade":"junior","grad_year":2027,"position":"Pitcher","elite_star":true,"college_commit":"Idaho State","has_vbt":true,"injuries":[{"condition":"Trap/Neck Tightness","severity":"low","notes":"Tight upper traps \u2014 likely from pitching mechanics and posture. Impacts shoulder range of motion and throwing arm health"}]},{"name":"Lillian Ford","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.83,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"junior","grad_year":2027,"position":"Middle Hitter","has_vbt":null},{"name":"Lily Barstad","gender":"F","bw_kg":94.18,"cmj_jh_in":12.6,"cmj_rsi":0.33,"cmj_power_bm":42.7,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":"RED","uni_asym_pct":31.0,"source":"both","best_010":null,"best_2030":1.3,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028,"position":"Catcher","has_vbt":true},{"name":"Lucas Black","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.72,"best_2030":1.23,"dsi_type":"N/A","sport":"Volleyball","grade":"freshman","grad_year":2029,"position":"Libero","has_vbt":"partial"},{"name":"Maizie Smith","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.9,"best_2030":1.36,"dsi_type":"N/A","sport":"Softball","grade":"sophomore","grad_year":2028,"position":"3B","has_vbt":true},{"name":"Malia Jones","gender":"F","bw_kg":56.41,"cmj_jh_in":16.2,"cmj_rsi":0.61,"cmj_power_bm":54.7,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":"ORANGE","uni_asym_pct":16.0,"source":"both","best_010":1.48,"best_2030":1.14,"dsi_type":"Modified","sport":"Track & Field","grade":"junior","grad_year":2027,"position":"Long Jump / Triple Jump / Sprints","prospect":true,"has_vbt":true},{"name":"Maximus Marchi","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.81,"best_2030":1.26,"dsi_type":"N/A","sport":"Cross Country","grade":"senior","grad_year":2026,"position":"Distance Runner","has_vbt":true},{"name":"Mckayla Zuber","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.77,"best_2030":null,"dsi_type":"N/A","sport":"Soccer","grade":"sophomore","grad_year":2028,"position":"Defender","prospect":true,"has_vbt":true},{"name":"Mya Gonzalez","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.78,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"sophomore","grad_year":2028,"position":"Libero","has_vbt":true},{"name":"Peyton Cantu","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.61,"best_2030":1.3,"dsi_type":"N/A","sport":"Lacrosse","grade":"senior","grad_year":2026,"position":"Goalie","has_vbt":true},{"name":"Robert Ghazaryan","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.7,"best_2030":null,"dsi_type":"N/A","sport":"Basketball","grade":"freshman","grad_year":2029,"position":"Forward","has_vbt":"partial"},{"name":"Ryan Chenoweth","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.56,"best_2030":1.14,"dsi_type":"N/A","sport":"Baseball","grade":"freshman","grad_year":2029,"position":"Pitcher","prospect":true,"has_vbt":true},{"name":"Serenity Humphrey","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.992,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"junior","grad_year":2027,"position":"Middle Hitter","has_vbt":true},{"name":"Skylar Gosselin","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.86,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"junior","grad_year":2027,"position":"Outside Hitter","has_vbt":true},{"name":"Sophia Covarrubias","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.86,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"freshman","grad_year":2029,"position":"Outside Hitter","has_vbt":"partial"},{"name":"Sophia Reilly","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.91,"best_2030":1.37,"dsi_type":"N/A","sport":"Softball/Track & Field","grade":"junior","grad_year":2027,"position":"Outfielder","has_vbt":true},{"name":"Travis Perry","gender":"M","bw_kg":90.55,"cmj_jh_in":19.6,"cmj_rsi":0.7,"cmj_power_bm":62.0,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":"RED","uni_asym_pct":31.0,"source":"both","best_010":1.59,"best_2030":1.07,"dsi_type":"Modified","sport":"Baseball","grade":"senior","grad_year":2026,"position":"Catcher","college_commit":"Regis College","elite_star":true,"has_vbt":true},{"name":"Caden dearth","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.14,"dsi_type":"N/A","sport":"Basketball","grade":"junior","grad_year":2027,"position":"Guard","has_vbt":true},{"name":"Connor Bishop","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.17,"dsi_type":"N/A","sport":"Soccer","grade":"senior","grad_year":2026,"position":"Forward","has_vbt":null},{"name":"Gavin Seeman","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.18,"dsi_type":"N/A","sport":"Basketball","grade":"freshman","grad_year":2029,"position":"Forward","prospect":true,"has_vbt":true},{"name":"Hank Brown","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.3,"dsi_type":"N/A","sport":"Baseball","grade":"sophomore","grad_year":2028,"position":"Pitcher","has_vbt":true},{"name":"Jack Johnson","gender":"M","bw_kg":59.81,"cmj_jh_in":15.7,"cmj_rsi":0.58,"cmj_power_bm":60.9,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":"OK","uni_asym_pct":5.2,"source":"both","best_010":null,"best_2030":1.21,"dsi_type":"Modified","sport":"Wrestling","grade":"freshman","grad_year":2029,"has_vbt":true},{"name":"KJ Mendiola","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.34,"dsi_type":"N/A","sport":"Soccer","grade":"junior","grad_year":2027,"position":"Forward","has_vbt":"partial"},{"name":"Kam Labauve","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.21,"dsi_type":"N/A","sport":"Baseball","grade":"freshman","grad_year":2029,"position":"Pitcher","has_vbt":"partial"},{"name":"Mia Reynoso","gender":"F","bw_kg":67.68,"cmj_jh_in":10.6,"cmj_rsi":0.53,"cmj_power_bm":49.5,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":"RED","uni_asym_pct":53.0,"source":"both","best_010":null,"best_2030":1.26,"dsi_type":"Modified","sport":"Softball","grade":"senior","grad_year":2026,"position":"Infielder","has_vbt":null},{"name":"Peter Graves","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.21,"dsi_type":"N/A","sport":"Basketball","grade":"freshman","grad_year":2029,"position":"Forward","has_vbt":"partial"},{"name":"Kai Fennell","gender":"M","bw_kg":62.21,"cmj_jh_in":12.5,"cmj_rsi":0.58,"cmj_power_bm":50.5,"iso_force_bm":null,"dsi":null,"bucket":"Force Bias","uni_flag":"RED","uni_asym_pct":36.0,"source":"both","best_010":1.781,"best_2030":null,"dsi_type":"Modified","sport":"Lacrosse","grade":"freshman","grad_year":2029,"position":"Attacker","has_vbt":"partial"},{"name":"Addy Raphael","bw_kg":57.04,"source":"both","bucket":"N/A","dsi_type":"Standard","cmj_jh_in":12.8,"cmj_rsi":0.44,"cmj_power_bm":48.1,"iso_force_bm":28.58,"dsi":null,"uni_flag":"OK","uni_asym_pct":2.3,"best_010":null,"best_2030":null,"sport":"Softball","grade":"junior","grad_year":2027,"position":"Outfielder","elite_star":true,"gender":"F","college_commit":"Idaho State","has_vbt":true,"injuries":[{"condition":"Lower Back Pain","severity":"moderate","notes":"Lower back pain \u2014 prioritize anterior core activation and hip hinge motor pattern quality"}]},{"name":"Caden Morente","bw_kg":57.1,"source":"vbt_only","bucket":"N/A","dsi_type":"N/A","cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"uni_flag":null,"uni_asym_pct":null,"best_010":null,"best_2030":null,"sport":"Basketball","grade":"sophomore","grad_year":2028,"position":"Guard","gender":"M","has_vbt":"partial"},{"name":"Caleb Peters","bw_kg":79.4,"source":"vbt_only","bucket":"N/A","dsi_type":"N/A","cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"uni_flag":null,"uni_asym_pct":null,"best_010":null,"best_2030":null,"sport":"Basketball","grade":"sophomore","grad_year":2028,"position":"Guard","gender":"M","has_vbt":"partial"},{"name":"Christiana Samuel","bw_kg":null,"source":"vbt_only","bucket":"N/A","dsi_type":"N/A","cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"uni_flag":null,"uni_asym_pct":null,"best_010":null,"best_2030":null,"sport":"Basketball","grade":"junior","grad_year":2027,"position":"Forward","gender":"F","has_vbt":null},{"name":"Christine Pham","bw_kg":null,"source":"vbt_only","bucket":"N/A","dsi_type":"N/A","cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"uni_flag":null,"uni_asym_pct":null,"best_010":null,"best_2030":null,"sport":"Basketball","grade":"sophomore","grad_year":2028,"position":"Guard","gender":"F","has_vbt":"partial"},{"name":"Greyden Kress","bw_kg":70.3,"source":"vbt_only","bucket":"N/A","dsi_type":"N/A","cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"uni_flag":null,"uni_asym_pct":null,"best_010":null,"best_2030":null,"sport":"Basketball","grade":"sophomore","grad_year":2028,"position":"Guard","gender":"M","has_vbt":null},{"name":"Jordyn Raphael","bw_kg":56.7,"source":"vbt_only","bucket":"N/A","dsi_type":"N/A","cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"uni_flag":null,"uni_asym_pct":null,"best_010":null,"best_2030":null,"sport":"Volleyball","grade":"freshman","grad_year":2029,"position":"Outside Hitter","gender":"F","has_vbt":"partial"},{"name":"Will Pearson","bw_kg":null,"source":"vbt_only","bucket":"N/A","dsi_type":"N/A","cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"uni_flag":null,"uni_asym_pct":null,"best_010":null,"best_2030":null,"sport":"Lacrosse","grade":"junior","grad_year":2027,"position":"Attacker","gender":"M","has_vbt":true}];;;;;
+
+// ─── BEGINNER ATHLETES (ages 8–11, baseline date 2026-01-01) ────────────────
+const B = [
+{"name":"Norah Adams","gender":"F","grade_level":"3rd","grad_year":2035,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":null,"fly_1020":1.662,"fly_2030":null,"five_ten_five":null,"stand_vert":6.23,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Curren Carter","gender":"M","grade_level":"5th","grad_year":2033,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":2.15,"broad_jump":89,"fly_1020":1.56,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null,"vert_jump":18}]},
+{"name":"Jair Chavez","gender":"M","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":null,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Jenner Chung","gender":"M","grade_level":"5th","grad_year":2033,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":1.92,"broad_jump":66,"fly_1020":1.61,"fly_2030":3.38,"five_ten_five":5.43,"stand_vert":null,"approach_vert":null,"four_hop":2.22,"bw_sled_push":null,"pushups":127,"vert_jump":29}]},
+{"name":"Breck Cole","gender":"M","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":null,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Jagger Cole","gender":"M","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":null,"fly_1020":1.796,"fly_2030":null,"five_ten_five":null,"stand_vert":5.83,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"David Cordova","gender":"M","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":null,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Lucas De Lara","gender":"M","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":54,"fly_1020":1.77,"fly_2030":null,"five_ten_five":6.48,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":85,"vert_jump":23}]},
+{"name":"Carys Drake","gender":"F","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":2.29,"broad_jump":49,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Ashton Ehlke","gender":"M","grade_level":"5th","grad_year":2033,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":null,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Kainoa Fifita","gender":"M","grade_level":"2nd","grad_year":2036,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":1.95,"broad_jump":70,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Troy Filipovitch","gender":"M","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":null,"fly_1020":1.656,"fly_2030":null,"five_ten_five":null,"stand_vert":5.77,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Owen Hajjar","gender":"M","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":null,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Dane Howe","gender":"M","grade_level":"3rd","grad_year":2035,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":null,"fly_1020":1.73,"fly_2030":null,"five_ten_five":5.82,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Jaxon Howe","gender":"M","grade_level":"5th","grad_year":2033,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":null,"fly_1020":1.39,"fly_2030":2.88,"five_ten_five":5.03,"stand_vert":null,"approach_vert":null,"four_hop":2.13,"bw_sled_push":null,"pushups":null}]},
+{"name":"Luke Jacobellis","gender":"M","grade_level":"2nd","grad_year":2036,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":2.49,"broad_jump":59,"fly_1020":1.77,"fly_2030":3.78,"five_ten_five":5.99,"stand_vert":6.13,"approach_vert":null,"four_hop":1.6,"bw_sled_push":null,"pushups":null,"vert_jump":24}]},
+{"name":"Rocco Jacobellis","gender":"M","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":2.35,"broad_jump":null,"fly_1020":1.8,"fly_2030":3.56,"five_ten_five":5.09,"stand_vert":5.8,"approach_vert":null,"four_hop":1.13,"bw_sled_push":null,"pushups":12}]},
+{"name":"Tanner Johnson","gender":"M","grade_level":"3rd","grad_year":2035,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":1.98,"broad_jump":71,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Graham Junesu","gender":"M","grade_level":"3rd","grad_year":2035,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":1.99,"broad_jump":null,"fly_1020":1.54,"fly_2030":null,"five_ten_five":5.36,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Colette Junesu","gender":"F","grade_level":"5th","grad_year":2033,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":1.99,"broad_jump":null,"fly_1020":1.55,"fly_2030":null,"five_ten_five":5.48,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Aiden Kassam","gender":"M","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":null,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Rylen Khiev","gender":"M","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":null,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Maddy Lee","gender":"F","grade_level":"3rd","grad_year":2035,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":null,"fly_1020":1.555,"fly_2030":null,"five_ten_five":null,"stand_vert":6.1,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Mario Luis","gender":"M","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":null,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Ky Maga","gender":"M","grade_level":"5th","grad_year":2033,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":1.96,"broad_jump":72,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Greyson Marshall","gender":"M","grade_level":"5th","grad_year":2033,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":72,"fly_1020":1.47,"fly_2030":null,"five_ten_five":5.27,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":131,"vert_jump":30}]},
+{"name":"Colin McCloskey","gender":"M","grade_level":"5th","grad_year":2033,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":1.865,"broad_jump":69,"fly_1020":1.51,"fly_2030":null,"five_ten_five":5.48,"stand_vert":5.2,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Michael McTigue","gender":"M","grade_level":"5th","grad_year":2033,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":1.87,"broad_jump":75,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Connor Nash","gender":"M","grade_level":"5th","grad_year":2033,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":1.89,"broad_jump":null,"fly_1020":1.48,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Kyle Nash","gender":"M","grade_level":"2nd","grad_year":2036,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":2.0,"broad_jump":null,"fly_1020":1.64,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Mateo Nieves","gender":"M","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":null,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Alex Nishimoto","gender":"M","grade_level":"5th","grad_year":2033,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":2.03,"broad_jump":65,"fly_1020":1.69,"fly_2030":null,"five_ten_five":5.66,"stand_vert":5.6,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":81,"vert_jump":29}]},
+{"name":"Tyus Nishimoto","gender":"M","grade_level":"5th","grad_year":2033,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":2.01,"broad_jump":69,"fly_1020":1.7,"fly_2030":null,"five_ten_five":5.73,"stand_vert":5.8,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":120,"vert_jump":29}]},
+{"name":"Viaan Patel","gender":"M","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":71,"fly_1020":1.6,"fly_2030":null,"five_ten_five":5.68,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":100,"vert_jump":29}]},
+{"name":"Amari Peters","gender":"M","grade_level":"5th","grad_year":2033,"beginner":true,"intermediate":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":null,"fly_1020":1.51,"fly_2030":2.97,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":1.9,"bw_sled_push":null,"pushups":16}]},
+{"name":"Decimus Puaauli","gender":"M","grade_level":"5th","grad_year":2033,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":2.15,"broad_jump":56,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Phoenix Rabold","gender":"M","grade_level":"5th","grad_year":2033,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":1.94,"broad_jump":68,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Evan Ridge","gender":"M","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":1.92,"broad_jump":71,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Joseph Rodriguez Escobar","gender":"M","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":2.15,"broad_jump":66,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Tanner Roper","gender":"M","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":null,"fly_1020":null,"fly_2030":null,"five_ten_five":5.94,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":125,"pushups":35}]},
+{"name":"Apollo Ruiz","gender":"M","grade_level":"5th","grad_year":2033,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":2.1,"broad_jump":null,"fly_1020":1.6,"fly_2030":3.21,"five_ten_five":5.77,"stand_vert":null,"approach_vert":null,"four_hop":1.64,"bw_sled_push":null,"pushups":15}]},
+{"name":"Ra Ruiz","gender":"M","grade_level":"6th","grad_year":2032,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":2.2,"broad_jump":null,"fly_1020":1.7,"fly_2030":3.54,"five_ten_five":5.83,"stand_vert":null,"approach_vert":null,"four_hop":1.9,"bw_sled_push":null,"pushups":null}]},
+{"name":"Maveric Scott","gender":"M","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":null,"broad_jump":null,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Emma Terry","gender":"F","grade_level":"5th","grad_year":2033,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":1.951,"broad_jump":66,"fly_1020":null,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Noah Turner","gender":"M","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":2.0,"broad_jump":null,"fly_1020":1.56,"fly_2030":3.14,"five_ten_five":5.03,"stand_vert":null,"approach_vert":null,"four_hop":1.8,"bw_sled_push":null,"pushups":17}]},
+{"name":"Nico Valdivia","gender":"M","grade_level":"5th","grad_year":2033,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":2.1,"broad_jump":null,"fly_1020":1.5,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]},
+{"name":"Sid Vanguru","gender":"M","grade_level":"4th","grad_year":2034,"beginner":true,"sport":"Youth Speed","records":[{"date":"2026-01-01","accel_010":2.2,"broad_jump":null,"fly_1020":1.54,"fly_2030":null,"five_ten_five":null,"stand_vert":null,"approach_vert":null,"four_hop":null,"bw_sled_push":null,"pushups":null}]}
+];
+// Merge beginners into main A array (beginner flag keeps them excluded from leaderboards/percentiles)
+A.push(...B);
+
 
 // =====================================================
 // AUTH
@@ -1042,7 +1131,10 @@ const PIN_HASHES = {
   'Ty':      '084d9897d40c63e437d57e2c4bd01e889ca4781088b5a73aa9761d6134993a75',
   'Matthew': 'c3e64604cb6275890df269cce33991366a0a008a53c5b639206a802759c21fb1',
   'Jake':    'af34ee645e2a6dda5e82265a028664f98b75946d1e73f978915208817609ae79',
+  'Megan':   'a48317286e0445e807090fe301da37ceb30a15c4df3aa6c06a8d9cde05c0fd83',
 };
+// Access levels: masterMode=Desean; directEdit=Desean,Ty,Annie; batchSubmit=Megan
+const DIRECT_EDIT_COACHES = ['Desean','Ty'];
 
 const coachPhotos = {}; // name → base64 data URL
 
@@ -1110,7 +1202,7 @@ function logoutCoach() {
   document.getElementById('coach-indicator').style.display = 'none';
   document.getElementById('mode-label').textContent = 'Public view — coach login required to see body weight';
   // Tools wheel handles visibility
-  switchTab('rankings');
+  navSwitch('lookup');
   updatePublicCoachView();
   render();
 }
@@ -1126,19 +1218,21 @@ function updatePublicCoachView() {
   var filters = document.getElementById('coach-filters');
   var statsBar = document.querySelector('.stats-bar');
   var cnt = document.getElementById('content');
+  var pubLbSection = document.getElementById('pub-lb-section');
   if (!landing || !filters) return;
   var isCoach = coachMode || masterMode;
-  landing.style.display = isCoach ? 'none' : 'block';
+  // Public landing always visible; coach filters shown when logged in
+  landing.style.display = 'block';
   filters.style.display  = isCoach ? '' : 'none';
   if (statsBar) statsBar.style.display = isCoach ? '' : 'none';
   if (cnt) cnt.style.display = isCoach ? '' : 'none';
-  if (!isCoach) {
-    // Clear public search on logout
-    var ps = document.getElementById('pub-search');
-    if(ps) ps.value = '';
-    var pr = document.getElementById('pub-results');
-    if(pr) pr.innerHTML = '';
-  }
+  // Public leaderboard: only when NOT coach
+  if (pubLbSection) pubLbSection.style.display = isCoach ? 'none' : 'block';
+  // Show/hide coach-only tool sub-tabs
+  document.querySelectorAll('.tools-coach-only').forEach(el=>el.style.display=(isCoach?'':'none'));
+  document.querySelectorAll('.tools-master-only').forEach(el=>el.style.display=(masterMode?'':'none'));
+  // Render public leaderboards
+  if (!isCoach) renderPublicLeaderboards();
 }
 
 // Public athlete search
@@ -1162,7 +1256,7 @@ function renderPublicSearch() {
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">' +
       '<div style="font-size:14px;font-weight:700;color:#e6edf3">' + a.name + '</div>' +
       '<span style="font-size:12px;color:#C9A228">›</span></div>' +
-      '<div style="font-size:11px;color:#6a8aa8;margin-bottom:6px">' + (a.sport||'—') + ' · ' + cs(a.grad_year) + (a.position ? ' · ' + a.position : '') + '</div>' +
+      '<div style="font-size:11px;color:#6a8aa8;margin-bottom:6px">' + (a.beginner?'<span style="background:#1a2e0a;border:1px solid #4af08a;color:#4af08a;font-size:9px;padding:1px 5px;border-radius:4px;margin-right:4px">BEGINNERS</span>':'') + (a.sport||'—') + ' · ' + cs(a.grad_year) + (a.position ? ' · ' + a.position : '') + '</div>' +
       (pills.length ? '<div style="display:flex;gap:4px;flex-wrap:wrap">' + pills.join('') + '</div>' : '<div style="font-size:10px;color:#3a5a7a">Limited data — tap to view profile</div>') +
       '</div>';
   }).join('');
@@ -1209,12 +1303,12 @@ function lbRow(rank, a, key, unit, fmt) {
 function lbSection(title, icon, color, athletes, key, unit, fmt) {
   var sorted = athletes.filter(function(a){ return a[key]!=null; })
     .sort(function(a,b){ return (b[key]??-1)-(a[key]??-1); })
-    .slice(0,10);
+    .slice(0,5);
   var h = '<div style="background:#060f18;border:1px solid #1e3a5f;border-radius:12px;padding:14px;margin-bottom:16px">';
   h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
   h += '<span style="font-size:18px">' + icon + '</span>';
   h += '<div style="flex:1"><div style="font-size:13px;font-weight:800;color:' + color + '">' + title + '</div>';
-  h += '<div style="font-size:9px;color:#4a6a8a;text-transform:uppercase;letter-spacing:.5px">Top 10 · ' + sorted.length + ' athletes with data</div></div>';
+  h += '<div style="font-size:9px;color:#4a6a8a;text-transform:uppercase;letter-spacing:.5px">Top 5 · ' + sorted.length + ' athletes with data</div></div>';
   h += '</div>';
   if (!sorted.length) {
     h += '<div style="text-align:center;color:#3a5a7a;font-size:11px;padding:12px">No data recorded yet — check back soon</div>';
@@ -1247,9 +1341,9 @@ function renderLeaderboards() {
     if (sport && a.sport !== sport) return false;
     if (ageBand) {
       if (!a.grad_year) return false;
-      var parts = ageBand.split('-').map(Number);
-      if (a.grad_year < parts[0] || a.grad_year > parts[1]) return false;
+      if (String(a.grad_year) !== ageBand) return false;
     }
+    if (a.beginner) return false;  // beginners excluded from leaderboards
     return true;
   });
   var gLabel = _lbGender==='M' ? 'Male' : 'Female';
@@ -1263,6 +1357,37 @@ function renderLeaderboards() {
   h += lbSection('Bench Peak Power', '🏋️', '#f0a04a', pool, 'bench_pp', ' W/kg', null);
   h += lbSection('Back Squat Peak Power', '🦵', '#f04a8a', pool, 'squat_pp', ' W/kg', null);
   h += lbSection('Trap Bar Deadlift Peak Power', '🔩', '#a078f0', pool, 'trapbar_pp', ' W/kg', null);
+  h += lbSection('Power Clean — Max Weight', '🏅', '#ffd700', pool, 'power_clean_kg', ' kg',
+    function(v){ return v+' kg ('+Math.round(v*2.205)+' lbs)'; });
+  out.innerHTML = h;
+}
+
+
+// ─── PUBLIC LEADERBOARD (top 5, no login needed) ─────────────────────
+var _pubLbGender = 'M';
+function pubLbSetGender(g) {
+  _pubLbGender = g;
+  ['M','F'].forEach(function(x){
+    var btn = document.getElementById('pub-lb-' + (x==='M'?'male':'female') + '-btn');
+    if(!btn) return;
+    btn.style.background = (x===g) ? '#1e3a5f' : '#0a1520';
+    btn.style.borderColor = (x===g) ? '#C9A228' : '#2a4a6a';
+    btn.style.color = (x===g) ? '#C9A228' : '#6a8aa8';
+  });
+  renderPublicLeaderboards();
+}
+function renderPublicLeaderboards() {
+  var out = document.getElementById('pub-lb-output');
+  if (!out) return;
+  var pool = A.filter(function(a){ return a.gender === _pubLbGender && !a.beginner; });
+  var gLabel = _pubLbGender==='M' ? '♂ Male' : '♀ Female';
+  var h = '<div style="font-size:10px;color:#6a8aa8;margin-bottom:10px">' + gLabel + ' · ' + pool.length + ' athletes in pool</div>';
+  h += lbSection('CMJ Jump Height', '⬆️', '#C9A228', pool, 'cmj_jh_in', '"', null);
+  h += lbSection('Reactive Strength Index (RSI)', '⚡', '#4a8af0', pool, 'cmj_rsi', '', null);
+  h += lbSection('CMJ Peak Power', '💥', '#4af08a', pool, 'cmj_power_bm', ' W/kg', null);
+  h += lbSection('Bench Peak Power', '🏋️', '#f0a04a', pool, 'bench_pp', ' W/kg', null);
+  h += lbSection('Back Squat Peak Power', '🦵', '#f04a8a', pool, 'squat_pp', ' W/kg', null);
+  h += lbSection('Trap Bar DL Peak Power', '🔩', '#a078f0', pool, 'trapbar_pp', ' W/kg', null);
   h += lbSection('Power Clean — Max Weight', '🏅', '#ffd700', pool, 'power_clean_kg', ' kg',
     function(v){ return v+' kg ('+Math.round(v*2.205)+' lbs)'; });
   out.innerHTML = h;
@@ -1299,7 +1424,9 @@ function pctOf(val, arr, hi) {
 }
 
 function computeScores() {
-  const F = A.filter(a=>a.gender==='F'), M = A.filter(a=>a.gender==='M');
+  // Exclude beginners from peer percentile calculations
+  const F = A.filter(a=>a.gender==='F' && !a.beginner);
+  const M = A.filter(a=>a.gender==='M' && !a.beginner);
   A.forEach(a => {
     const peers = a.gender==='F' ? F : M;
     let ws=0, wt=0, mp={};
@@ -1404,7 +1531,7 @@ function resetFilters() {
   render();
 }
 function switchTab(t) {
-  ['rankings','compare','1rm','velocity','forty','staff'].forEach(p=>{
+  ['lookup','compare','tools'].forEach(p=>{
     const el = document.getElementById('tab-'+p);
     if(el) el.classList.toggle('active', p===t);
   });
@@ -1414,7 +1541,20 @@ function navSwitch(t) {
   const btn = document.getElementById('nav-'+t);
   if(btn) btn.classList.add('active');
   switchTab(t);
-  if (t === 'leaderboards') renderLeaderboards();
+  if (t === 'tools') { renderLeaderboards(); renderStaffTab(); }
+  if (t === 'lookup') renderPublicLeaderboards();
+}
+var _toolsSub = 'boards';
+function toolsSub(name) {
+  _toolsSub = name;
+  document.querySelectorAll('.tsub-btn').forEach(b=>b.classList.remove('tsub-active'));
+  const btn = document.getElementById('tsub-'+name);
+  if(btn) btn.classList.add('tsub-active');
+  document.querySelectorAll('.tools-panel').forEach(p=>p.style.display='none');
+  const panel = document.getElementById('tpanel-'+name);
+  if(panel) panel.style.display='block';
+  if(name==='boards') renderLeaderboards();
+  if(name==='staff') renderStaffTab();
 }
 function cs(y) { return y ? `Class of '${String(y).slice(2)}` : ''; }
 function bucketClass(b) { return{'Apex':'bApex','Velocity Bias':'bVelocityBias','Force Bias':'bForceBias','Foundation':'bFoundation'}[b]||'bNA'; }
@@ -3899,8 +4039,9 @@ function sprintCard(time, dist, sport, acc, accCls, accNote, style, mph) {
 function init() {
   computeScores();
   updatePublicCoachView();
+  renderPublicLeaderboards();
   const sel = document.getElementById('f-sport');
-  [...new Set(A.map(a=>a.sport).filter(Boolean))].sort().forEach(s=>{
+  [...new Set(A.filter(a=>!a.beginner).map(a=>a.sport).filter(Boolean))].sort().forEach(s=>{
     const o=document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o);
   });
   render();
