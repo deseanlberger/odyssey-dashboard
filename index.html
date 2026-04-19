@@ -912,10 +912,6 @@ select:focus{border-color:#C9A228}
         <input id="tp-sport" type="text" placeholder="Multi-Sport" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none;box-sizing:border-box">
       </div>
       <div>
-        <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Total Weeks</label>
-        <input id="tp-weeks" type="number" value="16" min="4" max="53" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none;box-sizing:border-box">
-      </div>
-      <div>
         <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Start Date</label>
         <input id="tp-start" type="date" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none;box-sizing:border-box">
       </div>
@@ -927,62 +923,41 @@ select:focus{border-color:#C9A228}
           <option value="Beginner">Beginner — EMOM</option>
         </select>
       </div>
-      <div>
-        <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Output Level</label>
-        <select id="tp-level" onchange="tpUpdateSelectors()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
-          <option value="macro">Macrocycle — Full Overview</option>
-          <option value="meso">Mesocycle — Phase Detail</option>
-          <option value="micro">Microcycle — Week Breakdown</option>
-          <option value="session">Session — Day Program</option>
-        </select>
-      </div>
       <div style="grid-column:1/-1">
-        <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Days per Week</label>
-        <div style="display:flex;gap:8px">
-          <button id="tp-days-3" onclick="tpSetDays(3)" style="flex:1;background:#1e3a5f;border:2px solid #C9A228;color:#C9A228;border-radius:8px;padding:8px;font-size:13px;font-weight:700;cursor:pointer">3 Days</button>
-          <button id="tp-days-4" onclick="tpSetDays(4)" style="flex:1;background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px;font-size:13px;font-weight:700;cursor:pointer">4 Days</button>
+        <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Output Level</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px">
+          <button id="tp-lvl-macro" onclick="tpSetLevel('macro')" style="background:#1e3a5f;border:2px solid #C9A228;color:#C9A228;border-radius:8px;padding:8px 4px;font-size:11px;font-weight:700;cursor:pointer">Macrocycle</button>
+          <button id="tp-lvl-meso" onclick="tpSetLevel('meso')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 4px;font-size:11px;font-weight:700;cursor:pointer">Mesocycle</button>
+          <button id="tp-lvl-micro" onclick="tpSetLevel('micro')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 4px;font-size:11px;font-weight:700;cursor:pointer">Microcycle</button>
+          <button id="tp-lvl-session" onclick="tpSetLevel('session')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 4px;font-size:11px;font-weight:700;cursor:pointer">Session</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-top:4px">
+          <div style="font-size:9px;color:#4a6a8a;text-align:center">4 phases × 12 wks</div>
+          <div style="font-size:9px;color:#4a6a8a;text-align:center">1 phase = 12 wks</div>
+          <div style="font-size:9px;color:#4a6a8a;text-align:center">1 block = 4 wks</div>
+          <div style="font-size:9px;color:#4a6a8a;text-align:center">3-day week</div>
         </div>
       </div>
     </div>
     <div id="tp-phase-row" style="display:none;margin-bottom:10px">
-      <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Phase / Block</label>
-      <select id="tp-phase" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
-        <optgroup label="⚡ Power Production">
-          <option value="power_gpp">GPP — General Physical Prep</option>
-          <option value="power_force">Force — High Intensity (80-87%)</option>
-          <option value="power_power">Power — Contrast (75-85%)</option>
-          <option value="power_velocity">Velocity — Speed-Strength (60-75%)</option>
-          <option value="power_test">Test Week — Deload + Assessment</option>
-        </optgroup>
-        <optgroup label="🔄 Triphasic">
-          <option value="triphasic_gpp">GPP — General Physical Prep</option>
-          <option value="triphasic_eccentric">Eccentric — 3s Lowering</option>
-          <option value="triphasic_isometric">Isometric — 4s Pause</option>
-          <option value="triphasic_concentric">Concentric — Explosive</option>
-          <option value="triphasic_test">Test Week — Deload + Assessment</option>
-        </optgroup>
+      <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Phase</label>
+      <select id="tp-phase" onchange="tpUpdateBlockOptions()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
+        <option value="0">Phase 1 — Power Production (Wks 1–12)</option>
+        <option value="1">Phase 2 — Triphasic (Wks 13–24)</option>
+        <option value="2">Phase 3 — Power Production (Wks 25–36)</option>
+        <option value="3">Phase 4 — Triphasic Advanced (Wks 37–48)</option>
       </select>
     </div>
-    <div id="tp-week-row" style="display:none;margin-bottom:10px">
-      <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Week in Phase</label>
-      <select id="tp-week" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
-        <option value="1">Week 1 — Base</option>
-        <option value="2">Week 2 — Load</option>
-        <option value="3">Week 3 — Load+</option>
-        <option value="4">Week 4 — CNS Reset</option>
+    <div id="tp-block-row" style="display:none;margin-bottom:10px">
+      <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Block</label>
+      <select id="tp-block" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
+        <option value="0">Block 1 — High Force (85–92%)</option>
+        <option value="1">Block 2 — Power (75–85%)</option>
+        <option value="2">Block 3 — Velocity (60–75%)</option>
       </select>
     </div>
-    <div id="tp-day-row" style="display:none;margin-bottom:10px">
-      <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Training Day</label>
-      <select id="tp-day" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
-        <option value="1">Day 1 — Strength + Power</option>
-        <option value="2">Day 2 — Speed + Jump</option>
-        <option value="3">Day 3 — Supplemental + Support</option>
-        <option value="4" style="display:none">Day 4 — Recovery + T3 Support</option>
-      </select>
-    </div>
-    <button onclick="tpGen()" style="width:100%;background:#1e3a5f;border:none;color:#C9A228;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:12px">⚡ Generate Program</button>
-    <div id="tp-output"><div style="color:#3a5a7a;font-size:12px;text-align:center;padding:20px">Set your parameters above and tap Generate Program.</div></div>
+    <button onclick="tpGen()" style="width:100%;background:#1e3a5f;border:none;color:#C9A228;border-radius:8px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:12px">⚡ Generate Program</button>
+    <div id="tp-output"><div style="color:#3a5a7a;font-size:12px;text-align:center;padding:20px">Select output level above and tap Generate Program.</div></div>
     <button id="tp-print-btn" onclick="tpPrint()" style="display:none;width:100%;background:#0a1520;border:1px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px;font-size:12px;cursor:pointer;margin-top:10px">🖨️ Print Program</button>
   </div>
 </div>
@@ -1647,97 +1622,122 @@ function pbPrint() {
 // ═══════════════════════════════════════════════════════════════
 // TEAM PROGRAM BUILDER
 // ═══════════════════════════════════════════════════════════════
-var TP_DATA = {
-  power: {
-    blocks: {
-      gpp:      { label:'GPP', quality:[4,3,2,5,1], t1:'Back Squat / Trap Bar DL', t1rep:'4\xd76 @ 70%', t2:'Romanian DL / DB Split Squat', t2rep:'3\xd78', t3:'Giant Set 30"/30"', speed:'Linear Mechanics + Wall Drill A/B', jump:'Force Absorption \u2014 Drop to Stick', cod:'Linear 5-10 yds', workload:'Base', intensity:'65\u201372%' },
-      force:    { label:'Force', quality:[5,4,3,2,1], t1:'Back Squat / Power Clean', t1rep:'5\xd75 @ 82\u201387%', t2:'Romanian DL / Front Squat', t2rep:'4\xd75', t3:'Giant Set 30"/30"', speed:'0-10 Acceleration', jump:'Concentric Power \u2014 Seated Box Jump', cod:'Linear Accel Start 10yd', workload:'Load', intensity:'80\u201387%' },
-      power:    { label:'Power', quality:[3,5,4,2,1], t1:'Back Squat / Power Clean Pull', t1rep:'4\xd74 @ 75\u201385% PB', t2:'Jump Squat / DB Snatch', t2rep:'4\xd74', t3:'Traditional Sets', speed:'10-20 Flying 2-pt Start', jump:'Box Jump \u2014 Max Height', cod:'L-Drill / Pro Agility', workload:'Load+', intensity:'75\u201385%' },
-      velocity: { label:'Velocity', quality:[2,4,5,3,1], t1:'Back Squat / Hang Power Clean', t1rep:'3\xd73 @ 60\u201370% VBT', t2:'Banded Jump Squat / Push Press', t2rep:'3\xd74', t3:'Traditional Sets', speed:'20-30 Fly / Max Velocity', jump:'RSI \u2014 Drop Jump GCT < 0.25s', cod:'Reactive Agility', workload:'Performance', intensity:'60\u201375%' },
-      test:     { label:'Test Week', quality:[1,2,3,4,5], t1:'1RM Back Squat / Power Clean', t1rep:'Ramp to max', t2:'Deload Volume', t2rep:'2\xd75 @ 60%', t3:'Mobility Only', speed:'Timed 10yd / 40yd', jump:'CMJ / Broad Jump Test', cod:'Pro Agility / L-Drill', workload:'Deload', intensity:'60\u201365%' }
-    }
+var TP_PHASES = [
+  {
+    label:'Power Production', shortLabel:'PP1', color:'#3a8af0', startWeek:1,
+    blocks:[
+      { label:'High Force', intensity:'85\u201392%', tempo:'Standard', workload:'Load',
+        quality:[5,4,3,2,1], speed:'0\u201310 Acceleration + Drive Phase', jump:'Seated Box Jump \u2014 Force Absorption',
+        t1rep:'5\xd75 @ 85\u201392%', t2rep:'4\xd75 @ 75\u201382%', scheme:'5\xd75',
+        desc:'Max force development. Heavy barbell work, drive phase mechanics.' },
+      { label:'Power', intensity:'75\u201385%', tempo:'Standard', workload:'Load+',
+        quality:[3,5,4,2,1], speed:'10\u201320 Flying 2-pt Start', jump:'Box Jump \u2014 Max Height \u2014 Broad Jump',
+        t1rep:'4\xd74 @ 75\u201385%', t2rep:'4\xd74 @ 70\u201378%', scheme:'4\xd74',
+        desc:'Rate of force development. Power-strength bridge. Intent over load.' },
+      { label:'Velocity', intensity:'60\u201375%', tempo:'Standard', workload:'Performance',
+        quality:[2,4,5,3,1], speed:'20\u201330 Fly \u2014 Max Velocity', jump:'RSI \u2014 Drop Jump GCT < 0.25s',
+        t1rep:'3\xd73 @ 60\u201370% VBT \u2014 Max Speed', t2rep:'3\xd74 @ 65\u201372%', scheme:'3\xd73 VBT',
+        desc:'Velocity-based work. Peak RFD and reactive strength expression.' }
+    ]
   },
-  triphasic: {
-    blocks: {
-      gpp:       { label:'GPP', quality:[4,3,2,5,1], t1:'Back Squat / Trap Bar DL', t1rep:'4\xd76 @ 70%', t2:'Romanian DL / Split Squat', t2rep:'3\xd78', t3:'Giant Set 30"/30"', speed:'Wall Drills A/B/C + Skip Series', jump:'Force Absorption \u2014 Depth Drop Stick', cod:'Linear 5-10 yds', workload:'Base', intensity:'65\u201372%' },
-      eccentric: { label:'Eccentric', quality:[5,4,2,3,1], t1:'Back Squat 3s Ecc / RDL 3s Ecc', t1rep:'5\xd75 @ 80\u201385% w/ 3s ecc', t2:'Split Squat 3s / Nordic Curl', t2rep:'4\xd75', t3:'Giant Set 30"/30"', speed:'0-10 Accel + Drive Mechanics', jump:'Force Absorption \u2014 Hurdle Jump Stick', cod:'Linear Accel Variations', workload:'Load', intensity:'78\u201385%' },
-      isometric: { label:'Isometric', quality:[5,3,4,2,1], t1:'Iso Squat / Iso RDL', t1rep:'5\xd75 @ 80\u201385% w/ 4s hold', t2:'Iso Split Squat / Iso Hip Hinge', t2rep:'4\xd75', t3:'Traditional Sets', speed:'10-20 Flying / Hurdling', jump:'Concentric Power \u2014 CMJ Series', cod:'L-Drill / Pro Agility', workload:'Load+', intensity:'78\u201385%' },
-      concentric:{ label:'Concentric', quality:[3,5,4,2,1], t1:'Back Squat / Trap Bar Jump', t1rep:'5\xd75 @ 80\u201385% EXPLOSIVE', t2:'Jump Squat / Trap Bar DL Exp', t2rep:'4\xd74', t3:'Traditional Sets', speed:'Max Velocity + Flying 10-20', jump:'RSI / Reactive \u2014 Ankle Pogos', cod:'Reactive Agility Complex', workload:'Performance', intensity:'78\u201385%' },
-      test:      { label:'Test Week', quality:[1,2,3,4,5], t1:'1RM Back Squat / Power Clean', t1rep:'Ramp to max', t2:'Deload Volume', t2rep:'2\xd75 @ 60%', t3:'Mobility Only', speed:'10yd / 40yd Timed', jump:'CMJ / RSI Test', cod:'Pro Agility / L-Drill', workload:'Deload', intensity:'60\u201365%' }
-    }
+  {
+    label:'Triphasic', shortLabel:'TRI1', color:'#a078f0', startWeek:13,
+    blocks:[
+      { label:'Eccentric', intensity:'78\u201385%', tempo:'3s lowering', workload:'Load',
+        quality:[5,4,2,3,1], speed:'0\u201310 Accel + Drive Mechanics', jump:'Hurdle Jump Stick \u2014 Force Absorption',
+        t1rep:'5\xd75 @ 78\u201385% w/ 3s ecc', t2rep:'4\xd75 \u2014 3s controlled', scheme:'5\xd75 (3s ecc)',
+        desc:'3s eccentric loading. Muscle damage, tendon adaptation, position strength.' },
+      { label:'Isometric', intensity:'78\u201385%', tempo:'4s pause', workload:'Load+',
+        quality:[5,3,4,2,1], speed:'10\u201320 Flying \u2014 Hurdling', jump:'CMJ Series \u2014 Concentric Power',
+        t1rep:'5\xd75 @ 78\u201385% w/ 4s hold', t2rep:'4\xd75 \u2014 4s pause', scheme:'5\xd75 (4s iso)',
+        desc:'Isometric phase \u2014 4s pause at sticking point. Tendon loading and position strength.' },
+      { label:'Concentric', intensity:'78\u201385%', tempo:'EXPLOSIVE', workload:'Performance',
+        quality:[3,5,4,2,1], speed:'Max Velocity + Flying 10\u201320', jump:'RSI \u2014 Reactive \u2014 Ankle Pogos',
+        t1rep:'5\xd75 @ 78\u201385% EXPLOSIVE', t2rep:'4\xd74 \u2014 max intent', scheme:'5\xd75 explosive',
+        desc:'Concentric expression \u2014 maximum intent every rep. Peak power transfer.' }
+    ]
+  },
+  {
+    label:'Power Production II', shortLabel:'PP2', color:'#4af0a0', startWeek:25,
+    blocks:[
+      { label:'High Force+', intensity:'87\u201393%', tempo:'Standard', workload:'Load',
+        quality:[5,4,3,2,1], speed:'0\u201310 Acceleration', jump:'Loaded Jump Squat \u2014 Heavy Box Jump',
+        t1rep:'5\xd75 @ 87\u201393%', t2rep:'4\xd74 @ 78\u201385%', scheme:'5\xd75',
+        desc:'Advanced max force. Higher loading with same movement quality standards.' },
+      { label:'Power+', intensity:'78\u201387%', tempo:'Standard', workload:'Load+',
+        quality:[3,5,4,2,1], speed:'10\u201320 Flying Sprints', jump:'Depth Jump + Box Jump Complex',
+        t1rep:'4\xd74 @ 78\u201387% PB', t2rep:'4\xd74 \u2014 complex pairs', scheme:'4\xd74 complex',
+        desc:'Advanced power. Contrast training and complex pairs for peak RFD.' },
+      { label:'Velocity+', intensity:'60\u201372%', tempo:'Standard', workload:'Performance',
+        quality:[2,4,5,3,1], speed:'Flying 20s \u2014 Max Velocity', jump:'RSI + Overspeed Reactive',
+        t1rep:'3\xd73 @ 60\u201372% VBT \u2014 Max speed', t2rep:'3\xd74 \u2014 velocity only', scheme:'3\xd73 VBT',
+        desc:'Peak velocity expression \u2014 top-end RFD and reactive power.' }
+    ]
+  },
+  {
+    label:'Triphasic Advanced', shortLabel:'TRI+', color:'#f07840', startWeek:37,
+    blocks:[
+      { label:'Eccentric+', intensity:'80\u201388%', tempo:'8s lowering', workload:'Load',
+        quality:[5,4,2,3,1], speed:'0\u201310 Accel + Drive Phase', jump:'Depth Drop Stick \u2014 Heavy Load',
+        t1rep:'4\xd74 @ 80\u201388% w/ 8s ecc', t2rep:'4\xd75 \u2014 8s controlled', scheme:'4\xd74 (8s ecc)',
+        desc:'Advanced eccentric \u2014 8s lowering. Elite tendon adaptation and structural loading.' },
+      { label:'Isometric+', intensity:'80\u201388%', tempo:'9s pause', workload:'Load+',
+        quality:[5,3,4,2,1], speed:'10\u201320 Flying \u2014 Max Velocity', jump:'CMJ + Loaded CMJ Complex',
+        t1rep:'4\xd74 @ 80\u201388% w/ 9s hold', t2rep:'4\xd75 \u2014 9s pause', scheme:'4\xd74 (9s iso)',
+        desc:'Advanced isometric \u2014 9s pauses. Maximum tendon loading and neural drive.' },
+      { label:'Concentric+', intensity:'80\u201388%', tempo:'EXPLOSIVE', workload:'Performance',
+        quality:[3,5,4,2,1], speed:'Max Velocity + Flying 10\u201320', jump:'RSI + Reactive Complex',
+        t1rep:'4\xd74 @ 80\u201388% EXPLOSIVE', t2rep:'4\xd74 \u2014 max power', scheme:'4\xd74 explosive',
+        desc:'Advanced concentric expression \u2014 peak power output. Maximum neurological demand.' }
+    ]
   }
-};
-var TP_WORKLOAD_COLORS = { 'Base':'#1e5f3a','Load':'#1e3a8a','Load+':'#7c2d12','Performance':'#8a7a00','Deload':'#2a2a4a' };
+];
+var TP_WEEK_LABELS = ['Base','Load','Load+','CNS Reset'];
+var TP_WORKLOAD_COLORS = { 'Load':'#1e3a8a','Load+':'#7c2d12','Performance':'#6a7a00','Base':'#1e5f3a','CNS Reset':'#2a2a4a' };
 var TP_QUALITY_LABELS = ['Hypertrophy','Strength','Power','Speed-Strength','Peaking'];
+var _tpLevel = 'macro';
 
-var _tpDays = 3;
-function tpSetDays(n) {
-  _tpDays = n;
-  document.getElementById('tp-days-3').style.background = (n===3) ? '#1e3a5f' : '#0a1520';
-  document.getElementById('tp-days-3').style.borderColor = (n===3) ? '#C9A228' : '#2a4a6a';
-  document.getElementById('tp-days-3').style.color = (n===3) ? '#C9A228' : '#6a8aa8';
-  document.getElementById('tp-days-4').style.background = (n===4) ? '#1e3a5f' : '#0a1520';
-  document.getElementById('tp-days-4').style.borderColor = (n===4) ? '#C9A228' : '#2a4a6a';
-  document.getElementById('tp-days-4').style.color = (n===4) ? '#C9A228' : '#6a8aa8';
-  // Update day dropdown options
-  var sel = document.getElementById('tp-day');
-  var cur = sel.value;
-  if (n===3) {
-    sel.options[0].text = 'Day 1 \u2014 Strength + Power';
-    sel.options[1].text = 'Day 2 \u2014 Speed + Jump';
-    if (sel.options[2]) sel.options[2].text = 'Day 3 \u2014 Supplemental + Support';
-    if (sel.options[3]) sel.options[3].style.display = 'none';
-    if (parseInt(cur) > 3) sel.value = '1';
-  } else {
-    sel.options[0].text = 'Day 1 \u2014 Strength + Power';
-    sel.options[1].text = 'Day 2 \u2014 Speed + COD';
-    if (sel.options[2]) sel.options[2].text = 'Day 3 \u2014 Supplemental + Jump';
-    if (sel.options[3]) { sel.options[3].text = 'Day 4 \u2014 Recovery + T3 Support'; sel.options[3].style.display = ''; }
-  }
+function tpSetLevel(level) {
+  _tpLevel = level;
+  ['macro','meso','micro','session'].forEach(function(b) {
+    var el = document.getElementById('tp-lvl-'+b);
+    if (!el) return;
+    el.style.background   = (b===level) ? '#1e3a5f' : '#0a1520';
+    el.style.borderColor  = (b===level) ? '#C9A228' : '#2a4a6a';
+    el.style.color        = (b===level) ? '#C9A228' : '#6a8aa8';
+  });
+  tpUpdateSelectors();
 }
+
+function tpUpdateBlockOptions() {
+  var phaseIdx = parseInt(document.getElementById('tp-phase').value) || 0;
+  var bSel = document.getElementById('tp-block');
+  var phase = TP_PHASES[phaseIdx] || TP_PHASES[0];
+  bSel.innerHTML = '';
+  phase.blocks.forEach(function(b, i) {
+    var opt = document.createElement('option');
+    opt.value = String(i);
+    opt.text = 'Block '+(i+1)+' \u2014 '+b.label+' ('+b.intensity+')';
+    bSel.appendChild(opt);
+  });
+}
+
 function openTeamPlan() {
   if (!masterMode) return;
-  document.getElementById('tp-output').innerHTML = '<div style="color:#3a5a7a;font-size:12px;text-align:center;padding:20px">Set your parameters above and tap Generate Program.</div>';
+  _tpLevel = 'macro';
+  document.getElementById('tp-output').innerHTML = '<div style="color:#3a5a7a;font-size:12px;text-align:center;padding:20px">Select output level above and tap Generate Program.</div>';
   document.getElementById('tp-print-btn').style.display = 'none';
-  tpSetDays(3);
+  tpSetLevel('macro');
   tpUpdateSelectors();
   document.getElementById('teamplan-overlay').classList.add('open');
 }
 function closeTeamPlan() { document.getElementById('teamplan-overlay').classList.remove('open'); }
 
 function tpUpdateSelectors() {
-  var level = document.getElementById('tp-level').value;
+  var level = _tpLevel;
   document.getElementById('tp-phase-row').style.display = (level==='meso'||level==='micro'||level==='session') ? 'block' : 'none';
-  document.getElementById('tp-week-row').style.display  = (level==='micro'||level==='session') ? 'block' : 'none';
-  document.getElementById('tp-day-row').style.display   = (level==='session') ? 'block' : 'none';
-}
-
-function tpBuildTimeline(totalWeeks) {
-  var seq = [
-    {phase:'power',     block:'gpp',       baseWks:3},
-    {phase:'power',     block:'force',     baseWks:4},
-    {phase:'power',     block:'power',     baseWks:3},
-    {phase:'power',     block:'velocity',  baseWks:3},
-    {phase:'power',     block:'test',      baseWks:1},
-    {phase:'triphasic', block:'gpp',       baseWks:3},
-    {phase:'triphasic', block:'eccentric', baseWks:4},
-    {phase:'triphasic', block:'isometric', baseWks:4},
-    {phase:'triphasic', block:'concentric',baseWks:4},
-    {phase:'triphasic', block:'test',      baseWks:1}
-  ];
-  var totalBase = seq.reduce(function(s,b){return s+b.baseWks;},0);
-  var scale = totalWeeks / totalBase;
-  var timeline = [];
-  var used = 0;
-  var cursor = 1;
-  for (var i = 0; i < seq.length; i++) {
-    var b = seq[i];
-    var wks = (i === seq.length-1) ? (totalWeeks - used) : Math.max(1, Math.round(b.baseWks * scale));
-    used += wks;
-    timeline.push({ phase:b.phase, block:b.block, label:TP_DATA[b.phase].blocks[b.block].label, weeks:wks, startWeek:cursor, cnsReset:(wks>=4) });
-    cursor += wks;
-  }
-  return timeline;
+  document.getElementById('tp-block-row').style.display = (level==='micro'||level==='session') ? 'block' : 'none';
+  if (level==='meso'||level==='micro'||level==='session') tpUpdateBlockOptions();
 }
 
 function tpDateLabel(startDate, weekOffset) {
@@ -1747,220 +1747,279 @@ function tpDateLabel(startDate, weekOffset) {
   return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
 }
 
-function tpGetPhaseData() {
-  var val = document.getElementById('tp-phase').value;
-  var idx = val.indexOf('_');
-  var phase = val.substring(0, idx);
-  var block = val.substring(idx+1);
-  return { phase:phase, block:block, bd: TP_DATA[phase] && TP_DATA[phase].blocks[block] };
-}
-
 function tpGen() {
-  var level     = document.getElementById('tp-level').value;
   var team      = document.getElementById('tp-team').value.trim() || 'Team';
   var sport     = document.getElementById('tp-sport').value.trim() || 'Sport';
-  var totalWeeks= parseInt(document.getElementById('tp-weeks').value) || 16;
   var arch      = document.getElementById('tp-arch').value;
   var startDate = document.getElementById('tp-start').value;
-  var timeline  = tpBuildTimeline(totalWeeks);
-  if (level==='macro')   { tpMacroOutput(team,sport,arch,totalWeeks,startDate,timeline); }
-  else if (level==='meso')    { tpMesoOutput(team,sport,arch,startDate,timeline); }
-  else if (level==='micro')   { tpMicroOutput(team,sport,arch,startDate,timeline); }
-  else if (level==='session') { tpSessionOutput(team,sport,arch,startDate,timeline); }
+  var pEl = document.getElementById('tp-phase');
+  var bEl = document.getElementById('tp-block');
+  var phaseIdx  = pEl ? (parseInt(pEl.value)||0) : 0;
+  var blockIdx  = bEl ? (parseInt(bEl.value)||0) : 0;
+  if      (_tpLevel==='macro')   tpMacroOutput(team,sport,arch,startDate);
+  else if (_tpLevel==='meso')    tpMesoOutput(team,sport,arch,startDate,phaseIdx);
+  else if (_tpLevel==='micro')   tpMicroOutput(team,sport,arch,startDate,phaseIdx,blockIdx);
+  else if (_tpLevel==='session') tpSessionOutput(team,sport,arch,startDate,phaseIdx,blockIdx);
   document.getElementById('tp-print-btn').style.display = 'block';
 }
 
-function tpMacroOutput(team,sport,arch,totalWeeks,startDate,timeline) {
-  var html = '<div style="font-size:18px;font-weight:800;margin-bottom:4px;color:#C9A228">🗂️ '+team+' \u2014 Macrocycle</div>';
-  html += '<div style="font-size:11px;color:#6a8aa8;margin-bottom:16px">'+sport+' \xb7 '+arch+' \xb7 '+totalWeeks+' Weeks'+(startDate?' \xb7 Starts '+new Date(startDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'')+'</div>';
-  // Timeline bar
-  html += '<div style="margin-bottom:20px"><div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">PHASE TIMELINE</div><div style="display:flex;gap:3px">';
-  for (var i=0;i<timeline.length;i++) {
-    var t=timeline[i];
-    var col=(t.phase==='power')?'#1a3a6a':'#2a1a5a';
-    html += '<div style="flex:'+t.weeks+';background:'+col+';border-radius:4px;padding:5px 3px;text-align:center;min-width:0;overflow:hidden">';
-    html += '<div style="font-size:8px;font-weight:700;color:#C9A228;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+t.label+'</div>';
-    html += '<div style="font-size:7px;color:#6a8aa8">'+t.weeks+'w</div></div>';
-  }
-  html += '</div><div style="display:flex;gap:3px;margin-top:3px">';
-  for (var i=0;i<timeline.length;i++) {
-    var t=timeline[i];
-    html += '<div style="flex:'+t.weeks+';text-align:center;min-width:0;overflow:hidden"><div style="font-size:7px;color:#4a6a8a;white-space:nowrap;overflow:hidden">'+tpDateLabel(startDate,t.startWeek-1)+'</div></div>';
-  }
-  html += '</div></div>';
-  // Phase cards
-  html += '<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">PHASE BREAKDOWN</div>';
-  for (var i=0;i<timeline.length;i++) {
-    var t=timeline[i];
-    var bd=TP_DATA[t.phase].blocks[t.block];
-    var wc=TP_WORKLOAD_COLORS[bd.workload]||'#1e3a5f';
-    var pc=(t.phase==='power')?'#3a8af0':'#a078f0';
-    html += '<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+pc+';border-radius:10px;padding:12px;margin-bottom:8px">';
-    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">';
-    html += '<div><span style="font-size:13px;font-weight:700">'+t.label+'</span><span style="font-size:10px;color:#6a8aa8;margin-left:8px">Weeks '+t.startWeek+'\u2013'+(t.startWeek+t.weeks-1)+' ('+t.weeks+'w)</span></div>';
-    html += '<span style="background:'+wc+';color:#fff;font-size:9px;padding:3px 8px;border-radius:12px;font-weight:700">'+bd.workload+'</span></div>';
-    var qRanked=bd.quality.map(function(r,idx){return {l:TP_QUALITY_LABELS[idx],r:r};}).sort(function(a,b){return a.r-b.r;});
-    html += '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px">';
-    var qColors=['#C9A228','#4a8af0','#4af08a','#f04a8a','#4af0f0'];
-    for (var q=0;q<qRanked.length;q++) {
-      html += '<span style="background:'+qColors[q]+'22;border:1px solid '+qColors[q]+'55;color:'+qColors[q]+';font-size:9px;padding:2px 7px;border-radius:10px">'+qRanked[q].r+'. '+qRanked[q].l+'</span>';
-    }
-    html += '</div>';
-    html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;font-size:10px;margin-bottom:5px">';
-    html += '<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#6a8aa8;font-size:8px;margin-bottom:2px">T1 MAIN</div>'+bd.t1+'<br><span style="color:#C9A228">'+bd.t1rep+'</span></div>';
-    html += '<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#6a8aa8;font-size:8px;margin-bottom:2px">T2 SUPPLEMENT</div>'+bd.t2+'<br><span style="color:#4a8af0">'+bd.t2rep+'</span></div>';
-    html += '<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#6a8aa8;font-size:8px;margin-bottom:2px">T3 SUPPORT</div>'+bd.t3+'</div>';
-    html += '</div>';
-    html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;font-size:10px">';
-    html += '<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#6a8aa8;font-size:8px;margin-bottom:2px">\u26a1 SPEED</div>'+bd.speed+'</div>';
-    html += '<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#6a8aa8;font-size:8px;margin-bottom:2px">\ud83e\uddb5 JUMP/LAND</div>'+bd.jump+'</div>';
-    html += '<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#6a8aa8;font-size:8px;margin-bottom:2px">\ud83d\udd00 COD</div>'+bd.cod+'</div>';
-    html += '</div>';
-    if (t.cnsReset) html += '<div style="margin-top:6px;background:#1a2a1a;border:1px dashed #2a4a2a;border-radius:6px;padding:6px;font-size:9px;color:#4af08a">\u2699\ufe0f CNS Reset \u2014 Week 4: 5\xd75 @ 70-75% \xb7 No Tempo \xb7 16-Min Clock</div>';
-    html += '</div>';
-  }
-  document.getElementById('tp-output').innerHTML = html;
-}
-
-function tpMesoOutput(team,sport,arch,startDate,timeline) {
-  var pd=tpGetPhaseData();
-  if (!pd.bd) { document.getElementById('tp-output').innerHTML='<div style="color:#f04a4a;padding:20px;text-align:center">Phase data not found.</div>'; return; }
-  var bd=pd.bd;
-  var t=null; for (var i=0;i<timeline.length;i++){if(timeline[i].phase===''+pd.phase&&timeline[i].block===''+pd.block){t=timeline[i];break;}}
-  var weeks=t?t.weeks:4; var startWeek=t?t.startWeek:1;
-  var pc=(pd.phase==='power')?'#3a8af0':'#a078f0';
-  var html='<div style="font-size:16px;font-weight:800;color:#C9A228;margin-bottom:4px">'+bd.label+' Mesocycle</div>';
-  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:16px">'+team+' \xb7 '+sport+' \xb7 Weeks '+startWeek+'\u2013'+(startWeek+weeks-1)+' \xb7 '+arch+'</div>';
-  var qRanked=bd.quality.map(function(r,idx){return {l:TP_QUALITY_LABELS[idx],r:r};}).sort(function(a,b){return a.r-b.r;});
+function tpMacroOutput(team,sport,arch,startDate) {
   var qColors=['#C9A228','#4a8af0','#4af08a','#f04a8a','#4af0f0'];
-  html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-radius:10px;padding:12px;margin-bottom:12px">';
-  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">TRAINING QUALITY PRIORITIES</div><div style="display:flex;gap:6px;flex-wrap:wrap">';
-  for (var q=0;q<qRanked.length;q++) {
-    html+='<div style="flex:1;min-width:80px;background:'+qColors[q]+'11;border:1px solid '+qColors[q]+'44;border-radius:8px;padding:8px;text-align:center">';
-    html+='<div style="font-size:18px;font-weight:800;color:'+qColors[q]+'">'+qRanked[q].r+'</div><div style="font-size:9px;color:#8a9bb0">'+qRanked[q].l+'</div></div>';
+  var html='<div style="font-size:18px;font-weight:800;margin-bottom:4px;color:#C9A228">\ud83d\uddc2\ufe0f '+team+' \u2014 Macrocycle</div>';
+  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:16px">'+sport+' \xb7 '+arch+' \xb7 4 Phases \xb7 48 Weeks'+(startDate?' \xb7 Starts '+new Date(startDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'')+'</div>';
+  html+='<div style="margin-bottom:20px"><div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">PHASE TIMELINE \u2014 48 WEEKS</div>';
+  html+='<div style="display:flex;gap:3px">';
+  for (var pi=0;pi<TP_PHASES.length;pi++) {
+    var ph=TP_PHASES[pi];
+    html+='<div style="flex:1;background:'+ph.color+'22;border:1px solid '+ph.color+'44;border-radius:4px;padding:5px 3px;text-align:center">';
+    html+='<div style="font-size:8px;font-weight:700;color:'+ph.color+'">'+ph.shortLabel+'</div>';
+    html+='<div style="font-size:7px;color:#6a8aa8">12 wks</div></div>';
+  }
+  html+='</div><div style="display:flex;gap:3px;margin-top:3px">';
+  for (var pi=0;pi<TP_PHASES.length;pi++) {
+    var ph=TP_PHASES[pi];
+    html+='<div style="flex:1;text-align:center"><div style="font-size:7px;color:#4a6a8a">'+tpDateLabel(startDate,ph.startWeek-1)+'</div></div>';
   }
   html+='</div></div>';
-  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">WEEK-BY-WEEK PRESCRIPTION</div>';
-  for (var w=0;w<weeks;w++) {
-    var wkNum=startWeek+w;
-    var isCNS=(t&&t.cnsReset&&w===3);
-    var wl=isCNS?'Deload':bd.workload;
-    var wc=TP_WORKLOAD_COLORS[wl]||'#1e3a5f';
-    html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-radius:8px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">';
-    html+='<div><div style="font-size:13px;font-weight:700">Week '+wkNum+' <span style="font-size:10px;color:#6a8aa8;font-weight:400">('+tpDateLabel(startDate,wkNum-1)+')</span></div>';
-    if (isCNS) {
-      html+='<div style="font-size:11px;color:#4af08a;margin-top:2px">\u2699\ufe0f CNS Reset \u2014 5\xd75 @ 70-75% \xb7 No Tempo \xb7 16-Min Clock</div>';
-    } else {
-      html+='<div style="font-size:11px;color:#8a9bb0;margin-top:2px">T1: '+bd.t1+' \u2014 '+bd.t1rep+'</div>';
-      html+='<div style="font-size:11px;color:#6a8aa8;margin-top:1px">T2: '+bd.t2+' \u2014 '+bd.t2rep+'</div>';
-      html+='<div style="font-size:10px;color:#4a6a8a;margin-top:1px">Speed: '+bd.speed+' | Jump: '+bd.jump+'</div>';
+  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">PHASE BREAKDOWN</div>';
+  for (var pi=0;pi<TP_PHASES.length;pi++) {
+    var ph=TP_PHASES[pi];
+    html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+ph.color+';border-radius:10px;padding:14px;margin-bottom:10px">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
+    html+='<div><span style="font-size:14px;font-weight:800;color:'+ph.color+'">Phase '+(pi+1)+' \u2014 '+ph.label+'</span>';
+    html+='<span style="font-size:10px;color:#6a8aa8;margin-left:8px">Weeks '+ph.startWeek+'\u2013'+(ph.startWeek+11)+' (12 wks)</span></div>';
+    html+='<span style="font-size:9px;color:#4a6a8a">3 blocks \xd7 4 wks</span></div>';
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">';
+    for (var bi=0;bi<ph.blocks.length;bi++) {
+      var blk=ph.blocks[bi];
+      var wc=TP_WORKLOAD_COLORS[blk.workload]||'#1e3a5f';
+      html+='<div style="background:#0a1520;border:1px solid #1e3a5f;border-radius:8px;padding:9px">';
+      html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">';
+      html+='<div style="font-size:11px;font-weight:700">B'+(bi+1)+' \u2014 '+blk.label+'</div>';
+      html+='<span style="background:'+wc+';color:#fff;font-size:8px;padding:2px 6px;border-radius:8px">'+blk.workload+'</span></div>';
+      html+='<div style="font-size:9px;color:#6a8aa8;margin-bottom:2px">Wks '+(ph.startWeek+bi*4)+'\u2013'+(ph.startWeek+bi*4+3)+'</div>';
+      html+='<div style="font-size:9px;color:#C9A228;margin-bottom:2px">'+blk.intensity+'</div>';
+      if (blk.tempo!=='Standard') html+='<div style="font-size:8px;color:#a078f0">'+blk.tempo+'</div>';
+      html+='<div style="font-size:9px;color:#8a9bb0;margin-top:3px">'+blk.desc+'</div>';
+      html+='</div>';
     }
-    html+='</div><span style="background:'+wc+';color:#fff;font-size:9px;padding:4px 10px;border-radius:12px;font-weight:700;white-space:nowrap">'+wl+'</span></div>';
-  }
-  document.getElementById('tp-output').innerHTML=html;
-}
-
-function tpMicroOutput(team,sport,arch,startDate,timeline) {
-  var pd=tpGetPhaseData();
-  if (!pd.bd) { document.getElementById('tp-output').innerHTML='<div style="color:#f04a4a;padding:20px;text-align:center">Phase data not found.</div>'; return; }
-  var bd=pd.bd;
-  var wkInPhase=parseInt(document.getElementById('tp-week').value)||1;
-  var t=null; for (var i=0;i<timeline.length;i++){if(timeline[i].phase===pd.phase&&timeline[i].block===pd.block){t=timeline[i];break;}}
-  var wkNum=(t?t.startWeek:1)+Math.min(wkInPhase,t?t.weeks:4)-1;
-  var isCNS=(t&&t.cnsReset&&wkInPhase===4);
-  var html='<div style="font-size:16px;font-weight:800;color:#C9A228;margin-bottom:4px">'+bd.label+' \u2014 Week '+wkNum+'</div>';
-  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:14px">'+team+' \xb7 '+sport+' \xb7 '+tpDateLabel(startDate,wkNum-1)+' \xb7 '+arch+(isCNS?' \xb7 <span style="color:#4af08a">CNS Reset Week</span>':'')+'</div>';
-  if (isCNS) {
-    html+='<div style="background:#1a2a1a;border:2px dashed #2a5a2a;border-radius:10px;padding:20px;text-align:center"><div style="font-size:18px;margin-bottom:4px">\u2699\ufe0f</div><div style="font-size:14px;font-weight:700;color:#4af08a;margin-bottom:6px">CNS Reset Week</div><div style="font-size:12px;color:#8a9bb0">5\xd75 @ 70-75% \xb7 No Tempo Contrast \xb7 16-Minute Clock</div><div style="font-size:11px;color:#4a6a8a;margin-top:8px">Same movement patterns \u2014 autoregulate based on feel. Quality over intensity.</div></div>';
-    document.getElementById('tp-output').innerHTML=html; return;
-  }
-  var days3=[
-    {label:'Day 1 \u2014 Strength + Power', intent:'Main compound work first. T1 strength, T2 contrast, speed/jump block.', t1main:bd.t1, t1rep:bd.t1rep, t2main:bd.t2, t2rep:bd.t2rep, track:'Speed: '+bd.speed, jump:'Jump: '+bd.jump},
-    {label:'Day 2 \u2014 Speed + Jump', intent:'Speed track first, then full jump/plyometric development block.', t1main:'Speed: '+bd.speed, t1rep:'4\u20136 runs', t2main:'Jump: '+bd.jump, t2rep:'4\u20136 reps', track:'Velocity work + fly runs', jump:bd.cod+' (reactive)'},
-    {label:'Day 3 \u2014 Supplemental + Support', intent:'T2/T3 volume + posterior chain + corrective. Low CNS demand.', t1main:bd.t2, t1rep:bd.t2rep+' (+ vol)', t2main:'T3 Giant Set \u2014 '+bd.t3, t2rep:'3 rounds', track:'Transition + decel work', jump:'Single-leg landing mechanics'}
-  ];
-  var days4=[
-    {label:'Day 1 \u2014 Strength + Power', intent:'Main compound work first. T1 strength, T2 contrast, speed/jump block.', t1main:bd.t1, t1rep:bd.t1rep, t2main:bd.t2, t2rep:bd.t2rep, track:'Speed: '+bd.speed, jump:'Jump: '+bd.jump},
-    {label:'Day 2 \u2014 Speed + COD', intent:'Speed-dominant session. Full acceleration and reactive COD.', t1main:'Speed: '+bd.speed, t1rep:'4\u20136 reps', t2main:'COD: '+bd.cod, t2rep:'3\u20135 reps', track:'Velocity work + fly runs', jump:'Reactive landing drill'},
-    {label:'Day 3 \u2014 Supplemental + Jump', intent:'T2 volume accumulation + jump track emphasis.', t1main:bd.t2, t1rep:bd.t2rep+' (+ vol)', t2main:'Jump: '+bd.jump, t2rep:'4\u20136 reps', track:'Transition running', jump:'Deceleration + landing mechanics'},
-    {label:'Day 4 \u2014 Recovery + T3 Support', intent:'Low-CNS day. Giant sets, corrective work, anterior core.', t1main:'T3 Giant Set \u2014 '+bd.t3, t1rep:'3 rounds', t2main:'Stability / Corrective', t2rep:'3\xd710\u201312', track:'Walk/jog mechanics', jump:'Decel landing drill'}
-  ];
-  var days=(_tpDays===3)?days3:days4;
-  for (var d=0;d<days.length;d++) {
-    var day=days[d];
-    html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-radius:10px;padding:12px;margin-bottom:10px">';
-    html+='<div style="font-size:13px;font-weight:700;margin-bottom:3px">'+day.label+'</div>';
-    html+='<div style="font-size:10px;color:#6a8aa8;margin-bottom:8px">'+day.intent+'</div>';
-    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px;margin-bottom:6px">';
-    html+='<div style="background:#0a1520;border-radius:6px;padding:7px"><div style="color:#C9A228;font-size:8px;margin-bottom:2px">PRIMARY</div>'+day.t1main+'<br><span style="color:#8a9bb0">'+day.t1rep+'</span></div>';
-    html+='<div style="background:#0a1520;border-radius:6px;padding:7px"><div style="color:#4a8af0;font-size:8px;margin-bottom:2px">SECONDARY</div>'+day.t2main+'<br><span style="color:#8a9bb0">'+day.t2rep+'</span></div>';
     html+='</div>';
-    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px">';
-    html+='<div style="background:#0a1520;border-radius:6px;padding:7px"><div style="color:#4af08a;font-size:8px;margin-bottom:2px">SPEED TRACK</div>'+day.track+'</div>';
-    html+='<div style="background:#0a1520;border-radius:6px;padding:7px"><div style="color:#f0a04a;font-size:8px;margin-bottom:2px">JUMP TRACK</div>'+day.jump+'</div>';
+    var qRanked=ph.blocks[1].quality.map(function(r,idx){return {l:TP_QUALITY_LABELS[idx],r:r};}).sort(function(a,b){return a.r-b.r;});
+    html+='<div style="font-size:9px;color:#6a8aa8;margin-bottom:4px">QUALITY PRIORITIES (Peak Block)</div>';
+    html+='<div style="display:flex;gap:4px;flex-wrap:wrap">';
+    for (var q=0;q<qRanked.length;q++) {
+      html+='<span style="background:'+qColors[q]+'22;border:1px solid '+qColors[q]+'55;color:'+qColors[q]+';font-size:8px;padding:2px 6px;border-radius:8px">'+qRanked[q].r+'. '+qRanked[q].l+'</span>';
+    }
     html+='</div></div>';
   }
   document.getElementById('tp-output').innerHTML=html;
 }
 
-function tpSessionOutput(team,sport,arch,startDate,timeline) {
-  var pd=tpGetPhaseData();
-  if (!pd.bd) { document.getElementById('tp-output').innerHTML='<div style="color:#f04a4a;padding:20px;text-align:center">Phase data not found.</div>'; return; }
-  var bd=pd.bd;
-  var wkInPhase=parseInt(document.getElementById('tp-week').value)||1;
-  var dayNum=parseInt(document.getElementById('tp-day').value)||1;
-  var t=null; for (var i=0;i<timeline.length;i++){if(timeline[i].phase===pd.phase&&timeline[i].block===pd.block){t=timeline[i];break;}}
-  var wkNum=(t?t.startWeek:1)+Math.min(wkInPhase,t?t.weeks:4)-1;
-  var isCNS=(t&&t.cnsReset&&wkInPhase===4);
-  var dayLabels=(_tpDays===3)?['Strength + Power','Speed + Jump','Supplemental + Support']:['Strength + Power','Speed + COD','Supplemental + Jump','Recovery + T3 Support'];
-  var html='<div style="font-size:16px;font-weight:800;color:#C9A228;margin-bottom:4px">Day '+dayNum+' \u2014 '+dayLabels[dayNum-1]+'</div>';
-  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:12px">'+team+' \xb7 '+bd.label+' \xb7 Week '+wkNum+' ('+tpDateLabel(startDate,wkNum-1)+') \xb7 '+arch+'</div>';
-  if (isCNS) {
-    html+='<div style="background:#1a2a1a;border:2px dashed #2a5a2a;border-radius:10px;padding:20px;text-align:center"><div style="font-size:14px;font-weight:700;color:#4af08a">\u2699\ufe0f CNS Reset \u2014 5\xd75 @ 70-75% \xb7 No Tempo \xb7 16-Min Clock</div></div>';
-    document.getElementById('tp-output').innerHTML=html; return;
+function tpMesoOutput(team,sport,arch,startDate,phaseIdx) {
+  var ph=TP_PHASES[phaseIdx]||TP_PHASES[0];
+  var html='<div style="font-size:16px;font-weight:800;color:'+ph.color+';margin-bottom:4px">Phase '+(phaseIdx+1)+' \u2014 '+ph.label+'</div>';
+  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:16px">'+team+' \xb7 '+sport+' \xb7 Weeks '+ph.startWeek+'\u2013'+(ph.startWeek+11)+' \xb7 '+arch+'</div>';
+  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">3-BLOCK STRUCTURE</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">';
+  for (var bi=0;bi<ph.blocks.length;bi++) {
+    var blk=ph.blocks[bi];
+    var wc=TP_WORKLOAD_COLORS[blk.workload]||'#1e3a5f';
+    html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+ph.color+';border-radius:8px;padding:10px">';
+    html+='<div style="font-size:11px;font-weight:700;margin-bottom:4px">Block '+(bi+1)+' \u2014 '+blk.label+'</div>';
+    html+='<div style="font-size:9px;color:#6a8aa8;margin-bottom:3px">Wks '+(ph.startWeek+bi*4)+'\u2013'+(ph.startWeek+bi*4+3)+'</div>';
+    html+='<span style="background:'+wc+';color:#fff;font-size:8px;padding:2px 6px;border-radius:8px">'+blk.workload+'</span>';
+    html+='<div style="margin-top:5px;font-size:9px;color:#C9A228">'+blk.intensity+'</div>';
+    if (blk.tempo!=='Standard') html+='<div style="font-size:8px;color:#a078f0">'+blk.tempo+'</div>';
+    html+='</div>';
   }
-  // Day-based category mappings — 3-day and 4-day splits
-  var dayCats3=[
-    {cats:['stability','speed_accel','T1_total','T2_lower','jump_bilateral','support'],scheme:'4x4'},
-    {cats:['stability','speed_accel','speed_topend','jump_bilateral','jump_rsi','support'],scheme:'4-6 reps'},
-    {cats:['stability','speed_trans','T2_total','T3_lower','T2_upper','support'],scheme:'3x8-10'}
-  ];
-  var dayCats4=[
-    {cats:['stability','speed_accel','T1_total','T2_lower','jump_bilateral','support'],scheme:'4x4'},
-    {cats:['stability','speed_accel','speed_topend','jump_rsi','T2_lower','support'],scheme:'4-6 reps'},
-    {cats:['stability','jump_bilateral','jump_unilateral','T2_upper','T3_lower','support'],scheme:'3x8-10'},
-    {cats:['stability','speed_trans','T3_total','T3_lower','T3_upper','support'],scheme:'3x10-12'}
-  ];
-  var dayCats=(_tpDays===3)?dayCats3:dayCats4;
-  var dc=dayCats[dayNum-1]||dayCats[0];
-  var STARS=[
-    {key:'S',label:'S \u2014 Stability / Movement Prep',color:'#4af08a',cats:['stability']},
-    {key:'T',label:'T \u2014 Technique / Speed Track',color:'#4a8af0',cats:['speed_accel','speed_topend','speed_trans']},
-    {key:'A',label:'A \u2014 Acceleration / Power',color:'#C9A228',cats:['T1_total','T2_lower','jump_rsi','jump_bilateral']},
-    {key:'R',label:'R \u2014 Resistance',color:'#f04a8a',cats:['T2_upper','T3_total','T3_lower']},
-    {key:'S2',label:'S \u2014 Support / Capacity',color:'#4af0f0',cats:['support','jump_unilateral','T3_upper']}
-  ];
-  html+='<div style="margin-top:8px">';
-  for (var s=0;s<STARS.length;s++) {
-    var sec=STARS[s];
-    var exList=[];
-    for (var c=0;c<sec.cats.length;c++) {
-      var pool=OLIB[sec.cats[c]];
-      if (pool&&pool.length>0&&dc.cats.indexOf(sec.cats[c])>=0) exList.push(pool[Math.floor(Math.random()*pool.length)]);
+  html+='</div>';
+  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">WEEK-BY-WEEK PROGRESSION (12 WEEKS)</div>';
+  for (var bi=0;bi<ph.blocks.length;bi++) {
+    var blk=ph.blocks[bi];
+    html+='<div style="margin-bottom:10px"><div style="font-size:10px;font-weight:700;color:'+ph.color+';margin-bottom:5px">Block '+(bi+1)+' \u2014 '+blk.label+'</div>';
+    for (var wi=0;wi<4;wi++) {
+      var wkAbs=ph.startWeek+bi*4+wi;
+      var wkLabel=TP_WEEK_LABELS[wi];
+      var isCNS=(wi===3);
+      var wcW=TP_WORKLOAD_COLORS[isCNS?'CNS Reset':blk.workload]||'#1e3a5f';
+      html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-radius:7px;padding:9px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center">';
+      html+='<div><div style="font-size:12px;font-weight:700">Week '+wkAbs+' <span style="font-size:9px;color:#6a8aa8;font-weight:400">('+wkLabel+')</span> <span style="font-size:9px;color:#4a6a8a">'+tpDateLabel(startDate,wkAbs-1)+'</span></div>';
+      if (isCNS) {
+        html+='<div style="font-size:10px;color:#4af08a;margin-top:2px">\u2699\ufe0f CNS Reset \u2014 5\xd75 @ 70\u201375% \xb7 No Tempo \xb7 16-Min Clock</div>';
+      } else {
+        html+='<div style="font-size:10px;color:#8a9bb0;margin-top:1px">Main: '+blk.t1rep+'</div>';
+        html+='<div style="font-size:10px;color:#6a8aa8">Support: '+blk.t2rep+'</div>';
+        html+='<div style="font-size:9px;color:#4a6a8a;margin-top:1px">Speed: '+blk.speed+' \xb7 Jump: '+blk.jump+'</div>';
+      }
+      html+='</div><span style="background:'+wcW+';color:#fff;font-size:8px;padding:3px 8px;border-radius:10px;white-space:nowrap">'+(isCNS?'CNS Reset':wkLabel)+'</span></div>';
     }
-    if (!exList.length) continue;
-    html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+sec.color+';border-radius:8px;padding:10px;margin-bottom:8px">';
-    html+='<div style="font-size:11px;font-weight:700;color:'+sec.color+';margin-bottom:8px">'+sec.label+'</div>';
-    for (var e=0;e<exList.length;e++) {
-      var scheme=(sec.key==='A')?bd.t1rep:(sec.key==='R'?bd.t2rep:dc.scheme);
-      html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #0a1520">';
-      html+='<span style="font-size:11px">'+exList[e]+'</span>';
-      html+='<span style="font-size:10px;color:#6a8aa8;background:#0a1520;padding:2px 8px;border-radius:10px">'+scheme+'</span>';
+    html+='</div>';
+  }
+  document.getElementById('tp-output').innerHTML=html;
+}
+
+function tpMicroOutput(team,sport,arch,startDate,phaseIdx,blockIdx) {
+  var ph=TP_PHASES[phaseIdx]||TP_PHASES[0];
+  var blk=ph.blocks[blockIdx]||ph.blocks[0];
+  var blockStartWk=ph.startWeek+blockIdx*4;
+  var wc=TP_WORKLOAD_COLORS[blk.workload]||'#1e3a5f';
+  var html='<div style="font-size:16px;font-weight:800;color:'+ph.color+';margin-bottom:4px">Block '+(blockIdx+1)+' \u2014 '+blk.label+'</div>';
+  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:14px">'+team+' \xb7 Phase '+(phaseIdx+1)+': '+ph.label+' \xb7 Weeks '+blockStartWk+'\u2013'+(blockStartWk+3)+' \xb7 '+arch+'</div>';
+  html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+ph.color+';border-radius:10px;padding:12px;margin-bottom:14px">';
+  html+='<div style="display:flex;justify-content:space-between;margin-bottom:6px"><div style="font-size:12px;font-weight:700;flex:1">'+blk.desc+'</div><span style="background:'+wc+';color:#fff;font-size:9px;padding:3px 8px;border-radius:10px">'+blk.workload+'</span></div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:10px">';
+  html+='<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#6a8aa8;font-size:8px;margin-bottom:2px">INTENSITY</div>'+blk.intensity+'</div>';
+  html+='<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#6a8aa8;font-size:8px;margin-bottom:2px">TEMPO</div>'+blk.tempo+'</div>';
+  html+='<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#6a8aa8;font-size:8px;margin-bottom:2px">SCHEME</div>'+blk.scheme+'</div>';
+  html+='</div></div>';
+  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">4-WEEK PROGRESSION</div>';
+  for (var wi=0;wi<4;wi++) {
+    var wkAbs=blockStartWk+wi;
+    var wkLabel=TP_WEEK_LABELS[wi];
+    var isCNS=(wi===3);
+    var wcW=TP_WORKLOAD_COLORS[isCNS?'CNS Reset':blk.workload]||'#1e3a5f';
+    html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-radius:10px;padding:12px;margin-bottom:8px">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">';
+    html+='<div style="font-size:13px;font-weight:800">Week '+wkAbs+' \u2014 '+wkLabel+' <span style="font-size:10px;color:#6a8aa8;font-weight:400">'+tpDateLabel(startDate,wkAbs-1)+'</span></div>';
+    html+='<span style="background:'+wcW+';color:#fff;font-size:9px;padding:3px 8px;border-radius:10px">'+(isCNS?'CNS Reset':wkLabel)+'</span></div>';
+    if (isCNS) {
+      html+='<div style="background:#1a2a1a;border:1px dashed #2a5a2a;border-radius:8px;padding:10px;text-align:center">';
+      html+='<div style="font-size:13px;font-weight:700;color:#4af08a">\u2699\ufe0f CNS Reset Week</div>';
+      html+='<div style="font-size:11px;color:#8a9bb0;margin-top:4px">5\xd75 @ 70\u201375% \xb7 No Tempo Contrast \xb7 16-Minute Clock</div>';
+      html+='<div style="font-size:10px;color:#4a6a8a;margin-top:4px">Same movement patterns \u2014 autoregulate on feel. Quality over intensity.</div>';
+      html+='</div>';
+    } else {
+      html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px;margin-bottom:6px">';
+      html+='<div style="background:#0a1520;border-radius:6px;padding:7px"><div style="color:#C9A228;font-size:8px;margin-bottom:2px">T1 MAIN LIFTS</div>'+blk.t1rep+'</div>';
+      html+='<div style="background:#0a1520;border-radius:6px;padding:7px"><div style="color:#4a8af0;font-size:8px;margin-bottom:2px">T2 SUPPLEMENTAL</div>'+blk.t2rep+'</div>';
+      html+='</div>';
+      html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px">';
+      html+='<div style="background:#0a1520;border-radius:6px;padding:7px"><div style="color:#4af08a;font-size:8px;margin-bottom:2px">\u26a1 SPEED</div>'+blk.speed+'</div>';
+      html+='<div style="background:#0a1520;border-radius:6px;padding:7px"><div style="color:#f0a04a;font-size:8px;margin-bottom:2px">\ud83e\uddb5 JUMP/LAND</div>'+blk.jump+'</div>';
       html+='</div>';
     }
     html+='</div>';
   }
+  document.getElementById('tp-output').innerHTML=html;
+}
+
+function tpEx(cat) {
+  var pool=(typeof OLIB!=='undefined')?OLIB[cat]:null;
+  if (!pool||!pool.length) return cat;
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+function tpExN(cat,n) {
+  var pool=(typeof OLIB!=='undefined')?OLIB[cat]:null;
+  if (!pool||!pool.length) return [cat];
+  var out=[],copy=pool.slice();
+  for (var i=0;i<n&&copy.length;i++){var idx=Math.floor(Math.random()*copy.length);out.push(copy.splice(idx,1)[0]);}
+  return out;
+}
+
+function tpStarsRow(items) {
+  var html='';
+  for (var i=0;i<items.length;i++) {
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #0a1520">';
+    html+='<span style="font-size:11px">'+items[i].ex+'</span>';
+    html+='<span style="font-size:10px;color:#6a8aa8;background:#0a1520;padding:2px 8px;border-radius:8px;white-space:nowrap">'+items[i].sch+'</span>';
+    html+='</div>';
+  }
+  return html;
+}
+function tpStarsBlock(title,color,items) {
+  var html='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+color+';border-radius:8px;padding:10px;margin-bottom:7px">';
+  html+='<div style="font-size:11px;font-weight:700;color:'+color+';margin-bottom:6px">'+title+'</div>';
+  html+=tpStarsRow(items);
   html+='</div>';
+  return html;
+}
+
+function tpSessionOutput(team,sport,arch,startDate,phaseIdx,blockIdx) {
+  var ph=TP_PHASES[phaseIdx]||TP_PHASES[0];
+  var blk=ph.blocks[blockIdx]||ph.blocks[0];
+  var blockStartWk=ph.startWeek+blockIdx*4;
+  var html='<div style="font-size:16px;font-weight:800;color:'+ph.color+';margin-bottom:4px">Week Plan \u2014 Block '+(blockIdx+1)+': '+blk.label+'</div>';
+  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:14px">'+team+' \xb7 '+sport+' \xb7 Phase '+(phaseIdx+1)+' \xb7 '+arch+' \xb7 '+blk.intensity+'</div>';
+  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">3-DAY TRAINING WEEK \u2014 FULL SESSION VIEW</div>';
+  // ── DAY 1: TOTAL BODY ──
+  html+='<div style="background:#1a1208;border:1px solid #3a2a00;border-radius:10px;padding:12px;margin-bottom:14px">';
+  html+='<div style="font-size:13px;font-weight:800;color:#C9A228;margin-bottom:2px">\u26a1 Day 1 \u2014 Total Body</div>';
+  html+='<div style="font-size:10px;color:#6a8aa8;margin-bottom:10px">Olympic lift focus \xb7 Full chain power \xb7 Speed acceleration block</div>';
+  html+=tpStarsBlock('S \u2014 Stability / Movement Prep','#4af08a',[
+    {ex:tpEx('stability'),sch:'2\xd78 each \u2014 activation'},
+    {ex:tpEx('stability'),sch:'2\xd710 \u2014 movement prep'}
+  ]);
+  html+=tpStarsBlock('T \u2014 Speed Track (Acceleration)','#4a8af0',[
+    {ex:tpEx('speed_accel'),sch:'4 reps \u2014 full recovery'},
+    {ex:tpEx('speed_accel'),sch:'3 reps \u2014 max intent'}
+  ]);
+  html+=tpStarsBlock('A \u2014 Olympic Lift (T1 Total Body)','#C9A228',[
+    {ex:tpEx('T1_total'),sch:blk.t1rep},
+    {ex:tpEx('T2_total'),sch:blk.t2rep}
+  ]);
+  html+=tpStarsBlock('A \u2014 Jump Development','#f0a04a',[
+    {ex:tpEx('jump_bilateral'),sch:'4\xd74 \u2014 max height \u2014 full recovery'},
+    {ex:tpEx('jump_bilateral'),sch:'3\xd74 \u2014 reactive ground contact'}
+  ]);
+  html+=tpStarsBlock('S \u2014 Support / Core','#8a9bb0',[
+    {ex:tpEx('support'),sch:'3\xd712 \u2014 continuous'},
+    {ex:tpEx('support'),sch:'3\xd710 each side'}
+  ]);
+  html+='</div>';
+  // ── DAY 2: LOWER BODY ──
+  html+='<div style="background:#08122a;border:1px solid #1e3a7a;border-radius:10px;padding:12px;margin-bottom:14px">';
+  html+='<div style="font-size:13px;font-weight:800;color:#4a8af0;margin-bottom:2px">\ud83e\uddb5 Day 2 \u2014 Lower Body</div>';
+  html+='<div style="font-size:10px;color:#6a8aa8;margin-bottom:10px">Primary squat \u2014 hinge \xb7 Unilateral development \xb7 Posterior chain \xb7 Top-end speed</div>';
+  html+=tpStarsBlock('S \u2014 Stability / Hip Activation','#4af08a',[
+    {ex:tpEx('stability'),sch:'2\xd78 each \u2014 hip activation'},
+    {ex:tpEx('stability'),sch:'2\xd710 \u2014 glute warm-up'}
+  ]);
+  html+=tpStarsBlock('T \u2014 Speed Track (Top-End)','#4a8af0',[
+    {ex:tpEx('speed_topend'),sch:'3 reps \u2014 max velocity'},
+    {ex:tpEx('speed_topend'),sch:'2 reps \u2014 overspeed intent'}
+  ]);
+  html+=tpStarsBlock('A \u2014 Primary Lower (L1 \u2014 L2)','#C9A228',[
+    {ex:tpEx('L1_lower'),sch:blk.t1rep},
+    {ex:tpEx('L2_lower'),sch:blk.t2rep}
+  ]);
+  html+=tpStarsBlock('R \u2014 Unilateral + Posterior Chain','#f04a8a',[
+    {ex:tpEx('L3_lower'),sch:'3\xd76 each side'},
+    {ex:tpEx('L4_lower'),sch:'3\xd78 \u2014 tempo controlled'},
+    {ex:tpEx('L5_lower'),sch:'3\xd710 \u2014 squeeze peak'}
+  ]);
+  html+=tpStarsBlock('S \u2014 Support + Single-Leg Jump','#8a9bb0',[
+    {ex:tpEx('jump_unilateral'),sch:'3\xd74 each \u2014 full recovery'},
+    {ex:tpEx('support'),sch:'3\xd712 \u2014 circuit'}
+  ]);
+  html+='</div>';
+  // ── DAY 3: UPPER BODY ──
+  html+='<div style="background:#081a12;border:1px solid #1e5a3a;border-radius:10px;padding:12px;margin-bottom:14px">';
+  html+='<div style="font-size:13px;font-weight:800;color:#4af08a;margin-bottom:2px">\ud83d\udcaa Day 3 \u2014 Upper Body</div>';
+  html+='<div style="font-size:10px;color:#6a8aa8;margin-bottom:10px">Push + pull development \xb7 Shoulder health \xb7 Core capacity \xb7 Transition speed</div>';
+  html+=tpStarsBlock('S \u2014 Stability / Shoulder Prep','#4af08a',[
+    {ex:tpEx('stability'),sch:'2\xd710 \u2014 rotator cuff activation'},
+    {ex:tpEx('stability'),sch:'2\xd78 each \u2014 thoracic mobility'}
+  ]);
+  html+=tpStarsBlock('T \u2014 Speed Track (Transition \u2014 Decel)','#4a8af0',[
+    {ex:tpEx('speed_trans'),sch:'3 reps \u2014 decel + COD'},
+    {ex:tpEx('speed_trans'),sch:'2 reps \u2014 reactive agility'}
+  ]);
+  html+=tpStarsBlock('A \u2014 Primary Push + Pull (U1 \u2014 U2)','#C9A228',[
+    {ex:tpEx('U1_upper'),sch:blk.t1rep},
+    {ex:tpEx('U2_upper'),sch:blk.t2rep}
+  ]);
+  html+=tpStarsBlock('R \u2014 Secondary Push + Pull + Shoulders','#f04a8a',[
+    {ex:tpEx('U3_upper'),sch:'3\xd78 \u2014 controlled eccentric'},
+    {ex:tpEx('U4_upper'),sch:'3\xd710 \u2014 strict vertical pull'},
+    {ex:tpEx('U5_upper'),sch:'3\xd712 \u2014 shoulder health'}
+  ]);
+  html+=tpStarsBlock('S \u2014 Support / Core Capacity','#8a9bb0',[
+    {ex:tpEx('support'),sch:'3\xd712 \u2014 anti-rotation'},
+    {ex:tpEx('support'),sch:'3\xd710 \u2014 anterior core'}
+  ]);
+  html+='</div>';
+  html+='<div style="background:#1a1a2a;border:1px dashed #2a2a5a;border-radius:8px;padding:10px;font-size:10px;color:#6a8aa8">';
+  html+='<span style="color:#a078f0;font-weight:700">\u2699\ufe0f Week 4 CNS Reset:</span> Replace all T1/T2 prescriptions with 5\xd75 @ 70\u201375% \xb7 No tempo contrast \xb7 16-min clock \xb7 Autoregulate on feel.</div>';
   document.getElementById('tp-output').innerHTML=html;
 }
 
@@ -1977,6 +2036,7 @@ function tpPrint() {
   w.document.close();
   setTimeout(function(){w.print();},400);
 }
+
 
 // COACH CSV / PHOTO UPLOAD
 // ═══════════════════════════════════════════════════════════════
