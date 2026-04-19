@@ -457,12 +457,14 @@ select:focus{border-color:#C9A228}
     <select id="lb-sport-filter" onchange="renderLeaderboards()" style="background:#0a1520;color:#e6edf3;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:11px;cursor:pointer">
       <option value="">All Sports</option>
     </select>
-    <!-- Age group filter (optional refinement) -->
+    <!-- Grad year group filter -->
     <select id="lb-age-filter" onchange="renderLeaderboards()" style="background:#0a1520;color:#e6edf3;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:11px;cursor:pointer">
-      <option value="">All Ages</option>
-      <option value="0-10">Youth (0–10)</option>
-      <option value="10-20">Teen (10–20)</option>
-      <option value="20-30">Adult (20–30)</option>
+      <option value="">All Classes</option>
+      <option value="2031-2035">Class of '31–'35 (Youth)</option>
+      <option value="2029-2030">Class of '29–'30 (Freshman)</option>
+      <option value="2027-2028">Class of '27–'28 (Soph / JR)</option>
+      <option value="2025-2026">Class of '25–'26 (Senior)</option>
+      <option value="2022-2024">Class of '22–'24 (Alumni)</option>
     </select>
   </div>
   <div id="lb-output"></div>
@@ -1244,16 +1246,14 @@ function renderLeaderboards() {
     if (a.gender !== _lbGender) return false;
     if (sport && a.sport !== sport) return false;
     if (ageBand) {
-      var age = approxAge(a);
-      if (age === null) return false;
-      if (ageBand==='0-10'  && !(age>=0  && age<10)) return false;
-      if (ageBand==='10-20' && !(age>=10 && age<20)) return false;
-      if (ageBand==='20-30' && !(age>=20 && age<30)) return false;
+      if (!a.grad_year) return false;
+      var parts = ageBand.split('-').map(Number);
+      if (a.grad_year < parts[0] || a.grad_year > parts[1]) return false;
     }
     return true;
   });
   var gLabel = _lbGender==='M' ? 'Male' : 'Female';
-  var filterNote = [sport, ageBand ? (ageBand==='0-10'?'Youth':ageBand==='10-20'?'Teen':'Adult') : ''].filter(Boolean).join(' · ');
+  var filterNote = [sport, ageBand ? 'Class \'' + ageBand.replace('-','-\'') : ''].filter(Boolean).join(' · ');
   var h = '<div style="font-size:11px;color:#6a8aa8;margin-bottom:14px">' +
     gLabel + (filterNote ? ' · ' + filterNote : ' · All Athletes') +
     ' · <span style="color:#4a8af0">' + pool.length + ' in pool</span></div>';
