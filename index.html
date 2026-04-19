@@ -1284,7 +1284,7 @@ function pbFilterAthletes() {
   }
   if (!matches.length) { list.style.display = 'none'; return; }
   list.innerHTML = matches.map(function(m) {
-    return '<div onclick="selectPbAth(' + m.i + ')" style="padding:8px 12px;cursor:pointer;font-size:12px;border-bottom:1px solid #1e3a5f;color:#e6edf3" onmouseover="this.style.background='#1e3a5f'" onmouseout="this.style.background=''">' +
+    return '<div onclick="selectPbAth(' + m.i + ')" style="padding:8px 12px;cursor:pointer;font-size:12px;border-bottom:1px solid #1e3a5f;color:#e6edf3" onmouseover="this.style.background=\'#1e3a5f\'" onmouseout="this.style.background=\'\'">'+
       '<strong>' + m.a.name + '</strong> <span style="color:#6a8aa8;font-size:11px">' + (m.a.sport||'—') + ' · ' + (m.a.bucket||'N/A') + '</span></div>';
   }).join('');
   list.style.display = 'block';
@@ -1303,7 +1303,7 @@ function selectPbAth(idx) {
 function pbUpdateSubFocus() {
   var type = document.getElementById('pb-session-type').value;
   var sf = document.getElementById('pb-sub-focus');
-  sf.innerHTML = '<option value="auto">Auto (Coach's Choice)</option>';
+  sf.innerHTML = '<option value="auto">Auto (Coach\'s Choice)</option>';
   if (type === 'speed' || type === 'all') {
     sf.innerHTML += '<option value="accel">⚡ Acceleration</option><option value="topend">🚀 Top-End Speed</option><option value="trans">🔀 Transition (Accel → Max-V)</option>';
   }
