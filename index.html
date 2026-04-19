@@ -185,12 +185,12 @@ select:focus{border-color:#F4762A}
 </div>
 
 <div class="tabs">
-  <div class="tab active" onclick="switchTab('rankings')">📊 Rankings</div>
-  <div class="tab" onclick="switchTab('compare')">⚡ How Do You Stack Up?</div>
+  <div class="tab" onclick="switchTab('rankings')">📊 Rankings</div>
+  <div class="tab active" onclick="switchTab('compare')">⚡ How Do You Stack Up?</div>
 </div>
 
 <!-- RANKINGS TAB -->
-<div id="tab-rankings" class="tab-panel active">
+<div id="tab-rankings" class="tab-panel">
 <div class="filters">
   <div class="filter-group">
     <span class="filter-label">Sport</span>
@@ -235,7 +235,7 @@ select:focus{border-color:#F4762A}
 </div>
 
 <!-- COMPARE TAB -->
-<div id="tab-compare" class="tab-panel">
+<div id="tab-compare" class="tab-panel active">
 <div class="compare-section">
   <div class="compare-card">
     <div class="compare-title">⚡ How Do You Stack Up?</div>
@@ -318,7 +318,7 @@ const A=[{"name":"Addison Erro","gender":"F","bw_kg":61.47,"cmj_jh_in":11.5,"cmj
 // AUTH
 // =====================================================
 let coachMode = false;
-const COACH_HASH = "ff136be64f2e3e87c7b4013a70305c0f580e27e42b865def59fdbc0ee3f026cd";
+const COACH_HASH = "bca2761644d2d6578a24c58e6f7bd961d4423ae46d0e24042a70e26139b9a912";
 
 async function sha256(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
