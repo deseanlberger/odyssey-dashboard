@@ -729,7 +729,7 @@ select:focus{border-color:#C9A228}
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:14px">
       <div>
         <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Phase</label>
-        <select id="pb-macro" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:12px">
+        <select id="pb-macro" onchange="pbUpdateBlocks()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:12px">
           <option value="tri1">Phase 1 — Triphasic</option>
           <option value="pow1">Phase 2 — Power</option>
           <option value="tri3">Phase 3 — Triphasic</option>
@@ -1361,6 +1361,23 @@ function buildPBHeader(ath, macro, block, week, day, arch) {
     athBadge +
     '<span style="font-size:10px;background:#2a1a5f;border-radius:5px;padding:2px 8px;color:#a08bd4">' + arch + '</span>' +
     '</div></div>';
+}
+
+function pbUpdateBlocks() {
+  var macro = document.getElementById('pb-macro').value;
+  var isPow = macro.startsWith('pow');
+  var sel = document.getElementById('pb-block');
+  var cur = sel.value;
+  if (isPow) {
+    sel.options[0].text = 'Block 1 — High Force (85\u201392%)';
+    sel.options[1].text = 'Block 2 — Power (75\u201385%)';
+    sel.options[2].text = 'Block 3 — Velocity (60\u201375%)';
+  } else {
+    sel.options[0].text = 'Block 1 — Eccentric';
+    sel.options[1].text = 'Block 2 — Isometric';
+    sel.options[2].text = 'Block 3 — Concentric';
+  }
+  sel.value = cur; // preserve selection
 }
 
 function pbGen() {
