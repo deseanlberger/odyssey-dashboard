@@ -316,7 +316,7 @@ select:focus{border-color:#C9A228}
 
 /* PROGRAM BUILDER + TEAM PLAN — full screen override */
 #pb-overlay,#teamplan-overlay{background:#0D1B2A!important;padding:0!important;align-items:stretch!important;justify-content:stretch!important}
-#pb-overlay.open{display:block!important;overflow-y:auto}
+#pb-overlay.open,#teamplan-overlay.open{display:block!important;overflow-y:auto!important}
 #pb-overlay>.pb-fullscreen,#teamplan-overlay>.pb-fullscreen{min-height:100vh;display:flex;flex-direction:column}
 
 /* COMPARE */
@@ -980,7 +980,7 @@ select:focus{border-color:#C9A228}
 </div>
 
 <!-- TEAM PROGRAM BUILDER MODAL -->
-<div class="pw-overlay" id="teamplan-overlay" style="display:none!important;background:#0D1B2A!important;padding:0!important">
+<div class="pw-overlay" id="teamplan-overlay">
   <div class="pb-fullscreen">
     <!-- Sticky Header -->
     <div style="position:sticky;top:0;background:#0D1B2A;z-index:20;padding:13px 16px;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;justify-content:space-between">
