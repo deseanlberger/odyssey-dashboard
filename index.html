@@ -151,6 +151,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .cp-rx-speed{color:#6e8efb}
 .cp-rx-jump{color:#4caf50}
 .cp-rx-strength{color:#C9A228}
+.cp-rx-intent{font-size:10px;color:#6a8aa8;font-style:italic;margin:6px 0 8px;line-height:1.4;padding-bottom:6px;border-bottom:1px solid #1e3a5f}
+.cp-rx-ex{font-size:11px;font-weight:600;color:#e0ecf8}
+.cp-rx-why{font-size:10px;color:#8a9bb0;line-height:1.4;margin-top:2px;margin-bottom:4px;padding-left:6px;border-left:2px solid #2a4a6a}
 .cp-rx-item{font-size:11px;color:#c9d1d9;line-height:1.6;padding-left:10px;position:relative}
 .cp-rx-item::before{content:"•";position:absolute;left:0;color:#6a8aa8}
 .cp-dsi-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #1e3a5f;font-size:12px}
@@ -1006,92 +1009,348 @@ function getExRecs(a) {
   const speed = [], jump = [], strength = [];
   const bkt = a.bucket || 'N/A';
   const asym = a.uni_asym_pct || 0;
-  const dsi = a.dsi;
-  const rsi = a.cmj_rsi;
+  const dsi  = a.dsi;
+  const rsi  = a.cmj_rsi;
   const cmjH = a.cmj_jh_in;
-  const iso = a.iso_force_bm;
+  const iso  = a.iso_force_bm;
   const maleLow = a.gender === 'M' ? 16 : 12;
 
-  // ── Bucket base prescriptions ──
+  // Each item: { ex, why }
   if (bkt === 'Apex') {
-    speed.push('Flying 10s at max intent — full speed expression');
-    speed.push('Contrast sprints: heavy sled → immediate fly 10 (PAP protocol)');
-    jump.push('Drop jumps into immediate sprint — peak RFD expression');
-    jump.push('Max effort CMJ + instant reactive bound sequence');
-    strength.push('Power Clean — push peak velocity ceiling 2.5+ m/s');
-    strength.push('Supramaximal Trap Bar eccentric (Phase 3 protocol — 8–10s)');
+    speed.push({ ex:'Flying 10s at max intent — full speed expression',
+                 why:'You\'ve earned the right to run at 100%. Your force and velocity base support true max-speed work without breaking down.' });
+    speed.push({ ex:'Contrast sprints: heavy sled → immediate fly 10 (PAP protocol)',
+                 why:'Post-activation potentiation at the elite level — the sled primes your CNS so the next sprint taps peak power output.' });
+    jump.push({  ex:'Drop jumps into immediate sprint — peak RFD expression',
+                 why:'Trains the complete power chain: absorb force, express it reactively, and immediately apply it horizontally. The full athletic event.' });
+    jump.push({  ex:'Max effort CMJ + instant reactive bound sequence',
+                 why:'Keep your reactive ceiling high. Apex athletes who stop reactive training drift toward Force Bias over time.' });
+    strength.push({ ex:'Power Clean — push peak velocity ceiling 2.5+ m/s',
+                    why:'At this level, the goal is velocity ceiling, not load. Sub-2.5 m/s means strength is outpacing your power expression — recalibrate.' });
+    strength.push({ ex:'Supramaximal Trap Bar eccentric (Phase 3 protocol — 8–10s)',
+                    why:'The only way to raise the ceiling is to stress the system beyond what concentric work can reach. Eccentric overload drives tendon stiffness and RFD simultaneously.' });
   } else if (bkt === 'Velocity Bias') {
-    speed.push('Flying 10s at 90–95% intent (max velocity focus)');
-    speed.push('Wicket runs — stride length & hip height mechanics');
-    jump.push('Drop jumps — reactive GCT under 0.25s');
-    jump.push('Continuous hurdle hops (ankle stiffness circuit)');
-    strength.push('Trap Bar Jump — peak velocity ≥ 2.4 m/s (power phase)');
-    strength.push('Power Clean — peak velocity 2.2–2.5 m/s');
+    speed.push({ ex:'Flying 10s at 90–95% intent (max velocity focus)',
+                 why:'Your elastic system is your asset. Submaximal flying 10s develop stride mechanics without the neural fatigue of all-out efforts every session.' });
+    speed.push({ ex:'Wicket runs — stride length & hip height mechanics',
+                 why:'Velocity bias athletes often rely on frequency. Wickets force optimal stride length and hip height — building the mechanical foundation to support your elastic strength.' });
+    jump.push({  ex:'Drop jumps — reactive GCT under 0.25s',
+                 why:'This IS your training zone. Reactive strength is your strength — keep sharpening it. GCT above 0.25s means you\'re loading, not reacting.' });
+    jump.push({  ex:'Continuous hurdle hops (ankle stiffness circuit)',
+                 why:'Your RSI is high because your tendons are stiff. This maintains that stiffness while building the capacity to express it repeatedly.' });
+    strength.push({ ex:'Trap Bar Jump — peak velocity ≥ 2.4 m/s (power phase)',
+                    why:'This is your strength bridge. You have the reactive qualities — the gap is absolute force production. Jump squats at loaded velocity build the missing link.' });
+    strength.push({ ex:'Power Clean — peak velocity 2.2–2.5 m/s',
+                    why:'Velocity bias athletes typically clean well. Monitor bar speed: if it drops below 2.2, you\'re training strength, not power. Keep it in the power corridor.' });
   } else if (bkt === 'Force Bias') {
-    speed.push('Heavy sled 30–50% BW — acceleration transition work');
-    speed.push('Block starts / wall drive — horizontal push mechanics');
-    jump.push('CMJ contrast sets (heavy Trap Bar → immediate CMJ)');
-    jump.push('Broad jumps — horizontal force expression');
-    strength.push('Density sets at RPE 8–8.5 (Back Squat or Trap Bar DL)');
-    strength.push('Hang Clean — peak velocity 2.3–2.6 m/s');
+    speed.push({ ex:'Heavy sled 30–50% BW — acceleration transition work',
+                 why:'Your strength base is real — now the work is expressing it horizontally. Loaded acceleration teaches your body to apply force at the angles that actually produce speed.' });
+    speed.push({ ex:'Block starts / wall drive — horizontal push mechanics',
+                 why:'Force bias athletes often push too vertically. Wall drive drills ingrain the 45° shin angle and triple extension mechanics that convert ground force into forward velocity.' });
+    jump.push({  ex:'CMJ contrast sets (heavy Trap Bar → immediate CMJ)',
+                 why:'This is the core of force bias training. The heavy set primes your CNS, then the jump captures that power output immediately — teaching your system to access its strength explosively.' });
+    jump.push({  ex:'Broad jumps — horizontal force expression',
+                 why:'Vertical jump height isn\'t your limiting factor — horizontal power application is. Broad jumps train the exact direction your sport requires and expose the velocity side of your profile.' });
+    strength.push({ ex:'Density sets at RPE 8–8.5 (Back Squat or Trap Bar DL)',
+                    why:'Your strength base doesn\'t need to get bigger — it needs to get faster. Density sets at 80–85% teach your nervous system to apply near-maximal force with controlled bar speed. No grinding reps.' });
+    strength.push({ ex:'Hang Clean — peak velocity 2.3–2.6 m/s',
+                    why:'The Olympic lift is the direct bridge between your strength and your speed. Monitor velocity: if it drops below 2.3 m/s, you\'re strength training. Stay in the power corridor — that\'s the shift you\'re after.' });
   } else if (bkt === 'Foundation') {
-    speed.push('Heavy sled 80–100% BW — first 4-step aggressive push');
-    speed.push('Resisted sprint starts — horizontal force development');
-    jump.push('Box jumps — two-foot landing mechanics (load acceptance)');
-    jump.push('Squat jumps — static-start RFD from bottom position');
-    strength.push('Triphasic eccentrics — 3–5s eccentric lower body focus');
-    strength.push('Overcoming ISO holds — ankle/knee/hip (Natera protocol)');
+    speed.push({ ex:'Heavy sled 80–100% BW — first 4-step aggressive push',
+                 why:'You need ground force before you can express speed. Ultra-heavy sled work builds the hip extension strength and push mechanics that make future speed training stick.' });
+    speed.push({ ex:'Resisted sprint starts — horizontal force development',
+                 why:'Teaches triple extension under load before asking your nervous system to do it freely. Build the movement before you try to express it.' });
+    jump.push({  ex:'Box jumps — two-foot landing mechanics (load acceptance)',
+                 why:'Landing stiffness comes before takeoff power. Box jumps with clean landings build the joint tolerance and neural bracing patterns that make reactive work possible later.' });
+    jump.push({  ex:'Squat jumps — static-start RFD from bottom position',
+                 why:'Removes the elastic component to isolate your raw rate of force development. If this is weak, plyometrics won\'t stick — this is the foundation.' });
+    strength.push({ ex:'Triphasic eccentrics — 3–5s eccentric lower body focus',
+                    why:'Eccentric strength is the prerequisite for everything else. Until you can absorb force well, expressing it is limited. Triphasic builds structural capacity first.' });
+    strength.push({ ex:'Overcoming ISO holds — ankle/knee/hip (Natera protocol)',
+                    why:'Isometric strength at every joint angle builds the stiffness and intramuscular coordination that reactive work demands. This is the base of the base.' });
   } else {
-    // N/A — no sprint or force plate data yet
-    speed.push('10-yard sprint timing — establish acceleration baseline');
-    speed.push('Flying 10 (20–30 fly) timing — establish top-end velocity baseline');
-    jump.push('Force plate assessment: CMJ + ISO protocol for full classification');
-    jump.push('SLJ (single-leg jump) screen — detect unilateral asymmetries');
-    strength.push('Load-velocity profile: Back Squat + Trap Bar DL across multiple loads');
-    strength.push('General strength development until full testing completed');
+    speed.push({ ex:'10-yard sprint timing — establish acceleration baseline', why:'No training prescription until baseline data exists. This is your first measurement.' });
+    speed.push({ ex:'Flying 10 (20–30 fly) timing — establish top-end velocity baseline', why:'Gives us your reactive profile before we prescribe anything. Required for classification.' });
+    jump.push({  ex:'Force plate assessment: CMJ + ISO protocol for full classification', why:'Required to identify your force-velocity bias and build a targeted prescription.' });
+    jump.push({  ex:'SLJ (single-leg jump) screen — detect unilateral asymmetries', why:'Asymmetry data shapes 40% of the prescription. Complete this before training begins.' });
+    strength.push({ ex:'Load-velocity profile: Back Squat + Trap Bar DL across multiple loads', why:'The VBT profile is your strength baseline. Without it, loading decisions are guesswork.' });
+    strength.push({ ex:'General strength development until full testing completed', why:'Build tissue tolerance and movement quality while we gather the data needed to personalize your prescription.' });
   }
 
-  // ── DSI-based additions (thresholds match dataset scale 0.05–0.12) ──
+  // DSI-based additions
   if (dsi !== null && dsi < 0.065) {
-    // Force-dominant: ISO > CMJ → needs ballistic/RFD expression
-    jump.push('⚡ RFD priority: Ballistic contrast — heavy pull → immediate jump');
-    speed.push('Overspeed work — tubing-assisted acceleration (top-speed emphasis)');
+    jump.push({  ex:'⚡ RFD priority: Ballistic contrast — heavy pull → immediate jump',
+                 why:'Your ISO is high relative to your CMJ, meaning the strength is there but the rate of accessing it is the gap. Ballistic contrast closes it.' });
+    speed.push({ ex:'Overspeed work — tubing-assisted acceleration (top-speed emphasis)',
+                 why:'Your nervous system needs exposure to faster movement speeds than you can produce unassisted. Overspeed stretches your velocity ceiling.' });
   } else if (dsi !== null && dsi > 0.09) {
-    // Velocity-dominant: CMJ > ISO → needs absolute strength base
-    strength.push('⚡ Strength priority: Supramaximal eccentrics (8–10s Phase 3 protocol)');
-    strength.push('Isometric overcoming protocol — 10s max effort holds at sticking points');
+    strength.push({ ex:'⚡ Strength priority: Supramaximal eccentrics (8–10s Phase 3 protocol)',
+                    why:'Your CMJ is outpacing your ISO base, meaning your reactive qualities exceed your strength foundation. Eccentrics close that gap.' });
+    strength.push({ ex:'Isometric overcoming protocol — 10s max effort holds at sticking points',
+                    why:'Iso overcoming work at sticking points is the most direct way to raise max force output. No momentum, no stretch reflex — pure strength development.' });
   }
 
-  // ── Asymmetry-based ──
+  // Asymmetry
   if (asym >= 30) {
-    jump.push('⚠️ Single-leg broad jump (weak side 2× volume)');
-    jump.push('⚠️ Single-leg box drop — unilateral landing stiffness');
-    strength.push('⚠️ Priority: BB Reverse lunge or Split Squat (weak side lead)');
-    strength.push('⚠️ Single-leg RDL — posterior chain symmetry correction');
+    jump.push({  ex:'⚠️ Single-leg broad jump (weak side 2× volume)', why:'This asymmetry is an injury risk in game-speed cuts. Volume bias fixes it faster than bilateral work alone.' });
+    jump.push({  ex:'⚠️ Single-leg box drop — unilateral landing stiffness', why:'Your weak side can\'t absorb force the same way your strong side can. This closes the gap before it becomes an injury.' });
+    strength.push({ ex:'⚠️ BB Reverse lunge or Split Squat (weak side lead)', why:'Posterior chain isolation on the weak side. Bilateral work hides this asymmetry — single-leg loading exposes and corrects it.' });
+    strength.push({ ex:'⚠️ Single-leg RDL — posterior chain symmetry correction', why:'Hip hinge strength is almost always the root of unilateral asymmetry. Address it here first.' });
   } else if (asym >= 15) {
-    strength.push('Unilateral priority: B-stance RDL or single-leg press');
-    jump.push('Single-leg landing drills — reinforce symmetrical deceleration');
+    strength.push({ ex:'Unilateral priority: B-stance RDL or single-leg press', why:'Asymmetry in this range is manageable but progressive. Single-leg emphasis prevents it from growing into an injury risk.' });
+    jump.push({  ex:'Single-leg landing drills — reinforce symmetrical deceleration', why:'Asymmetric landings in sport cause non-contact injuries. Reinforce clean unilateral mechanics before it becomes an issue.' });
   }
 
-  // ── Low RSI ──
+  // Low RSI
   if (rsi !== null && rsi < 0.40) {
-    jump.push('Ankle pogo progression (bilateral → single-leg → skipping)');
-    jump.push('Low hurdle continuous hops — reactive ankle stiffness');
+    jump.push({  ex:'Ankle pogo progression (bilateral → single-leg → skipping)', why:'Your RSI indicates low ankle stiffness — the foundation of all reactive work. Pogo progressions build it safely before adding impact.' });
+    jump.push({  ex:'Low hurdle continuous hops — reactive ankle stiffness', why:'Continuous contacts train the exact quality your RSI reflects is missing: elastic energy return through the ankle complex.' });
   }
 
-  // ── Low jump height ──
+  // Low jump height
   if (cmjH !== null && cmjH < maleLow) {
-    jump.push('Hip extension drills — glute bridge → SL glute bridge → hip thrust');
-    jump.push('Box jump with pause — emphasize triple extension at top');
+    jump.push({  ex:'Hip extension drills — glute bridge → SL glute bridge → hip thrust', why:'Low CMJ height typically traces to insufficient hip extension. This builds it directly before adding ballistic loading.' });
+    jump.push({  ex:'Box jump with pause — emphasize triple extension at top', why:'Teaching complete triple extension before asking for reactive expression. You can\'t jump high reactively if you can\'t jump high from a controlled start.' });
   }
 
-  // ── Low ISO force ──
+  // Low ISO force
   if (iso !== null && iso < 25) {
-    strength.push('Isometric squat hold — 10s max effort (ankle/knee/hip progression)');
-    strength.push('Heavy Trap Bar DL isometric pause off the floor — build joint stiffness');
+    strength.push({ ex:'Isometric squat hold — 10s max effort (ankle/knee/hip progression)', why:'ISO force this low means joint stiffness is your limiting factor. Overcoming isometrics build it fastest.' });
+    strength.push({ ex:'Heavy Trap Bar DL isometric pause off the floor — build joint stiffness', why:'The deadlift pause position is your weakest link. Isometric holds here build the base your reactive training needs to sit on.' });
   }
 
   return { speed, jump, strength };
+}
+
+
+// ── Sport/Position Context Engine ──
+function getSportContext(a) {
+  const sport  = (a.sport  || '').toLowerCase();
+  const pos    = (a.position || '').toLowerCase();
+  const bkt    = a.bucket  || 'N/A';
+  const gender = a.gender  || 'M';
+
+  // Sport + position demand profiles
+  const ctx = { demands:[], fit:'', priority:'', intent:{ speed:'', jump:'', strength:'' } };
+
+  // ── SOFTBALL ──
+  if (sport.includes('softball')) {
+    if (pos.includes('pitch')) {
+      ctx.demands = ['Rotational power (drive leg → hip-shoulder separation)', 'Arm deceleration strength', 'First-step lateral quickness', 'Repeated-effort shoulder stability'];
+      ctx.fit = bkt==='Apex'   ? 'Ideal profile for a power pitcher. Your force AND velocity base support both pitch velocity and in-season durability.' :
+                bkt==='Velocity Bias' ? 'Good elastic profile — reactive qualities translate to arm speed. Priority: build the strength floor so that velocity is sustainable over a full season.' :
+                bkt==='Force Bias' ? 'Strong foundation for a power pitcher — your drive leg force base is real. The work now is expressing it as rotational rate, not just load.' :
+                bkt==='Foundation' ? 'Build structural capacity first. Pitching demands repeated high-velocity rotational effort — the foundation needs to be in place before chasing pitch velocity.' :
+                'Complete force plate testing to determine how your strength and velocity qualities map to pitching demands.';
+      ctx.priority  = 'Hip-shoulder separation + rotational RFD — the bridge between your strength base and pitch velocity';
+      ctx.intent.speed    = 'Linear speed work trains your drive leg mechanics and first-step off the mound — directly tied to your push-off power into rotation.';
+      ctx.intent.jump     = 'Jump training develops the triple extension and RFD that powers both your drive leg push and your arm acceleration sequence.';
+      ctx.intent.strength = 'Strength accessories target the posterior chain, rotational core, and shoulder complex — the three systems your pitching mechanics load most.';
+    } else if (pos.includes('catch')) {
+      ctx.demands = ['Explosive hip extension (receiving → throwing)', 'Lateral blocking range', 'Repeated jump-and-block', 'Deceleration from receiving position'];
+      ctx.fit = bkt==='Apex'   ? 'Complete catcher profile. Your power output supports explosive throws and repeated blocking under fatigue.' :
+                bkt==='Velocity Bias' ? 'Your reactive strength is your asset behind the plate — use it. Develop the force floor so it holds through a full game.' :
+                bkt==='Force Bias' ? 'Strong base for blocking and drive-through throws. Converting that force to explosive hip extension speed is the priority.' :
+                'Build hip extension strength and ankle stiffness first — the structural base of every catcher movement.';
+      ctx.priority  = 'Explosive triple extension from low positions + hip rotation velocity';
+      ctx.intent.speed    = 'Acceleration work develops the explosive first steps from catching stance to throwing position — directly sport-specific for a catcher.';
+      ctx.intent.jump     = 'Plyometric work trains the elastic hip extension and triple extension that drives throwing power and block recovery.';
+      ctx.intent.strength = 'Posterior chain and rotational strength — the base of your catching mechanics and throwing power.';
+    } else {
+      ctx.demands = ['First-step quickness (90-ft base running)', 'Rotational power (hitting)', 'Lateral range in the field', 'Sprint deceleration'];
+      ctx.fit = bkt==='Apex'   ? 'High-value athletic profile for a softball player. Your speed and power combination supports all phases of the game.' :
+                bkt==='Velocity Bias' ? 'Your reactive qualities show in your speed and base running. Build the strength floor to keep that speed durable across a full season.' :
+                bkt==='Force Bias' ? 'Strong base for contact hitting and drive-through. Work now is converting that into bat speed and base-running acceleration.' :
+                'Foundational work first — hitting power and sprint speed both require structural base capacity.';
+      ctx.priority  = '0–10 yard acceleration + rotational hip power for bat speed';
+      ctx.intent.speed    = 'Acceleration mechanics directly apply to base running and first-step reads in the field.';
+      ctx.intent.jump     = 'Plyometric work builds the explosive hip extension that powers both your swing and your acceleration out of the box.';
+      ctx.intent.strength = 'Rotational and posterior chain strength — the foundation of batting power and deceleration in the field.';
+    }
+  }
+
+  // ── BASEBALL ──
+  else if (sport.includes('baseball')) {
+    if (pos.includes('pitch')) {
+      ctx.demands = ['Drive leg force production (push-off)', 'Hip-shoulder separation velocity', 'Arm deceleration eccentric strength', 'Repeated-effort posterior chain resilience'];
+      ctx.fit = bkt==='Apex'   ? 'Elite profile for a pitcher. You have the force base to drive off the rubber AND the velocity qualities for arm speed. Maintain both.' :
+                bkt==='Velocity Bias' ? 'High elastic profile — arm speed likely comes naturally. The priority is the force base: drive leg strength to support pitch velocity over a full outing.' :
+                bkt==='Force Bias' ? 'Strong drive leg is your asset. The work is converting that force into rotational rate — hip-shoulder separation speed is the bridge.' :
+                'Structural base first. Pitching is a repeated high-force event — you need the capacity before chasing velocity.';
+      ctx.priority  = 'Drive leg triple extension + hip-shoulder separation rate';
+      ctx.intent.speed    = 'Linear acceleration work trains your drive leg mechanics off the rubber — the same push mechanics that generate pitch velocity.';
+      ctx.intent.jump     = 'Plyometrics develop the RFD and triple extension pattern your drive leg needs to be explosive rep after rep through an outing.';
+      ctx.intent.strength = 'Posterior chain and rotational strength — your pitch arm needs a strong base to throw against.';
+    } else if (pos.includes('catch')) {
+      ctx.demands = ['Explosive hip extension (throwing)', 'Blocking range and recovery', 'Deceleration mechanics from low position', 'Repeated high-effort lower body output'];
+      ctx.fit = bkt==='Apex'   ? 'Built for behind the plate. Your complete power profile supports elite throwing and sustained blocking across 9 innings.' :
+                bkt==='Velocity Bias' ? 'Good reactive profile for a catcher. Develop the force base to sustain that explosiveness deep into games.' :
+                bkt==='Force Bias' ? 'Your strength base is a catcher asset. Converting it to explosive hip extension on throwing actions is the priority.' :
+                'Build hip extension strength and ankle stability first — the structural base of all catcher mechanics.';
+      ctx.priority  = 'Explosive triple extension from receiving position + throwing hip velocity';
+      ctx.intent.speed    = 'First-step and change-of-direction work applies to coverage and blocking range.';
+      ctx.intent.jump     = 'Triple extension training directly maps to throwing power from the crouch position.';
+      ctx.intent.strength = 'Posterior chain strength and hip stability — the engine of your throwing arm and blocking mechanics.';
+    } else {
+      ctx.demands = ['60-yard dash (40-yard burst + fly)', 'First step off pitch read', 'Rotational power (exit velocity)', 'Lateral agility (range)'];
+      ctx.fit = bkt==='Apex'   ? 'High-ceiling baseball athlete. Exit velocity, sprint speed, and reactive reads all benefit from your force/velocity balance.' :
+                bkt==='Velocity Bias' ? 'Speed and reactive qualities are your tools. Build the strength floor to keep your sprint speed and swing power durable through a full season.' :
+                bkt==='Force Bias' ? 'Strong base for exit velocity and drive-through. Converting that into sprint acceleration and bat speed is the next layer.' :
+                'Structural capacity first — then express it as sprint speed and rotational power.';
+      ctx.priority  = '0–10 acceleration + rotational power (exit velocity)';
+      ctx.intent.speed    = 'Sprint work directly maps to 60-yard dash performance and first-step reads.';
+      ctx.intent.jump     = 'Triple extension and RFD work powers both your sprint mechanics and rotational swing sequence.';
+      ctx.intent.strength = 'Posterior chain and core rotation — the base of exit velocity and deceleration range.';
+    }
+  }
+
+  // ── TRACK & FIELD ──
+  else if (sport.includes('track')) {
+    if (pos.includes('sprint') || pos.includes('100') || pos.includes('200') || pos.includes('400')) {
+      ctx.demands = ['Horizontal force application (0–10m)', 'Max velocity mechanics (30–60m)', 'Step frequency + stride length balance', 'Sprint-specific RFD'];
+      ctx.fit = bkt==='Apex'   ? 'The complete sprinter profile. You have the force to drive out of blocks and the velocity qualities for max speed phase. Execute.' :
+                bkt==='Velocity Bias' ? 'High elastic qualities — your max velocity phase is your weapon. Develop the force base for a stronger block drive phase and better 10m power.' :
+                bkt==='Force Bias' ? 'Strong block drive profile. Your acceleration phase is your weapon — the work is developing the elastic qualities and step frequency for max velocity.' :
+                'Horizontal force production is step one. Everything in sprinting depends on applying force into the ground.';
+      ctx.priority  = 'Horizontal force application + max velocity mechanics';
+      ctx.intent.speed    = 'Every speed session is your sport. Sprint mechanics work IS the training — intent and precision matter more than volume here.';
+      ctx.intent.jump     = 'Plyometrics develop the exact elastic qualities that drive max velocity stride mechanics — ankle stiffness, hip extension power, and step frequency.';
+      ctx.intent.strength = 'Ground-based strength work builds the force production that gets you out of blocks and through the acceleration phase.';
+    } else if (pos.includes('triple') || pos.includes('long jump')) {
+      ctx.demands = ['Penultimate step reactive landing', 'Single-leg landing stiffness', 'Horizontal bounding power', 'Sprint-to-takeoff transition'];
+      ctx.fit = bkt==='Apex'   ? 'Ideal profile for a jumper. Your reactive strength and absolute force base support both the approach and the takeoff.' :
+                bkt==='Velocity Bias' ? 'High reactive strength is a jumper asset. Build the force base to support single-leg landing loads at speed without breakdown.' :
+                bkt==='Force Bias' ? 'Strong takeoff force — develop the reactive and elastic qualities to convert approach speed into vertical at the board.' :
+                'Single-leg landing stiffness and approach speed are both prerequisites. Build structural capacity first.';
+      ctx.priority  = 'Penultimate step mechanics + single-leg reactive stiffness';
+      ctx.intent.speed    = 'Approach run mechanics determine everything — sprint training IS jump approach training.';
+      ctx.intent.jump     = 'Bounding and reactive work is your primary event-specific training. Treat every jump session as event prep.';
+      ctx.intent.strength = 'Single-leg posterior chain strength — the base of landing tolerance in the triple jump sequence.';
+    } else {
+      ctx.demands = ['Explosive power output', 'Rotational force (throws)', 'Repeated sprint or jump capacity'];
+      ctx.fit = `Your ${bkt !== 'N/A' ? bkt : 'current'} profile maps to your event demands. Build on your strengths while closing identified gaps.`;
+      ctx.priority  = 'Event-specific force expression';
+      ctx.intent.speed    = 'Speed and acceleration work develops the physical qualities your event demands.';
+      ctx.intent.jump     = 'Plyometrics develop the explosive output and RFD your event requires.';
+      ctx.intent.strength = 'Strength accessories build the force base your event sits on.';
+    }
+  }
+
+  // ── VOLLEYBALL ──
+  else if (sport.includes('volleyball')) {
+    if (pos.includes('setter')) {
+      ctx.demands = ['Quick first step (transition)', 'Reactive vertical jump', 'Shoulder stability (setting volume)', 'Repeated-effort lower body output'];
+      ctx.fit = bkt==='Apex'   ? 'Elite setter profile. Your reactive jump and force qualities support the physical demands of running an offense all match.' :
+                bkt==='Velocity Bias' ? 'High reactive qualities — ideal for first-step transition and explosive sets. Develop the force floor to sustain it through 5 sets.' :
+                bkt==='Force Bias' ? 'Good base for physical setting and block defense. Converting that force to quick transition footwork is the priority.' :
+                'Build structural capacity and reactive jump base — then develop the match-long repeatability a setter demands.';
+      ctx.priority  = 'Reactive vertical jump + first-step transition footwork';
+      ctx.intent.speed    = 'First-step and lateral acceleration work directly applies to court transition and defensive coverage.';
+      ctx.intent.jump     = 'Reactive jump training — your jumps in volleyball are always reactive, never planned. Train that way.';
+      ctx.intent.strength = 'Posterior chain and shoulder stability — the base of repeated jumping and high-volume setting.';
+    } else if (pos.includes('outside') || pos.includes('opposite') || pos.includes('middle')) {
+      ctx.demands = ['Vertical jump (approach + block)', 'Arm swing power', 'Transition footwork', 'In-game jump repeatability'];
+      ctx.fit = bkt==='Apex'   ? 'Built for the net. Elite vertical and force profile — your attack height and blocking range benefit from both sides of your profile.' :
+                bkt==='Velocity Bias' ? 'Elastic jump qualities are your weapon at the net. Develop force base for higher attack height and better block footwork through long matches.' :
+                bkt==='Force Bias' ? 'Strong block force base. Converting your strength into approach jump height and arm swing speed is the focus.' :
+                'Build vertical jump capacity first — everything else in your position depends on it.';
+      ctx.priority  = 'Vertical jump height + approach jump repeatability';
+      ctx.intent.speed    = 'Lateral and transition footwork determines your approach mechanics — approach angle IS your attack angle.';
+      ctx.intent.jump     = 'Vertical jump training is directly sport-specific. Approach jump mechanics, reactive block jumps, and landing recovery are your training priorities.';
+      ctx.intent.strength = 'Hip extension and rotational strength powers arm swing velocity and jump height. Shoulder stability supports high-volume hitting.';
+    } else if (pos.includes('libero') || pos.includes('ds')) {
+      ctx.demands = ['Lateral first step', 'Low-body-position mobility', 'Dive and recovery', 'Repeated lateral effort'];
+      ctx.fit = bkt==='Velocity Bias' ? 'Your reactive qualities are a libero asset — fast first step and reactive reads define the position.' :
+                bkt==='Force Bias'    ? 'Strong base. The work is lateral quickness and reactive reads from low positions — different demands than your current strength profile.' :
+                `Your ${bkt !== 'N/A' ? bkt : 'current'} profile applies to the demands of a libero — lateral speed and reactive recovery are the targets.`;
+      ctx.priority  = 'Lateral first step + low-position reactive recovery';
+      ctx.intent.speed    = 'Lateral acceleration and first-step quickness are your primary sport tools. Every speed drill should reflect that direction.';
+      ctx.intent.jump     = 'Low-impact plyometrics develop the reactive ankle stiffness and hip mobility that lateral defensive work demands.';
+      ctx.intent.strength = 'Hip and posterior chain strength sustains your low-body positioning and dive mechanics over a full match.';
+    } else {
+      ctx.demands = ['Vertical jump', 'First-step transition', 'Repeated effort jumps'];
+      ctx.fit = `Your ${bkt !== 'N/A' ? bkt : 'current'} profile applies to volleyball demands — vertical jump and reactive footwork are the targets.`;
+      ctx.priority  = 'Vertical jump + repeated sprint capacity';
+      ctx.intent.speed    = 'Court speed and transition footwork — apply sprint mechanics to lateral and diagonal directions.';
+      ctx.intent.jump     = 'Reactive vertical jump is your primary weapon. Train approach jumps and block jumps specifically.';
+      ctx.intent.strength = 'Hip extension and shoulder stability — the base of your jump height and hitting power.';
+    }
+  }
+
+  // ── FOOTBALL ──
+  else if (sport.includes('football') || sport.includes('rugby')) {
+    if (pos.includes('receiver') || pos.includes('wr') || pos.includes('db') || pos.includes('corner')) {
+      ctx.demands = ['Route-running acceleration (0–10)', 'Contested catch jump', 'Change of direction from stride', 'Repeated sprint resilience'];
+      ctx.fit = bkt==='Apex'   ? 'Built for the perimeter. Your speed and force balance supports elite route separation and contested catch situations.' :
+                bkt==='Velocity Bias' ? 'Your elastic speed is your route-running weapon. Develop force base for more powerful cuts and contested-catch jump height.' :
+                bkt==='Force Bias' ? 'Your strength base supports physical route running. Converting it to separation speed and reactive cut quickness is the work.' :
+                'Acceleration mechanics and change-of-direction strength first — then express speed.';
+      ctx.priority  = 'Separation quickness (0–10 acceleration) + contested catch jump height';
+    } else {
+      ctx.demands = ['Explosive first step', 'Ground-based power', 'Sprint acceleration', 'Contact strength'];
+      ctx.fit = `Your ${bkt !== 'N/A' ? bkt : 'current'} profile maps to football demands — ground-based power and sprint acceleration are the primary targets.`;
+      ctx.priority  = 'Acceleration mechanics + ground-based power expression';
+    }
+    ctx.intent.speed    = 'Sprint mechanics and acceleration work directly map to route running, pursuit angles, and first-step separation.';
+    ctx.intent.jump     = 'Plyometrics develop the explosive hip extension and reactive qualities that power cuts, jumps, and first-step quickness.';
+    ctx.intent.strength = 'Ground-based strength work — every football movement starts with force into the ground. This is your physical foundation.';
+  }
+
+  // ── BASKETBALL ──
+  else if (sport.includes('basketball')) {
+    if (pos.includes('guard') || pos.includes('point')) {
+      ctx.demands = ['First step (0–5 yards)', 'Change of direction from stride', 'Vertical jump (floater range)', 'Repeated sprint and jump over 4 quarters'];
+      ctx.fit = bkt==='Apex'   ? 'Elite guard profile. Your first step and vertical support separation drives AND finishing at the rim.' :
+                bkt==='Velocity Bias' ? 'Fast first step and reactive quickness — your defining tools. Build the force base to sustain them through 4 quarters.' :
+                bkt==='Force Bias' ? 'Strong base. Converting it to first-step explosiveness and separation speed is the priority for a guard.' :
+                'Reactive agility and first-step mechanics first — the core tools of a guard.';
+      ctx.priority  = 'First-step explosiveness + lateral change of direction';
+    } else {
+      ctx.demands = ['Vertical jump + post contact', 'Reactive block/rebound jump', 'Lateral closeout', 'Physical post play'];
+      ctx.fit = bkt==='Apex'   ? 'Elite big-man profile. Your vertical and force base support box-out strength AND reactive block timing.' :
+                bkt==='Velocity Bias' ? 'High reactive jump — your timing and vertical are assets. Build post contact strength to complement them.' :
+                bkt==='Force Bias' ? 'Strong post base. Developing the reactive jump qualities for block timing and rebound explosiveness is the focus.' :
+                'Build vertical jump foundation and contact strength — the twin pillars of a basketball big.';
+      ctx.priority  = 'Vertical jump + post-contact strength';
+    }
+    ctx.intent.speed    = 'Lateral and linear acceleration work translates directly to first step, closeout speed, and transition running.';
+    ctx.intent.jump     = 'Reactive and approach jump training — basketball jumps are always from motion. Train the reactive jump, not just the standing vertical.';
+    ctx.intent.strength = 'Lower body and core strength sustains your vertical and contact strength through 4 quarters and a full season.';
+  }
+
+  // ── LACROSSE / SOCCER / OTHER ──
+  else if (sport.includes('lacrosse') || sport.includes('soccer')) {
+    ctx.demands = ['Multi-directional acceleration', 'Repeated sprint capacity', 'Change of direction at speed', 'Rotational power (stick/shot)'];
+    ctx.fit = `Your ${bkt !== 'N/A' ? bkt : 'current'} profile applies to ${sport.includes('lacrosse') ? 'lacrosse' : 'soccer'} demands — multi-directional speed and repeated effort capacity are the targets.`;
+    ctx.priority  = 'Multi-directional first step + repeated sprint resilience';
+    ctx.intent.speed    = 'Sprint and acceleration work develops the linear speed base that multi-directional sport speed sits on.';
+    ctx.intent.jump     = 'Plyometrics build the reactive qualities and landing mechanics that change-of-direction movements demand.';
+    ctx.intent.strength = 'Lower body and rotational strength — the base of field sport power and repeated sprint capacity.';
+  }
+
+  // ── WRESTLING ──
+  else if (sport.includes('wrestling')) {
+    ctx.demands = ['Ground-based explosive power (level change)', 'Scramble reactivity', 'Contact strength (tie-up)', 'Repeated effort across 3 periods'];
+    ctx.fit = bkt==='Force Bias'||bkt==='Foundation' ? 'Your strength base is a wrestling asset. The work is expressing it as explosive level changes and reactive scrambling — not just grinding.' :
+              bkt==='Apex'||bkt==='Velocity Bias' ? 'Your reactive qualities are valuable for scrambles and quicker level changes. Build the contact strength floor to match them.' :
+              'Complete testing to map your strength and reactive profile to wrestling demands.';
+    ctx.priority  = 'Explosive level change mechanics + contact strength capacity';
+    ctx.intent.speed    = 'Linear acceleration and short-burst speed directly apply to level change speed and reactive positioning.';
+    ctx.intent.jump     = 'Explosive hip extension training mirrors the mechanical demands of a double-leg takedown.';
+    ctx.intent.strength = 'Ground-based and contact strength — the physical foundation every wrestling action sits on.';
+  }
+
+  // Fallback
+  if (!ctx.demands.length) {
+    ctx.demands = ['Sport-specific power output', 'Acceleration and deceleration', 'Reactive strength'];
+    ctx.fit     = `Your ${bkt !== 'N/A' ? bkt : 'current'} profile provides a training direction. ${bkt === 'Velocity Bias' ? 'Build force base to complement your reactive qualities.' : bkt === 'Force Bias' ? 'Develop rate of force development to express your strength as speed.' : bkt === 'Apex' ? 'Maintain and advance your complete athletic profile.' : bkt === 'Foundation' ? 'Structural capacity first, then power expression.' : 'Complete testing for a personalized prescription.'}`;
+    ctx.priority  = 'Complete testing for full sport-specific prescription';
+    ctx.intent.speed    = 'Speed and acceleration work builds the linear capacity all sport movement depends on.';
+    ctx.intent.jump     = 'Plyometrics develop the reactive and explosive qualities your sport demands.';
+    ctx.intent.strength = 'Strength accessories build the force production base your performance sits on.';
+  }
+
+  return ctx;
 }
 
 function renderCoachProfile(a) {
@@ -1167,6 +1426,22 @@ function renderCoachProfile(a) {
     <div class="cp-metrics-grid">${metricsHtml}</div>
   </div>` : '';
 
+  // ── Sport / Position Context ──
+  const sctx = getSportContext(a);
+  const sportContextHtml = `<div class="cp-section">
+    <div class="cp-section-title">Sport Context${a.position ? ' · ' + a.position : ''}</div>
+    <div style="background:#0a1520;border-radius:10px;padding:12px 14px">
+      <div style="font-size:11px;color:#8a9bb0;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Demands of the Position</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px">
+        ${sctx.demands.map(d=>`<span style="background:#1e3a5f;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:600;color:#a0bbd4">${d}</span>`).join('')}
+      </div>
+      <div style="font-size:11px;color:#8a9bb0;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Profile Fit</div>
+      <div style="font-size:12px;color:#c0d4e8;line-height:1.5;margin-bottom:8px">${sctx.fit}</div>
+      <div style="font-size:11px;color:#C9A228;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Training Priority</div>
+      <div style="font-size:12px;color:#fff;font-weight:600">${sctx.priority}</div>
+    </div>
+  </div>`;
+
   // ── DSI interpretation ──
   let dsiNote = '';
   if (a.dsi != null) {
@@ -1241,25 +1516,29 @@ function renderCoachProfile(a) {
   }
 
   // ── Exercise prescriptions ──
+  const sctx2 = getSportContext(a);
   const rxHtml = `<div class="cp-section">
     <div class="cp-section-title">Exercise Prescription</div>
     <div class="cp-rx-grid">
       ${recs.speed.length ? `<div class="cp-rx-card">
         <div class="cp-rx-cat cp-rx-speed">🏃 Speed / Acceleration</div>
-        ${recs.speed.map(r=>`<div class="cp-rx-item">${r}</div>`).join('')}
+        <div class="cp-rx-intent">${sctx2.intent.speed}</div>
+        ${recs.speed.map(r=>`<div class="cp-rx-item"><div class="cp-rx-ex">${typeof r==='object'?r.ex:r}</div>${typeof r==='object'&&r.why?`<div class="cp-rx-why">→ ${r.why}</div>`:''}</div>`).join('')}
       </div>` : ''}
       ${recs.jump.length ? `<div class="cp-rx-card">
         <div class="cp-rx-cat cp-rx-jump">⬆️ Plyometrics / Jumps</div>
-        ${recs.jump.map(r=>`<div class="cp-rx-item">${r}</div>`).join('')}
+        <div class="cp-rx-intent">${sctx2.intent.jump}</div>
+        ${recs.jump.map(r=>`<div class="cp-rx-item"><div class="cp-rx-ex">${typeof r==='object'?r.ex:r}</div>${typeof r==='object'&&r.why?`<div class="cp-rx-why">→ ${r.why}</div>`:''}</div>`).join('')}
       </div>` : ''}
       ${recs.strength.length ? `<div class="cp-rx-card">
         <div class="cp-rx-cat cp-rx-strength">🏋️ Strength Accessories</div>
-        ${recs.strength.map(r=>`<div class="cp-rx-item">${r}</div>`).join('')}
+        <div class="cp-rx-intent">${sctx2.intent.strength}</div>
+        ${recs.strength.map(r=>`<div class="cp-rx-item"><div class="cp-rx-ex">${typeof r==='object'?r.ex:r}</div>${typeof r==='object'&&r.why?`<div class="cp-rx-why">→ ${r.why}</div>`:''}</div>`).join('')}
       </div>` : ''}
     </div>
   </div>`;
 
-  return bucketHtml + metricsSection + (dsiSection ? `<div class="cp-section"><div class="cp-section-title">DSI Analysis</div><div class="cp-dsi-row">${dsiSection}</div></div>` : '') + sprintEstHtml + asymHtml + rxHtml;
+  return bucketHtml + metricsSection + sportContextHtml + (dsiSection ? `<div class="cp-section"><div class="cp-section-title">DSI Analysis</div><div class="cp-dsi-row">${dsiSection}</div></div>` : '') + sprintEstHtml + asymHtml + rxHtml;
 }
 
 function openModal(idx) {
