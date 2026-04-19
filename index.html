@@ -946,11 +946,12 @@ select:focus{border-color:#C9A228}
       </div>
       <div style="grid-column:1/-1">
         <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Output Level</label>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px">
-          <button id="tp-lvl-macro" onclick="tpSetLevel('macro')" style="background:#1e3a5f;border:2px solid #C9A228;color:#C9A228;border-radius:8px;padding:8px 4px;font-size:11px;font-weight:700;cursor:pointer">Macrocycle</button>
-          <button id="tp-lvl-meso" onclick="tpSetLevel('meso')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 4px;font-size:11px;font-weight:700;cursor:pointer">Mesocycle</button>
-          <button id="tp-lvl-micro" onclick="tpSetLevel('micro')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 4px;font-size:11px;font-weight:700;cursor:pointer">Microcycle</button>
-          <button id="tp-lvl-session" onclick="tpSetLevel('session')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 4px;font-size:11px;font-weight:700;cursor:pointer">Session</button>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:5px">
+          <button id="tp-lvl-macro" onclick="tpSetLevel('macro')" style="background:#1e3a5f;border:2px solid #C9A228;color:#C9A228;border-radius:8px;padding:8px 3px;font-size:10px;font-weight:700;cursor:pointer">Macro</button>
+          <button id="tp-lvl-meso" onclick="tpSetLevel('meso')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 3px;font-size:10px;font-weight:700;cursor:pointer">Meso</button>
+          <button id="tp-lvl-micro" onclick="tpSetLevel('micro')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 3px;font-size:10px;font-weight:700;cursor:pointer">Micro</button>
+          <button id="tp-lvl-week" onclick="tpSetLevel('week')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 3px;font-size:10px;font-weight:700;cursor:pointer">Week</button>
+          <button id="tp-lvl-session" onclick="tpSetLevel('session')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 3px;font-size:10px;font-weight:700;cursor:pointer">Session</button>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-top:4px">
           <div style="font-size:9px;color:#4a6a8a;text-align:center">4 phases × 12 wks</div>
@@ -1833,64 +1834,119 @@ function tpUpdateSportInfo() {
   infoDiv.style.display='block';
   infoDiv.innerHTML=html;
 }
-var _tpLevel = 'macro';
-var _tpPhaseIdx = 0;
-var _tpBlockIdx = 0;
-var _tpWeekIdx  = 0;
+var _tpLevel='macro';
+var _tpPhaseIdx=0;
+var _tpBlockIdx=0;
+var _tpWeekIdx=0;
+var _tpDayIdx=0;
 
-function tpSetLevel(level) {
-  _tpLevel = level;
-  ['macro','meso','micro','session'].forEach(function(b) {
-    var el = document.getElementById('tp-lvl-'+b);
-    if (!el) return;
-    el.style.background  = (b===level)?'#1e3a5f':'#0a1520';
-    el.style.borderColor = (b===level)?'#C9A228':'#2a4a6a';
-    el.style.color       = (b===level)?'#C9A228':'#6a8aa8';
+// Custom overrides stored in localStorage
+var TP_CUSTOM=(function(){try{return JSON.parse(localStorage.getItem('tp_custom')||'{}');}catch(e){return {};}})();
+function tpSaveCustom(){try{localStorage.setItem('tp_custom',JSON.stringify(TP_CUSTOM));}catch(e){}}
+function tpResetCustom(){if(!confirm('Reset all custom edits to defaults?'))return;TP_CUSTOM={};tpSaveCustom();tpGen();}
+
+// Merge phase defaults with custom overrides
+function tpGetPhase(phaseIdx){
+  var base=TP_PHASES[phaseIdx]||TP_PHASES[0];
+  var cust=(TP_CUSTOM.phases||{})[phaseIdx]||{};
+  var merged=Object.assign({},base,cust);
+  merged.blocks=base.blocks;
+  return merged;
+}
+// Merge block defaults with custom overrides
+function tpGetBlock(phaseIdx,blockIdx){
+  var ph=tpGetPhase(phaseIdx);
+  var base=ph.blocks[blockIdx]||ph.blocks[0];
+  var key=phaseIdx+'_'+blockIdx;
+  var cust=(TP_CUSTOM.blocks||{})[key]||{};
+  return Object.assign({},base,cust);
+}
+
+// Dropdown option arrays
+var TP_OPT_INTENSITY=['55\u201365%','60\u201370%','65\u201375%','70\u201380%','75\u201382%','78\u201385%','80\u201388%','85\u201392%','88\u201395%','90\u2013100%'];
+var TP_OPT_TEMPO=['Standard','3s Eccentric','4s Eccentric','8s Eccentric','3s Isometric','4s Isometric','9s Isometric','Explosive','Speed-Strength'];
+var TP_OPT_WORKLOAD=['Base','Load','Load+','Performance','CNS Reset'];
+
+// UI builder helpers
+function tpSelOpts(options,current){
+  return options.map(function(o){return '<option value="'+o+'"'+(o===current?' selected':'')+'>'+o+'</option>';}).join('');
+}
+function tpSel(id,options,current){
+  return '<select id="'+id+'" style="background:#0a1520;color:#e6edf3;border:1px solid #2a4a6a;border-radius:6px;padding:5px 6px;font-size:11px;width:100%;box-sizing:border-box">'+tpSelOpts(options,current)+'</select>';
+}
+function tpInp(id,val,ph){
+  var esc=(val||'').replace(/"/g,'&quot;');
+  return '<input id="'+id+'" type="text" value="'+esc+'" placeholder="'+(ph||'')+'" style="background:#0a1520;color:#e6edf3;border:1px solid #2a4a6a;border-radius:6px;padding:5px 8px;font-size:11px;width:100%;box-sizing:border-box">';
+}
+function tpFld(lbl,html){
+  return '<div><div style="font-size:9px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">'+lbl+'</div>'+html+'</div>';
+}
+function tpEditPanelHTML(title,fields,saveFn,cancelFn){
+  var h='<div style="background:#0d1b2a;border:1px solid #C9A228;border-radius:10px;padding:14px;margin-top:10px">';
+  h+='<div style="font-size:12px;font-weight:800;color:#C9A228;margin-bottom:10px">\u270f\ufe0f '+title+'</div>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'+fields+'</div>';
+  h+='<div style="display:flex;gap:8px">';
+  h+='<button onclick="'+saveFn+'" style="background:#C9A228;color:#000;border:none;border-radius:6px;padding:7px 16px;font-size:11px;font-weight:700;cursor:pointer">Save Changes</button>';
+  h+='<button onclick="'+cancelFn+'" style="background:#1e3a5f;color:#6a8aa8;border:none;border-radius:6px;padding:7px 14px;font-size:11px;cursor:pointer">Cancel</button>';
+  h+='</div></div>';
+  return h;
+}
+
+function tpSetLevel(level){
+  _tpLevel=level;
+  ['macro','meso','micro','week','session'].forEach(function(b){
+    var el=document.getElementById('tp-lvl-'+b);
+    if(!el)return;
+    el.style.background=(b===level)?'#1e3a5f':'#0a1520';
+    el.style.borderColor=(b===level)?'#C9A228':'#2a4a6a';
+    el.style.color=(b===level)?'#C9A228':'#6a8aa8';
   });
   tpUpdateSelectors();
 }
 
-function tpUpdateBlockOptions() {
-  var bSel = document.getElementById('tp-block');
-  if (!bSel) return;
-  var phase = TP_PHASES[_tpPhaseIdx] || TP_PHASES[0];
-  bSel.innerHTML = '';
-  phase.blocks.forEach(function(b,i) {
-    var opt = document.createElement('option');
-    opt.value = String(i);
-    opt.text = 'Block '+(i+1)+' — '+b.label+' ('+b.intensity+')';
+function tpUpdateBlockOptions(){
+  var bSel=document.getElementById('tp-block');
+  if(!bSel)return;
+  var phase=tpGetPhase(_tpPhaseIdx);
+  bSel.innerHTML='';
+  phase.blocks.forEach(function(b,i){
+    var opt=document.createElement('option');
+    opt.value=String(i);
+    opt.text='Block '+(i+1)+' \u2014 '+b.label+' ('+b.intensity+')';
     bSel.appendChild(opt);
   });
 }
 
-function openTeamPlan() {
-  if (!masterMode) return;
-  _tpLevel = 'macro'; _tpPhaseIdx = 0; _tpBlockIdx = 0; _tpWeekIdx = 0;
-  document.getElementById('tp-output').innerHTML = '<div style="color:#3a5a7a;font-size:12px;text-align:center;padding:20px">Fill in your team details above, then tap Generate to start at the Macrocycle view. Click any phase to drill down.</div>';
-  document.getElementById('tp-print-btn').style.display = 'none';
+function openTeamPlan(){
+  if(!masterMode)return;
+  _tpLevel='macro';_tpPhaseIdx=0;_tpBlockIdx=0;_tpWeekIdx=0;_tpDayIdx=0;
+  document.getElementById('tp-output').innerHTML='<div style="color:#3a5a7a;font-size:12px;text-align:center;padding:20px">Fill in your team details above, then tap Generate to start at the Macrocycle view.</div>';
+  document.getElementById('tp-print-btn').style.display='none';
   tpSetLevel('macro');
   tpUpdateSelectors();
   document.getElementById('teamplan-overlay').classList.add('open');
 }
-function closeTeamPlan() { document.getElementById('teamplan-overlay').classList.remove('open'); }
+function closeTeamPlan(){document.getElementById('teamplan-overlay').classList.remove('open');}
 
-function tpUpdateSelectors() {
-  document.getElementById('tp-phase-row').style.display = 'none';
-  document.getElementById('tp-block-row').style.display = 'none';
+function tpUpdateSelectors(){
+  document.getElementById('tp-phase-row').style.display='none';
+  document.getElementById('tp-block-row').style.display='none';
 }
 
-function tpBreadcrumb() {
-  var ph  = TP_PHASES[_tpPhaseIdx];
-  var blk = ph ? ph.blocks[_tpBlockIdx] : null;
-  var crumbs = [{label:'Macro',level:'macro'}];
-  if (_tpLevel!=='macro') crumbs.push({label:'P'+(_tpPhaseIdx+1)+' '+( ph?ph.shortLabel:''),level:'meso'});
-  if (_tpLevel==='micro'||_tpLevel==='session') crumbs.push({label:'B'+(_tpBlockIdx+1)+' '+(blk?blk.label:''),level:'micro'});
-  if (_tpLevel==='session') crumbs.push({label:'Session',level:'session'});
-  var html = '<div style="display:flex;align-items:center;gap:5px;margin-bottom:12px;padding:7px 10px;background:#060f18;border:1px solid #1e3a5f;border-radius:7px;flex-wrap:wrap">';
-  for (var i=0;i<crumbs.length;i++) {
+function tpBreadcrumb(){
+  var ph=tpGetPhase(_tpPhaseIdx);
+  var blk=tpGetBlock(_tpPhaseIdx,_tpBlockIdx);
+  var wkAbs=ph.startWeek+_tpBlockIdx*4+_tpWeekIdx;
+  var crumbs=[{label:'Macro',level:'macro'}];
+  if(_tpLevel!=='macro') crumbs.push({label:'P'+(_tpPhaseIdx+1)+' '+ph.shortLabel,level:'meso'});
+  if(_tpLevel==='micro'||_tpLevel==='week'||_tpLevel==='session') crumbs.push({label:'B'+(_tpBlockIdx+1)+' '+blk.label,level:'micro'});
+  if(_tpLevel==='week'||_tpLevel==='session') crumbs.push({label:'Wk '+wkAbs,level:'week'});
+  if(_tpLevel==='session') crumbs.push({label:'Day '+(_tpDayIdx+1),level:'session'});
+  var html='<div style="display:flex;align-items:center;gap:5px;margin-bottom:12px;padding:7px 10px;background:#060f18;border:1px solid #1e3a5f;border-radius:7px;flex-wrap:wrap">';
+  for(var i=0;i<crumbs.length;i++){
     var c=crumbs[i];
-    if (i>0) html+='<span style="color:#2a4a6a;font-size:11px">&#8250;</span>';
-    if (c.level===_tpLevel) {
+    if(i>0) html+='<span style="color:#2a4a6a;font-size:11px">\u203a</span>';
+    if(c.level===_tpLevel){
       html+='<span style="font-size:10px;font-weight:700;color:#C9A228">'+c.label+'</span>';
     } else {
       html+='<span onclick="tpDrillUp(\''+c.level+'\')" style="font-size:10px;color:#4a8af0;cursor:pointer;text-decoration:underline">'+c.label+'</span>';
@@ -1900,135 +1956,194 @@ function tpBreadcrumb() {
   return html;
 }
 
-function tpDrillPhase(idx) {
-  _tpPhaseIdx = idx; _tpBlockIdx = 0;
-  tpSetLevel('meso'); tpGen();
-}
-function tpDrillBlock(idx) {
-  _tpBlockIdx = idx;
-  tpSetLevel('micro'); tpGen();
-}
-function tpDrillWeek(weekIdx) {
-  _tpWeekIdx = weekIdx !== undefined ? weekIdx : 0;
-  tpSetLevel('session'); tpGen();
-}
-function tpDrillUp(level) {
-  tpSetLevel(level); tpGen();
-}
+function tpDrillPhase(idx){_tpPhaseIdx=idx;_tpBlockIdx=0;tpSetLevel('meso');tpGen();}
+function tpDrillBlock(idx){_tpBlockIdx=idx;tpSetLevel('micro');tpGen();}
+function tpDrillWeek(weekIdx){_tpWeekIdx=weekIdx!==undefined?weekIdx:0;tpSetLevel('week');tpGen();}
+function tpDrillDay(dayIdx){_tpDayIdx=dayIdx||0;tpSetLevel('session');tpGen();}
+function tpDrillUp(level){tpSetLevel(level);tpGen();}
 
-function tpDateLabel(startDate, weekOffset) {
-  if (!startDate) return 'Wk '+(weekOffset+1);
-  var d = new Date(startDate);
-  d.setDate(d.getDate() + weekOffset*7);
+function tpDateLabel(startDate,weekOffset){
+  if(!startDate)return 'Wk '+(weekOffset+1);
+  var d=new Date(startDate);
+  d.setDate(d.getDate()+weekOffset*7);
   return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
 }
 
-function tpGen() {
-  var team      = document.getElementById('tp-team').value.trim() || 'Team';
-  var sport     = tpGetSport();
-  var sportKey  = tpGetSportKey();
-  var arch      = document.getElementById('tp-arch').value;
-  var startDate = document.getElementById('tp-start').value;
-  if      (_tpLevel==='macro')   tpMacroOutput(team,sport,arch,startDate);
-  else if (_tpLevel==='meso')    tpMesoOutput(team,sport,arch,startDate,_tpPhaseIdx);
-  else if (_tpLevel==='micro')   tpMicroOutput(team,sport,arch,startDate,_tpPhaseIdx,_tpBlockIdx);
-  else if (_tpLevel==='session') tpSessionOutput(team,sport,arch,startDate,_tpPhaseIdx,_tpBlockIdx,sportKey);
-  document.getElementById('tp-print-btn').style.display = 'block';
+function tpGen(){
+  var team=document.getElementById('tp-team').value.trim()||'Team';
+  var sport=tpGetSport();
+  var sportKey=tpGetSportKey();
+  var arch=document.getElementById('tp-arch').value;
+  var startDate=document.getElementById('tp-start').value;
+  if(_tpLevel==='macro')        tpMacroOutput(team,sport,arch,startDate);
+  else if(_tpLevel==='meso')    tpMesoOutput(team,sport,arch,startDate,_tpPhaseIdx);
+  else if(_tpLevel==='micro')   tpMicroOutput(team,sport,arch,startDate,_tpPhaseIdx,_tpBlockIdx);
+  else if(_tpLevel==='week')    tpWeekOutput(team,sport,arch,startDate,_tpPhaseIdx,_tpBlockIdx,sportKey);
+  else if(_tpLevel==='session') tpDayOutput(team,sport,arch,startDate,_tpPhaseIdx,_tpBlockIdx,_tpWeekIdx,_tpDayIdx,sportKey);
+  document.getElementById('tp-print-btn').style.display='block';
 }
 
-function tpMacroOutput(team,sport,arch,startDate) {
-  var qColors=['#C9A228','#4a8af0','#4af08a','#f04a8a','#4af0f0'];
+// ─── EDIT: PHASE ──────────────────────────────────────────────────────────────
+function tpEditPhase(phaseIdx){
+  var ph=tpGetPhase(phaseIdx);
   var html=tpBreadcrumb();
-  html+='<div style="font-size:18px;font-weight:800;margin-bottom:4px;color:#C9A228">&#128449; '+team+' — Macrocycle</div>';
-  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:4px">'+sport+' · '+arch+' · 4 Phases · 48 Weeks'+(startDate?' · Starts '+new Date(startDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'')+'</div>';
-  html+='<div style="font-size:9px;color:#4a6a8a;margin-bottom:14px">▼ Click any phase card to drill into the mesocycle</div>';
-  html+='<div style="margin-bottom:20px"><div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">48-WEEK PHASE TIMELINE</div>';
-  html+='<div style="display:flex;gap:3px">';
-  for (var pi=0;pi<TP_PHASES.length;pi++) {
-    var ph=TP_PHASES[pi];
-    html+='<div style="flex:1;background:'+ph.color+'22;border:1px solid '+ph.color+'44;border-radius:4px;padding:5px 3px;text-align:center">';
-    html+='<div style="font-size:8px;font-weight:700;color:'+ph.color+'">'+ph.shortLabel+'</div>';
-    html+='<div style="font-size:7px;color:#6a8aa8">12 wks</div></div>';
-  }
-  html+='</div><div style="display:flex;gap:3px;margin-top:3px">';
-  for (var pi=0;pi<TP_PHASES.length;pi++) {
-    var ph=TP_PHASES[pi];
-    html+='<div style="flex:1;text-align:center"><div style="font-size:7px;color:#4a6a8a">'+tpDateLabel(startDate,ph.startWeek-1)+'</div></div>';
+  html+='<div style="font-size:15px;font-weight:800;color:'+ph.color+';margin-bottom:10px">\u270f\ufe0f Edit Phase '+(phaseIdx+1)+' \u2014 '+ph.label+'</div>';
+  var fields='';
+  fields+=tpFld('Phase Name',tpInp('ep-label',ph.label,'e.g. Power Production'));
+  fields+=tpFld('Short Label',tpInp('ep-short',ph.shortLabel,'e.g. PP1'));
+  html+=tpEditPanelHTML('Phase '+(phaseIdx+1)+' Settings',fields,'tpSavePhaseEdit('+phaseIdx+')','tpGen()');
+  document.getElementById('tp-output').innerHTML=html;
+}
+function tpSavePhaseEdit(phaseIdx){
+  if(!TP_CUSTOM.phases) TP_CUSTOM.phases={};
+  if(!TP_CUSTOM.phases[phaseIdx]) TP_CUSTOM.phases[phaseIdx]={};
+  var c=TP_CUSTOM.phases[phaseIdx];
+  var labelVal=document.getElementById('ep-label').value.trim();
+  var shortVal=document.getElementById('ep-short').value.trim();
+  if(labelVal) c.label=labelVal;
+  if(shortVal) c.shortLabel=shortVal;
+  tpSaveCustom();
+  tpGen();
+}
+
+// ─── EDIT: BLOCK ──────────────────────────────────────────────────────────────
+function tpEditBlock(phaseIdx,blockIdx){
+  var ph=tpGetPhase(phaseIdx);
+  var blk=tpGetBlock(phaseIdx,blockIdx);
+  var html=tpBreadcrumb();
+  html+='<div style="font-size:15px;font-weight:800;color:'+ph.color+';margin-bottom:10px">\u270f\ufe0f Edit Block '+(blockIdx+1)+' \u2014 '+blk.label+'</div>';
+  var fields='';
+  fields+=tpFld('Block Name',tpInp('eb-label',blk.label,'e.g. High Force'));
+  fields+=tpFld('Intensity Range',tpSel('eb-intensity',TP_OPT_INTENSITY,blk.intensity));
+  fields+=tpFld('Tempo',tpSel('eb-tempo',TP_OPT_TEMPO,blk.tempo));
+  fields+=tpFld('Workload',tpSel('eb-workload',TP_OPT_WORKLOAD,blk.workload));
+  fields+=tpFld('T1 Prescription',tpInp('eb-t1rep',blk.t1rep,'e.g. 5\xd75 @ 85\u201392%'));
+  fields+=tpFld('T2 Prescription',tpInp('eb-t2rep',blk.t2rep,'e.g. 4\xd75 @ 75\u201382%'));
+  fields+=tpFld('Speed Focus',tpInp('eb-speed',blk.speed,'Speed description'));
+  fields+=tpFld('Jump / Landing Focus',tpInp('eb-jump',blk.jump,'Jump description'));
+  html+=tpEditPanelHTML('Block '+(blockIdx+1)+' Settings',fields,'tpSaveBlockEdit('+phaseIdx+','+blockIdx+')','tpMicroOutput(document.getElementById(\'tp-team\').value.trim()||\'Team\',tpGetSport(),document.getElementById(\'tp-arch\').value,document.getElementById(\'tp-start\').value,'+phaseIdx+','+blockIdx+')');
+  document.getElementById('tp-output').innerHTML=html;
+}
+function tpSaveBlockEdit(phaseIdx,blockIdx){
+  if(!TP_CUSTOM.blocks) TP_CUSTOM.blocks={};
+  var key=phaseIdx+'_'+blockIdx;
+  if(!TP_CUSTOM.blocks[key]) TP_CUSTOM.blocks[key]={};
+  var c=TP_CUSTOM.blocks[key];
+  var labelVal=document.getElementById('eb-label').value.trim();
+  if(labelVal) c.label=labelVal;
+  c.intensity=document.getElementById('eb-intensity').value;
+  c.tempo=document.getElementById('eb-tempo').value;
+  c.workload=document.getElementById('eb-workload').value;
+  var t1=document.getElementById('eb-t1rep').value.trim();
+  var t2=document.getElementById('eb-t2rep').value.trim();
+  var spd=document.getElementById('eb-speed').value.trim();
+  var jmp=document.getElementById('eb-jump').value.trim();
+  if(t1) c.t1rep=t1;
+  if(t2) c.t2rep=t2;
+  if(spd) c.speed=spd;
+  if(jmp) c.jump=jmp;
+  tpSaveCustom();
+  _tpPhaseIdx=phaseIdx; _tpBlockIdx=blockIdx;
+  tpSetLevel('micro'); tpGen();
+}
+
+// ─── OUTPUT: MACRO ────────────────────────────────────────────────────────────
+function tpMacroOutput(team,sport,arch,startDate){
+  var html=tpBreadcrumb();
+  html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">';
+  html+='<div style="font-size:18px;font-weight:800;color:#C9A228">\uD83D\uDCC4 '+team+' \u2014 Macrocycle</div>';
+  html+='<button onclick="tpResetCustom()" style="background:#1e3a5f;color:#6a8aa8;border:none;border-radius:6px;padding:5px 10px;font-size:9px;cursor:pointer">\u21ba Reset Edits</button>';
+  html+='</div>';
+  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:4px">'+sport+' \xb7 '+arch+' \xb7 4 Phases \xb7 48 Weeks'+(startDate?' \xb7 Starts '+new Date(startDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'')+'</div>';
+  html+='<div style="font-size:9px;color:#4a6a8a;margin-bottom:14px">\u25bc Click any phase to drill in \xb7 \u270f\ufe0f to customize</div>';
+  html+='<div style="margin-bottom:16px"><div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">48-WEEK PHASE TIMELINE</div>';
+  html+='<div style="display:flex;gap:0;border-radius:8px;overflow:hidden;height:26px">';
+  for(var pi=0;pi<TP_PHASES.length;pi++){
+    var ph=tpGetPhase(pi);
+    html+='<div style="flex:1;background:'+ph.color+'22;border-left:2px solid '+ph.color+';display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:'+ph.color+'">'+ph.shortLabel+'</div>';
   }
   html+='</div></div>';
-  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">PHASE CARDS — CLICK TO DRILL DOWN</div>';
-  for (var pi=0;pi<TP_PHASES.length;pi++) {
-    var ph=TP_PHASES[pi];
-    html+='<div onclick="tpDrillPhase('+pi+')" style="cursor:pointer;background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+ph.color+';border-radius:10px;padding:14px;margin-bottom:10px;transition:border-color .15s" onmouseover="this.style.borderColor=\''+ph.color+'\'" onmouseout="this.style.borderColor=\'#1e3a5f\'">';
-    html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
-    html+='<div><span style="font-size:14px;font-weight:800;color:'+ph.color+'">Phase '+(pi+1)+' — '+ph.label+'</span>';
-    html+='<span style="font-size:10px;color:#6a8aa8;margin-left:8px">Weeks '+ph.startWeek+'–'+(ph.startWeek+11)+'</span></div>';
-    html+='<span style="font-size:10px;color:'+ph.color+';font-weight:700">Drill In ›</span></div>';
-    html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">';
-    for (var bi=0;bi<ph.blocks.length;bi++) {
-      var blk=ph.blocks[bi];
-      var wc=TP_WORKLOAD_COLORS[blk.workload]||'#1e3a5f';
-      html+='<div style="background:#0a1520;border:1px solid #1e3a5f;border-radius:8px;padding:9px">';
-      html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">';
-      html+='<div style="font-size:11px;font-weight:700">B'+(bi+1)+' — '+blk.label+'</div>';
-      html+='<span style="background:'+wc+';color:#fff;font-size:8px;padding:2px 6px;border-radius:8px">'+blk.workload+'</span></div>';
-      html+='<div style="font-size:9px;color:#6a8aa8;margin-bottom:2px">Wks '+(ph.startWeek+bi*4)+'–'+(ph.startWeek+bi*4+3)+'</div>';
-      html+='<div style="font-size:9px;color:#C9A228;margin-bottom:2px">'+blk.intensity+'</div>';
-      if (blk.tempo!=='Standard') html+='<div style="font-size:8px;color:#a078f0">'+blk.tempo+'</div>';
-      html+='<div style="font-size:9px;color:#8a9bb0;margin-top:3px">'+blk.desc+'</div>';
-      html+='</div>';
-    }
+  for(var pi=0;pi<TP_PHASES.length;pi++){
+    var ph=tpGetPhase(pi);
+    html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+ph.color+';border-radius:10px;padding:12px;margin-bottom:10px" onmouseover="this.style.borderColor=\''+ph.color+'\'" onmouseout="this.style.borderColor=\'#1e3a5f\'">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">';
+    html+='<div onclick="tpDrillPhase('+pi+')" style="cursor:pointer;flex:1">';
+    html+='<div style="font-size:14px;font-weight:800;color:'+ph.color+'">Phase '+(pi+1)+' \u2014 '+ph.label+'</div>';
+    html+='<div style="font-size:9px;color:#6a8aa8">Weeks '+ph.startWeek+'\u2013'+(ph.startWeek+11)+'</div>';
     html+='</div>';
-    var qRanked=ph.blocks[1].quality.map(function(r,idx){return {l:TP_QUALITY_LABELS[idx],r:r};}).sort(function(a,b){return a.r-b.r;});
-    html+='<div style="font-size:9px;color:#6a8aa8;margin-bottom:4px">QUALITY PRIORITIES (Peak Block)</div>';
-    html+='<div style="display:flex;gap:4px;flex-wrap:wrap">';
-    for (var q=0;q<qRanked.length;q++) {
-      html+='<span style="background:'+qColors[q]+'22;border:1px solid '+qColors[q]+'55;color:'+qColors[q]+';font-size:8px;padding:2px 6px;border-radius:8px">'+qRanked[q].r+'. '+qRanked[q].l+'</span>';
+    html+='<div style="display:flex;gap:6px;align-items:center">';
+    html+='<button onclick="tpEditPhase('+pi+')" style="background:#1e3a5f;color:#C9A228;border:1px solid #2a4a6a;border-radius:5px;padding:3px 8px;font-size:10px;cursor:pointer">\u270f\ufe0f Edit</button>';
+    html+='<span onclick="tpDrillPhase('+pi+')" style="font-size:16px;color:'+ph.color+';cursor:pointer">\u203a</span>';
+    html+='</div></div>';
+    html+='<div onclick="tpDrillPhase('+pi+')" style="cursor:pointer;display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px">';
+    for(var bi=0;bi<ph.blocks.length;bi++){
+      var blk=tpGetBlock(pi,bi);
+      html+='<div style="background:#060f18;border:1px solid #1e3a5f;border-radius:6px;padding:6px">';
+      html+='<div style="font-size:9px;font-weight:700;color:#8a9bb0">B'+(bi+1)+' \u2014 '+blk.label+'</div>';
+      html+='<div style="font-size:8px;color:#C9A228;margin-top:2px">'+blk.intensity+'</div>';
+      if(blk.tempo!=='Standard') html+='<div style="font-size:8px;color:#a078f0">'+blk.tempo+'</div>';
+      html+='</div>';
     }
     html+='</div></div>';
   }
+  var sd=TP_SPORT_DATA[tpGetSportKey()]||TP_SPORT_DATA.multi;
+  var qLabels=['Speed-Strength','Strength','Power','Endurance','Agility'];
+  var qColors2=['#C9A228','#4a8af0','#f04a8a','#4af08a','#4af0f0'];
+  html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-radius:10px;padding:10px;margin-top:4px">';
+  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">'+sport.toUpperCase()+' \u2014 QUALITY PRIORITIES</div>';
+  html+='<div style="display:flex;gap:6px;flex-wrap:wrap">';
+  for(var q=0;q<sd.quality.length;q++){
+    html+='<span style="background:'+qColors2[q]+'22;border:1px solid '+qColors2[q]+';color:'+qColors2[q]+';font-size:9px;padding:3px 8px;border-radius:8px">#'+sd.quality[q]+' '+qLabels[q]+'</span>';
+  }
+  html+='</div></div>';
   document.getElementById('tp-output').innerHTML=html;
 }
 
-function tpMesoOutput(team,sport,arch,startDate,phaseIdx) {
-  var ph=TP_PHASES[phaseIdx]||TP_PHASES[0];
+// ─── OUTPUT: MESO ─────────────────────────────────────────────────────────────
+function tpMesoOutput(team,sport,arch,startDate,phaseIdx){
+  var ph=tpGetPhase(phaseIdx);
   var html=tpBreadcrumb();
-  html+='<div style="font-size:16px;font-weight:800;color:'+ph.color+';margin-bottom:4px">Phase '+(phaseIdx+1)+' — '+ph.label+'</div>';
-  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:4px">'+team+' · '+sport+' · Weeks '+ph.startWeek+'–'+(ph.startWeek+11)+' · '+arch+'</div>';
-  html+='<div style="font-size:9px;color:#4a6a8a;margin-bottom:12px">▼ Click any block card to drill into the microcycle</div>';
-  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">3-BLOCK STRUCTURE — CLICK TO DRILL DOWN</div>';
+  html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">';
+  html+='<div style="font-size:16px;font-weight:800;color:'+ph.color+'">Phase '+(phaseIdx+1)+' \u2014 '+ph.label+'</div>';
+  html+='<button onclick="tpEditPhase('+phaseIdx+')" style="background:#1e3a5f;color:#C9A228;border:1px solid #2a4a6a;border-radius:5px;padding:4px 10px;font-size:10px;cursor:pointer">\u270f\ufe0f Edit Phase</button>';
+  html+='</div>';
+  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:4px">'+team+' \xb7 '+sport+' \xb7 Weeks '+ph.startWeek+'\u2013'+(ph.startWeek+11)+' \xb7 '+arch+'</div>';
+  html+='<div style="font-size:9px;color:#4a6a8a;margin-bottom:12px">\u25bc Click any block to drill in \xb7 \u270f\ufe0f to customize block settings</div>';
   html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">';
-  for (var bi=0;bi<ph.blocks.length;bi++) {
-    var blk=ph.blocks[bi];
+  for(var bi=0;bi<ph.blocks.length;bi++){
+    var blk=tpGetBlock(phaseIdx,bi);
     var wc=TP_WORKLOAD_COLORS[blk.workload]||'#1e3a5f';
-    html+='<div onclick="tpDrillBlock('+bi+')" style="cursor:pointer;background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+ph.color+';border-radius:8px;padding:10px" onmouseover="this.style.borderColor=\''+ph.color+'\'" onmouseout="this.style.borderColor=\'#1e3a5f\'">';
+    html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+ph.color+';border-radius:8px;padding:10px" onmouseover="this.style.borderColor=\''+ph.color+'\'" onmouseout="this.style.borderColor=\'#1e3a5f\'">';
     html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">';
-    html+='<div style="font-size:11px;font-weight:700">Block '+(bi+1)+' — '+blk.label+'</div>';
-    html+='<span style="font-size:8px;color:'+ph.color+'">&#8250;</span></div>';
-    html+='<div style="font-size:9px;color:#6a8aa8;margin-bottom:3px">Wks '+(ph.startWeek+bi*4)+'–'+(ph.startWeek+bi*4+3)+'</div>';
+    html+='<div onclick="tpDrillBlock('+bi+')" style="font-size:11px;font-weight:700;flex:1;cursor:pointer">B'+(bi+1)+' \u2014 '+blk.label+'</div>';
+    html+='<div style="display:flex;gap:4px">';
+    html+='<button onclick="tpEditBlock('+phaseIdx+','+bi+')" style="background:#1e3a5f;color:#C9A228;border:none;border-radius:4px;padding:2px 5px;font-size:9px;cursor:pointer">\u270f\ufe0f</button>';
+    html+='<span onclick="tpDrillBlock('+bi+')" style="font-size:12px;color:'+ph.color+';cursor:pointer">\u203a</span></div></div>';
+    html+='<div onclick="tpDrillBlock('+bi+')" style="cursor:pointer">';
+    html+='<div style="font-size:9px;color:#6a8aa8;margin-bottom:3px">Wks '+(ph.startWeek+bi*4)+'\u2013'+(ph.startWeek+bi*4+3)+'</div>';
     html+='<span style="background:'+wc+';color:#fff;font-size:8px;padding:2px 6px;border-radius:8px">'+blk.workload+'</span>';
-    html+='<div style="margin-top:5px;font-size:9px;color:#C9A228">'+blk.intensity+'</div>';
-    if (blk.tempo!=='Standard') html+='<div style="font-size:8px;color:#a078f0">'+blk.tempo+'</div>';
-    html+='</div>';
+    html+='<div style="margin-top:4px;font-size:9px;color:#C9A228">'+blk.intensity+'</div>';
+    if(blk.tempo!=='Standard') html+='<div style="font-size:8px;color:#a078f0">'+blk.tempo+'</div>';
+    html+='</div></div>';
   }
   html+='</div>';
-  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">WEEK-BY-WEEK PROGRESSION (12 WEEKS)</div>';
-  for (var bi=0;bi<ph.blocks.length;bi++) {
-    var blk=ph.blocks[bi];
-    html+='<div style="margin-bottom:10px"><div style="font-size:10px;font-weight:700;color:'+ph.color+';margin-bottom:5px">Block '+(bi+1)+' — '+blk.label+'</div>';
-    for (var wi=0;wi<4;wi++) {
+  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">WEEK-BY-WEEK PROGRESSION</div>';
+  for(var bi=0;bi<ph.blocks.length;bi++){
+    var blk=tpGetBlock(phaseIdx,bi);
+    html+='<div style="margin-bottom:10px"><div style="font-size:10px;font-weight:700;color:'+ph.color+';margin-bottom:5px">Block '+(bi+1)+' \u2014 '+blk.label+'</div>';
+    for(var wi=0;wi<4;wi++){
       var wkAbs=ph.startWeek+bi*4+wi;
       var wkLabel=TP_WEEK_LABELS[wi];
       var isCNS=(wi===3);
       var wcW=TP_WORKLOAD_COLORS[isCNS?'CNS Reset':blk.workload]||'#1e3a5f';
       html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-radius:7px;padding:9px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center">';
       html+='<div><div style="font-size:12px;font-weight:700">Week '+wkAbs+' <span style="font-size:9px;color:#6a8aa8;font-weight:400">('+wkLabel+')</span> <span style="font-size:9px;color:#4a6a8a">'+tpDateLabel(startDate,wkAbs-1)+'</span></div>';
-      if (isCNS) {
-        html+='<div style="font-size:10px;color:#4af08a;margin-top:2px">⚙️ CNS Reset — 5×5 @ 70–75% · No Tempo · 16-Min Clock</div>';
+      if(isCNS){
+        html+='<div style="font-size:10px;color:#4af08a;margin-top:2px">\u2699\ufe0f CNS Reset \u2014 5\xd75 @ 70\u201375% \xb7 No Tempo \xb7 16-Min Clock</div>';
       } else {
         html+='<div style="font-size:10px;color:#8a9bb0;margin-top:1px">Main: '+blk.t1rep+'</div>';
         html+='<div style="font-size:10px;color:#6a8aa8">Support: '+blk.t2rep+'</div>';
-        html+='<div style="font-size:9px;color:#4a6a8a;margin-top:1px">Speed: '+blk.speed+' · Jump: '+blk.jump+'</div>';
+        html+='<div style="font-size:9px;color:#4a6a8a;margin-top:1px">Speed: '+blk.speed+' \xb7 Jump: '+blk.jump+'</div>';
       }
       html+='</div><span style="background:'+wcW+';color:#fff;font-size:8px;padding:3px 8px;border-radius:10px;white-space:nowrap">'+(isCNS?'CNS Reset':wkLabel)+'</span></div>';
     }
@@ -2037,15 +2152,19 @@ function tpMesoOutput(team,sport,arch,startDate,phaseIdx) {
   document.getElementById('tp-output').innerHTML=html;
 }
 
-function tpMicroOutput(team,sport,arch,startDate,phaseIdx,blockIdx) {
-  var ph=TP_PHASES[phaseIdx]||TP_PHASES[0];
-  var blk=ph.blocks[blockIdx]||ph.blocks[0];
+// ─── OUTPUT: MICRO ────────────────────────────────────────────────────────────
+function tpMicroOutput(team,sport,arch,startDate,phaseIdx,blockIdx){
+  var ph=tpGetPhase(phaseIdx);
+  var blk=tpGetBlock(phaseIdx,blockIdx);
   var blockStartWk=ph.startWeek+blockIdx*4;
   var wc=TP_WORKLOAD_COLORS[blk.workload]||'#1e3a5f';
   var html=tpBreadcrumb();
-  html+='<div style="font-size:16px;font-weight:800;color:'+ph.color+';margin-bottom:4px">Block '+(blockIdx+1)+' — '+blk.label+'</div>';
-  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:4px">'+team+' · Phase '+(phaseIdx+1)+': '+ph.label+' · Weeks '+blockStartWk+'–'+(blockStartWk+3)+' · '+arch+'</div>';
-  html+='<div style="font-size:9px;color:#4a6a8a;margin-bottom:12px">▼ Click any week to see the full session plan for that week</div>';
+  html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">';
+  html+='<div style="font-size:16px;font-weight:800;color:'+ph.color+'">Block '+(blockIdx+1)+' \u2014 '+blk.label+'</div>';
+  html+='<button onclick="tpEditBlock('+phaseIdx+','+blockIdx+')" style="background:#1e3a5f;color:#C9A228;border:1px solid #2a4a6a;border-radius:5px;padding:4px 10px;font-size:10px;cursor:pointer">\u270f\ufe0f Edit Block</button>';
+  html+='</div>';
+  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:4px">'+team+' \xb7 Phase '+(phaseIdx+1)+': '+ph.label+' \xb7 Weeks '+blockStartWk+'\u2013'+(blockStartWk+3)+' \xb7 '+arch+'</div>';
+  html+='<div style="font-size:9px;color:#4a6a8a;margin-bottom:12px">\u25bc Click any week card to see Day 1\u20133</div>';
   html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+ph.color+';border-radius:10px;padding:12px;margin-bottom:14px">';
   html+='<div style="display:flex;justify-content:space-between;margin-bottom:6px"><div style="font-size:12px;font-weight:700;flex:1">'+blk.desc+'</div><span style="background:'+wc+';color:#fff;font-size:9px;padding:3px 8px;border-radius:10px">'+blk.workload+'</span></div>';
   html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:10px">';
@@ -2053,30 +2172,25 @@ function tpMicroOutput(team,sport,arch,startDate,phaseIdx,blockIdx) {
   html+='<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#6a8aa8;font-size:8px;margin-bottom:2px">TEMPO</div>'+blk.tempo+'</div>';
   html+='<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#6a8aa8;font-size:8px;margin-bottom:2px">SCHEME</div>'+blk.scheme+'</div>';
   html+='</div></div>';
-  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">4-WEEK PROGRESSION — CLICK TO SEE SESSION</div>';
-  for (var wi=0;wi<4;wi++) {
+  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">4-WEEK PROGRESSION \u2014 CLICK TO SEE WEEK</div>';
+  for(var wi=0;wi<4;wi++){
     var wkAbs=blockStartWk+wi;
     var wkLabel=TP_WEEK_LABELS[wi];
     var isCNS=(wi===3);
     var wcW=TP_WORKLOAD_COLORS[isCNS?'CNS Reset':blk.workload]||'#1e3a5f';
-    var wIdx=wi;
-    html+='<div onclick="tpDrillWeek('+wIdx+')" style="cursor:pointer;background:#0d1b2a;border:1px solid #1e3a5f;border-radius:10px;padding:12px;margin-bottom:8px" onmouseover="this.style.borderColor=\''+ph.color+'\'" onmouseout="this.style.borderColor=\'#1e3a5f\'">';
+    html+='<div onclick="tpDrillWeek('+wi+')" style="cursor:pointer;background:#0d1b2a;border:1px solid #1e3a5f;border-radius:10px;padding:12px;margin-bottom:8px" onmouseover="this.style.borderColor=\''+ph.color+'\'" onmouseout="this.style.borderColor=\'#1e3a5f\'">';
     html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">';
-    html+='<div style="font-size:13px;font-weight:800">Week '+wkAbs+' — '+wkLabel+' <span style="font-size:10px;color:#6a8aa8;font-weight:400">'+tpDateLabel(startDate,wkAbs-1)+'</span></div>';
-    html+='<div style="display:flex;align-items:center;gap:6px"><span style="background:'+wcW+';color:#fff;font-size:9px;padding:3px 8px;border-radius:10px">'+(isCNS?'CNS Reset':wkLabel)+'</span><span style="font-size:11px;color:'+ph.color+';">›</span></div></div>';
-    if (isCNS) {
-      html+='<div style="background:#1a2a1a;border:1px dashed #2a5a2a;border-radius:8px;padding:10px;text-align:center">';
-      html+='<div style="font-size:12px;font-weight:700;color:#4af08a">⚙️ CNS Reset Week — Click to View Session</div>';
-      html+='<div style="font-size:10px;color:#8a9bb0;margin-top:3px">5×5 @ 70–75% · No Tempo · 16-Min Clock · Same patterns</div>';
+    html+='<div style="font-size:13px;font-weight:800">Week '+wkAbs+' \u2014 '+wkLabel+' <span style="font-size:10px;color:#6a8aa8;font-weight:400">'+tpDateLabel(startDate,wkAbs-1)+'</span></div>';
+    html+='<div style="display:flex;align-items:center;gap:6px"><span style="background:'+wcW+';color:#fff;font-size:9px;padding:3px 8px;border-radius:10px">'+(isCNS?'CNS Reset':wkLabel)+'</span><span style="font-size:11px;color:'+ph.color+';">\u203a</span></div></div>';
+    if(isCNS){
+      html+='<div style="background:#1a2a1a;border:1px dashed #2a5a2a;border-radius:8px;padding:8px;text-align:center">';
+      html+='<div style="font-size:11px;font-weight:700;color:#4af08a">\u2699\ufe0f CNS Reset \u2014 Click to View Days</div>';
+      html+='<div style="font-size:9px;color:#8a9bb0;margin-top:2px">5\xd75 @ 70\u201375% \xb7 No Tempo \xb7 16-Min Clock</div>';
       html+='</div>';
     } else {
-      html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px;margin-bottom:6px">';
-      html+='<div style="background:#0a1520;border-radius:6px;padding:7px"><div style="color:#C9A228;font-size:8px;margin-bottom:2px">T1 MAIN LIFTS</div>'+blk.t1rep+'</div>';
-      html+='<div style="background:#0a1520;border-radius:6px;padding:7px"><div style="color:#4a8af0;font-size:8px;margin-bottom:2px">T2 SUPPLEMENTAL</div>'+blk.t2rep+'</div>';
-      html+='</div>';
       html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px">';
-      html+='<div style="background:#0a1520;border-radius:6px;padding:7px"><div style="color:#4af08a;font-size:8px;margin-bottom:2px">⚡ SPEED</div>'+blk.speed+'</div>';
-      html+='<div style="background:#0a1520;border-radius:6px;padding:7px"><div style="color:#f0a04a;font-size:8px;margin-bottom:2px">JUMP/LAND</div>'+blk.jump+'</div>';
+      html+='<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#C9A228;font-size:8px;margin-bottom:1px">T1</div>'+blk.t1rep+'</div>';
+      html+='<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#4a8af0;font-size:8px;margin-bottom:1px">T2</div>'+blk.t2rep+'</div>';
       html+='</div>';
     }
     html+='</div>';
@@ -2084,9 +2198,64 @@ function tpMicroOutput(team,sport,arch,startDate,phaseIdx,blockIdx) {
   document.getElementById('tp-output').innerHTML=html;
 }
 
-function tpSessionOutput(team,sport,arch,startDate,phaseIdx,blockIdx,sportKey) {
-  var ph=TP_PHASES[phaseIdx]||TP_PHASES[0];
-  var blk=ph.blocks[blockIdx]||ph.blocks[0];
+// ─── OUTPUT: WEEK (Day 1/2/3 cards) ──────────────────────────────────────────
+function tpWeekOutput(team,sport,arch,startDate,phaseIdx,blockIdx,sportKey){
+  var ph=tpGetPhase(phaseIdx);
+  var blk=tpGetBlock(phaseIdx,blockIdx);
+  var wkAbs=ph.startWeek+blockIdx*4+_tpWeekIdx;
+  var wkLabel=TP_WEEK_LABELS[_tpWeekIdx];
+  var isCNS=(_tpWeekIdx===3);
+  var sd=TP_SPORT_DATA[sportKey||'multi']||TP_SPORT_DATA.multi;
+  var lvl=tpArchLevel(arch);
+  var archLabel={Advanced:'\u2b06 Advanced',Intermediate:'~ Intermediate',Beginner:'\u25be Beginner'};
+  var html=tpBreadcrumb();
+  html+='<div style="font-size:16px;font-weight:800;color:'+ph.color+';margin-bottom:4px">Week '+wkAbs+' \u2014 '+wkLabel+(isCNS?' \u2699\ufe0f':'')+'</div>';
+  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:6px">'+team+' \xb7 '+sport+' \xb7 Phase '+(phaseIdx+1)+' \xb7 Block '+(blockIdx+1)+': '+blk.label+'</div>';
+  html+='<div style="display:flex;gap:6px;margin-bottom:12px">';
+  html+='<span style="background:#1e3a5f;border:1px solid #2a5a8a;color:#6ab0f0;font-size:9px;padding:2px 7px;border-radius:8px">'+(archLabel[lvl]||arch)+'</span>';
+  if(isCNS) html+='<span style="background:#1a2a1a;border:1px solid #2a5a2a;color:#4af08a;font-size:9px;padding:2px 7px;border-radius:8px">CNS Reset Week</span>';
+  else html+='<span style="background:#1a1208;border:1px solid #3a2a00;color:#C9A228;font-size:9px;padding:2px 7px;border-radius:8px">'+blk.intensity+'</span>';
+  html+='</div>';
+  if(isCNS){
+    html+='<div style="background:#1a2a1a;border:1px solid #2a5a2a;border-radius:10px;padding:14px;margin-bottom:12px;text-align:center">';
+    html+='<div style="font-size:14px;font-weight:800;color:#4af08a">\u2699\ufe0f CNS Reset Week</div>';
+    html+='<div style="font-size:11px;color:#8a9bb0;margin:6px 0">All prescriptions: 5\xd75 @ 70\u201375%</div>';
+    html+='<div style="font-size:10px;color:#6a8aa8">No tempo contrast \xb7 16-min clock \xb7 Autoregulate on feel</div>';
+    html+='</div>';
+  }
+  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">3-DAY SPLIT \u2014 CLICK TO OPEN FULL SESSION</div>';
+  var dayDefs=[
+    {label:'Day 1 \u2014 Total Body',icon:'\u26a1',color:'#C9A228',bg:'#1a1208',border:'#3a2a00',desc:'Olympic lift focus \xb7 Full chain power \xb7 '+sd.primary},
+    {label:'Day 2 \u2014 Lower Body',icon:'\uD83C\uDFCB\uFE0F',color:'#4a8af0',bg:'#08122a',border:'#1e3a7a',desc:'Squat \u2014 hinge \xb7 Unilateral development \xb7 Posterior chain'},
+    {label:'Day 3 \u2014 Upper Body',icon:'\uD83D\uDCAA',color:'#4af08a',bg:'#081a12',border:'#1e5a3a',desc:'Push + pull \xb7 Shoulder health \xb7 Core capacity'}
+  ];
+  for(var di=0;di<3;di++){
+    var dd=dayDefs[di];
+    html+='<div onclick="tpDrillDay('+di+')" style="cursor:pointer;background:'+dd.bg+';border:1px solid '+dd.border+';border-radius:10px;padding:14px;margin-bottom:10px" onmouseover="this.style.borderColor=\''+dd.color+'\'" onmouseout="this.style.borderColor=\''+dd.border+'\'">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
+    html+='<div style="font-size:14px;font-weight:800;color:'+dd.color+'">'+dd.icon+' '+dd.label+'</div>';
+    html+='<span style="font-size:18px;color:'+dd.color+'">\u203a</span></div>';
+    html+='<div style="font-size:10px;color:#6a8aa8;margin-bottom:8px">'+dd.desc+'</div>';
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:9px">';
+    html+='<div style="background:#0a1520;border-radius:5px;padding:5px;color:#4af08a">S \u2014 Stability / Activation</div>';
+    html+='<div style="background:#0a1520;border-radius:5px;padding:5px;color:#4a8af0">T \u2014 Speed Track</div>';
+    if(isCNS){
+      html+='<div style="background:#0a1520;border-radius:5px;padding:5px;color:#C9A228">A \u2014 5\xd75 @ 70\u201375%</div>';
+    } else {
+      html+='<div style="background:#0a1520;border-radius:5px;padding:5px;color:#C9A228">A \u2014 '+blk.t1rep+'</div>';
+    }
+    html+='<div style="background:#0a1520;border-radius:5px;padding:5px;color:#f04a8a">R \u2014 Accessory + Jumps</div>';
+    html+='</div></div>';
+  }
+  document.getElementById('tp-output').innerHTML=html;
+}
+
+// ─── OUTPUT: SESSION (single day) ─────────────────────────────────────────────
+function tpDayOutput(team,sport,arch,startDate,phaseIdx,blockIdx,weekIdx,dayIdx,sportKey){
+  var ph=tpGetPhase(phaseIdx);
+  var blk=tpGetBlock(phaseIdx,blockIdx);
+  var wkAbs=ph.startWeek+blockIdx*4+weekIdx;
+  var isCNS=(weekIdx===3);
   var sk=sportKey||'multi';
   var sd=TP_SPORT_DATA[sk]||TP_SPORT_DATA.multi;
   var lvl=tpArchLevel(arch);
@@ -2095,96 +2264,92 @@ function tpSessionOutput(team,sport,arch,startDate,phaseIdx,blockIdx,sportKey) {
   var speedCat3=lvl==='Beginner'?'speed_accel':'speed_trans';
   var jumpCat=tpSportJumpCat(sk,arch);
   var jumpCat2=lvl==='Advanced'?'jump_rsi':'jump_bilateral';
-  var archLabel={Advanced:'\u2b06 Advanced',Intermediate:'~ Intermediate',Beginner:'\u25be Beginner'};
+  var t1=isCNS?'5\xd75 @ 70\u201375%':blk.t1rep;
+  var t2=isCNS?'5\xd75 @ 70\u201375%':blk.t2rep;
+  var dayDefs=[
+    {label:'Day 1 \u2014 Total Body',color:'#C9A228',bg:'#1a1208',border:'#3a2a00',icon:'\u26a1'},
+    {label:'Day 2 \u2014 Lower Body',color:'#4a8af0',bg:'#08122a',border:'#1e3a7a',icon:'\uD83C\uDFCB\uFE0F'},
+    {label:'Day 3 \u2014 Upper Body',color:'#4af08a',bg:'#081a12',border:'#1e5a3a',icon:'\uD83D\uDCAA'}
+  ];
+  var dd=dayDefs[dayIdx]||dayDefs[0];
   var html=tpBreadcrumb();
-  html+='<div style="font-size:16px;font-weight:800;color:'+ph.color+';margin-bottom:4px">Week Plan \u2014 Block '+(blockIdx+1)+': '+blk.label+'</div>';
-  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:6px">'+team+' \xb7 '+sport+' \xb7 Phase '+(phaseIdx+1)+' \xb7 '+blk.intensity+'</div>';
-  html+='<div style="display:flex;gap:6px;margin-bottom:12px">';
-  html+='<span style="background:#1e3a5f;border:1px solid #2a5a8a;color:#6ab0f0;font-size:9px;padding:2px 7px;border-radius:8px">'+(archLabel[lvl]||arch)+'</span>';
-  html+='<span style="background:#1a1208;border:1px solid #3a2a00;color:#C9A228;font-size:9px;padding:2px 7px;border-radius:8px">'+sd.primary+'</span>';
+  html+='<div style="font-size:16px;font-weight:800;color:'+dd.color+';margin-bottom:4px">'+dd.icon+' '+dd.label+'</div>';
+  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:10px">'+team+' \xb7 '+sport+' \xb7 Week '+wkAbs+(isCNS?' \xb7 \u2699\ufe0f CNS Reset':' \xb7 '+blk.intensity)+'</div>';
+  html+='<div style="background:'+dd.bg+';border:1px solid '+dd.border+';border-radius:10px;padding:12px;margin-bottom:14px">';
+  if(dayIdx===0){
+    html+=tpStarsBlock('S \u2014 Stability / Movement Prep','#4af08a',[
+      {ex:tpEx('stability'),sch:'2\xd78 each \u2014 activation'},
+      {ex:tpEx('stability'),sch:'2\xd710 \u2014 movement prep'}
+    ]);
+    var sLbl1=speedCat1.replace('speed_','');sLbl1=sLbl1.charAt(0).toUpperCase()+sLbl1.slice(1);
+    html+=tpStarsBlock('T \u2014 Speed Track ('+sLbl1+')','#4a8af0',[
+      {ex:tpEx(speedCat1),sch:'4 reps \u2014 full recovery'},
+      {ex:tpEx(speedCat1),sch:'3 reps \u2014 max intent'}
+    ]);
+    html+=tpStarsBlock('A \u2014 Olympic Lift (T1 Total Body)','#C9A228',[
+      {ex:tpExByArch('T1_total',arch),sch:t1},
+      {ex:tpExByArch('T2_total',arch),sch:t2}
+    ]);
+    html+=tpStarsBlock('A \u2014 Jump Development','#f0a04a',[
+      {ex:tpEx(jumpCat),sch:'4\xd74 \u2014 max height \u2014 full recovery'},
+      {ex:tpEx(jumpCat2),sch:'3\xd74 \u2014 reactive ground contact'}
+    ]);
+    html+=tpStarsBlock('S \u2014 Support / Core','#8a9bb0',[
+      {ex:tpEx('support'),sch:'3\xd712 \u2014 continuous'},
+      {ex:tpEx('support'),sch:'3\xd710 each side'}
+    ]);
+  } else if(dayIdx===1){
+    var sLbl2=speedCat2.replace('speed_','');sLbl2=sLbl2.charAt(0).toUpperCase()+sLbl2.slice(1);
+    html+=tpStarsBlock('S \u2014 Stability / Hip Activation','#4af08a',[
+      {ex:tpEx('stability'),sch:'2\xd78 each \u2014 hip activation'},
+      {ex:tpEx('stability'),sch:'2\xd710 \u2014 glute warm-up'}
+    ]);
+    html+=tpStarsBlock('T \u2014 Speed Track ('+sLbl2+')','#4a8af0',[
+      {ex:tpEx(speedCat2),sch:'3 reps \u2014 '+(lvl==='Beginner'?'mechanics focus':'max velocity')},
+      {ex:tpEx(speedCat2),sch:'2 reps \u2014 '+(lvl==='Advanced'?'overspeed intent':'full recovery')}
+    ]);
+    html+=tpStarsBlock('A \u2014 Primary Lower (L1 \u2014 L2)','#C9A228',[
+      {ex:tpExByArch('L1_lower',arch),sch:t1},
+      {ex:tpExByArch('L2_lower',arch),sch:t2}
+    ]);
+    html+=tpStarsBlock('R \u2014 Unilateral + Posterior Chain','#f04a8a',[
+      {ex:tpExByArch('L3_lower',arch),sch:'3\xd76 each side'},
+      {ex:tpExByArch('L4_lower',arch),sch:'3\xd78 \u2014 tempo controlled'},
+      {ex:tpExByArch('L5_lower',arch),sch:'3\xd710 \u2014 squeeze peak'}
+    ]);
+    html+=tpStarsBlock('S \u2014 Support + Single-Leg Jump','#8a9bb0',[
+      {ex:tpExByArch(lvl==='Beginner'?'jump_bilateral':'jump_unilateral',arch),sch:'3\xd74 each \u2014 full recovery'},
+      {ex:tpEx('support'),sch:'3\xd712 \u2014 circuit'}
+    ]);
+  } else {
+    var sLbl3=speedCat3.replace('speed_','');sLbl3=sLbl3.charAt(0).toUpperCase()+sLbl3.slice(1);
+    html+=tpStarsBlock('S \u2014 Stability / Shoulder Prep','#4af08a',[
+      {ex:tpEx('stability'),sch:'2\xd710 \u2014 rotator cuff activation'},
+      {ex:tpEx('stability'),sch:'2\xd78 each \u2014 thoracic mobility'}
+    ]);
+    html+=tpStarsBlock('T \u2014 Speed Track (Transition \u2014 Decel)','#4a8af0',[
+      {ex:tpEx(speedCat3),sch:'3 reps \u2014 decel + COD'},
+      {ex:tpEx(speedCat3),sch:'2 reps \u2014 reactive agility'}
+    ]);
+    html+=tpStarsBlock('A \u2014 Primary Push + Pull (U1 \u2014 U2)','#C9A228',[
+      {ex:tpExByArch('U1_upper',arch),sch:t1},
+      {ex:tpExByArch('U2_upper',arch),sch:t2}
+    ]);
+    html+=tpStarsBlock('R \u2014 Secondary Push + Pull + Shoulders','#f04a8a',[
+      {ex:tpExByArch('U3_upper',arch),sch:'3\xd78 \u2014 controlled eccentric'},
+      {ex:tpExByArch('U4_upper',arch),sch:'3\xd710 \u2014 strict vertical pull'},
+      {ex:tpExByArch('U5_upper',arch),sch:'3\xd712 \u2014 shoulder health'}
+    ]);
+    html+=tpStarsBlock('S \u2014 Support / Core Capacity','#8a9bb0',[
+      {ex:tpEx('support'),sch:'3\xd712 \u2014 anti-rotation'},
+      {ex:tpEx('support'),sch:'3\xd710 \u2014 anterior core'}
+    ]);
+  }
   html+='</div>';
-  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">3-DAY TRAINING WEEK \u2014 FULL SESSION VIEW</div>';
-  // DAY 1
-  html+='<div style="background:#1a1208;border:1px solid #3a2a00;border-radius:10px;padding:12px;margin-bottom:14px">';
-  html+='<div style="font-size:13px;font-weight:800;color:#C9A228;margin-bottom:2px">\u26a1 Day 1 \u2014 Total Body</div>';
-  html+='<div style="font-size:10px;color:#6a8aa8;margin-bottom:10px">Olympic lift focus \xb7 Full chain power \xb7 '+sd.primary+'</div>';
-  html+=tpStarsBlock('S \u2014 Stability / Movement Prep','#4af08a',[
-    {ex:tpEx('stability'),sch:'2\xd78 each \u2014 activation'},
-    {ex:tpEx('stability'),sch:'2\xd710 \u2014 movement prep'}
-  ]);
-  var sLbl1=speedCat1.replace('speed_','');sLbl1=sLbl1.charAt(0).toUpperCase()+sLbl1.slice(1);
-  html+=tpStarsBlock('T \u2014 Speed Track ('+sLbl1+')','#4a8af0',[
-    {ex:tpEx(speedCat1),sch:'4 reps \u2014 full recovery'},
-    {ex:tpEx(speedCat1),sch:'3 reps \u2014 max intent'}
-  ]);
-  html+=tpStarsBlock('A \u2014 Olympic Lift (T1 Total Body)','#C9A228',[
-    {ex:tpExByArch('T1_total',arch),sch:blk.t1rep},
-    {ex:tpExByArch('T2_total',arch),sch:blk.t2rep}
-  ]);
-  html+=tpStarsBlock('A \u2014 Jump Development','#f0a04a',[
-    {ex:tpEx(jumpCat),sch:'4\xd74 \u2014 max height \u2014 full recovery'},
-    {ex:tpEx(jumpCat2),sch:'3\xd74 \u2014 reactive ground contact'}
-  ]);
-  html+=tpStarsBlock('S \u2014 Support / Core','#8a9bb0',[
-    {ex:tpEx('support'),sch:'3\xd712 \u2014 continuous'},
-    {ex:tpEx('support'),sch:'3\xd710 each side'}
-  ]);
-  html+='</div>';
-  // DAY 2
-  var sLbl2=speedCat2.replace('speed_','');sLbl2=sLbl2.charAt(0).toUpperCase()+sLbl2.slice(1);
-  html+='<div style="background:#08122a;border:1px solid #1e3a7a;border-radius:10px;padding:12px;margin-bottom:14px">';
-  html+='<div style="font-size:13px;font-weight:800;color:#4a8af0;margin-bottom:2px">&#129459; Day 2 \u2014 Lower Body</div>';
-  html+='<div style="font-size:10px;color:#6a8aa8;margin-bottom:10px">Primary squat \u2014 hinge \xb7 Unilateral development \xb7 Posterior chain</div>';
-  html+=tpStarsBlock('S \u2014 Stability / Hip Activation','#4af08a',[
-    {ex:tpEx('stability'),sch:'2\xd78 each \u2014 hip activation'},
-    {ex:tpEx('stability'),sch:'2\xd710 \u2014 glute warm-up'}
-  ]);
-  html+=tpStarsBlock('T \u2014 Speed Track ('+sLbl2+')','#4a8af0',[
-    {ex:tpEx(speedCat2),sch:'3 reps \u2014 '+(lvl==='Beginner'?'mechanics focus':'max velocity')},
-    {ex:tpEx(speedCat2),sch:'2 reps \u2014 '+(lvl==='Advanced'?'overspeed intent':'full recovery')}
-  ]);
-  html+=tpStarsBlock('A \u2014 Primary Lower (L1 \u2014 L2)','#C9A228',[
-    {ex:tpExByArch('L1_lower',arch),sch:blk.t1rep},
-    {ex:tpExByArch('L2_lower',arch),sch:blk.t2rep}
-  ]);
-  html+=tpStarsBlock('R \u2014 Unilateral + Posterior Chain','#f04a8a',[
-    {ex:tpExByArch('L3_lower',arch),sch:'3\xd76 each side'},
-    {ex:tpExByArch('L4_lower',arch),sch:'3\xd78 \u2014 tempo controlled'},
-    {ex:tpExByArch('L5_lower',arch),sch:'3\xd710 \u2014 squeeze peak'}
-  ]);
-  html+=tpStarsBlock('S \u2014 Support + Single-Leg Jump','#8a9bb0',[
-    {ex:tpExByArch(lvl==='Beginner'?'jump_bilateral':'jump_unilateral',arch),sch:'3\xd74 each \u2014 full recovery'},
-    {ex:tpEx('support'),sch:'3\xd712 \u2014 circuit'}
-  ]);
-  html+='</div>';
-  // DAY 3
-  html+='<div style="background:#081a12;border:1px solid #1e5a3a;border-radius:10px;padding:12px;margin-bottom:14px">';
-  html+='<div style="font-size:13px;font-weight:800;color:#4af08a;margin-bottom:2px">&#128170; Day 3 \u2014 Upper Body</div>';
-  html+='<div style="font-size:10px;color:#6a8aa8;margin-bottom:10px">Push + pull development \xb7 Shoulder health \xb7 Core capacity</div>';
-  html+=tpStarsBlock('S \u2014 Stability / Shoulder Prep','#4af08a',[
-    {ex:tpEx('stability'),sch:'2\xd710 \u2014 rotator cuff activation'},
-    {ex:tpEx('stability'),sch:'2\xd78 each \u2014 thoracic mobility'}
-  ]);
-  html+=tpStarsBlock('T \u2014 Speed Track (Transition \u2014 Decel)','#4a8af0',[
-    {ex:tpEx(speedCat3),sch:'3 reps \u2014 decel + COD'},
-    {ex:tpEx(speedCat3),sch:'2 reps \u2014 reactive agility'}
-  ]);
-  html+=tpStarsBlock('A \u2014 Primary Push + Pull (U1 \u2014 U2)','#C9A228',[
-    {ex:tpExByArch('U1_upper',arch),sch:blk.t1rep},
-    {ex:tpExByArch('U2_upper',arch),sch:blk.t2rep}
-  ]);
-  html+=tpStarsBlock('R \u2014 Secondary Push + Pull + Shoulders','#f04a8a',[
-    {ex:tpExByArch('U3_upper',arch),sch:'3\xd78 \u2014 controlled eccentric'},
-    {ex:tpExByArch('U4_upper',arch),sch:'3\xd710 \u2014 strict vertical pull'},
-    {ex:tpExByArch('U5_upper',arch),sch:'3\xd712 \u2014 shoulder health'}
-  ]);
-  html+=tpStarsBlock('S \u2014 Support / Core Capacity','#8a9bb0',[
-    {ex:tpEx('support'),sch:'3\xd712 \u2014 anti-rotation'},
-    {ex:tpEx('support'),sch:'3\xd710 \u2014 anterior core'}
-  ]);
-  html+='</div>';
-  html+='<div style="background:#1a1a2a;border:1px dashed #2a2a5a;border-radius:8px;padding:10px;font-size:10px;color:#6a8aa8">';
-  html+='<span style="color:#a078f0;font-weight:700">\u2699\ufe0f Week 4 CNS Reset:</span> Replace all T1/T2 prescriptions with 5\xd75 @ 70\u201375% \xb7 No tempo contrast \xb7 16-min clock \xb7 Autoregulate on feel.</div>';
+  if(isCNS){
+    html+='<div style="background:#1a1a2a;border:1px dashed #2a2a5a;border-radius:8px;padding:10px;font-size:10px;color:#6a8aa8">';
+    html+='<span style="color:#a078f0;font-weight:700">\u2699\ufe0f CNS Reset Week:</span> All prescriptions 5\xd75 @ 70\u201375% \xb7 No tempo contrast \xb7 16-min clock \xb7 Autoregulate on feel.</div>';
+  }
   document.getElementById('tp-output').innerHTML=html;
 }
 
