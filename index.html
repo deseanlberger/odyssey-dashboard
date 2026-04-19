@@ -1853,7 +1853,7 @@ var _accChipsSelected = [];
 var ACC_POOLS = {
   'Hamstrings': ['Nordic Hamstring Curl','Glute Ham Raise','Lying Leg Curl','Good Morning','Stiff-Leg RDL','Single-Leg RDL','Banded Leg Curl','Kettlebell Swing','Seated Leg Curl','Prone Hamstring Curl'],
   'Glutes': ['Hip Thrust','Barbell Hip Thrust','Banded Hip Thrust','Cable Pull-Through','Sumo Deadlift','Bulgarian Split Squat','Step Up w/ Hip Ext','Lateral Band Walk','Clamshell','Single-Leg Hip Thrust'],
-  'Quads': ['Front Squat','Leg Press','Leg Extension','Sissy Squat','Step Up','Walking Lunge','Reverse Lunge','Spanish Squat','Box Squat','Cyclist Squat'],
+  'Quads': ['Leg Extension','Step Up','Walking Lunge','Reverse Lunge','Cyclist Squat','Wall Sit','Terminal Knee Extension','Split Squat','Goblet Squat','Lateral Step Down'],
   'Core': ['Pallof Press','Dead Bug','Bird Dog','Ab Wheel Rollout','Hanging Leg Raise','Cable Crunch','Plank','Copenhagen Plank','Stir the Pot','Hollow Body Hold'],
   'Calves': ['Standing Calf Raise','Seated Calf Raise','Single-Leg Calf Raise','Donkey Calf Raise','Eccentric Calf Raise','Jump Rope','Skipping','Ankle Triple Extension Drill','Wall Ankle Mob','Tibia Raise'],
   'Push': ['Bench Press','Incline DB Press','Dumbbell Flye','Dips','Push-Up Variations','Landmine Press','Arnold Press','DB Shoulder Press','Cable Crossover','Floor Press'],
@@ -2090,15 +2090,29 @@ function pbTechBlock(dayType, subFocus, bkt, sport, archLabel, isPow, block) {
   var primer = 'PRIMER: ' + (primerMap[dayType] ? primerMap[dayType][0] : 'Hip Flexor March × 10yd');
   var primer2 = 'PRIMER: ' + (primerMap[dayType] ? primerMap[dayType][1] : 'T-Spine Rotation × 8/side');
   // 2. TEACH — drill movement slowly (sprint/jump mechanics)
-  var teachMap = {accel:'TEACH: Wall Drive 2×10 — perfect hip flexion angle', topend:'TEACH: A-March 2×20yd — high knee, pawing action', trans:'TEACH: Lateral Shuffle 2×10yd — hip width stance, stay low', auto:'TEACH: A-Skip 2×20yd — rhythm and posture'};
   var sf = subFocus === 'auto' ? ((bkt === 'Force Bias' || bkt === 'Foundation') ? 'accel' : 'topend') : subFocus;
-  var teach = teachMap[sf] || teachMap.auto;
+  // Strength-focused sub-focuses remap to topend for the Technique block
+  if (sf === 'olympic' || sf === 'lower' || sf === 'upper') sf = 'topend';
+  var teachMap = {
+    accel: 'TEACH: Wall Drive 2×10 — perfect hip flexion angle',
+    topend: 'TEACH: A-March 2×20yd — high knee, pawing action',
+    trans: 'TEACH: Lateral Shuffle 2×10yd — hip width stance, stay low'
+  };
+  var teach = teachMap[sf] || 'TEACH: A-Skip 2×20yd — rhythm and posture';
   // 3. APPLY — execute at speed
-  var applyMap = {accel:'APPLY: Falling Start × 3 @ 85% — feel the lean', topend:'APPLY: Build-Up Sprint × 2 — 30yd @ 90%', trans:'APPLY: Shuffle → Sprint × 2 @ full effort', auto:'APPLY: Half-Kneeling Start × 3 @ 85%'};
-  var apply = applyMap[sf] || applyMap.auto;
+  var applyMap = {
+    accel: 'APPLY: Falling Start × 3 @ 85% — feel the lean',
+    topend: 'APPLY: Build-Up Sprint × 2 — 30yd @ 90%',
+    trans: 'APPLY: Shuffle → Sprint × 2 @ full effort'
+  };
+  var apply = applyMap[sf] || 'APPLY: Sprint Build-Up × 2 — 20yd @ 80%, posture first';
   // 4. MEASURE — track output
-  var measureMap = {accel:'MEASURE: 0–10 Sprint × 1 (timed)', topend:'MEASURE: 20–30 Fly × 1 (timed)', trans:'MEASURE: COD Drill × 1 (timed)', auto:'MEASURE: CMJ × 3 (track peak height / power)'};
-  var measure = isPow ? 'MEASURE: CMJ × 3 (log peak power output)' : (measureMap[sf] || measureMap.auto);
+  var measureMap = {
+    accel: 'MEASURE: 0–10 Sprint × 1 (timed)',
+    topend: 'MEASURE: 20–30 Fly × 1 (timed)',
+    trans: 'MEASURE: COD Drill × 1 (timed)'
+  };
+  var measure = isPow ? 'MEASURE: CMJ × 3 (log peak power output)' : (measureMap[sf] || 'MEASURE: 10yd Sprint × 1 (timed)');
   if (isBeg) {
     return [primer, teach, apply];
   }
