@@ -7,15 +7,17 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0D1B2A;color:#fff;min-height:100vh}
-
-/* HEADER */
-.header{background:linear-gradient(180deg,#0a1520 0%,#0D1B2A 100%);padding:20px 24px 16px;border-bottom:2px solid #F4762A}
-.header-top{display:flex;align-items:center;gap:14px;margin-bottom:4px}
-.logo{width:48px;height:48px;background:#F4762A;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#0D1B2A;flex-shrink:0;letter-spacing:-1px}
-.header-title h1{font-size:22px;font-weight:800;letter-spacing:-0.5px}
+.header{background:linear-gradient(180deg,#0a1520 0%,#0D1B2A 100%);padding:18px 24px 14px;border-bottom:2px solid #F4762A}
+.header-top{display:flex;align-items:center;gap:14px}
+.logo{width:48px;height:48px;background:#F4762A;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#0D1B2A;flex-shrink:0}
+.header-title h1{font-size:21px;font-weight:800;letter-spacing:-.5px}
 .header-title p{font-size:12px;color:#6a8aa8;margin-top:2px}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.coach-btn{background:transparent;border:1px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s}
+.coach-btn:hover{border-color:#F4762A;color:#F4762A}
+.coach-btn.active{background:#F4762A;border-color:#F4762A;color:#fff}
+.coach-badge{background:#F4762A;color:#fff;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
 
-/* TABS */
 .tabs{display:flex;background:#0a1520;border-bottom:1px solid #1e3a5f}
 .tab{padding:12px 20px;font-size:13px;font-weight:600;cursor:pointer;color:#6a8aa8;border-bottom:2px solid transparent;transition:all .15s}
 .tab.active{color:#F4762A;border-bottom-color:#F4762A}
@@ -23,7 +25,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .tab-panel{display:none}
 .tab-panel.active{display:block}
 
-/* FILTERS */
 .filters{position:sticky;top:0;z-index:100;background:#112233;padding:12px 20px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid #1e3a5f}
 .filter-group{display:flex;align-items:center;gap:5px}
 .filter-label{font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
@@ -35,14 +36,11 @@ select:focus{border-color:#F4762A}
 .reset-btn{background:transparent;border:1px solid #2a4a6a;color:#6a8aa8;border-radius:6px;padding:6px 10px;font-size:11px;cursor:pointer;transition:all .15s}
 .reset-btn:hover{border-color:#F4762A;color:#F4762A}
 
-/* STATS BAR */
 .stats-bar{padding:8px 20px;font-size:11px;color:#6a8aa8;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;flex-wrap:wrap;gap:6px}
 .stats-bar b{color:#F4762A}
 
-/* CONTENT */
 .content{padding:14px 20px;max-width:860px;margin:0 auto}
 
-/* ATHLETE CARD */
 .athlete-card{background:#fff;color:#0D1B2A;border-radius:12px;padding:13px 15px;margin-bottom:9px;display:grid;grid-template-columns:42px 1fr auto;gap:11px;align-items:center;cursor:pointer;transition:transform .1s,box-shadow .1s;box-shadow:0 2px 8px rgba(0,0,0,.2)}
 .athlete-card:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(0,0,0,.25)}
 .athlete-card.elite{border-left:4px solid #F4762A}
@@ -52,8 +50,7 @@ select:focus{border-color:#F4762A}
 .rank.bronze{background:#8B6914}
 .athlete-name{font-size:15px;font-weight:700;display:flex;align-items:center;gap:5px;line-height:1.2}
 .athlete-meta{font-size:11px;color:#5a7a8a;margin-top:3px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
-.grade-chip{background:#e8f0f7;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700;color:#0D1B2A;white-space:nowrap}
-.class-chip{background:#0D1B2A;color:#F4762A;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700;white-space:nowrap}
+.class-chip{background:#0D1B2A;color:#F4762A;border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;white-space:nowrap}
 .metrics-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
 .metric-pill{background:#f2f5f8;border-radius:4px;padding:2px 7px;font-size:10px;color:#3a5568;font-weight:500}
 .metric-pill.hot{background:#fff0e6;color:#c94a00;font-weight:700}
@@ -69,13 +66,17 @@ select:focus{border-color:#F4762A}
 .bFoundation{background:#3a7bd5;color:#fff}
 .bNA{background:#e8eef2;color:#8899aa}
 
+/* PUBLIC composite bar on card */
+.pub-bar-wrap{margin-top:6px;background:#f0f4f8;border-radius:4px;height:6px;overflow:hidden}
+.pub-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,#F4762A,#c94a00)}
+
 /* MODAL */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .overlay.open{display:flex;align-items:flex-start;justify-content:center;padding:20px}
 .modal{background:#fff;color:#0D1B2A;border-radius:16px;padding:24px;max-width:540px;width:100%;margin:auto;position:relative}
 .modal-close{position:absolute;top:14px;right:14px;background:#f0f4f8;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center}
 .modal-name{font-size:22px;font-weight:800;margin-bottom:4px}
-.modal-meta{font-size:12px;color:#667788;margin-bottom:18px;line-height:1.5}
+.modal-meta{font-size:12px;color:#667788;margin-bottom:16px;line-height:1.5}
 .score-row{display:flex;gap:12px;margin-bottom:18px}
 .score-box{flex:1;border-radius:10px;padding:12px;text-align:center}
 .score-box-orange{background:#fff3e6;border:2px solid #F4762A}
@@ -93,11 +94,33 @@ select:focus{border-color:#F4762A}
 .mrow-inner{flex:1}
 .mname{font-size:13px;color:#667788}
 .mval{font-size:13px;font-weight:700;white-space:nowrap}
-.pbar-wrap{background:#f0f4f8;border-radius:3px;height:5px;margin-top:4px;overflow:hidden}
+.pbar-wrap{background:#f0f4f8;border-radius:3px;height:6px;margin-top:5px;overflow:hidden}
 .pbar{height:100%;background:#F4762A;border-radius:3px}
-.pct-lbl{font-size:10px;color:#aaa;margin-top:2px}
+.pct-lbl{font-size:10px;color:#aaa;margin-top:3px}
+.pub-lock{background:#f5f7fa;border-radius:10px;padding:16px;text-align:center;margin-bottom:16px;border:1px dashed #ddd}
+.pub-lock-icon{font-size:28px;margin-bottom:8px}
+.pub-lock p{font-size:13px;color:#667788;line-height:1.5}
+.pub-metric-row{padding:8px 0;border-bottom:1px solid #f0f4f8}
+.pub-metric-row:last-child{border-bottom:none}
+.pub-metric-label{font-size:12px;color:#667788;margin-bottom:4px}
+.pub-pbar-wrap{background:#f0f4f8;border-radius:3px;height:8px;overflow:hidden}
+.pub-pbar{height:100%;background:#F4762A;border-radius:3px}
 
-/* COMPARE TOOL */
+/* PASSWORD MODAL */
+.pw-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:2000;align-items:center;justify-content:center;padding:20px}
+.pw-overlay.open{display:flex}
+.pw-modal{background:#112233;border:1px solid #2a4a6a;border-radius:16px;padding:28px;max-width:380px;width:100%;text-align:center}
+.pw-modal h2{font-size:20px;font-weight:800;margin-bottom:8px}
+.pw-modal p{font-size:13px;color:#6a8aa8;margin-bottom:20px}
+.pw-input{width:100%;background:#0D1B2A;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:12px 14px;font-size:16px;outline:none;text-align:center;letter-spacing:2px;margin-bottom:12px}
+.pw-input:focus{border-color:#F4762A}
+.pw-btn{width:100%;background:#F4762A;color:#fff;border:none;border-radius:8px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;transition:background .15s;margin-bottom:10px}
+.pw-btn:hover{background:#e56618}
+.pw-cancel{background:transparent;border:none;color:#6a8aa8;font-size:13px;cursor:pointer}
+.pw-cancel:hover{color:#fff}
+.pw-error{color:#e74c3c;font-size:13px;margin-top:-6px;margin-bottom:10px;display:none}
+
+/* COMPARE */
 .compare-section{max-width:860px;margin:0 auto;padding:20px}
 .compare-card{background:#112233;border-radius:16px;padding:24px;border:1px solid #1e3a5f}
 .compare-title{font-size:20px;font-weight:800;margin-bottom:6px}
@@ -118,7 +141,6 @@ select:focus{border-color:#F4762A}
 .cr-stat-val{font-size:16px;font-weight:800;color:#F4762A}
 .cr-bar-wrap{background:#1e3a5f;border-radius:4px;height:8px;position:relative;overflow:hidden}
 .cr-bar{height:100%;background:#F4762A;border-radius:4px;transition:width .6s ease}
-.cr-bar-you{position:absolute;top:0;height:100%;width:3px;background:#fff;border-radius:2px;transform:translateX(-50%)}
 .cr-rank{font-size:12px;color:#6a8aa8;margin-top:6px}
 .cr-overall{background:linear-gradient(135deg,#F4762A,#c94a00);border-radius:12px;padding:20px;text-align:center;margin-bottom:16px}
 .cr-overall-score{font-size:52px;font-weight:900;line-height:1}
@@ -130,11 +152,9 @@ select:focus{border-color:#F4762A}
 .cr-near-score{font-size:13px;color:#F4762A;font-weight:700}
 .cr-grade-note{background:#1e3a5f;border-radius:8px;padding:10px 14px;font-size:12px;color:#8ab0cc;text-align:center;margin-top:12px;line-height:1.5}
 
-/* EMPTY */
 .empty{text-align:center;padding:60px 20px;color:#6a8aa8}
 .empty h3{font-size:18px;margin-bottom:8px}
 
-/* MOBILE */
 @media(max-width:600px){
   .content{padding:10px 14px}
   .filters{padding:10px 14px}
@@ -144,6 +164,7 @@ select:focus{border-color:#F4762A}
   .athlete-name{font-size:14px}
   .sort-toggle{margin-left:0;width:100%}
   .compare-grid{grid-template-columns:1fr}
+  .header-title h1{font-size:17px}
 }
 </style>
 </head>
@@ -156,6 +177,10 @@ select:focus{border-color:#F4762A}
       <h1>Odyssey Performance</h1>
       <p>North County San Diego · Athlete Rankings</p>
     </div>
+    <div class="header-right">
+      <div id="coach-indicator" style="display:none"><span class="coach-badge">🔓 Coach View</span></div>
+      <button class="coach-btn" id="coach-btn" onclick="openPwModal()">🔒 Coach Login</button>
+    </div>
   </div>
 </div>
 
@@ -166,7 +191,6 @@ select:focus{border-color:#F4762A}
 
 <!-- RANKINGS TAB -->
 <div id="tab-rankings" class="tab-panel active">
-
 <div class="filters">
   <div class="filter-group">
     <span class="filter-label">Sport</span>
@@ -184,12 +208,17 @@ select:focus{border-color:#F4762A}
     <span class="filter-label">Class</span>
     <select id="f-grade" onchange="render()">
       <option value="">All Classes</option>
-      <option value="2030">8th Grade ('30)</option>
-      <option value="2029">Freshman ('29)</option>
-      <option value="2028">Sophomore ('28)</option>
-      <option value="2027">Junior ('27)</option>
-      <option value="2026">Senior ('26)</option>
-      <option value="2025">College ('25)</option>
+      <option value="2032">Class of '32</option>
+      <option value="2031">Class of '31</option>
+      <option value="2030">Class of '30</option>
+      <option value="2029">Class of '29</option>
+      <option value="2028">Class of '28</option>
+      <option value="2027">Class of '27</option>
+      <option value="2026">Class of '26</option>
+      <option value="2025">Class of '25</option>
+      <option value="2024">Class of '24</option>
+      <option value="2023">Class of '23</option>
+      <option value="2022">Class of '22</option>
     </select>
   </div>
   <button class="reset-btn" onclick="resetFilters()">Reset</button>
@@ -198,16 +227,12 @@ select:focus{border-color:#F4762A}
     <button class="sort-btn" id="btn-raw" onclick="setSort('raw')">Raw</button>
   </div>
 </div>
-
 <div class="stats-bar">
-  Showing <b id="count">65</b> athletes &nbsp;·&nbsp;
-  ⭐ = Odyssey Elite &nbsp;·&nbsp;
-  <span style="color:#6a8aa8">Age-Adj boosts younger athletes with same metrics</span>
+  Showing <b id="count">65</b> athletes &nbsp;·&nbsp; ⭐ = Odyssey Elite &nbsp;·&nbsp;
+  <span style="color:#6a8aa8" id="mode-label">Public view — log in as coach to see full stats</span>
 </div>
-
 <div class="content" id="content"></div>
-
-</div><!-- end rankings tab -->
+</div>
 
 <!-- COMPARE TAB -->
 <div id="tab-compare" class="tab-panel">
@@ -215,7 +240,6 @@ select:focus{border-color:#F4762A}
   <div class="compare-card">
     <div class="compare-title">⚡ How Do You Stack Up?</div>
     <div class="compare-subtitle">Enter your stats and see how you rank against Odyssey athletes</div>
-
     <div class="compare-grid">
       <div class="compare-field">
         <label>Your Name</label>
@@ -229,13 +253,17 @@ select:focus{border-color:#F4762A}
         </select>
       </div>
       <div class="compare-field">
-        <label>Grade</label>
+        <label>Graduating Class</label>
         <select id="c-grade">
-          <option value="2030">8th Grade</option>
-          <option value="2029">Freshman</option>
-          <option value="2028" selected>Sophomore</option>
-          <option value="2027">Junior</option>
-          <option value="2026">Senior</option>
+          <option value="2032">Class of '32</option>
+          <option value="2031">Class of '31</option>
+          <option value="2030">Class of '30</option>
+          <option value="2029">Class of '29</option>
+          <option value="2028" selected>Class of '28</option>
+          <option value="2027">Class of '27</option>
+          <option value="2026">Class of '26</option>
+          <option value="2025">Class of '25</option>
+          <option value="2024">Class of '24</option>
         </select>
       </div>
       <div class="compare-field">
@@ -259,134 +287,186 @@ select:focus{border-color:#F4762A}
         <input type="number" id="c-power" placeholder="e.g. 50.0" step="0.1" min="10" max="120">
       </div>
     </div>
-
     <button class="compare-btn" onclick="runCompare()">See My Ranking →</button>
-
     <div class="compare-results" id="compare-results"></div>
   </div>
 </div>
-</div><!-- end compare tab -->
+</div>
 
-<!-- ATHLETE DETAIL MODAL -->
+<!-- ATHLETE MODAL -->
 <div class="overlay" id="modal" onclick="closeModal(event)">
   <div class="modal" id="modal-inner"></div>
+</div>
+
+<!-- PASSWORD MODAL -->
+<div class="pw-overlay" id="pw-overlay" onclick="closePwModal(event)">
+  <div class="pw-modal">
+    <div style="font-size:32px;margin-bottom:12px">🔒</div>
+    <h2>Coach Login</h2>
+    <p>Enter your password to unlock full athlete stats</p>
+    <input class="pw-input" type="password" id="pw-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')submitPw()">
+    <div class="pw-error" id="pw-error">Incorrect password. Try again.</div>
+    <button class="pw-btn" onclick="submitPw()">Unlock Coach View</button>
+    <button class="pw-cancel" onclick="closePwModal()">Cancel</button>
+  </div>
 </div>
 
 <script>
 const A=[{"name":"Addison Erro","gender":"F","bw_kg":61.47,"cmj_jh_in":11.5,"cmj_rsi":0.45,"cmj_power_bm":43.6,"iso_force_bm":26.73,"dsi":0.1197,"bucket":"Rabbit","uni_flag":"OK","uni_asym_pct":1.8,"source":"both","best_010":1.94,"best_2030":1.36,"dsi_type":"Standard","sport":"Softball","grade":"freshman","grad_year":2029},{"name":"Alexia Rosas","gender":"F","bw_kg":64.6,"cmj_jh_in":10.0,"cmj_rsi":0.26,"cmj_power_bm":39.3,"iso_force_bm":39.41,"dsi":0.056,"bucket":"Foundation","uni_flag":"OK","uni_asym_pct":16.0,"source":"both","best_010":1.92,"best_2030":1.39,"dsi_type":"Standard","sport":"Softball","grade":"sophomore","grad_year":2028},{"name":"Alexis Hastert","gender":"F","bw_kg":62.18,"cmj_jh_in":10.1,"cmj_rsi":0.7,"cmj_power_bm":43.8,"iso_force_bm":null,"dsi":null,"bucket":"Rabbit","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":null,"best_2030":1.38,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028},{"name":"Anthony Tatar","gender":"M","bw_kg":80.46,"cmj_jh_in":9.5,"cmj_rsi":0.24,"cmj_power_bm":33.4,"iso_force_bm":null,"dsi":null,"bucket":"Foundation","uni_flag":"YELLOW","uni_asym_pct":21.0,"source":"fp_only","best_010":null,"best_2030":null,"dsi_type":"Modified","sport":"Football","grade":"freshman","grad_year":2029},{"name":"Ariannah Turrubiartes","gender":"F","bw_kg":73.19,"cmj_jh_in":6.9,"cmj_rsi":0.6,"cmj_power_bm":41.3,"iso_force_bm":null,"dsi":null,"bucket":"Rabbit","uni_flag":"ORANGE","uni_asym_pct":23.0,"source":"both","best_010":2.197,"best_2030":null,"dsi_type":"Modified","sport":"Softball","grade":"freshman","grad_year":2029},{"name":"Brayden Dent","gender":"M","bw_kg":71.41,"cmj_jh_in":18.2,"cmj_rsi":0.62,"cmj_power_bm":64.0,"iso_force_bm":null,"dsi":null,"bucket":"Rabbit","uni_flag":"OK","uni_asym_pct":18.0,"source":"both","best_010":1.58,"best_2030":1.04,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027,"elite_star":true},{"name":"Callie Angulo","gender":"F","bw_kg":64.03,"cmj_jh_in":14.1,"cmj_rsi":0.67,"cmj_power_bm":50.7,"iso_force_bm":null,"dsi":null,"bucket":"Rabbit","uni_flag":"OK","uni_asym_pct":8.9,"source":"both","best_010":1.81,"best_2030":null,"dsi_type":"Modified","sport":"Volleyball","grade":"junior","grad_year":2027},{"name":"Carter Garcia","gender":"M","bw_kg":68.78,"cmj_jh_in":13.7,"cmj_rsi":0.68,"cmj_power_bm":55.4,"iso_force_bm":44.67,"dsi":0.0576,"bucket":"Foundation","uni_flag":"OK","uni_asym_pct":11.0,"source":"both","best_010":1.64,"best_2030":null,"dsi_type":"Standard","sport":"Football","grade":"freshman","grad_year":2029,"elite_star":true},{"name":"Carter Schmidt","gender":"M","bw_kg":79.11,"cmj_jh_in":14.4,"cmj_rsi":0.66,"cmj_power_bm":44.1,"iso_force_bm":null,"dsi":null,"bucket":"Rabbit","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":1.71,"best_2030":1.38,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027},{"name":"Chloe Jensen","gender":"F","bw_kg":54.91,"cmj_jh_in":8.9,"cmj_rsi":0.33,"cmj_power_bm":45.3,"iso_force_bm":null,"dsi":null,"bucket":"Foundation","uni_flag":"YELLOW","uni_asym_pct":20.0,"source":"fp_only","best_010":null,"best_2030":null,"dsi_type":"Modified","sport":"Softball","grade":"freshman","grad_year":2029},{"name":"Ciera Walters","gender":"F","bw_kg":59.16,"cmj_jh_in":11.9,"cmj_rsi":0.4,"cmj_power_bm":44.8,"iso_force_bm":null,"dsi":null,"bucket":"Diesel","uni_flag":"OK","uni_asym_pct":3.1,"source":"both","best_010":1.69,"best_2030":1.3,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028},{"name":"Edward Patolo","gender":"M","bw_kg":81.84,"cmj_jh_in":14.1,"cmj_rsi":0.46,"cmj_power_bm":46.1,"iso_force_bm":39.59,"dsi":0.0626,"bucket":"Foundation","uni_flag":"RED","uni_asym_pct":32.0,"source":"both","best_010":1.66,"best_2030":1.27,"dsi_type":"Standard","sport":"Rugby/Football","grade":"freshman","grad_year":2029},{"name":"Emma Royko","gender":"F","bw_kg":54.52,"cmj_jh_in":13.4,"cmj_rsi":0.44,"cmj_power_bm":51.1,"iso_force_bm":null,"dsi":null,"bucket":"Diesel","uni_flag":"OK","uni_asym_pct":8.8,"source":"fp_only","best_010":null,"best_2030":null,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028},{"name":"Jack Dellinger","gender":"M","bw_kg":66.26,"cmj_jh_in":14.8,"cmj_rsi":0.84,"cmj_power_bm":62.2,"iso_force_bm":null,"dsi":null,"bucket":"Rabbit","uni_flag":"OK","uni_asym_pct":9.0,"source":"both","best_010":null,"best_2030":1.09,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027,"elite_star":true},{"name":"Justian Richardson","gender":"M","bw_kg":77.16,"cmj_jh_in":20.3,"cmj_rsi":0.82,"cmj_power_bm":66.7,"iso_force_bm":null,"dsi":null,"bucket":"Rabbit","uni_flag":"OK","uni_asym_pct":4.6,"source":"both","best_010":1.35,"best_2030":1.03,"dsi_type":"Modified","sport":"Track & Field","grade":"senior","grad_year":2026,"position":"Triple Jump"},{"name":"Katie Hemerick","gender":"F","bw_kg":67.81,"cmj_jh_in":10.3,"cmj_rsi":0.54,"cmj_power_bm":39.8,"iso_force_bm":null,"dsi":null,"bucket":"Diesel","uni_flag":"OK","uni_asym_pct":11.0,"source":"both","best_010":1.76,"best_2030":1.32,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028},{"name":"Landon Simantel","gender":"M","bw_kg":61.84,"cmj_jh_in":12.8,"cmj_rsi":0.43,"cmj_power_bm":58.8,"iso_force_bm":null,"dsi":null,"bucket":"Diesel","uni_flag":"OK","uni_asym_pct":18.0,"source":"both","best_010":1.603,"best_2030":1.06,"dsi_type":"Modified","sport":"Football","grade":"freshman","grad_year":2029},{"name":"Lola Carson","gender":"F","bw_kg":55.03,"cmj_jh_in":15.0,"cmj_rsi":0.58,"cmj_power_bm":52.1,"iso_force_bm":null,"dsi":0.0645,"bucket":"Foundation","uni_flag":"OK","uni_asym_pct":7.5,"source":"both","best_010":null,"best_2030":1.2,"dsi_type":"Standard","sport":"Softball","grade":"senior","grad_year":2026,"elite_star":true},{"name":"Lola Coker","gender":"F","bw_kg":84.56,"cmj_jh_in":8.9,"cmj_rsi":0.49,"cmj_power_bm":42.9,"iso_force_bm":null,"dsi":null,"bucket":"Diesel","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":1.83,"best_2030":null,"dsi_type":"Modified","sport":"Track & Field","grade":"sophomore","grad_year":2028,"position":"Shot Put"},{"name":"Maddie Waldron","gender":"F","bw_kg":58.37,"cmj_jh_in":12.3,"cmj_rsi":0.44,"cmj_power_bm":47.8,"iso_force_bm":null,"dsi":null,"bucket":"Diesel","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":1.774,"best_2030":null,"dsi_type":"Modified","sport":"Volleyball","grade":"junior","grad_year":2027,"elite_star":true},{"name":"Malia Lyons","gender":"F","bw_kg":58.38,"cmj_jh_in":11.0,"cmj_rsi":0.51,"cmj_power_bm":46.4,"iso_force_bm":null,"dsi":null,"bucket":"Diesel","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":null,"best_2030":null,"dsi_type":"Modified","sport":"Track & Field","grade":"junior","grad_year":2027,"position":"Triple Jump"},{"name":"Marissa Chapman","gender":"F","bw_kg":68.17,"cmj_jh_in":6.1,"cmj_rsi":0.13,"cmj_power_bm":30.5,"iso_force_bm":25.57,"dsi":0.0671,"bucket":"Foundation","uni_flag":"RED","uni_asym_pct":50.0,"source":"both","best_010":2.12,"best_2030":1.7,"dsi_type":"Standard","sport":"Lacrosse","grade":"freshman","grad_year":2029},{"name":"Mimi Botticelli","gender":"F","bw_kg":73.57,"cmj_jh_in":6.6,"cmj_rsi":0.22,"cmj_power_bm":32.4,"iso_force_bm":25.82,"dsi":0.07,"bucket":"Foundation","uni_flag":"OK","uni_asym_pct":11.0,"source":"both","best_010":1.83,"best_2030":1.44,"dsi_type":"Standard","sport":"Softball","grade":"senior","grad_year":2026},{"name":"Nicolas Countreman","gender":"M","bw_kg":116.87,"cmj_jh_in":10.7,"cmj_rsi":0.32,"cmj_power_bm":47.5,"iso_force_bm":null,"dsi":null,"bucket":"Foundation","uni_flag":"OK","uni_asym_pct":16.0,"source":"both","best_010":1.78,"best_2030":1.21,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027},{"name":"Riley McGee","gender":"M","bw_kg":62.85,"cmj_jh_in":11.8,"cmj_rsi":0.42,"cmj_power_bm":46.0,"iso_force_bm":32.07,"dsi":0.0752,"bucket":"Diesel","uni_flag":"RED","uni_asym_pct":47.0,"source":"both","best_010":null,"best_2030":1.23,"dsi_type":"Standard","sport":"Softball","grade":"sophomore","grad_year":2028,"position":"Catcher","elite_star":true},{"name":"Rowan Nishimoto","gender":"M","bw_kg":70.34,"cmj_jh_in":15.5,"cmj_rsi":1.09,"cmj_power_bm":68.1,"iso_force_bm":null,"dsi":null,"bucket":"Elite","uni_flag":null,"uni_asym_pct":null,"source":"both","best_010":1.564,"best_2030":1.1,"dsi_type":"Modified","sport":"Baseball","grade":"8th","grad_year":2030,"position":"Pitcher"},{"name":"Sam McCoy","gender":"M","bw_kg":72.18,"cmj_jh_in":17.0,"cmj_rsi":0.68,"cmj_power_bm":60.1,"iso_force_bm":null,"dsi":null,"bucket":"Rabbit","uni_flag":"OK","uni_asym_pct":2.4,"source":"both","best_010":1.58,"best_2030":1.019,"dsi_type":"Modified","sport":"Baseball","grade":"junior","grad_year":2027,"position":"Pitcher"},{"name":"Violet Todd","gender":"F","bw_kg":67.73,"cmj_jh_in":8.9,"cmj_rsi":0.19,"cmj_power_bm":40.0,"iso_force_bm":null,"dsi":null,"bucket":"Foundation","uni_flag":"RED","uni_asym_pct":26.0,"source":"both","best_010":null,"best_2030":1.43,"dsi_type":"Modified","sport":"Softball","grade":"sophomore","grad_year":2028,"position":"Infielder"},{"name":"Abigail Burris","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.701,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"junior","grad_year":2027,"position":"Setter"},{"name":"Aiden Abelardo","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.7,"best_2030":1.26,"dsi_type":"N/A","sport":"Basketball","position":"Guard","grade":"sophomore","grad_year":2028},{"name":"Aj Gonzales","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.82,"best_2030":1.3,"dsi_type":"N/A","sport":"Softball/Basketball","grade":"junior","grad_year":2027,"position":"2B / Shooting Guard"},{"name":"Allison Keusch","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.79,"best_2030":1.28,"dsi_type":"N/A","sport":"Softball","grade":"junior","grad_year":2027,"position":"Pitcher","elite_star":true},{"name":"Camren Smith","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.7,"best_2030":null,"dsi_type":"N/A","sport":"Baseball","grade":"college","grad_year":2025,"position":"Outfielder"},{"name":"Cohen Mugford","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.63,"best_2030":null,"dsi_type":"N/A","sport":"Football","grade":"freshman","grad_year":2029,"position":"Receiver"},{"name":"Eddie Lucero","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.7,"best_2030":1.22,"dsi_type":"N/A","sport":"Baseball","grade":"junior","grad_year":2027,"position":"Pitcher"},{"name":"Ella Chadwick","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.21,"dsi_type":"N/A","sport":"Softball","grade":"freshman","grad_year":2029,"position":"Outfielder"},{"name":"Gabby Nevarez","gender":"F","bw_kg":70.3,"cmj_jh_in":16.2,"cmj_rsi":null,"cmj_power_bm":52.9,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":true,"uni_asym_pct":13,"source":"sprint_only","best_010":1.69,"best_2030":1.23,"dsi_type":"N/A","sport":"Softball","grade":"senior","grad_year":2026,"position":"Center Field","elite_star":true},{"name":"Kaimana Coleman","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":2.0,"best_2030":null,"dsi_type":"N/A","sport":"Softball","grade":"junior","grad_year":2027,"position":"Catcher","elite_star":true},{"name":"Kassidy King","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.7,"best_2030":1.17,"dsi_type":"N/A","sport":"Softball","grade":"junior","grad_year":2027,"position":"Pitcher","elite_star":true},{"name":"Lillian Ford","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.83,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"junior","grad_year":2027,"position":"Middle Hitter"},{"name":"Lily Barstad","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.3,"dsi_type":"N/A","sport":"Softball","grade":"sophomore","grad_year":2028,"position":"Catcher"},{"name":"Lucas Black","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.72,"best_2030":1.23,"dsi_type":"N/A","sport":"Volleyball","grade":"freshman","grad_year":2029,"position":"Libero"},{"name":"Maizie Smith","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.9,"best_2030":1.36,"dsi_type":"N/A","sport":"Softball","grade":"sophomore","grad_year":2028,"position":"3B"},{"name":"Malia Jones","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.48,"best_2030":1.14,"dsi_type":"N/A","sport":"Track & Field","grade":"junior","grad_year":2027,"position":"Sprinter"},{"name":"Maximus Marchi","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.81,"best_2030":1.26,"dsi_type":"N/A","sport":"Cross Country","grade":"senior","grad_year":2026,"position":"Distance Runner"},{"name":"Mckayla Zuber","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.77,"best_2030":null,"dsi_type":"N/A","sport":"Soccer","grade":"sophomore","grad_year":2028,"position":"Defender"},{"name":"Mya Gonzalez","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.78,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"sophomore","grad_year":2028,"position":"Libero"},{"name":"Peyton Cantu","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.61,"best_2030":1.3,"dsi_type":"N/A","sport":"Lacrosse","grade":"senior","grad_year":2026,"position":"Goalie"},{"name":"Robert Ghazaryan","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.7,"best_2030":null,"dsi_type":"N/A","sport":"Basketball","grade":"freshman","grad_year":2029,"position":"Forward"},{"name":"Ryan Chenoweth","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.56,"best_2030":1.14,"dsi_type":"N/A","sport":"Baseball","grade":"freshman","grad_year":2029,"position":"Pitcher"},{"name":"Serenity Humphrey","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.992,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"junior","grad_year":2027,"position":"Middle Hitter"},{"name":"Skylar Gosselin","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.86,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"junior","grad_year":2027,"position":"Outside Hitter"},{"name":"Sophia Covarrubias","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.86,"best_2030":null,"dsi_type":"N/A","sport":"Volleyball","grade":"freshman","grad_year":2029,"position":"Outside Hitter"},{"name":"Sophia Reilly","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.91,"best_2030":1.37,"dsi_type":"N/A","sport":"Softball/Track & Field","grade":"junior","grad_year":2027,"position":"Outfielder"},{"name":"Travis Perry","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":1.59,"best_2030":1.07,"dsi_type":"N/A","sport":"Baseball","grade":"senior","grad_year":2026,"position":"Catcher"},{"name":"Caden dearth","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.14,"dsi_type":"N/A","sport":"Basketball","grade":"junior","grad_year":2027,"position":"Guard"},{"name":"Connor Bishop","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.17,"dsi_type":"N/A","sport":"Soccer","grade":"senior","grad_year":2026,"position":"Forward"},{"name":"Gavin Seeman","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.18,"dsi_type":"N/A","sport":"Basketball","grade":"freshman","grad_year":2029,"position":"Forward"},{"name":"Hank Brown","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.3,"dsi_type":"N/A","sport":"Baseball","grade":"sophomore","grad_year":2028,"position":"Pitcher"},{"name":"Jack Johnson","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.21,"dsi_type":"N/A","sport":"Wrestling","grade":"freshman","grad_year":2029},{"name":"KJ Mendiola","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.34,"dsi_type":"N/A","sport":"Soccer","grade":"junior","grad_year":2027,"position":"Forward"},{"name":"Kam Labauve","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.21,"dsi_type":"N/A","sport":"Baseball","grade":"freshman","grad_year":2029,"position":"Pitcher"},{"name":"Mia Reynoso","gender":"F","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.26,"dsi_type":"N/A","sport":"Softball","grade":"senior","grad_year":2026,"position":"Infielder"},{"name":"Peter Graves","gender":"M","bw_kg":null,"cmj_jh_in":null,"cmj_rsi":null,"cmj_power_bm":null,"iso_force_bm":null,"dsi":null,"bucket":"N/A","uni_flag":null,"uni_asym_pct":null,"source":"sprint_only","best_010":null,"best_2030":1.21,"dsi_type":"N/A","sport":"Basketball","grade":"freshman","grad_year":2029,"position":"Forward"},{"name":"Kai Fennell","gender":"M","bw_kg":62.21,"cmj_jh_in":11.3,"cmj_rsi":0.41,"cmj_power_bm":45.2,"iso_force_bm":null,"dsi":null,"bucket":"Diesel","uni_flag":"OK","uni_asym_pct":19.0,"source":"both","best_010":1.781,"best_2030":null,"dsi_type":"Modified","sport":"Lacrosse","grade":"freshman","grad_year":2029,"position":"Attacker"}];
 
 // =====================================================
+// AUTH
+// =====================================================
+let coachMode = false;
+const COACH_HASH = "ff136be64f2e3e87c7b4013a70305c0f580e27e42b865def59fdbc0ee3f026cd";
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function openPwModal() {
+  if (coachMode) { logoutCoach(); return; }
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-error').style.display = 'none';
+  document.getElementById('pw-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('pw-input').focus(), 100);
+}
+
+function closePwModal(e) {
+  if (!e || e.target === document.getElementById('pw-overlay'))
+    document.getElementById('pw-overlay').classList.remove('open');
+}
+
+async function submitPw() {
+  const val = document.getElementById('pw-input').value;
+  const h = await sha256(val);
+  if (h === COACH_HASH) {
+    coachMode = true;
+    document.getElementById('pw-overlay').classList.remove('open');
+    document.getElementById('coach-btn').textContent = '🔓 Logout';
+    document.getElementById('coach-btn').classList.add('active');
+    document.getElementById('coach-indicator').style.display = 'flex';
+    document.getElementById('mode-label').textContent = 'Coach view — full stats visible';
+    render();
+  } else {
+    document.getElementById('pw-error').style.display = 'block';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+}
+
+function logoutCoach() {
+  coachMode = false;
+  document.getElementById('coach-btn').textContent = '🔒 Coach Login';
+  document.getElementById('coach-btn').classList.remove('active');
+  document.getElementById('coach-indicator').style.display = 'none';
+  document.getElementById('mode-label').textContent = 'Public view — log in as coach to see full stats';
+  render();
+}
+
+// =====================================================
 // SCORING
 // =====================================================
-const METRICS=[
-  {key:'best_010',   higher:false, label:'0–10 Sprint',   unit:'s',    w:1.5},
-  {key:'best_2030',  higher:false, label:'20–30 Sprint',  unit:'s',    w:1.5},
-  {key:'cmj_jh_in',  higher:true,  label:'CMJ Height',    unit:'"',    w:1.5},
-  {key:'cmj_power_bm',higher:true, label:'CMJ Power',     unit:' W/kg',w:1.0},
-  {key:'cmj_rsi',    higher:true,  label:'RSI',           unit:'',     w:1.0},
-  {key:'iso_force_bm',higher:true, label:'ISO Force',     unit:' N/kg',w:1.0},
+const METRICS = [
+  {key:'best_010',    higher:false, label:'0–10 Sprint',   unit:'s',    w:1.5},
+  {key:'best_2030',   higher:false, label:'20–30 Sprint',  unit:'s',    w:1.5},
+  {key:'cmj_jh_in',   higher:true,  label:'CMJ Height',    unit:'"',    w:1.5},
+  {key:'cmj_power_bm',higher:true,  label:'CMJ Power',     unit:' W/kg',w:1.0},
+  {key:'cmj_rsi',     higher:true,  label:'RSI',           unit:'',     w:1.0},
+  {key:'iso_force_bm',higher:true,  label:'ISO Force',     unit:' N/kg',w:1.0},
 ];
+const AGE_BONUS = {2022:-5,2023:-4,2024:-3,2025:-2,2026:0,2027:4,2028:9,2029:14,2030:20,2031:24,2032:28};
 
-const AGE_BONUS={2025:-3,2026:0,2027:4,2028:9,2029:14,2030:20};
-const GRADE_LABEL={2030:'8th Grade',2029:'Freshman',2028:'Sophomore',2027:'Junior',2026:'Senior',2025:'College'};
-
-function pctOf(val,arr,hi){
-  const v=arr.filter(x=>x!=null&&!isNaN(x));
-  if(!v.length||val==null)return null;
-  const below=v.filter(x=>hi?x<val:x>val).length;
-  return Math.round(below/v.length*100);
+function pctOf(val, arr, hi) {
+  const v = arr.filter(x => x!=null && !isNaN(x));
+  if (!v.length || val==null) return null;
+  return Math.round(v.filter(x => hi ? x<val : x>val).length / v.length * 100);
 }
 
-function computeScores(){
-  const F=A.filter(a=>a.gender==='F'), M=A.filter(a=>a.gender==='M');
-  A.forEach(a=>{
-    const peers=a.gender==='F'?F:M;
-    let ws=0,wt=0,mp={};
-    METRICS.forEach(m=>{
-      if(a[m.key]==null)return;
-      const p=pctOf(a[m.key],peers.map(x=>x[m.key]),m.higher);
-      if(p==null)return;
+function computeScores() {
+  const F = A.filter(a=>a.gender==='F'), M = A.filter(a=>a.gender==='M');
+  A.forEach(a => {
+    const peers = a.gender==='F' ? F : M;
+    let ws=0, wt=0, mp={};
+    METRICS.forEach(m => {
+      if (a[m.key]==null) return;
+      const p = pctOf(a[m.key], peers.map(x=>x[m.key]), m.higher);
+      if (p==null) return;
       mp[m.key]=p; ws+=p*m.w; wt+=m.w;
     });
-    a._pcts=mp;
-    a._raw=wt>0?Math.round(ws/wt):null;
-    const b=AGE_BONUS[a.grad_year]??0;
-    a._age=a._raw!=null?Math.min(99,Math.max(1,a._raw+b)):null;
+    a._pcts = mp;
+    a._raw  = wt>0 ? Math.round(ws/wt) : null;
+    const b = AGE_BONUS[a.grad_year] ?? 0;
+    a._age  = a._raw!=null ? Math.min(99,Math.max(1,a._raw+b)) : null;
   });
 }
 
 // =====================================================
-// TABS
+// HELPERS
 // =====================================================
-function switchTab(t){
-  document.querySelectorAll('.tab').forEach((el,i)=>{
-    const panels=['rankings','compare'];
-    el.classList.toggle('active',panels[i]===t);
-    document.getElementById('tab-'+panels[i]).classList.toggle('active',panels[i]===t);
-  });
-}
-
-// =====================================================
-// FILTERS + RENDER
-// =====================================================
-let sortMode='age';
-
-function setSort(m){
+let sortMode = 'age';
+function setSort(m) {
   sortMode=m;
   document.getElementById('btn-age').classList.toggle('active',m==='age');
   document.getElementById('btn-raw').classList.toggle('active',m==='raw');
   render();
 }
-
-function resetFilters(){
+function resetFilters() {
   ['f-sport','f-gender','f-grade'].forEach(id=>document.getElementById(id).value='');
   render();
 }
-
-function bucketClass(b){
-  return{Elite:'bElite',Rabbit:'bRabbit',Diesel:'bDiesel',Foundation:'bFoundation'}[b]||'bNA';
+function switchTab(t) {
+  ['rankings','compare'].forEach(p=>{
+    document.getElementById('tab-'+p).classList.toggle('active',p===t);
+  });
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['rankings','compare'][i]===t));
 }
+function cs(y) { return y ? `Class of '${String(y).slice(2)}` : ''; }
+function bucketClass(b) { return{Elite:'bElite',Rabbit:'bRabbit',Diesel:'bDiesel',Foundation:'bFoundation'}[b]||'bNA'; }
 
-function classStr(y){return y?`'${String(y).slice(2)}`:''}
-
-function render(){
-  const fs=document.getElementById('f-sport').value;
-  const fg=document.getElementById('f-gender').value;
-  const fy=document.getElementById('f-grade').value;
-
-  let list=A.filter(a=>{
-    if(fs&&a.sport!==fs)return false;
-    if(fg&&a.gender!==fg)return false;
-    if(fy&&String(a.grad_year)!==fy)return false;
+// =====================================================
+// RENDER CARDS
+// =====================================================
+function render() {
+  const fs = document.getElementById('f-sport').value;
+  const fg = document.getElementById('f-gender').value;
+  const fy = document.getElementById('f-grade').value;
+  let list = A.filter(a => {
+    if (fs && a.sport!==fs) return false;
+    if (fg && a.gender!==fg) return false;
+    if (fy && String(a.grad_year)!==fy) return false;
     return true;
   });
+  const sk = sortMode==='age' ? '_age' : '_raw';
+  list.sort((a,b) => (b[sk]??-1)-(a[sk]??-1));
+  document.getElementById('count').textContent = list.length;
 
-  const sk=sortMode==='age'?'_age':'_raw';
-  list.sort((a,b)=>(b[sk]??-1)-(a[sk]??-1));
-  document.getElementById('count').textContent=list.length;
+  const el = document.getElementById('content');
+  if (!list.length) { el.innerHTML='<div class="empty"><h3>No athletes match</h3><p>Try adjusting your filters</p></div>'; return; }
 
-  const el=document.getElementById('content');
-  if(!list.length){
-    el.innerHTML='<div class="empty"><h3>No athletes match</h3><p>Try adjusting your filters</p></div>';
-    return;
-  }
+  el.innerHTML = list.map((a,i) => {
+    const r = i+1;
+    const sc = a[sk];
+    const rankCls = r===1?'gold':r===2?'silver':r===3?'bronze':'';
+    const bkt = a.bucket&&a.bucket!=='N/A' ? `<span class="bucket-badge ${bucketClass(a.bucket)}">${a.bucket}</span>` : '';
 
-  el.innerHTML=list.map((a,i)=>{
-    const r=i+1;
-    const sc=a[sk];
-    const rankCls=r===1?'gold':r===2?'silver':r===3?'bronze':'';
-    const chips=METRICS.filter(m=>a[m.key]!=null).slice(0,3).map(m=>{
+    // Cards: show metric pills only in coach mode
+    const chips = coachMode ? METRICS.filter(m=>a[m.key]!=null).slice(0,3).map(m=>{
       const hot=(a._pcts?.[m.key]??0)>=70;
       return`<span class="metric-pill${hot?' hot':''}">${m.label}: ${a[m.key]}${m.unit}</span>`;
-    }).join('');
-    const bkt=a.bucket&&a.bucket!=='N/A'?`<span class="bucket-badge ${bucketClass(a.bucket)}">${a.bucket}</span>`:'';
-    const scoreHtml=sc!=null
-      ?`<div class="score-main">${sc}</div>
+    }).join('') : '';
+
+    // Public: show composite bar
+    const pubBar = !coachMode && sc!=null ? `<div class="pub-bar-wrap"><div class="pub-bar" style="width:${sc}%"></div></div>` : '';
+
+    const scoreHtml = sc!=null
+      ? `<div class="score-main">${sc}</div>
          <div class="score-label">${sortMode==='age'?'Age-Adj':'Raw'}</div>
-         ${sortMode==='age'&&a._raw!=null?`<div class="score-sub">Raw: ${a._raw}</div>`:''}
-         ${sortMode==='raw'&&a._age!=null?`<div class="score-sub">Adj: ${a._age}</div>`:''}`
-      :`<div class="no-score">Sprint<br>only</div>`;
-    return`<div class="athlete-card${a.elite_star?' elite':''}" onclick="openModal(${A.indexOf(a)})">
+         ${sortMode==='age'&&a._raw!=null&&coachMode?`<div class="score-sub">Raw: ${a._raw}</div>`:''}`
+      : `<div class="no-score">Sprint<br>only</div>`;
+
+    return `<div class="athlete-card${a.elite_star?' elite':''}" onclick="openModal(${A.indexOf(a)})">
       <div class="rank ${rankCls}">${r}</div>
       <div>
         <div class="athlete-name">${a.elite_star?'⭐ ':''}${a.name}</div>
@@ -394,11 +474,10 @@ function render(){
           <span>${a.sport||'—'}</span>
           ${a.position?`<span style="color:#bbb">·</span><span>${a.position}</span>`:''}
           <span style="color:#bbb">·</span>
-          <span class="grade-chip">${GRADE_LABEL[a.grad_year]||''}</span>
-          <span class="class-chip">Class of ${classStr(a.grad_year)}</span>
+          <span class="class-chip">${cs(a.grad_year)}</span>
           ${bkt}
         </div>
-        ${chips?`<div class="metrics-row">${chips}</div>`:''}
+        ${chips ? `<div class="metrics-row">${chips}</div>` : pubBar}
       </div>
       <div class="score-col">${scoreHtml}</div>
     </div>`;
@@ -408,160 +487,142 @@ function render(){
 // =====================================================
 // ATHLETE MODAL
 // =====================================================
-function openModal(idx){
-  const a=A[idx];
-  const inn=document.getElementById('modal-inner');
-  const fpHtml=METRICS.filter(m=>a[m.key]!=null).map(m=>{
-    const p=a._pcts?.[m.key]??null;
-    return`<div class="mrow">
-      <div class="mrow-inner">
+function openModal(idx) {
+  const a = A[idx];
+  const inn = document.getElementById('modal-inner');
+
+  const scoreRow = `<div class="score-row">
+    ${a._age!=null?`<div class="score-box score-box-orange"><div class="big">${a._age}</div><div class="lbl">Age-Adjusted</div></div>`:''}
+    ${a._raw!=null&&coachMode?`<div class="score-box score-box-navy"><div class="big">${a._raw}</div><div class="lbl">Raw Score</div></div>`:''}
+  </div>`;
+
+  let body = '';
+  if (coachMode) {
+    // FULL STATS
+    const fpHtml = METRICS.filter(m=>a[m.key]!=null).map(m=>{
+      const p = a._pcts?.[m.key]??null;
+      return`<div class="mrow"><div class="mrow-inner">
         <div style="display:flex;justify-content:space-between">
           <span class="mname">${m.label}</span>
           <span class="mval">${a[m.key]}${m.unit}</span>
         </div>
         ${p!=null?`<div class="pbar-wrap"><div class="pbar" style="width:${p}%"></div></div>
         <div class="pct-lbl">${p}th percentile vs same gender</div>`:''}
-      </div>
-    </div>`;
-  }).join('');
-
-  const scoreRow=`<div class="score-row">
-    ${a._age!=null?`<div class="score-box score-box-orange"><div class="big">${a._age}</div><div class="lbl">Age-Adjusted</div></div>`:''}
-    ${a._raw!=null?`<div class="score-box score-box-navy"><div class="big">${a._raw}</div><div class="lbl">Raw Score</div></div>`:''}
-  </div>`;
-
-  inn.innerHTML=`<button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-name">${a.elite_star?'⭐ ':''}${a.name}</div>
-    <div class="modal-meta">
-      ${a.sport||''}${a.position?' · '+a.position:''} &nbsp;·&nbsp; 
-      ${GRADE_LABEL[a.grad_year]||''} &nbsp;·&nbsp; 
-      Class of ${classStr(a.grad_year)} &nbsp;·&nbsp;
-      ${a.gender==='F'?'Female':'Male'}
-    </div>
-    ${scoreRow}
-    ${fpHtml?`<div class="msect"><div class="msect-title">Force Plate Metrics</div>${fpHtml}</div>`:''}
-    ${(a.best_010||a.best_2030)?`<div class="msect"><div class="msect-title">Sprint Times</div>
+      </div></div>`;
+    }).join('');
+    const sprintHtml = (a.best_010||a.best_2030)?`<div class="msect"><div class="msect-title">Sprint Times</div>
       ${a.best_010?`<div class="mrow"><span class="mname">0–10 Sprint</span><span class="mval">${a.best_010}s</span></div>`:''}
       ${a.best_2030?`<div class="mrow"><span class="mname">20–30 Sprint</span><span class="mval">${a.best_2030}s</span></div>`:''}
-    </div>`:''}
-    ${a.uni_asym_pct!=null?`<div class="msect"><div class="msect-title">Symmetry</div>
+    </div>`:'';
+    const asymHtml = a.uni_asym_pct!=null?`<div class="msect"><div class="msect-title">Symmetry</div>
       <div class="mrow"><span class="mname">Asymmetry</span>
         <span class="mval" style="color:${a.uni_asym_pct>15?'#c0392b':'#27ae60'}">${a.uni_asym_pct}%${a.uni_asym_pct>15?' ⚠️':' ✓'}</span>
-      </div></div>`:''}
-    ${(a.bucket&&a.bucket!=='N/A')?`<div class="msect"><div class="msect-title">DSI Profile</div>
+      </div></div>`:'';
+    const dsiHtml = (a.bucket&&a.bucket!=='N/A')?`<div class="msect"><div class="msect-title">DSI Profile</div>
       <div class="mrow"><span class="mname">Tier</span><span class="bucket-badge ${bucketClass(a.bucket)}">${a.bucket}</span></div>
       ${a.dsi!=null?`<div class="mrow"><span class="mname">DSI</span><span class="mval">${a.dsi}</span></div>`:''}
-      ${a.bw_kg!=null?`<div class="mrow"><span class="mname">Body Weight</span><span class="mval">${a.bw_kg} kg (${Math.round(a.bw_kg*2.205)} lbs)</span></div>`:''}
-    </div>`:''}`;
+      ${a.bw_kg!=null?`<div class="mrow"><span class="mname">Body Weight</span><span class="mval">${a.bw_kg} kg · ${Math.round(a.bw_kg*2.205)} lbs</span></div>`:''}
+    </div>`:'';
+    body = `${fpHtml?`<div class="msect"><div class="msect-title">Force Plate</div>${fpHtml}</div>`:''}${sprintHtml}${asymHtml}${dsiHtml}`;
+  } else {
+    // PUBLIC: percentile bars, no numbers
+    const bars = METRICS.filter(m=>a[m.key]!=null).map(m=>{
+      const p = a._pcts?.[m.key]??null;
+      if (p==null) return '';
+      return`<div class="pub-metric-row">
+        <div class="pub-metric-label">${m.label}</div>
+        <div class="pub-pbar-wrap"><div class="pub-pbar" style="width:${p}%"></div></div>
+      </div>`;
+    }).filter(Boolean).join('');
+    const lockMsg = `<div class="pub-lock">
+      <div class="pub-lock-icon">🔒</div>
+      <p>Exact stats are visible to coaches only.<br>Are you a coach? <a href="#" onclick="closeThenLogin()" style="color:#F4762A;font-weight:600">Log in here</a>.</p>
+    </div>`;
+    body = bars ? `<div class="msect"><div class="msect-title">Performance Profile</div>${bars}</div>${lockMsg}` : lockMsg;
+  }
+
+  inn.innerHTML = `<button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-name">${a.elite_star?'⭐ ':''}${a.name}</div>
+    <div class="modal-meta">${a.sport||''}${a.position?' · '+a.position:''} &nbsp;·&nbsp; ${cs(a.grad_year)} &nbsp;·&nbsp; ${a.gender==='F'?'Female':'Male'}</div>
+    ${scoreRow}${body}`;
 
   document.getElementById('modal').classList.add('open');
 }
 
-function closeModal(e){
-  if(!e||e.target===document.getElementById('modal'))
+function closeThenLogin() {
+  document.getElementById('modal').classList.remove('open');
+  setTimeout(openPwModal, 200);
+}
+
+function closeModal(e) {
+  if (!e || e.target===document.getElementById('modal'))
     document.getElementById('modal').classList.remove('open');
 }
 
 // =====================================================
-// COMPARE TOOL
+// COMPARE
 // =====================================================
-function runCompare(){
-  const name=document.getElementById('c-name').value||'You';
-  const gender=document.getElementById('c-gender').value;
-  const gradYear=parseInt(document.getElementById('c-grade').value);
-  const v010=parseFloat(document.getElementById('c-010').value)||null;
-  const v2030=parseFloat(document.getElementById('c-2030').value)||null;
-  const vcmj=parseFloat(document.getElementById('c-cmj').value)||null;
-  const vpow=parseFloat(document.getElementById('c-power').value)||null;
-
-  const you={best_010:v010,best_2030:v2030,cmj_jh_in:vcmj,cmj_power_bm:vpow,grad_year:gradYear,gender};
-  const peers=A.filter(a=>a.gender===gender);
-
+function runCompare() {
+  const name  = document.getElementById('c-name').value||'You';
+  const gender= document.getElementById('c-gender').value;
+  const gradYear = parseInt(document.getElementById('c-grade').value);
+  const v010  = parseFloat(document.getElementById('c-010').value)||null;
+  const v2030 = parseFloat(document.getElementById('c-2030').value)||null;
+  const vcmj  = parseFloat(document.getElementById('c-cmj').value)||null;
+  const vpow  = parseFloat(document.getElementById('c-power').value)||null;
+  const you   = {best_010:v010,best_2030:v2030,cmj_jh_in:vcmj,cmj_power_bm:vpow,grad_year:gradYear,gender};
+  const peers = A.filter(a=>a.gender===gender);
+  const cmpM  = [{key:'best_010',higher:false,label:'0–10 Sprint',unit:'s'},{key:'best_2030',higher:false,label:'20–30 Sprint',unit:'s'},{key:'cmj_jh_in',higher:true,label:'CMJ Height',unit:'"'},{key:'cmj_power_bm',higher:true,label:'CMJ Power',unit:' W/kg'}];
   let ws=0,wt=0,results=[];
-  const cmpMetrics=[
-    {key:'best_010',  higher:false,label:'0–10 Sprint',unit:'s'},
-    {key:'best_2030', higher:false,label:'20–30 Sprint',unit:'s'},
-    {key:'cmj_jh_in', higher:true, label:'CMJ Height',unit:'"'},
-    {key:'cmj_power_bm',higher:true,label:'CMJ Power',unit:' W/kg'},
-  ];
-
-  cmpMetrics.forEach(m=>{
+  cmpM.forEach(m=>{
     if(you[m.key]==null)return;
-    const peerVals=peers.map(p=>p[m.key]);
-    const p=pctOf(you[m.key],peerVals,m.higher);
+    const p=pctOf(you[m.key],peers.map(x=>x[m.key]),m.higher);
     if(p==null)return;
     results.push({...m,val:you[m.key],pct:p});
     ws+=p*1.5; wt+=1.5;
   });
-
-  if(!results.length){
-    alert('Enter at least one stat to compare!');
-    return;
-  }
-
+  if(!results.length){alert('Enter at least one stat!');return;}
   const rawScore=Math.round(ws/wt);
   const bonus=AGE_BONUS[gradYear]??0;
   const adjScore=Math.min(99,Math.max(1,rawScore+bonus));
-
-  // Find athletes with similar scores
-  const youFull={...you,_raw:rawScore,_age:adjScore};
   const ranked=[...peers.filter(a=>a._age!=null)].sort((a,b)=>b._age-a._age);
   const yourRank=ranked.filter(a=>a._age>adjScore).length+1;
   const nearby=ranked.filter(a=>Math.abs(a._age-adjScore)<=8).slice(0,4);
-
-  const statHtml=results.map(r=>{
-    const barPct=r.pct;
-    return`<div class="cr-stat">
-      <div class="cr-stat-top">
-        <span class="cr-stat-name">${r.label}</span>
-        <span class="cr-stat-val">${r.val}${r.unit}</span>
-      </div>
-      <div class="cr-bar-wrap">
-        <div class="cr-bar" style="width:${barPct}%"></div>
-        <div class="cr-bar-you" style="left:${barPct}%"></div>
-      </div>
-      <div class="cr-rank">Better than ${barPct}% of ${gender==='F'?'female':'male'} athletes</div>
-    </div>`;
-  }).join('');
-
+  const bonusNote=bonus>0?`+${bonus} pts age bonus applied (${cs(gradYear)})`
+    :bonus<0?`${bonus} pts adjustment (post-HS)`:'No age bonus (Class of \'26)';
+  const statHtml=results.map(r=>`<div class="cr-stat">
+    <div class="cr-stat-top"><span class="cr-stat-name">${r.label}</span><span class="cr-stat-val">${r.val}${r.unit}</span></div>
+    <div class="cr-bar-wrap"><div class="cr-bar" style="width:${r.pct}%"></div></div>
+    <div class="cr-rank">Better than ${r.pct}% of ${gender==='F'?'female':'male'} athletes</div>
+  </div>`).join('');
   const nearbyHtml=nearby.length?`<div class="cr-athletes-near">
     <div class="cr-near-title">Athletes Near Your Level</div>
     ${nearby.map(a=>`<div class="cr-near-card">
-      <div>
-        <div class="cr-near-name">${a.name}</div>
-        <div style="font-size:11px;color:#6a8aa8">${a.sport||''} · ${GRADE_LABEL[a.grad_year]||''}</div>
-      </div>
+      <div><div class="cr-near-name">${a.name}</div>
+      <div style="font-size:11px;color:#6a8aa8">${a.sport||''} · ${cs(a.grad_year)}</div></div>
       <div class="cr-near-score">${a._age}</div>
     </div>`).join('')}
   </div>`:'';
-
-  const ageNote=bonus>0?`Age bonus: +${bonus} pts — you're a ${GRADE_LABEL[gradYear]}, so your score is boosted because you have more development ahead.`
-    :bonus<0?`You've already graduated — compared against current athletes.`
-    :`You're a senior — your score is your raw performance, no age bonus.`;
-
-  const resEl=document.getElementById('compare-results');
-  resEl.innerHTML=`<div class="compare-result-header">${name}'s Results</div>
+  const res=document.getElementById('compare-results');
+  res.innerHTML=`<div class="compare-result-header">${name}'s Results</div>
     <div class="cr-overall">
       <div class="cr-overall-score">${adjScore}</div>
-      <div class="cr-overall-lbl">Age-Adjusted Score (Raw: ${rawScore}) · Rank #${yourRank} of ${ranked.length} ${gender==='F'?'female':'male'} athletes with data</div>
+      <div class="cr-overall-lbl">Rank #${yourRank} of ${ranked.length} ${gender==='F'?'female':'male'} athletes · ${bonusNote}</div>
     </div>
-    ${statHtml}
-    ${nearbyHtml}
-    <div class="cr-grade-note">${ageNote}</div>`;
-  resEl.classList.add('show');
-  resEl.scrollIntoView({behavior:'smooth',block:'start'});
+    ${statHtml}${nearbyHtml}
+    <div class="cr-grade-note">Scores are age-adjusted — younger athletes are ranked higher for equal stats because they have more development ahead.</div>`;
+  res.classList.add('show');
+  res.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 // =====================================================
 // INIT
 // =====================================================
-function init(){
+function init() {
   computeScores();
-  // Populate sport filter
-  const sel=document.getElementById('f-sport');
+  const sel = document.getElementById('f-sport');
   [...new Set(A.map(a=>a.sport).filter(Boolean))].sort().forEach(s=>{
-    const o=document.createElement('option');
-    o.value=s; o.textContent=s; sel.appendChild(o);
+    const o=document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o);
   });
   render();
 }
