@@ -936,6 +936,13 @@ select:focus{border-color:#C9A228}
           <option value="session">Session — Day Program</option>
         </select>
       </div>
+      <div style="grid-column:1/-1">
+        <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Days per Week</label>
+        <div style="display:flex;gap:8px">
+          <button id="tp-days-3" onclick="tpSetDays(3)" style="flex:1;background:#1e3a5f;border:2px solid #C9A228;color:#C9A228;border-radius:8px;padding:8px;font-size:13px;font-weight:700;cursor:pointer">3 Days</button>
+          <button id="tp-days-4" onclick="tpSetDays(4)" style="flex:1;background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px;font-size:13px;font-weight:700;cursor:pointer">4 Days</button>
+        </div>
+      </div>
     </div>
     <div id="tp-phase-row" style="display:none;margin-bottom:10px">
       <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Phase / Block</label>
@@ -969,9 +976,9 @@ select:focus{border-color:#C9A228}
       <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Training Day</label>
       <select id="tp-day" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
         <option value="1">Day 1 — Strength + Power</option>
-        <option value="2">Day 2 — Speed + COD</option>
-        <option value="3">Day 3 — Supplemental + Jump</option>
-        <option value="4">Day 4 — Recovery + T3 Support</option>
+        <option value="2">Day 2 — Speed + Jump</option>
+        <option value="3">Day 3 — Supplemental + Support</option>
+        <option value="4" style="display:none">Day 4 — Recovery + T3 Support</option>
       </select>
     </div>
     <button onclick="tpGen()" style="width:100%;background:#1e3a5f;border:none;color:#C9A228;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:12px">⚡ Generate Program</button>
@@ -1663,10 +1670,36 @@ var TP_DATA = {
 var TP_WORKLOAD_COLORS = { 'Base':'#1e5f3a','Load':'#1e3a8a','Load+':'#7c2d12','Performance':'#8a7a00','Deload':'#2a2a4a' };
 var TP_QUALITY_LABELS = ['Hypertrophy','Strength','Power','Speed-Strength','Peaking'];
 
+var _tpDays = 3;
+function tpSetDays(n) {
+  _tpDays = n;
+  document.getElementById('tp-days-3').style.background = (n===3) ? '#1e3a5f' : '#0a1520';
+  document.getElementById('tp-days-3').style.borderColor = (n===3) ? '#C9A228' : '#2a4a6a';
+  document.getElementById('tp-days-3').style.color = (n===3) ? '#C9A228' : '#6a8aa8';
+  document.getElementById('tp-days-4').style.background = (n===4) ? '#1e3a5f' : '#0a1520';
+  document.getElementById('tp-days-4').style.borderColor = (n===4) ? '#C9A228' : '#2a4a6a';
+  document.getElementById('tp-days-4').style.color = (n===4) ? '#C9A228' : '#6a8aa8';
+  // Update day dropdown options
+  var sel = document.getElementById('tp-day');
+  var cur = sel.value;
+  if (n===3) {
+    sel.options[0].text = 'Day 1 \u2014 Strength + Power';
+    sel.options[1].text = 'Day 2 \u2014 Speed + Jump';
+    if (sel.options[2]) sel.options[2].text = 'Day 3 \u2014 Supplemental + Support';
+    if (sel.options[3]) sel.options[3].style.display = 'none';
+    if (parseInt(cur) > 3) sel.value = '1';
+  } else {
+    sel.options[0].text = 'Day 1 \u2014 Strength + Power';
+    sel.options[1].text = 'Day 2 \u2014 Speed + COD';
+    if (sel.options[2]) sel.options[2].text = 'Day 3 \u2014 Supplemental + Jump';
+    if (sel.options[3]) { sel.options[3].text = 'Day 4 \u2014 Recovery + T3 Support'; sel.options[3].style.display = ''; }
+  }
+}
 function openTeamPlan() {
   if (!masterMode) return;
   document.getElementById('tp-output').innerHTML = '<div style="color:#3a5a7a;font-size:12px;text-align:center;padding:20px">Set your parameters above and tap Generate Program.</div>';
   document.getElementById('tp-print-btn').style.display = 'none';
+  tpSetDays(3);
   tpUpdateSelectors();
   document.getElementById('teamplan-overlay').classList.add('open');
 }
@@ -1841,12 +1874,18 @@ function tpMicroOutput(team,sport,arch,startDate,timeline) {
     html+='<div style="background:#1a2a1a;border:2px dashed #2a5a2a;border-radius:10px;padding:20px;text-align:center"><div style="font-size:18px;margin-bottom:4px">\u2699\ufe0f</div><div style="font-size:14px;font-weight:700;color:#4af08a;margin-bottom:6px">CNS Reset Week</div><div style="font-size:12px;color:#8a9bb0">5\xd75 @ 70-75% \xb7 No Tempo Contrast \xb7 16-Minute Clock</div><div style="font-size:11px;color:#4a6a8a;margin-top:8px">Same movement patterns \u2014 autoregulate based on feel. Quality over intensity.</div></div>';
     document.getElementById('tp-output').innerHTML=html; return;
   }
-  var days=[
+  var days3=[
+    {label:'Day 1 \u2014 Strength + Power', intent:'Main compound work first. T1 strength, T2 contrast, speed/jump block.', t1main:bd.t1, t1rep:bd.t1rep, t2main:bd.t2, t2rep:bd.t2rep, track:'Speed: '+bd.speed, jump:'Jump: '+bd.jump},
+    {label:'Day 2 \u2014 Speed + Jump', intent:'Speed track first, then full jump/plyometric development block.', t1main:'Speed: '+bd.speed, t1rep:'4\u20136 runs', t2main:'Jump: '+bd.jump, t2rep:'4\u20136 reps', track:'Velocity work + fly runs', jump:bd.cod+' (reactive)'},
+    {label:'Day 3 \u2014 Supplemental + Support', intent:'T2/T3 volume + posterior chain + corrective. Low CNS demand.', t1main:bd.t2, t1rep:bd.t2rep+' (+ vol)', t2main:'T3 Giant Set \u2014 '+bd.t3, t2rep:'3 rounds', track:'Transition + decel work', jump:'Single-leg landing mechanics'}
+  ];
+  var days4=[
     {label:'Day 1 \u2014 Strength + Power', intent:'Main compound work first. T1 strength, T2 contrast, speed/jump block.', t1main:bd.t1, t1rep:bd.t1rep, t2main:bd.t2, t2rep:bd.t2rep, track:'Speed: '+bd.speed, jump:'Jump: '+bd.jump},
     {label:'Day 2 \u2014 Speed + COD', intent:'Speed-dominant session. Full acceleration and reactive COD.', t1main:'Speed: '+bd.speed, t1rep:'4\u20136 reps', t2main:'COD: '+bd.cod, t2rep:'3\u20135 reps', track:'Velocity work + fly runs', jump:'Reactive landing drill'},
     {label:'Day 3 \u2014 Supplemental + Jump', intent:'T2 volume accumulation + jump track emphasis.', t1main:bd.t2, t1rep:bd.t2rep+' (+ vol)', t2main:'Jump: '+bd.jump, t2rep:'4\u20136 reps', track:'Transition running', jump:'Deceleration + landing mechanics'},
     {label:'Day 4 \u2014 Recovery + T3 Support', intent:'Low-CNS day. Giant sets, corrective work, anterior core.', t1main:'T3 Giant Set \u2014 '+bd.t3, t1rep:'3 rounds', t2main:'Stability / Corrective', t2rep:'3\xd710\u201312', track:'Walk/jog mechanics', jump:'Decel landing drill'}
   ];
+  var days=(_tpDays===3)?days3:days4;
   for (var d=0;d<days.length;d++) {
     var day=days[d];
     html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-radius:10px;padding:12px;margin-bottom:10px">';
@@ -1873,20 +1912,26 @@ function tpSessionOutput(team,sport,arch,startDate,timeline) {
   var t=null; for (var i=0;i<timeline.length;i++){if(timeline[i].phase===pd.phase&&timeline[i].block===pd.block){t=timeline[i];break;}}
   var wkNum=(t?t.startWeek:1)+Math.min(wkInPhase,t?t.weeks:4)-1;
   var isCNS=(t&&t.cnsReset&&wkInPhase===4);
-  var dayLabels=['Strength + Power','Speed + COD','Supplemental + Jump','Recovery + T3 Support'];
+  var dayLabels=(_tpDays===3)?['Strength + Power','Speed + Jump','Supplemental + Support']:['Strength + Power','Speed + COD','Supplemental + Jump','Recovery + T3 Support'];
   var html='<div style="font-size:16px;font-weight:800;color:#C9A228;margin-bottom:4px">Day '+dayNum+' \u2014 '+dayLabels[dayNum-1]+'</div>';
   html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:12px">'+team+' \xb7 '+bd.label+' \xb7 Week '+wkNum+' ('+tpDateLabel(startDate,wkNum-1)+') \xb7 '+arch+'</div>';
   if (isCNS) {
     html+='<div style="background:#1a2a1a;border:2px dashed #2a5a2a;border-radius:10px;padding:20px;text-align:center"><div style="font-size:14px;font-weight:700;color:#4af08a">\u2699\ufe0f CNS Reset \u2014 5\xd75 @ 70-75% \xb7 No Tempo \xb7 16-Min Clock</div></div>';
     document.getElementById('tp-output').innerHTML=html; return;
   }
-  // Day-based category mappings
-  var dayCats=[
+  // Day-based category mappings — 3-day and 4-day splits
+  var dayCats3=[
+    {cats:['stability','speed_accel','T1_total','T2_lower','jump_bilateral','support'],scheme:'4x4'},
+    {cats:['stability','speed_accel','speed_topend','jump_bilateral','jump_rsi','support'],scheme:'4-6 reps'},
+    {cats:['stability','speed_trans','T2_total','T3_lower','T2_upper','support'],scheme:'3x8-10'}
+  ];
+  var dayCats4=[
     {cats:['stability','speed_accel','T1_total','T2_lower','jump_bilateral','support'],scheme:'4x4'},
     {cats:['stability','speed_accel','speed_topend','jump_rsi','T2_lower','support'],scheme:'4-6 reps'},
     {cats:['stability','jump_bilateral','jump_unilateral','T2_upper','T3_lower','support'],scheme:'3x8-10'},
     {cats:['stability','speed_trans','T3_total','T3_lower','T3_upper','support'],scheme:'3x10-12'}
   ];
+  var dayCats=(_tpDays===3)?dayCats3:dayCats4;
   var dc=dayCats[dayNum-1]||dayCats[0];
   var STARS=[
     {key:'S',label:'S \u2014 Stability / Movement Prep',color:'#4af08a',cats:['stability']},
