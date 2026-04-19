@@ -744,7 +744,7 @@ function computeScores() {
       const velPcts    = ['cmj_rsi','cmj_jh_in','best_010','best_2030'].map(k=>mp[k]).filter(v=>v!=null);
       const forceScore = forcePcts.length  ? Math.max(...forcePcts)  : null;
       const velScore   = velPcts.length    ? Math.max(...velPcts)    : null;
-      if (forceScore != null && velScore != null && forceScore >= 75 && velScore >= 75) {
+      if (forceScore != null && velScore != null && forceScore >= 85 && velScore >= 85) {
         a.bucket = 'Apex';
       }
     }
