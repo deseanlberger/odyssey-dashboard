@@ -65,10 +65,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .rec-card-title{font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
 .rec-card-val{font-size:18px;font-weight:900;color:#C9A228}
 .rec-card-sub{font-size:11px;color:#6a8aa8;margin-top:2px}
-.split-visual{display:flex;gap:1px;margin-top:14px;border-radius:8px;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.split-seg{flex:0 0 auto;min-width:70px;padding:12px 8px;text-align:center}
-.seg-label{font-size:9px;text-transform:uppercase;letter-spacing:.4px;color:rgba(255,255,255,.6);margin-bottom:4px}
-.seg-val{font-size:15px;font-weight:900;color:#fff}
+.forty-splits-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px}
+.split-seg{border-radius:8px;padding:10px 8px;text-align:center}
+.seg-label{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:rgba(255,255,255,.65);margin-bottom:3px;white-space:nowrap}
+.seg-val{font-size:18px;font-weight:900;color:#fff}
+.seg-est{font-size:9px;color:rgba(255,255,255,.45);margin-top:2px}
 .s0{background:#1a2e4a}
 .s1{background:#1e3352}
 .s2{background:#1a3d2e}
@@ -472,18 +473,18 @@ select:focus{border-color:#C9A228}
 <div class="calc-section">
   <div class="calc-card">
     <div class="calc-title">🏃 40-Yard Dash Estimator</div>
-    <div class="calc-sub">Enter your Hawkin Dynamics sprint splits (in meters) to project a full 40-yard dash time. Only 0–10m is required; add more splits for higher accuracy.</div>
+    <div class="calc-sub">Enter your 10-yard split times. Only the first split is required — add more for a sharper estimate.</div>
     <div class="calc-grid">
       <div class="calc-field">
-        <label>0–10m Split (seconds) *</label>
-        <input type="number" id="f-010" placeholder="e.g. 1.65" min="1.0" max="3.0" step="0.001">
+        <label>0–10 yd Split (sec) *</label>
+        <input type="number" id="f-010" placeholder="e.g. 1.65" min="1.0" max="3.5" step="0.001">
       </div>
       <div class="calc-field">
-        <label>10–20m Fly (seconds)</label>
-        <input type="number" id="f-1020" placeholder="e.g. 1.12" min="0.7" max="2.0" step="0.001">
+        <label>10–20 yd Fly (sec)</label>
+        <input type="number" id="f-1020" placeholder="e.g. 1.10" min="0.7" max="2.0" step="0.001">
       </div>
       <div class="calc-field">
-        <label>20–30m Fly (seconds)</label>
+        <label>20–30 yd Fly (sec)</label>
         <input type="number" id="f-2030" placeholder="e.g. 1.05" min="0.6" max="1.8" step="0.001">
       </div>
       <div class="calc-field">
@@ -498,9 +499,9 @@ select:focus{border-color:#C9A228}
     <div class="calc-result" id="forty-result">
       <div class="forty-total">
         <div class="big" id="forty-time"></div>
-        <div class="lbl">Estimated 40-Yard Dash</div>
+        <div class="lbl">Projected 40-Yard Dash</div>
       </div>
-      <div class="split-visual" id="forty-splits"></div>
+      <div class="forty-splits-grid" id="forty-splits"></div>
       <div class="bench-title">How You Compare — NFL Combine Benchmarks</div>
       <div id="forty-benchmarks"></div>
       <div class="calc-note" id="forty-note"></div>
@@ -986,50 +987,43 @@ function calcForty() {
   const s1020 = parseFloat(document.getElementById('f-1020').value);
   const s2030 = parseFloat(document.getElementById('f-2030').value);
   const gender = document.getElementById('f-gender').value;
-  if (!s010) { alert('Enter at least the 0–10m split.'); return; }
-  // 40 yards = 36.576m
-  // We have 0-10m, 10-20m, 20-30m from Hawkin (meters)
-  // Remaining: 30-36.576m = 6.576m, extrapolate from last known 10m segment
+  if (!s010) { alert('Enter your 0–10 yard split.'); return; }
+  // All splits in yards (10-yard increments)
   let t010 = s010;
-  let t1020, t2030, t3037;
-  // Estimate missing splits: acceleration phase, 10m splits trend toward peak velocity
+  let t1020, t2030, t3040;
   if (s1020) {
     t1020 = s1020;
   } else {
-    // If only 0-10 given, estimate 10-20 as 10-20% faster (acceleration)
-    t1020 = s010 * 0.85;
+    t1020 = s010 * 0.84; // 10-20 yd is ~16% faster than 0-10 (acceleration)
   }
   if (s2030) {
     t2030 = s2030;
   } else {
-    // Estimate 20-30 as ~5% faster than 10-20 (approaching top speed)
-    t2030 = t1020 * 0.95;
+    t2030 = t1020 * 0.95; // 20-30 yd approaching top speed
   }
-  // 30-36.576m: extrapolate at same pace as 20-30m (near top speed)
-  // pace = 10m / t2030 (m/s), remaining = 6.576m
-  const topSpeedPace = 10 / t2030; // m/s
-  t3037 = 6.576 / topSpeedPace;
-  const total = t010 + t1020 + t2030 + t3037;
+  // 30-40 yd: same pace as 20-30 yd (near top speed, 10 full yards)
+  t3040 = t2030;
+  const total = t010 + t1020 + t2030 + t3040;
   document.getElementById('forty-time').textContent = total.toFixed(2) + 's';
-  // Split visual
-  const splits = document.getElementById('forty-splits');
+  // Split grid (2x2)
   const segs = [
-    {label:'🚀 0-10m', val:t010,  cls:'s0', note:s010?'':'est'},
-    {label:'⚡ 10-20m',val:t1020, cls:'s1', note:s1020?'':'est'},
-    {label:'💨 20-30m',val:t2030, cls:'s2', note:s2030?'':'est'},
-    {label:'🏁 30-37m',val:t3037, cls:'s3', note:'est'},
+    {label:'🚀 0–10 yd', val:t010,  cls:'s0', est:!s010},
+    {label:'⚡ 10–20 yd',val:t1020, cls:'s1', est:!s1020},
+    {label:'💨 20–30 yd',val:t2030, cls:'s2', est:!s2030},
+    {label:'🏁 30–40 yd',val:t3040, cls:'s3', est:true},
   ];
-  splits.innerHTML = segs.map(s =>
+  document.getElementById('forty-splits').innerHTML = segs.map(s =>
     '<div class="split-seg ' + s.cls + '">' +
-    '<div class="seg-label">' + s.label + (s.note?' ('+s.note+')':'') + '</div>' +
+    '<div class="seg-label">' + s.label + '</div>' +
     '<div class="seg-val">' + s.val.toFixed(3) + 's</div>' +
+    (s.est ? '<div class="seg-est">projected</div>' : '') +
     '</div>'
   ).join('');
   // Benchmarks
   const benches = gender === 'M' ? FORTY_BENCHMARKS_M : FORTY_BENCHMARKS_F;
   let benchHtml = '';
   let ranked = false;
-  benches.forEach((b, i) => {
+  benches.forEach(b => {
     const isYou = !ranked && total <= b.val;
     if (isYou) ranked = true;
     benchHtml += '<div class="bench-row">' +
@@ -1038,21 +1032,16 @@ function calcForty() {
       '</div>';
   });
   if (!ranked) {
-    benchHtml += '<div class="bench-row"><span class="bench-label">Your Time</span>' +
-      '<span class="bench-you">' + total.toFixed(2) + 's — Developing</span></div>';
+    benchHtml += '<div class="bench-row"><span class="bench-label">Your time</span>' +
+      '<span class="bench-you">' + total.toFixed(2) + 's</span></div>';
   }
   document.getElementById('forty-benchmarks').innerHTML = benchHtml;
-  // Note
   const missing = [];
-  if (!s1020) missing.push('10–20m');
-  if (!s2030) missing.push('20–30m');
-  const noteEl = document.getElementById('forty-note');
-  if (missing.length) {
-    noteEl.textContent = 'Note: ' + missing.join(' and ') + ' split' + (missing.length>1?'s were':'was') +
-      ' estimated from the previous segment. Add those splits for a more accurate projection.';
-  } else {
-    noteEl.textContent = '30–36.576m was extrapolated at the same pace as your 20–30m split (near-top speed). This is a projection, not a FAT-timed result.';
-  }
+  if (!s1020) missing.push('10–20 yd');
+  if (!s2030) missing.push('20–30 yd');
+  document.getElementById('forty-note').textContent = missing.length
+    ? 'Note: ' + missing.join(' & ') + ' estimated from previous split. Enter those splits for better accuracy.'
+    : '30–40 yd projected at your 20–30 yd pace (near top speed). This is an estimate, not an FAT result.';
   document.getElementById('forty-result').classList.add('show');
 }
 
