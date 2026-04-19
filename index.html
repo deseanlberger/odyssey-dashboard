@@ -66,7 +66,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .calc-field input,.calc-field select{width:100%;background:#0d1b2a;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 12px;font-size:14px;outline:none;transition:border-color .15s}
 .calc-field input:focus,.calc-field select:focus{border-color:#C9A228}
 .calc-btn{background:#C9A228;color:#fff;border:none;border-radius:8px;padding:11px 24px;font-size:14px;font-weight:700;cursor:pointer;transition:background .15s;width:100%}
-.calc-btn:hover{background:#d9651f}
+.calc-btn:hover{background:#b8911f}
 .calc-result{margin-top:18px;display:none}
 .calc-result.show{display:block}
 .result-headline{font-size:22px;font-weight:900;color:#fff;margin-bottom:4px}
@@ -107,6 +107,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .bench-val{color:#e6edf3;font-weight:700}
 .bench-you{color:#C9A228;font-weight:800}
 .calc-note{font-size:11px;color:#6a8aa8;margin-top:10px;line-height:1.5}
+.acc-guide{background:#0d1b2a;border:1px solid #1e3a5f;border-radius:10px;padding:12px 14px;margin-bottom:16px}
+.acc-guide-title{font-size:9px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.7px;font-weight:700;margin-bottom:8px}
+.acc-guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
+.acc-guide-row{display:flex;align-items:center;gap:6px;padding:3px 0}
+.acc-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.acc-dot.acc-high{background:#4caf50}
+.acc-dot.acc-mid{background:#ffc107}
+.acc-dot.acc-low{background:#ef5350}
+.acc-guide-label{font-size:11px;color:#8a9bb0;flex:1}
+.acc-guide-pct{font-size:11px;font-weight:700}
 
 
 .filters{position:sticky;top:0;z-index:100;background:#112233;padding:12px 20px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid #1e3a5f}
@@ -496,7 +506,20 @@ select:focus{border-color:#C9A228}
 <div class="calc-section">
   <div class="calc-card">
     <div class="calc-title">🏃 Sprint Time Estimator</div>
-    <div class="calc-sub">Enter any splits you have — all fields optional, any combo works. More splits = better accuracy. Estimates 40-yard (football), 60-yard (baseball), and 20-yard (softball) times.</div>
+    <div class="calc-sub">Enter any splits you have. All fields optional — more splits = better accuracy.</div>
+
+    <div class="acc-guide">
+      <div class="acc-guide-title">ACCURACY BY INPUT</div>
+      <div class="acc-guide-grid">
+        <div class="acc-guide-row"><span class="acc-dot acc-high"></span><span class="acc-guide-label">All 3 splits</span><span class="acc-guide-pct acc-high">~92%</span></div>
+        <div class="acc-guide-row"><span class="acc-dot acc-mid"></span><span class="acc-guide-label">0–10 + 20–30</span><span class="acc-guide-pct acc-mid">~82%</span></div>
+        <div class="acc-guide-row"><span class="acc-dot acc-mid"></span><span class="acc-guide-label">Any 2 adjacent</span><span class="acc-guide-pct acc-mid">~80%</span></div>
+        <div class="acc-guide-row"><span class="acc-dot acc-mid"></span><span class="acc-guide-label">0–10 only</span><span class="acc-guide-pct acc-mid">~72%</span></div>
+        <div class="acc-guide-row"><span class="acc-dot acc-low"></span><span class="acc-guide-label">10–20 only</span><span class="acc-guide-pct acc-low">~68%</span></div>
+        <div class="acc-guide-row"><span class="acc-dot acc-low"></span><span class="acc-guide-label">20–30 only</span><span class="acc-guide-pct acc-low">~65%</span></div>
+      </div>
+    </div>
+
     <div class="calc-grid">
       <div class="calc-field">
         <label>0–10 yd Split (sec)</label>
@@ -512,7 +535,7 @@ select:focus{border-color:#C9A228}
       </div>
       <div class="calc-field">
         <label>Gender</label>
-        <select id="f-gender">
+        <select id="sprint-gender">
           <option value="M">Male</option>
           <option value="F">Female</option>
         </select>
@@ -1008,7 +1031,7 @@ function calcForty() {
   const s010  = parseFloat(document.getElementById('f-010').value) || null;
   const s1020 = parseFloat(document.getElementById('f-1020').value) || null;
   const s2030 = parseFloat(document.getElementById('f-2030').value) || null;
-  const gender = document.getElementById('f-gender').value;
+  const gender = document.getElementById('sprint-gender').value;
   if (!s010 && !s1020 && !s2030) { alert('Enter at least one split time.'); return; }
 
   // ── Estimate all splits from whatever we have ──
@@ -1025,11 +1048,11 @@ function calcForty() {
   if (s2030) {
     t2030 = s2030;
     t1020 = s1020 || (t2030 * 1.07);
-    t010  = s010  || (t1020 * 1.72);
+    t010  = s010  || (t1020 * 1.35);
   } else if (s1020) {
     t1020 = s1020;
     t2030 = t1020 * 0.935;
-    t010  = s010  || (t1020 * 1.72);
+    t010  = s010  || (t1020 * 1.35);
   } else {
     t010  = s010;
     t1020 = t010 * 0.84;
@@ -1051,7 +1074,7 @@ function calcForty() {
   } else if (knownCount === 2) {
     acc = 80; accCls = 'acc-mid'; accNote = 'Good estimate';
   } else if (s2030) {
-    acc = 62; accCls = 'acc-low'; accNote = 'Rough estimate — 0-10 varies by athlete';
+    acc = 65; accCls = 'acc-low'; accNote = 'Rough estimate — dead start varies by athlete';
   } else if (s1020) {
     acc = 68; accCls = 'acc-low'; accNote = 'Rough estimate';
   } else {
