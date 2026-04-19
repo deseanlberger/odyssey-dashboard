@@ -314,10 +314,10 @@ select:focus{border-color:#C9A228}
 .pw-cancel:hover{color:#fff}
 .pw-error{color:#e74c3c;font-size:13px;margin-top:-6px;margin-bottom:10px;display:none}
 
-/* PROGRAM BUILDER — full screen override */
-#pb-overlay{display:none!important;background:#0D1B2A!important;padding:0!important;align-items:stretch!important;justify-content:stretch!important}
+/* PROGRAM BUILDER + TEAM PLAN — full screen override */
+#pb-overlay,#teamplan-overlay{background:#0D1B2A!important;padding:0!important;align-items:stretch!important;justify-content:stretch!important}
 #pb-overlay.open{display:block!important;overflow-y:auto}
-#pb-overlay>.pb-fullscreen{min-height:100vh;display:flex;flex-direction:column}
+#pb-overlay>.pb-fullscreen,#teamplan-overlay>.pb-fullscreen{min-height:100vh;display:flex;flex-direction:column}
 
 /* COMPARE */
 .compare-section{max-width:860px;margin:0 auto;padding:20px}
@@ -980,16 +980,21 @@ select:focus{border-color:#C9A228}
 </div>
 
 <!-- TEAM PROGRAM BUILDER MODAL -->
-<div class="pw-overlay" id="teamplan-overlay" onclick="if(event.target===this)closeTeamPlan()">
-  <div class="pw-modal" style="max-width:660px;max-height:90vh;overflow-y:auto;text-align:left;padding:20px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <div style="font-size:16px;font-weight:800">🗂️ Team Program Builder</div>
-      <button onclick="closeTeamPlan()" style="background:none;border:none;color:#6a8aa8;font-size:20px;cursor:pointer">✕</button>
+<div class="pw-overlay" id="teamplan-overlay" style="display:none!important;background:#0D1B2A!important;padding:0!important">
+  <div class="pb-fullscreen">
+    <!-- Sticky Header -->
+    <div style="position:sticky;top:0;background:#0D1B2A;z-index:20;padding:13px 16px;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;justify-content:space-between">
+      <button onclick="closeTeamPlan()" style="background:none;border:none;color:#6a8aa8;font-size:15px;font-weight:700;cursor:pointer;padding:4px 0;min-width:52px;text-align:left">‹ Back</button>
+      <div style="font-size:15px;font-weight:800;color:#fff;text-align:center">🗂️ Team Builder</div>
+      <div style="min-width:52px;text-align:right">
+        <button id="tp-print-btn" onclick="tpPrint()" style="display:none;background:none;border:none;color:#C9A228;font-size:22px;cursor:pointer;padding:0">🖨️</button>
+      </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+    <div style="padding:16px 16px 40px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
       <div>
         <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Team Name</label>
-        <input id="tp-team" type="text" placeholder="Odyssey Speed" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none;box-sizing:border-box">
+        <input id="tp-team" type="text" placeholder="Odyssey Speed" style="width:100%;background:#112233;color:#fff;border:1px solid #2a4a6a;border-radius:10px;padding:10px 12px;font-size:14px;outline:none;box-sizing:border-box">
       </div>
       <div>
         <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Sport</label>
@@ -1066,10 +1071,10 @@ select:focus{border-color:#C9A228}
         <option value="2">Block 3 — Velocity (60–75%)</option>
       </select>
     </div>
-    <button onclick="tpGen()" style="width:100%;background:#1e3a5f;border:none;color:#C9A228;border-radius:8px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:12px">⚡ Generate Program</button>
+    <button onclick="tpGen()" style="width:100%;background:#C9A228;border:none;color:#0D1B2A;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:20px;box-sizing:border-box">⚡ Generate Program</button>
     <div id="tp-output"><div style="color:#3a5a7a;font-size:12px;text-align:center;padding:20px">Select output level above and tap Generate Program.</div></div>
-    <button id="tp-print-btn" onclick="tpPrint()" style="display:none;width:100%;background:#0a1520;border:1px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px;font-size:12px;cursor:pointer;margin-top:10px">🖨️ Print Program</button>
-  </div>
+    </div><!-- /scrollable content -->
+  </div><!-- /pb-fullscreen -->
 </div>
 
 <!-- COACH LOGIN OVERLAY -->
@@ -2742,9 +2747,16 @@ function openTeamPlan(){
   document.getElementById('tp-print-btn').style.display='none';
   tpSetLevel('macro');
   tpUpdateSelectors();
-  document.getElementById('teamplan-overlay').classList.add('open');
+  var ov=document.getElementById('teamplan-overlay');
+  ov.classList.add('open');
+  ov.style.display='block';
+  ov.scrollTop=0;
 }
-function closeTeamPlan(){document.getElementById('teamplan-overlay').classList.remove('open');}
+function closeTeamPlan(){
+  var ov=document.getElementById('teamplan-overlay');
+  ov.classList.remove('open');
+  ov.style.display='none';
+}
 
 function tpUpdateSelectors(){
   document.getElementById('tp-phase-row').style.display='none';
