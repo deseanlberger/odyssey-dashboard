@@ -777,16 +777,25 @@ select:focus{border-color:#C9A228}
         <div>
           <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Tier</label>
           <select id="clib-tier" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:6px 8px;font-size:11px">
-            <option value="T1_total">T1 Total Body</option>
-            <option value="T2_total">T2 Total Body</option>
-            <option value="L1_lower">L1 Lower</option>
-            <option value="L2_lower">L2 Lower</option>
-            <option value="L3_lower">L3 Lower</option>
-            <option value="L4_lower">L4 Lower</option>
-            <option value="L5_lower">L5 Lower</option>
-            <option value="U1_upper">U1 Upper</option>
-            <option value="U2_upper">U2 Upper</option>
-            <option value="speed_accel">Speed — Accel</option>
+            <option value="T1_total">T1 Total Body — Olympic Primary</option>
+            <option value="T2_total">T2 Total Body — Hang Variations</option>
+            <option value="T3_total">T3 Total Body — Mid-Thigh / DB Power</option>
+            <option value="T4_total">T4 Total Body — KB / Med Ball Explosive</option>
+            <option value="T5_total">T5 Total Body — Carries / Reactive</option>
+            <option value="L1_lower">L1 Lower — Primary Squat</option>
+            <option value="L2_lower">L2 Lower — Hip Hinge</option>
+            <option value="L3_lower">L3 Lower — Unilateral</option>
+            <option value="L4_lower">L4 Lower — Hamstring</option>
+            <option value="L5_lower">L5 Lower — Glute / Calf</option>
+            <option value="U1_upper">U1 Upper — Primary Push</option>
+            <option value="U2_upper">U2 Upper — Pull / Row</option>
+            <option value="U3_upper">U3 Upper — Shoulder Accessory</option>
+            <option value="U4_upper">U4 Upper — Bodyweight Push/Pull</option>
+            <option value="U5_upper">U5 Upper — Core / Anti-Flexion</option>
+            <option value="jump_bilateral">Jumps — Bilateral</option>
+            <option value="jump_unilateral">Jumps — Unilateral</option>
+            <option value="jump_rsi">Jumps — RSI / Reactive</option>
+            <option value="speed_accel">Speed — Acceleration</option>
             <option value="speed_topend">Speed — Top End</option>
             <option value="speed_trans">Speed — Transition</option>
             <option value="stability">Stability</option>
@@ -1165,8 +1174,11 @@ const COACHES = [
 // ODYSSEY EXERCISE LIBRARY (OLIB + Custom)
 // ═══════════════════════════════════════════════════════════════
 const OLIB = {
-  T1_total: ['Power Clean','Hang Clean','Trap Bar Deadlift','Power Snatch','Clean Pull','Hang Snatch'],
-  T2_total: ['Hang Clean Below Knee','Clean High Pull','Snatch High Pull','Trap Bar Jump Squat'],
+  T1_total: ['Power Clean','Hang Clean','Power Snatch','Clean Pull','Hang Snatch','Trap Bar Deadlift'],
+  T2_total: ['Hang Clean Below Knee','Clean High Pull','Snatch High Pull','Trap Bar Jump Squat','Hang Power Clean','Hang Power Snatch'],
+  T3_total: ['Mid-Thigh Clean Pull','High-Hang Power Clean','DB Power Clean','High-Hang Snatch Pull','Dumbbell Snatch','Clean Pull from Blocks'],
+  T4_total: ['KB Swing','KB Clean','Barbell Hip Thrust Jump','Med Ball Rotational Throw','Banded Jump Squat','KB Sumo High Pull'],
+  T5_total: ['Med Ball Chest Pass','Med Ball Overhead Slam','Loaded Carry — Farmer Walk','Suitcase Carry','Bear Hug Carry','Sandbag Clean'],
   L1_lower: ['Back Squat','Front Squat','Safety Bar Squat','Barbell Box Squat'],
   L2_lower: ['Romanian Deadlift','Trap Bar Deadlift','Hex Bar RDL','Sumo Deadlift'],
   L3_lower: ['Bulgarian Split Squat','B-Stance RDL','Rear-Foot Elevated Split Squat','Step-Up'],
@@ -1177,9 +1189,12 @@ const OLIB = {
   U3_upper: ['DB Lateral Raise','Face Pull','Band Pull-Apart','Cable External Rotation'],
   U4_upper: ['Push-Up','Ring Row','Chin-Up','Pull-Up'],
   U5_upper: ['Plank','Side Plank','Dead Bug','Pallof Press'],
+  jump_bilateral: ['CMJ — max height','Broad Jump — max horizontal','Box Jump — controlled landing','Seated Box Jump (no SSC)','Hurdle Jump × 3','Depth Drop to Jump — stick landing','Triple Broad Jump'],
+  jump_unilateral: ['Single-Leg Broad Jump','Single-Leg Box Jump','Single-Leg Hurdle Jump','B-Stance CMJ','Single-Leg Depth Drop → Stick','Lateral Single-Leg Bound','Alt Bounding × 20yd'],
+  jump_rsi: ['Drop Jump — GCT < 0.25s','Continuous Hurdle Hops × 8','Ankle Pogo — rapid rebound 3×20s','Reactive Vertical Jump × 5','Repeated Broad Jump × 5','Double-Leg Reactive Bound','Rate Coding — Double Leg 3×10s'],
   speed_accel: ['3-Point Start × 20yd','A-Skip × 20yd','Wall Drive × 10/side','Heavy Sled Sprint 40% BW × 20yd','Block Start × 10yd','Wicket Drill × 20yd (tight spacing)'],
-  speed_topend: ['Flying 10yd Sprint','A-Run × 30yd','B-Skip × 30yd','Wicket Run × 30yd (wide spacing)','Sled March → Release','Stride-Out × 30yd @ 90%'],
-  speed_trans: ['Sled Release Fly 10','30yd Build-Up Sprint','French Contrast: Sled → Sprint','Acceleration to Max-V 30yd','Resisted → Unresisted Sprint'],
+  speed_topend: ['Flying 10yd Sprint','A-Run × 30yd','B-Skip × 30yd','Wicket Run × 30yd (wide spacing)','Sled March \u2192 Release','Stride-Out × 30yd @ 90%'],
+  speed_trans: ['Sled Release Fly 10','30yd Build-Up Sprint','French Contrast: Sled \u2192 Sprint','Acceleration to Max-V 30yd','Resisted \u2192 Unresisted Sprint'],
   stability: ['Ankle Pogo 3×20s','Single-Leg Balance Reach × 10/side','Hip Flexor March × 10yd','T-Spine Rotation × 8/side','Copenhagen Adductor Hold 3×10s','Dead Bug 3×8','Pallof Press 3×10/side'],
   support: ['Hip Thrust 3×12','Copenhagen Adductor 3×10/side','Nordic Curl 3×5','GHR 3×8','Calf Raise w/ pause 3×12','Single-Leg RDL 3×8/side','Band Clamshell 2×15/side']
 };
