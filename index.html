@@ -352,6 +352,10 @@ select:focus{border-color:#C9A228}
 <!-- RANKINGS TAB -->
 <div id="tab-rankings" class="tab-panel active">
 <div class="filters">
+  <div class="filter-group" style="flex:1;min-width:140px">
+    <span class="filter-label">Search</span>
+    <input type="text" id="f-search" placeholder="First or last name…" oninput="render()" style="background:#0d1b2a;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:6px 10px;font-size:13px;outline:none;width:100%;transition:border-color .15s" onfocus="this.style.borderColor='#C9A228'" onblur="this.style.borderColor='#2a4a6a'">
+  </div>
   <div class="filter-group">
     <span class="filter-label">Sport</span>
     <select id="f-sport" onchange="render()"><option value="">All Sports</option></select>
@@ -759,6 +763,7 @@ function setSort(m) {
 }
 function resetFilters() {
   ['f-sport','f-gender','f-grade'].forEach(id=>document.getElementById(id).value='');
+  const fs = document.getElementById('f-search'); if(fs) fs.value='';
   render();
 }
 function switchTab(t) {
@@ -781,10 +786,12 @@ function render() {
   const fs = document.getElementById('f-sport').value;
   const fg = document.getElementById('f-gender').value;
   const fy = document.getElementById('f-grade').value;
+  const fq = (document.getElementById('f-search')?.value || '').toLowerCase().trim();
   let list = A.filter(a => {
     if (fs && a.sport!==fs) return false;
     if (fg && a.gender!==fg) return false;
     if (fy && String(a.grad_year)!==fy) return false;
+    if (fq && !a.name.toLowerCase().includes(fq)) return false;
     return true;
   });
   const sk = sortMode==='age' ? '_age' : '_raw';
