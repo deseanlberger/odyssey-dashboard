@@ -1834,36 +1834,39 @@ function tpUpdateSportInfo() {
   infoDiv.innerHTML=html;
 }
 var _tpLevel = 'macro';
+var _tpPhaseIdx = 0;
+var _tpBlockIdx = 0;
+var _tpWeekIdx  = 0;
 
 function tpSetLevel(level) {
   _tpLevel = level;
   ['macro','meso','micro','session'].forEach(function(b) {
     var el = document.getElementById('tp-lvl-'+b);
     if (!el) return;
-    el.style.background   = (b===level) ? '#1e3a5f' : '#0a1520';
-    el.style.borderColor  = (b===level) ? '#C9A228' : '#2a4a6a';
-    el.style.color        = (b===level) ? '#C9A228' : '#6a8aa8';
+    el.style.background  = (b===level)?'#1e3a5f':'#0a1520';
+    el.style.borderColor = (b===level)?'#C9A228':'#2a4a6a';
+    el.style.color       = (b===level)?'#C9A228':'#6a8aa8';
   });
   tpUpdateSelectors();
 }
 
 function tpUpdateBlockOptions() {
-  var phaseIdx = parseInt(document.getElementById('tp-phase').value) || 0;
   var bSel = document.getElementById('tp-block');
-  var phase = TP_PHASES[phaseIdx] || TP_PHASES[0];
+  if (!bSel) return;
+  var phase = TP_PHASES[_tpPhaseIdx] || TP_PHASES[0];
   bSel.innerHTML = '';
-  phase.blocks.forEach(function(b, i) {
+  phase.blocks.forEach(function(b,i) {
     var opt = document.createElement('option');
     opt.value = String(i);
-    opt.text = 'Block '+(i+1)+' \u2014 '+b.label+' ('+b.intensity+')';
+    opt.text = 'Block '+(i+1)+' — '+b.label+' ('+b.intensity+')';
     bSel.appendChild(opt);
   });
 }
 
 function openTeamPlan() {
   if (!masterMode) return;
-  _tpLevel = 'macro';
-  document.getElementById('tp-output').innerHTML = '<div style="color:#3a5a7a;font-size:12px;text-align:center;padding:20px">Select output level above and tap Generate Program.</div>';
+  _tpLevel = 'macro'; _tpPhaseIdx = 0; _tpBlockIdx = 0; _tpWeekIdx = 0;
+  document.getElementById('tp-output').innerHTML = '<div style="color:#3a5a7a;font-size:12px;text-align:center;padding:20px">Fill in your team details above, then tap Generate to start at the Macrocycle view. Click any phase to drill down.</div>';
   document.getElementById('tp-print-btn').style.display = 'none';
   tpSetLevel('macro');
   tpUpdateSelectors();
@@ -1872,10 +1875,45 @@ function openTeamPlan() {
 function closeTeamPlan() { document.getElementById('teamplan-overlay').classList.remove('open'); }
 
 function tpUpdateSelectors() {
-  var level = _tpLevel;
-  document.getElementById('tp-phase-row').style.display = (level==='meso'||level==='micro'||level==='session') ? 'block' : 'none';
-  document.getElementById('tp-block-row').style.display = (level==='micro'||level==='session') ? 'block' : 'none';
-  if (level==='meso'||level==='micro'||level==='session') tpUpdateBlockOptions();
+  document.getElementById('tp-phase-row').style.display = 'none';
+  document.getElementById('tp-block-row').style.display = 'none';
+}
+
+function tpBreadcrumb() {
+  var ph  = TP_PHASES[_tpPhaseIdx];
+  var blk = ph ? ph.blocks[_tpBlockIdx] : null;
+  var crumbs = [{label:'Macro',level:'macro'}];
+  if (_tpLevel!=='macro') crumbs.push({label:'P'+(_tpPhaseIdx+1)+' '+( ph?ph.shortLabel:''),level:'meso'});
+  if (_tpLevel==='micro'||_tpLevel==='session') crumbs.push({label:'B'+(_tpBlockIdx+1)+' '+(blk?blk.label:''),level:'micro'});
+  if (_tpLevel==='session') crumbs.push({label:'Session',level:'session'});
+  var html = '<div style="display:flex;align-items:center;gap:5px;margin-bottom:12px;padding:7px 10px;background:#060f18;border:1px solid #1e3a5f;border-radius:7px;flex-wrap:wrap">';
+  for (var i=0;i<crumbs.length;i++) {
+    var c=crumbs[i];
+    if (i>0) html+='<span style="color:#2a4a6a;font-size:11px">&#8250;</span>';
+    if (c.level===_tpLevel) {
+      html+='<span style="font-size:10px;font-weight:700;color:#C9A228">'+c.label+'</span>';
+    } else {
+      html+='<span onclick="tpDrillUp(\''+c.level+'\')" style="font-size:10px;color:#4a8af0;cursor:pointer;text-decoration:underline">'+c.label+'</span>';
+    }
+  }
+  html+='</div>';
+  return html;
+}
+
+function tpDrillPhase(idx) {
+  _tpPhaseIdx = idx; _tpBlockIdx = 0;
+  tpSetLevel('meso'); tpGen();
+}
+function tpDrillBlock(idx) {
+  _tpBlockIdx = idx;
+  tpSetLevel('micro'); tpGen();
+}
+function tpDrillWeek(weekIdx) {
+  _tpWeekIdx = weekIdx !== undefined ? weekIdx : 0;
+  tpSetLevel('session'); tpGen();
+}
+function tpDrillUp(level) {
+  tpSetLevel(level); tpGen();
 }
 
 function tpDateLabel(startDate, weekOffset) {
@@ -1891,22 +1929,20 @@ function tpGen() {
   var sportKey  = tpGetSportKey();
   var arch      = document.getElementById('tp-arch').value;
   var startDate = document.getElementById('tp-start').value;
-  var pEl = document.getElementById('tp-phase');
-  var bEl = document.getElementById('tp-block');
-  var phaseIdx  = pEl ? (parseInt(pEl.value)||0) : 0;
-  var blockIdx  = bEl ? (parseInt(bEl.value)||0) : 0;
   if      (_tpLevel==='macro')   tpMacroOutput(team,sport,arch,startDate);
-  else if (_tpLevel==='meso')    tpMesoOutput(team,sport,arch,startDate,phaseIdx);
-  else if (_tpLevel==='micro')   tpMicroOutput(team,sport,arch,startDate,phaseIdx,blockIdx);
-  else if (_tpLevel==='session') tpSessionOutput(team,sport,arch,startDate,phaseIdx,blockIdx,sportKey);
+  else if (_tpLevel==='meso')    tpMesoOutput(team,sport,arch,startDate,_tpPhaseIdx);
+  else if (_tpLevel==='micro')   tpMicroOutput(team,sport,arch,startDate,_tpPhaseIdx,_tpBlockIdx);
+  else if (_tpLevel==='session') tpSessionOutput(team,sport,arch,startDate,_tpPhaseIdx,_tpBlockIdx,sportKey);
   document.getElementById('tp-print-btn').style.display = 'block';
 }
 
 function tpMacroOutput(team,sport,arch,startDate) {
   var qColors=['#C9A228','#4a8af0','#4af08a','#f04a8a','#4af0f0'];
-  var html='<div style="font-size:18px;font-weight:800;margin-bottom:4px;color:#C9A228">\ud83d\uddc2\ufe0f '+team+' \u2014 Macrocycle</div>';
-  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:16px">'+sport+' \xb7 '+arch+' \xb7 4 Phases \xb7 48 Weeks'+(startDate?' \xb7 Starts '+new Date(startDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'')+'</div>';
-  html+='<div style="margin-bottom:20px"><div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">PHASE TIMELINE \u2014 48 WEEKS</div>';
+  var html=tpBreadcrumb();
+  html+='<div style="font-size:18px;font-weight:800;margin-bottom:4px;color:#C9A228">&#128449; '+team+' — Macrocycle</div>';
+  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:4px">'+sport+' · '+arch+' · 4 Phases · 48 Weeks'+(startDate?' · Starts '+new Date(startDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'')+'</div>';
+  html+='<div style="font-size:9px;color:#4a6a8a;margin-bottom:14px">▼ Click any phase card to drill into the mesocycle</div>';
+  html+='<div style="margin-bottom:20px"><div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">48-WEEK PHASE TIMELINE</div>';
   html+='<div style="display:flex;gap:3px">';
   for (var pi=0;pi<TP_PHASES.length;pi++) {
     var ph=TP_PHASES[pi];
@@ -1920,23 +1956,23 @@ function tpMacroOutput(team,sport,arch,startDate) {
     html+='<div style="flex:1;text-align:center"><div style="font-size:7px;color:#4a6a8a">'+tpDateLabel(startDate,ph.startWeek-1)+'</div></div>';
   }
   html+='</div></div>';
-  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">PHASE BREAKDOWN</div>';
+  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">PHASE CARDS — CLICK TO DRILL DOWN</div>';
   for (var pi=0;pi<TP_PHASES.length;pi++) {
     var ph=TP_PHASES[pi];
-    html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+ph.color+';border-radius:10px;padding:14px;margin-bottom:10px">';
+    html+='<div onclick="tpDrillPhase('+pi+')" style="cursor:pointer;background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+ph.color+';border-radius:10px;padding:14px;margin-bottom:10px;transition:border-color .15s" onmouseover="this.style.borderColor=\''+ph.color+'\'" onmouseout="this.style.borderColor=\'#1e3a5f\'">';
     html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
-    html+='<div><span style="font-size:14px;font-weight:800;color:'+ph.color+'">Phase '+(pi+1)+' \u2014 '+ph.label+'</span>';
-    html+='<span style="font-size:10px;color:#6a8aa8;margin-left:8px">Weeks '+ph.startWeek+'\u2013'+(ph.startWeek+11)+' (12 wks)</span></div>';
-    html+='<span style="font-size:9px;color:#4a6a8a">3 blocks \xd7 4 wks</span></div>';
+    html+='<div><span style="font-size:14px;font-weight:800;color:'+ph.color+'">Phase '+(pi+1)+' — '+ph.label+'</span>';
+    html+='<span style="font-size:10px;color:#6a8aa8;margin-left:8px">Weeks '+ph.startWeek+'–'+(ph.startWeek+11)+'</span></div>';
+    html+='<span style="font-size:10px;color:'+ph.color+';font-weight:700">Drill In ›</span></div>';
     html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">';
     for (var bi=0;bi<ph.blocks.length;bi++) {
       var blk=ph.blocks[bi];
       var wc=TP_WORKLOAD_COLORS[blk.workload]||'#1e3a5f';
       html+='<div style="background:#0a1520;border:1px solid #1e3a5f;border-radius:8px;padding:9px">';
       html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">';
-      html+='<div style="font-size:11px;font-weight:700">B'+(bi+1)+' \u2014 '+blk.label+'</div>';
+      html+='<div style="font-size:11px;font-weight:700">B'+(bi+1)+' — '+blk.label+'</div>';
       html+='<span style="background:'+wc+';color:#fff;font-size:8px;padding:2px 6px;border-radius:8px">'+blk.workload+'</span></div>';
-      html+='<div style="font-size:9px;color:#6a8aa8;margin-bottom:2px">Wks '+(ph.startWeek+bi*4)+'\u2013'+(ph.startWeek+bi*4+3)+'</div>';
+      html+='<div style="font-size:9px;color:#6a8aa8;margin-bottom:2px">Wks '+(ph.startWeek+bi*4)+'–'+(ph.startWeek+bi*4+3)+'</div>';
       html+='<div style="font-size:9px;color:#C9A228;margin-bottom:2px">'+blk.intensity+'</div>';
       if (blk.tempo!=='Standard') html+='<div style="font-size:8px;color:#a078f0">'+blk.tempo+'</div>';
       html+='<div style="font-size:9px;color:#8a9bb0;margin-top:3px">'+blk.desc+'</div>';
@@ -1956,16 +1992,20 @@ function tpMacroOutput(team,sport,arch,startDate) {
 
 function tpMesoOutput(team,sport,arch,startDate,phaseIdx) {
   var ph=TP_PHASES[phaseIdx]||TP_PHASES[0];
-  var html='<div style="font-size:16px;font-weight:800;color:'+ph.color+';margin-bottom:4px">Phase '+(phaseIdx+1)+' \u2014 '+ph.label+'</div>';
-  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:16px">'+team+' \xb7 '+sport+' \xb7 Weeks '+ph.startWeek+'\u2013'+(ph.startWeek+11)+' \xb7 '+arch+'</div>';
-  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">3-BLOCK STRUCTURE</div>';
+  var html=tpBreadcrumb();
+  html+='<div style="font-size:16px;font-weight:800;color:'+ph.color+';margin-bottom:4px">Phase '+(phaseIdx+1)+' — '+ph.label+'</div>';
+  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:4px">'+team+' · '+sport+' · Weeks '+ph.startWeek+'–'+(ph.startWeek+11)+' · '+arch+'</div>';
+  html+='<div style="font-size:9px;color:#4a6a8a;margin-bottom:12px">▼ Click any block card to drill into the microcycle</div>';
+  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">3-BLOCK STRUCTURE — CLICK TO DRILL DOWN</div>';
   html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">';
   for (var bi=0;bi<ph.blocks.length;bi++) {
     var blk=ph.blocks[bi];
     var wc=TP_WORKLOAD_COLORS[blk.workload]||'#1e3a5f';
-    html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+ph.color+';border-radius:8px;padding:10px">';
-    html+='<div style="font-size:11px;font-weight:700;margin-bottom:4px">Block '+(bi+1)+' \u2014 '+blk.label+'</div>';
-    html+='<div style="font-size:9px;color:#6a8aa8;margin-bottom:3px">Wks '+(ph.startWeek+bi*4)+'\u2013'+(ph.startWeek+bi*4+3)+'</div>';
+    html+='<div onclick="tpDrillBlock('+bi+')" style="cursor:pointer;background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+ph.color+';border-radius:8px;padding:10px" onmouseover="this.style.borderColor=\''+ph.color+'\'" onmouseout="this.style.borderColor=\'#1e3a5f\'">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">';
+    html+='<div style="font-size:11px;font-weight:700">Block '+(bi+1)+' — '+blk.label+'</div>';
+    html+='<span style="font-size:8px;color:'+ph.color+'">&#8250;</span></div>';
+    html+='<div style="font-size:9px;color:#6a8aa8;margin-bottom:3px">Wks '+(ph.startWeek+bi*4)+'–'+(ph.startWeek+bi*4+3)+'</div>';
     html+='<span style="background:'+wc+';color:#fff;font-size:8px;padding:2px 6px;border-radius:8px">'+blk.workload+'</span>';
     html+='<div style="margin-top:5px;font-size:9px;color:#C9A228">'+blk.intensity+'</div>';
     if (blk.tempo!=='Standard') html+='<div style="font-size:8px;color:#a078f0">'+blk.tempo+'</div>';
@@ -1975,7 +2015,7 @@ function tpMesoOutput(team,sport,arch,startDate,phaseIdx) {
   html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">WEEK-BY-WEEK PROGRESSION (12 WEEKS)</div>';
   for (var bi=0;bi<ph.blocks.length;bi++) {
     var blk=ph.blocks[bi];
-    html+='<div style="margin-bottom:10px"><div style="font-size:10px;font-weight:700;color:'+ph.color+';margin-bottom:5px">Block '+(bi+1)+' \u2014 '+blk.label+'</div>';
+    html+='<div style="margin-bottom:10px"><div style="font-size:10px;font-weight:700;color:'+ph.color+';margin-bottom:5px">Block '+(bi+1)+' — '+blk.label+'</div>';
     for (var wi=0;wi<4;wi++) {
       var wkAbs=ph.startWeek+bi*4+wi;
       var wkLabel=TP_WEEK_LABELS[wi];
@@ -1984,11 +2024,11 @@ function tpMesoOutput(team,sport,arch,startDate,phaseIdx) {
       html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-radius:7px;padding:9px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center">';
       html+='<div><div style="font-size:12px;font-weight:700">Week '+wkAbs+' <span style="font-size:9px;color:#6a8aa8;font-weight:400">('+wkLabel+')</span> <span style="font-size:9px;color:#4a6a8a">'+tpDateLabel(startDate,wkAbs-1)+'</span></div>';
       if (isCNS) {
-        html+='<div style="font-size:10px;color:#4af08a;margin-top:2px">\u2699\ufe0f CNS Reset \u2014 5\xd75 @ 70\u201375% \xb7 No Tempo \xb7 16-Min Clock</div>';
+        html+='<div style="font-size:10px;color:#4af08a;margin-top:2px">⚙️ CNS Reset — 5×5 @ 70–75% · No Tempo · 16-Min Clock</div>';
       } else {
         html+='<div style="font-size:10px;color:#8a9bb0;margin-top:1px">Main: '+blk.t1rep+'</div>';
         html+='<div style="font-size:10px;color:#6a8aa8">Support: '+blk.t2rep+'</div>';
-        html+='<div style="font-size:9px;color:#4a6a8a;margin-top:1px">Speed: '+blk.speed+' \xb7 Jump: '+blk.jump+'</div>';
+        html+='<div style="font-size:9px;color:#4a6a8a;margin-top:1px">Speed: '+blk.speed+' · Jump: '+blk.jump+'</div>';
       }
       html+='</div><span style="background:'+wcW+';color:#fff;font-size:8px;padding:3px 8px;border-radius:10px;white-space:nowrap">'+(isCNS?'CNS Reset':wkLabel)+'</span></div>';
     }
@@ -2002,8 +2042,10 @@ function tpMicroOutput(team,sport,arch,startDate,phaseIdx,blockIdx) {
   var blk=ph.blocks[blockIdx]||ph.blocks[0];
   var blockStartWk=ph.startWeek+blockIdx*4;
   var wc=TP_WORKLOAD_COLORS[blk.workload]||'#1e3a5f';
-  var html='<div style="font-size:16px;font-weight:800;color:'+ph.color+';margin-bottom:4px">Block '+(blockIdx+1)+' \u2014 '+blk.label+'</div>';
-  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:14px">'+team+' \xb7 Phase '+(phaseIdx+1)+': '+ph.label+' \xb7 Weeks '+blockStartWk+'\u2013'+(blockStartWk+3)+' \xb7 '+arch+'</div>';
+  var html=tpBreadcrumb();
+  html+='<div style="font-size:16px;font-weight:800;color:'+ph.color+';margin-bottom:4px">Block '+(blockIdx+1)+' — '+blk.label+'</div>';
+  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:4px">'+team+' · Phase '+(phaseIdx+1)+': '+ph.label+' · Weeks '+blockStartWk+'–'+(blockStartWk+3)+' · '+arch+'</div>';
+  html+='<div style="font-size:9px;color:#4a6a8a;margin-bottom:12px">▼ Click any week to see the full session plan for that week</div>';
   html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+ph.color+';border-radius:10px;padding:12px;margin-bottom:14px">';
   html+='<div style="display:flex;justify-content:space-between;margin-bottom:6px"><div style="font-size:12px;font-weight:700;flex:1">'+blk.desc+'</div><span style="background:'+wc+';color:#fff;font-size:9px;padding:3px 8px;border-radius:10px">'+blk.workload+'</span></div>';
   html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:10px">';
@@ -2011,21 +2053,21 @@ function tpMicroOutput(team,sport,arch,startDate,phaseIdx,blockIdx) {
   html+='<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#6a8aa8;font-size:8px;margin-bottom:2px">TEMPO</div>'+blk.tempo+'</div>';
   html+='<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#6a8aa8;font-size:8px;margin-bottom:2px">SCHEME</div>'+blk.scheme+'</div>';
   html+='</div></div>';
-  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">4-WEEK PROGRESSION</div>';
+  html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">4-WEEK PROGRESSION — CLICK TO SEE SESSION</div>';
   for (var wi=0;wi<4;wi++) {
     var wkAbs=blockStartWk+wi;
     var wkLabel=TP_WEEK_LABELS[wi];
     var isCNS=(wi===3);
     var wcW=TP_WORKLOAD_COLORS[isCNS?'CNS Reset':blk.workload]||'#1e3a5f';
-    html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-radius:10px;padding:12px;margin-bottom:8px">';
+    var wIdx=wi;
+    html+='<div onclick="tpDrillWeek('+wIdx+')" style="cursor:pointer;background:#0d1b2a;border:1px solid #1e3a5f;border-radius:10px;padding:12px;margin-bottom:8px" onmouseover="this.style.borderColor=\''+ph.color+'\'" onmouseout="this.style.borderColor=\'#1e3a5f\'">';
     html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">';
-    html+='<div style="font-size:13px;font-weight:800">Week '+wkAbs+' \u2014 '+wkLabel+' <span style="font-size:10px;color:#6a8aa8;font-weight:400">'+tpDateLabel(startDate,wkAbs-1)+'</span></div>';
-    html+='<span style="background:'+wcW+';color:#fff;font-size:9px;padding:3px 8px;border-radius:10px">'+(isCNS?'CNS Reset':wkLabel)+'</span></div>';
+    html+='<div style="font-size:13px;font-weight:800">Week '+wkAbs+' — '+wkLabel+' <span style="font-size:10px;color:#6a8aa8;font-weight:400">'+tpDateLabel(startDate,wkAbs-1)+'</span></div>';
+    html+='<div style="display:flex;align-items:center;gap:6px"><span style="background:'+wcW+';color:#fff;font-size:9px;padding:3px 8px;border-radius:10px">'+(isCNS?'CNS Reset':wkLabel)+'</span><span style="font-size:11px;color:'+ph.color+';">›</span></div></div>';
     if (isCNS) {
       html+='<div style="background:#1a2a1a;border:1px dashed #2a5a2a;border-radius:8px;padding:10px;text-align:center">';
-      html+='<div style="font-size:13px;font-weight:700;color:#4af08a">\u2699\ufe0f CNS Reset Week</div>';
-      html+='<div style="font-size:11px;color:#8a9bb0;margin-top:4px">5\xd75 @ 70\u201375% \xb7 No Tempo Contrast \xb7 16-Minute Clock</div>';
-      html+='<div style="font-size:10px;color:#4a6a8a;margin-top:4px">Same movement patterns \u2014 autoregulate on feel. Quality over intensity.</div>';
+      html+='<div style="font-size:12px;font-weight:700;color:#4af08a">⚙️ CNS Reset Week — Click to View Session</div>';
+      html+='<div style="font-size:10px;color:#8a9bb0;margin-top:3px">5×5 @ 70–75% · No Tempo · 16-Min Clock · Same patterns</div>';
       html+='</div>';
     } else {
       html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px;margin-bottom:6px">';
@@ -2033,44 +2075,13 @@ function tpMicroOutput(team,sport,arch,startDate,phaseIdx,blockIdx) {
       html+='<div style="background:#0a1520;border-radius:6px;padding:7px"><div style="color:#4a8af0;font-size:8px;margin-bottom:2px">T2 SUPPLEMENTAL</div>'+blk.t2rep+'</div>';
       html+='</div>';
       html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px">';
-      html+='<div style="background:#0a1520;border-radius:6px;padding:7px"><div style="color:#4af08a;font-size:8px;margin-bottom:2px">\u26a1 SPEED</div>'+blk.speed+'</div>';
-      html+='<div style="background:#0a1520;border-radius:6px;padding:7px"><div style="color:#f0a04a;font-size:8px;margin-bottom:2px">\ud83e\uddb5 JUMP/LAND</div>'+blk.jump+'</div>';
+      html+='<div style="background:#0a1520;border-radius:6px;padding:7px"><div style="color:#4af08a;font-size:8px;margin-bottom:2px">⚡ SPEED</div>'+blk.speed+'</div>';
+      html+='<div style="background:#0a1520;border-radius:6px;padding:7px"><div style="color:#f0a04a;font-size:8px;margin-bottom:2px">JUMP/LAND</div>'+blk.jump+'</div>';
       html+='</div>';
     }
     html+='</div>';
   }
   document.getElementById('tp-output').innerHTML=html;
-}
-
-function tpEx(cat) {
-  var pool=(typeof OLIB!=='undefined')?OLIB[cat]:null;
-  if (!pool||!pool.length) return cat;
-  return pool[Math.floor(Math.random()*pool.length)];
-}
-function tpExN(cat,n) {
-  var pool=(typeof OLIB!=='undefined')?OLIB[cat]:null;
-  if (!pool||!pool.length) return [cat];
-  var out=[],copy=pool.slice();
-  for (var i=0;i<n&&copy.length;i++){var idx=Math.floor(Math.random()*copy.length);out.push(copy.splice(idx,1)[0]);}
-  return out;
-}
-
-function tpStarsRow(items) {
-  var html='';
-  for (var i=0;i<items.length;i++) {
-    html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #0a1520">';
-    html+='<span style="font-size:11px">'+items[i].ex+'</span>';
-    html+='<span style="font-size:10px;color:#6a8aa8;background:#0a1520;padding:2px 8px;border-radius:8px;white-space:nowrap">'+items[i].sch+'</span>';
-    html+='</div>';
-  }
-  return html;
-}
-function tpStarsBlock(title,color,items) {
-  var html='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+color+';border-radius:8px;padding:10px;margin-bottom:7px">';
-  html+='<div style="font-size:11px;font-weight:700;color:'+color+';margin-bottom:6px">'+title+'</div>';
-  html+=tpStarsRow(items);
-  html+='</div>';
-  return html;
 }
 
 function tpSessionOutput(team,sport,arch,startDate,phaseIdx,blockIdx,sportKey) {
@@ -2085,7 +2096,8 @@ function tpSessionOutput(team,sport,arch,startDate,phaseIdx,blockIdx,sportKey) {
   var jumpCat=tpSportJumpCat(sk,arch);
   var jumpCat2=lvl==='Advanced'?'jump_rsi':'jump_bilateral';
   var archLabel={Advanced:'\u2b06 Advanced',Intermediate:'~ Intermediate',Beginner:'\u25be Beginner'};
-  var html='<div style="font-size:16px;font-weight:800;color:'+ph.color+';margin-bottom:4px">Week Plan \u2014 Block '+(blockIdx+1)+': '+blk.label+'</div>';
+  var html=tpBreadcrumb();
+  html+='<div style="font-size:16px;font-weight:800;color:'+ph.color+';margin-bottom:4px">Week Plan \u2014 Block '+(blockIdx+1)+': '+blk.label+'</div>';
   html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:6px">'+team+' \xb7 '+sport+' \xb7 Phase '+(phaseIdx+1)+' \xb7 '+blk.intensity+'</div>';
   html+='<div style="display:flex;gap:6px;margin-bottom:12px">';
   html+='<span style="background:#1e3a5f;border:1px solid #2a5a8a;color:#6ab0f0;font-size:9px;padding:2px 7px;border-radius:8px">'+(archLabel[lvl]||arch)+'</span>';
