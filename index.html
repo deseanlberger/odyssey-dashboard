@@ -446,7 +446,6 @@ select:focus{border-color:#C9A228}
     <button class="sort-btn" id="btn-raw" onclick="setSort('raw')">Raw</button>
   </div>
 </div>
-</div>
 <div class="stats-bar">
   Showing <b id="count">65</b> athletes &nbsp;·&nbsp; ELITE = Odyssey Elite &nbsp;·&nbsp; PROSPECT = Top-ranked uncommitted &nbsp;·&nbsp;
   <span style="color:#6a8aa8" id="mode-label">Public view — coach login required to see body weight</span>
@@ -1559,10 +1558,13 @@ function navSwitch(t) {
   if(btn) btn.classList.add('active');
   switchTab(t);
   if (t === 'tools') { renderLeaderboards(); renderStaffTab(); }
-  if (t === 'lookup') renderPublicLeaderboards();
+  if (t === 'lookup') { renderPublicLeaderboards(); if (coachMode || masterMode) render(); }
 }
 var _toolsSub = 'boards';
 function toolsSub(name) {
+  // Program and Team Plan open their own overlays — don't try to switch panel
+  if (name === 'program') { if (masterMode) openPB(); return; }
+  if (name === 'teamplan') { if (masterMode) openTeamPlan(); return; }
   _toolsSub = name;
   document.querySelectorAll('.tsub-btn').forEach(b=>b.classList.remove('tsub-active'));
   const btn = document.getElementById('tsub-'+name);
@@ -1693,8 +1695,9 @@ function selectTool(el) {
 }
 function launchTool() {
   closeTools();
-  if (_toolSel === '1rm' || _toolSel === 'velocity') { switchTab(_toolSel); return; }
-  if (_toolSel === 'staff') { if (!coachMode) { return; } switchTab('staff'); return; }
+  if (_toolSel === '1rm') { navSwitch('tools'); toolsSub('1rm'); return; }
+  if (_toolSel === 'velocity') { navSwitch('tools'); toolsSub('vbt'); return; }
+  if (_toolSel === 'staff') { if (!coachMode) return; navSwitch('tools'); toolsSub('staff'); return; }
   if (_toolSel === 'program') { if (!masterMode) return; openPB(); return; }
   if (_toolSel === 'teamplan') { if (!masterMode) return; openTeamPlan(); return; }
   if (_toolSel === 'newathlete') { if (!coachMode) return; openNewAth(); return; }
