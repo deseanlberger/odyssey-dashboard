@@ -528,7 +528,6 @@ select:focus{border-color:#C9A228}
     <button onclick="toolsSub('forty')" id="tsub-forty" class="tsub-btn">🏃 40-Yard</button>
     <button onclick="toolsSub('1rm')" id="tsub-1rm" class="tsub-btn">🏋️ 1RM</button>
     <button onclick="toolsSub('vbt')" id="tsub-vbt" class="tsub-btn">📈 VBT Zones</button>
-    <button onclick="toolsSub('dashboard')" id="tsub-dashboard" class="tsub-btn tools-coach-only" style="display:none">📊 Dashboard</button>
     <button onclick="toolsSub('staff')" id="tsub-staff" class="tsub-btn tools-coach-only" style="display:none">👨‍💼 Staff</button>
     <button onclick="toolsSub('program')" id="tsub-program" class="tsub-btn tools-master-only" style="display:none">📋 Program</button>
     <button onclick="toolsSub('teamplan')" id="tsub-teamplan" class="tsub-btn tools-master-only" style="display:none">🗂️ Team Plan</button>
@@ -717,15 +716,9 @@ select:focus{border-color:#C9A228}
   </div>
 
   <!-- Dashboard panel (coach only) -->
-  <div id="tpanel-dashboard" class="tools-panel" style="display:none">
-    <div style="padding:14px">
-      <div style="font-size:16px;font-weight:800;color:#C9A228;margin-bottom:6px">📊 Athlete Dashboard</div>
-<div style="font-size:12px;color:#6a8aa8">Visible to coaches — use filters to search athletes</div>
-    </div>
-  </div>
-
   <!-- Staff panel -->
   <div id="tpanel-staff" class="tools-panel" style="display:none">
+    <div id="staff-cards" style="padding:12px;display:flex;flex-direction:column;gap:12px"></div>
   </div>
 
 </div><!-- end tools inner wrapper -->
