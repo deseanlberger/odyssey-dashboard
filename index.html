@@ -909,7 +909,28 @@ select:focus{border-color:#C9A228}
       </div>
       <div>
         <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Sport</label>
-        <input id="tp-sport" type="text" placeholder="Multi-Sport" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none;box-sizing:border-box">
+        <select id="tp-sport-sel" onchange="tpUpdateSportInfo()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
+          <option value="multi">Multi-Sport / General</option>
+          <option value="baseball">Baseball</option>
+          <option value="softball">Softball</option>
+          <option value="football">Football</option>
+          <option value="basketball">Basketball</option>
+          <option value="volleyball">Volleyball</option>
+          <option value="soccer">Soccer</option>
+          <option value="track_sprint">Track &amp; Field — Sprints</option>
+          <option value="track_jump">Track &amp; Field — Jumps</option>
+          <option value="track_throw">Track &amp; Field — Throws</option>
+          <option value="cross_country">Cross Country</option>
+          <option value="wrestling">Wrestling</option>
+          <option value="lacrosse">Lacrosse</option>
+          <option value="rugby">Rugby</option>
+          <option value="tennis">Tennis</option>
+          <option value="swimming">Swimming</option>
+          <option value="hockey">Hockey</option>
+          <option value="golf">Golf</option>
+          <option value="other">Other (Custom)…</option>
+        </select>
+        <input id="tp-sport-custom" type="text" placeholder="Enter sport…" style="display:none;width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none;box-sizing:border-box;margin-top:5px">
       </div>
       <div>
         <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Start Date</label>
@@ -917,7 +938,7 @@ select:focus{border-color:#C9A228}
       </div>
       <div>
         <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Archetype</label>
-        <select id="tp-arch" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
+        <select id="tp-arch" onchange="tpUpdateSportInfo()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
           <option value="Advanced">Advanced — VBT + Density</option>
           <option value="Intermediate" selected>Intermediate — Running Clock</option>
           <option value="Beginner">Beginner — EMOM</option>
@@ -939,6 +960,7 @@ select:focus{border-color:#C9A228}
         </div>
       </div>
     </div>
+    <div id="tp-sport-info" style="display:none;margin-bottom:12px"></div>
     <div id="tp-phase-row" style="display:none;margin-bottom:10px">
       <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Phase</label>
       <select id="tp-phase" onchange="tpUpdateBlockOptions()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
@@ -1695,6 +1717,122 @@ var TP_PHASES = [
 var TP_WEEK_LABELS = ['Base','Load','Load+','CNS Reset'];
 var TP_WORKLOAD_COLORS = { 'Load':'#1e3a8a','Load+':'#7c2d12','Performance':'#6a7a00','Base':'#1e5f3a','CNS Reset':'#2a2a4a' };
 var TP_QUALITY_LABELS = ['Hypertrophy','Strength','Power','Speed-Strength','Peaking'];
+
+var TP_SPORT_DATA = {
+  multi:        { label:'Multi-Sport / General',   quality:[4,3,2,1,5], primary:'Balanced development',            speedFocus:'accel',  jumpFocus:'bilateral', note:'Balanced programming across all qualities. No sport-specific bias applied.' },
+  baseball:     { label:'Baseball',                quality:[4,2,1,3,5], primary:'Rotational Power + Acceleration', speedFocus:'accel',  jumpFocus:'bilateral', note:'Hip-shoulder separation, rotational RFD, 0–10 acceleration. Shoulder health every session.' },
+  softball:     { label:'Softball',                quality:[4,2,1,3,5], primary:'Rotational Power + Acceleration', speedFocus:'accel',  jumpFocus:'bilateral', note:'Same profile as baseball. Bilateral jump for base-running power. Rotational core daily.' },
+  football:     { label:'Football',                quality:[3,1,2,4,5], primary:'Max Strength + Contact Power',   speedFocus:'accel',  jumpFocus:'bilateral', note:'Strength base is paramount. Power at high loads. Acceleration over top-end for most positions.' },
+  basketball:   { label:'Basketball',              quality:[5,3,2,1,4], primary:'Reactive Jump + Speed-Strength', speedFocus:'accel',  jumpFocus:'rsi',       note:'RSI and vertical power are primary. Lateral speed and deceleration critical. High jump volume.' },
+  volleyball:   { label:'Volleyball',              quality:[5,3,2,1,4], primary:'Reactive Jump + Vertical Power', speedFocus:'accel',  jumpFocus:'rsi',       note:'Vertical RSI is #1. Approach jump, block power, deceleration. Shoulder stability critical.' },
+  soccer:       { label:'Soccer',                  quality:[3,4,1,2,5], primary:'Speed-Strength + Aerobic Power', speedFocus:'topend', jumpFocus:'bilateral', note:'Speed-strength with aerobic base. Top-end velocity and COD. Unilateral stability for injury prevention.' },
+  track_sprint: { label:'Track — Sprints',    quality:[5,3,2,1,4], primary:'Max Velocity + Peaking',         speedFocus:'topend', jumpFocus:'rsi',       note:'Max velocity mechanics are #1. Acceleration phase quality. Olympic lift volume supports sprint force.' },
+  track_jump:   { label:'Track — Jumps',      quality:[5,3,1,2,4], primary:'Reactive Strength + Horizontal', speedFocus:'topend', jumpFocus:'rsi',       note:'RSI is the primary metric. Horizontal force and approach velocity. Single-leg power critical.' },
+  track_throw:  { label:'Track — Throws',     quality:[1,2,3,5,4], primary:'Max Strength + Rotational Power',speedFocus:'accel',  jumpFocus:'bilateral', note:'Strength base with rotational transfer. Full-ROM power. Upper body loaded work appropriate.' },
+  cross_country:{ label:'Cross Country',           quality:[1,3,5,2,4], primary:'Aerobic Base + Running Economy', speedFocus:'trans',  jumpFocus:'bilateral', note:'Minimize fatigue — low jump volume. Hip strength and single-leg stability. Speed builds economy.' },
+  wrestling:    { label:'Wrestling',               quality:[2,1,3,5,4], primary:'Max Strength + Anaerobic Power', speedFocus:'accel',  jumpFocus:'bilateral', note:'Strength base is #1. Grip and unilateral work are key. High-intensity intervals complement lifting.' },
+  lacrosse:     { label:'Lacrosse',               quality:[4,3,2,1,5], primary:'Speed + Change of Direction',    speedFocus:'topend', jumpFocus:'bilateral', note:'Speed and COD are primary. Rotational power for stick skills. Endurance for full-game output.' },
+  rugby:        { label:'Rugby',                   quality:[2,1,3,4,5], primary:'Strength + Contact Power',       speedFocus:'accel',  jumpFocus:'bilateral', note:'Contact strength and body mass matter. Power under fatigue. Acceleration from contact situations.' },
+  tennis:       { label:'Tennis',                  quality:[4,3,2,1,5], primary:'Rotational Power + COD',         speedFocus:'trans',  jumpFocus:'bilateral', note:'Rotational power from the ground up. Deceleration and direction change every point. Elbow/shoulder health.' },
+  swimming:     { label:'Swimming',                quality:[2,3,1,5,4], primary:'Strength + Power (Dry-Land)',    speedFocus:'accel',  jumpFocus:'bilateral', note:'Shoulder stability, hip power for starts, anti-rotation core. Upper body volume appropriate.' },
+  hockey:       { label:'Hockey',                  quality:[4,2,1,3,5], primary:'Skating Power + COD',            speedFocus:'trans',  jumpFocus:'bilateral', note:'Lateral power and edge mechanics. Hip ab/adductor balance critical. Acceleration + decel every shift.' },
+  golf:         { label:'Golf',                    quality:[5,3,2,1,4], primary:'Rotational Power + Stability',   speedFocus:'trans',  jumpFocus:'bilateral', note:'Hip-shoulder separation and rotational sequencing. Stability before loading. Mobility-strength balance.' },
+  other:        { label:'Custom Sport',            quality:[4,3,2,1,5], primary:'Balanced development',            speedFocus:'accel',  jumpFocus:'bilateral', note:'Custom sport — balanced programming applied. Adjust quality priorities after first assessment.' }
+};
+var TP_ARCH_TIER = {
+  T1_total:{Advanced:'T1_total',Intermediate:'T1_total',Beginner:'T3_total'},
+  T2_total:{Advanced:'T2_total',Intermediate:'T2_total',Beginner:'T4_total'},
+  L1_lower:{Advanced:'L1_lower',Intermediate:'L1_lower',Beginner:'L3_lower'},
+  L2_lower:{Advanced:'L2_lower',Intermediate:'L2_lower',Beginner:'L3_lower'},
+  L3_lower:{Advanced:'L3_lower',Intermediate:'L3_lower',Beginner:'L4_lower'},
+  L4_lower:{Advanced:'L4_lower',Intermediate:'L4_lower',Beginner:'L5_lower'},
+  L5_lower:{Advanced:'L5_lower',Intermediate:'L5_lower',Beginner:'L5_lower'},
+  U1_upper:{Advanced:'U1_upper',Intermediate:'U1_upper',Beginner:'U3_upper'},
+  U2_upper:{Advanced:'U2_upper',Intermediate:'U2_upper',Beginner:'U4_upper'},
+  U3_upper:{Advanced:'U3_upper',Intermediate:'U3_upper',Beginner:'U3_upper'},
+  U4_upper:{Advanced:'U4_upper',Intermediate:'U4_upper',Beginner:'U4_upper'},
+  U5_upper:{Advanced:'U5_upper',Intermediate:'U5_upper',Beginner:'U5_upper'},
+  jump_bilateral:{Advanced:'jump_bilateral',Intermediate:'jump_bilateral',Beginner:'jump_bilateral'},
+  jump_unilateral:{Advanced:'jump_unilateral',Intermediate:'jump_unilateral',Beginner:'jump_bilateral'},
+  jump_rsi:{Advanced:'jump_rsi',Intermediate:'jump_bilateral',Beginner:'jump_bilateral'},
+  speed_accel:{Advanced:'speed_accel',Intermediate:'speed_accel',Beginner:'speed_accel'},
+  speed_topend:{Advanced:'speed_topend',Intermediate:'speed_topend',Beginner:'speed_accel'},
+  speed_trans:{Advanced:'speed_trans',Intermediate:'speed_trans',Beginner:'speed_trans'},
+  stability:{Advanced:'stability',Intermediate:'stability',Beginner:'stability'},
+  support:{Advanced:'support',Intermediate:'support',Beginner:'support'}
+};
+function tpArchLevel(arch) {
+  if (!arch) return 'Intermediate';
+  var a=arch.toLowerCase();
+  if (a.indexOf('advanced')>=0) return 'Advanced';
+  if (a.indexOf('beginner')>=0) return 'Beginner';
+  return 'Intermediate';
+}
+function tpExByArch(baseKey,arch) {
+  var level=tpArchLevel(arch);
+  var map=TP_ARCH_TIER[baseKey];
+  var key=(map&&map[level])?map[level]:baseKey;
+  return tpEx(key);
+}
+function tpSportSpeedCat(sk,arch) {
+  var sd=TP_SPORT_DATA[sk]||TP_SPORT_DATA.multi;
+  var cat='speed_'+sd.speedFocus;
+  if (!OLIB[cat]) cat='speed_accel';
+  if (tpArchLevel(arch)==='Beginner') cat='speed_accel';
+  return cat;
+}
+function tpSportJumpCat(sk,arch) {
+  var sd=TP_SPORT_DATA[sk]||TP_SPORT_DATA.multi;
+  var cat='jump_'+sd.jumpFocus;
+  if (!OLIB[cat]) cat='jump_bilateral';
+  if (tpArchLevel(arch)==='Beginner') cat='jump_bilateral';
+  return cat;
+}
+function tpGetSport() {
+  var sel=document.getElementById('tp-sport-sel');
+  if (!sel) return 'Multi-Sport';
+  if (sel.value==='other') return document.getElementById('tp-sport-custom').value.trim()||'Custom Sport';
+  var sd=TP_SPORT_DATA[sel.value];
+  return sd?sd.label:(sel.options[sel.selectedIndex]?sel.options[sel.selectedIndex].text:'Multi-Sport');
+}
+function tpGetSportKey() {
+  var sel=document.getElementById('tp-sport-sel');
+  return sel?(sel.value||'multi'):'multi';
+}
+function tpUpdateSportInfo() {
+  var sel=document.getElementById('tp-sport-sel');
+  var customInput=document.getElementById('tp-sport-custom');
+  var infoDiv=document.getElementById('tp-sport-info');
+  if (!sel||!infoDiv) return;
+  customInput.style.display=(sel.value==='other')?'block':'none';
+  if (!sel.value||sel.value==='multi'){infoDiv.style.display='none';return;}
+  var sd=TP_SPORT_DATA[sel.value]||TP_SPORT_DATA.multi;
+  var arch=document.getElementById('tp-arch')?document.getElementById('tp-arch').value:'Intermediate';
+  var level=tpArchLevel(arch);
+  var qColors=['#C9A228','#4a8af0','#4af08a','#f04a8a','#4af0f0'];
+  var qRanked=sd.quality.map(function(r,idx){return {l:TP_QUALITY_LABELS[idx],r:r};}).sort(function(a,b){return a.r-b.r;});
+  var speedLabels={accel:'0–10 Acceleration',topend:'Max Velocity',trans:'COD / Deceleration'};
+  var jumpLabels={bilateral:'Bilateral — Vertical',unilateral:'Single-Leg Power',rsi:'RSI — Reactive'};
+  var cxNote={Advanced:'⬆ Advanced: full Olympic lifts, complex pairing, VBT targets.',
+              Intermediate:'~ Intermediate: standard T1/T2 progressions, full plyometric menu.',
+              Beginner:'▾ Beginner: simpler variations — mechanics first, tiers scaled down.'};
+  var html='<div style="background:#0d1520;border:1px solid #1e3a5f;border-left:3px solid #C9A228;border-radius:8px;padding:10px">';
+  html+='<div style="font-size:12px;font-weight:700;color:#C9A228;margin-bottom:4px">'+sd.label+' — '+sd.primary+'</div>';
+  html+='<div style="font-size:10px;color:#8a9bb0;margin-bottom:8px">'+sd.note+'</div>';
+  html+='<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px">';
+  for (var q=0;q<qRanked.length;q++) {
+    html+='<span style="background:'+qColors[q]+'22;border:1px solid '+qColors[q]+'55;color:'+qColors[q]+';font-size:8px;padding:2px 6px;border-radius:8px">'+qRanked[q].r+'. '+qRanked[q].l+'</span>';
+  }
+  html+='</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:9px;margin-bottom:6px">';
+  html+='<div style="background:#0a1520;border-radius:5px;padding:5px"><div style="color:#6a8aa8;font-size:7px;margin-bottom:1px">SPEED EMPHASIS</div>'+(speedLabels[sd.speedFocus]||sd.speedFocus)+'</div>';
+  html+='<div style="background:#0a1520;border-radius:5px;padding:5px"><div style="color:#6a8aa8;font-size:7px;margin-bottom:1px">JUMP EMPHASIS</div>'+(jumpLabels[sd.jumpFocus]||sd.jumpFocus)+'</div>';
+  html+='</div>';
+  html+='<div style="font-size:9px;color:#6a8aa8;border-top:1px solid #1e3a5f;padding-top:5px">'+(cxNote[level]||'')+'</div>';
+  html+='</div>';
+  infoDiv.style.display='block';
+  infoDiv.innerHTML=html;
+}
 var _tpLevel = 'macro';
 
 function tpSetLevel(level) {
@@ -1749,7 +1887,8 @@ function tpDateLabel(startDate, weekOffset) {
 
 function tpGen() {
   var team      = document.getElementById('tp-team').value.trim() || 'Team';
-  var sport     = document.getElementById('tp-sport').value.trim() || 'Sport';
+  var sport     = tpGetSport();
+  var sportKey  = tpGetSportKey();
   var arch      = document.getElementById('tp-arch').value;
   var startDate = document.getElementById('tp-start').value;
   var pEl = document.getElementById('tp-phase');
@@ -1759,7 +1898,7 @@ function tpGen() {
   if      (_tpLevel==='macro')   tpMacroOutput(team,sport,arch,startDate);
   else if (_tpLevel==='meso')    tpMesoOutput(team,sport,arch,startDate,phaseIdx);
   else if (_tpLevel==='micro')   tpMicroOutput(team,sport,arch,startDate,phaseIdx,blockIdx);
-  else if (_tpLevel==='session') tpSessionOutput(team,sport,arch,startDate,phaseIdx,blockIdx);
+  else if (_tpLevel==='session') tpSessionOutput(team,sport,arch,startDate,phaseIdx,blockIdx,sportKey);
   document.getElementById('tp-print-btn').style.display = 'block';
 }
 
@@ -1934,84 +2073,98 @@ function tpStarsBlock(title,color,items) {
   return html;
 }
 
-function tpSessionOutput(team,sport,arch,startDate,phaseIdx,blockIdx) {
+function tpSessionOutput(team,sport,arch,startDate,phaseIdx,blockIdx,sportKey) {
   var ph=TP_PHASES[phaseIdx]||TP_PHASES[0];
   var blk=ph.blocks[blockIdx]||ph.blocks[0];
-  var blockStartWk=ph.startWeek+blockIdx*4;
+  var sk=sportKey||'multi';
+  var sd=TP_SPORT_DATA[sk]||TP_SPORT_DATA.multi;
+  var lvl=tpArchLevel(arch);
+  var speedCat1=tpSportSpeedCat(sk,arch);
+  var speedCat2=lvl==='Beginner'?'speed_accel':'speed_topend';
+  var speedCat3=lvl==='Beginner'?'speed_accel':'speed_trans';
+  var jumpCat=tpSportJumpCat(sk,arch);
+  var jumpCat2=lvl==='Advanced'?'jump_rsi':'jump_bilateral';
+  var archLabel={Advanced:'\u2b06 Advanced',Intermediate:'~ Intermediate',Beginner:'\u25be Beginner'};
   var html='<div style="font-size:16px;font-weight:800;color:'+ph.color+';margin-bottom:4px">Week Plan \u2014 Block '+(blockIdx+1)+': '+blk.label+'</div>';
-  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:14px">'+team+' \xb7 '+sport+' \xb7 Phase '+(phaseIdx+1)+' \xb7 '+arch+' \xb7 '+blk.intensity+'</div>';
+  html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:6px">'+team+' \xb7 '+sport+' \xb7 Phase '+(phaseIdx+1)+' \xb7 '+blk.intensity+'</div>';
+  html+='<div style="display:flex;gap:6px;margin-bottom:12px">';
+  html+='<span style="background:#1e3a5f;border:1px solid #2a5a8a;color:#6ab0f0;font-size:9px;padding:2px 7px;border-radius:8px">'+(archLabel[lvl]||arch)+'</span>';
+  html+='<span style="background:#1a1208;border:1px solid #3a2a00;color:#C9A228;font-size:9px;padding:2px 7px;border-radius:8px">'+sd.primary+'</span>';
+  html+='</div>';
   html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">3-DAY TRAINING WEEK \u2014 FULL SESSION VIEW</div>';
-  // ── DAY 1: TOTAL BODY ──
+  // DAY 1
   html+='<div style="background:#1a1208;border:1px solid #3a2a00;border-radius:10px;padding:12px;margin-bottom:14px">';
   html+='<div style="font-size:13px;font-weight:800;color:#C9A228;margin-bottom:2px">\u26a1 Day 1 \u2014 Total Body</div>';
-  html+='<div style="font-size:10px;color:#6a8aa8;margin-bottom:10px">Olympic lift focus \xb7 Full chain power \xb7 Speed acceleration block</div>';
+  html+='<div style="font-size:10px;color:#6a8aa8;margin-bottom:10px">Olympic lift focus \xb7 Full chain power \xb7 '+sd.primary+'</div>';
   html+=tpStarsBlock('S \u2014 Stability / Movement Prep','#4af08a',[
     {ex:tpEx('stability'),sch:'2\xd78 each \u2014 activation'},
     {ex:tpEx('stability'),sch:'2\xd710 \u2014 movement prep'}
   ]);
-  html+=tpStarsBlock('T \u2014 Speed Track (Acceleration)','#4a8af0',[
-    {ex:tpEx('speed_accel'),sch:'4 reps \u2014 full recovery'},
-    {ex:tpEx('speed_accel'),sch:'3 reps \u2014 max intent'}
+  var sLbl1=speedCat1.replace('speed_','');sLbl1=sLbl1.charAt(0).toUpperCase()+sLbl1.slice(1);
+  html+=tpStarsBlock('T \u2014 Speed Track ('+sLbl1+')','#4a8af0',[
+    {ex:tpEx(speedCat1),sch:'4 reps \u2014 full recovery'},
+    {ex:tpEx(speedCat1),sch:'3 reps \u2014 max intent'}
   ]);
   html+=tpStarsBlock('A \u2014 Olympic Lift (T1 Total Body)','#C9A228',[
-    {ex:tpEx('T1_total'),sch:blk.t1rep},
-    {ex:tpEx('T2_total'),sch:blk.t2rep}
+    {ex:tpExByArch('T1_total',arch),sch:blk.t1rep},
+    {ex:tpExByArch('T2_total',arch),sch:blk.t2rep}
   ]);
   html+=tpStarsBlock('A \u2014 Jump Development','#f0a04a',[
-    {ex:tpEx('jump_bilateral'),sch:'4\xd74 \u2014 max height \u2014 full recovery'},
-    {ex:tpEx('jump_bilateral'),sch:'3\xd74 \u2014 reactive ground contact'}
+    {ex:tpEx(jumpCat),sch:'4\xd74 \u2014 max height \u2014 full recovery'},
+    {ex:tpEx(jumpCat2),sch:'3\xd74 \u2014 reactive ground contact'}
   ]);
   html+=tpStarsBlock('S \u2014 Support / Core','#8a9bb0',[
     {ex:tpEx('support'),sch:'3\xd712 \u2014 continuous'},
     {ex:tpEx('support'),sch:'3\xd710 each side'}
   ]);
   html+='</div>';
-  // ── DAY 2: LOWER BODY ──
+  // DAY 2
+  var sLbl2=speedCat2.replace('speed_','');sLbl2=sLbl2.charAt(0).toUpperCase()+sLbl2.slice(1);
   html+='<div style="background:#08122a;border:1px solid #1e3a7a;border-radius:10px;padding:12px;margin-bottom:14px">';
-  html+='<div style="font-size:13px;font-weight:800;color:#4a8af0;margin-bottom:2px">\ud83e\uddb5 Day 2 \u2014 Lower Body</div>';
-  html+='<div style="font-size:10px;color:#6a8aa8;margin-bottom:10px">Primary squat \u2014 hinge \xb7 Unilateral development \xb7 Posterior chain \xb7 Top-end speed</div>';
+  html+='<div style="font-size:13px;font-weight:800;color:#4a8af0;margin-bottom:2px">&#129459; Day 2 \u2014 Lower Body</div>';
+  html+='<div style="font-size:10px;color:#6a8aa8;margin-bottom:10px">Primary squat \u2014 hinge \xb7 Unilateral development \xb7 Posterior chain</div>';
   html+=tpStarsBlock('S \u2014 Stability / Hip Activation','#4af08a',[
     {ex:tpEx('stability'),sch:'2\xd78 each \u2014 hip activation'},
     {ex:tpEx('stability'),sch:'2\xd710 \u2014 glute warm-up'}
   ]);
-  html+=tpStarsBlock('T \u2014 Speed Track (Top-End)','#4a8af0',[
-    {ex:tpEx('speed_topend'),sch:'3 reps \u2014 max velocity'},
-    {ex:tpEx('speed_topend'),sch:'2 reps \u2014 overspeed intent'}
+  html+=tpStarsBlock('T \u2014 Speed Track ('+sLbl2+')','#4a8af0',[
+    {ex:tpEx(speedCat2),sch:'3 reps \u2014 '+(lvl==='Beginner'?'mechanics focus':'max velocity')},
+    {ex:tpEx(speedCat2),sch:'2 reps \u2014 '+(lvl==='Advanced'?'overspeed intent':'full recovery')}
   ]);
   html+=tpStarsBlock('A \u2014 Primary Lower (L1 \u2014 L2)','#C9A228',[
-    {ex:tpEx('L1_lower'),sch:blk.t1rep},
-    {ex:tpEx('L2_lower'),sch:blk.t2rep}
+    {ex:tpExByArch('L1_lower',arch),sch:blk.t1rep},
+    {ex:tpExByArch('L2_lower',arch),sch:blk.t2rep}
   ]);
   html+=tpStarsBlock('R \u2014 Unilateral + Posterior Chain','#f04a8a',[
-    {ex:tpEx('L3_lower'),sch:'3\xd76 each side'},
-    {ex:tpEx('L4_lower'),sch:'3\xd78 \u2014 tempo controlled'},
-    {ex:tpEx('L5_lower'),sch:'3\xd710 \u2014 squeeze peak'}
+    {ex:tpExByArch('L3_lower',arch),sch:'3\xd76 each side'},
+    {ex:tpExByArch('L4_lower',arch),sch:'3\xd78 \u2014 tempo controlled'},
+    {ex:tpExByArch('L5_lower',arch),sch:'3\xd710 \u2014 squeeze peak'}
   ]);
   html+=tpStarsBlock('S \u2014 Support + Single-Leg Jump','#8a9bb0',[
-    {ex:tpEx('jump_unilateral'),sch:'3\xd74 each \u2014 full recovery'},
+    {ex:tpExByArch(lvl==='Beginner'?'jump_bilateral':'jump_unilateral',arch),sch:'3\xd74 each \u2014 full recovery'},
     {ex:tpEx('support'),sch:'3\xd712 \u2014 circuit'}
   ]);
   html+='</div>';
-  // ── DAY 3: UPPER BODY ──
+  // DAY 3
   html+='<div style="background:#081a12;border:1px solid #1e5a3a;border-radius:10px;padding:12px;margin-bottom:14px">';
-  html+='<div style="font-size:13px;font-weight:800;color:#4af08a;margin-bottom:2px">\ud83d\udcaa Day 3 \u2014 Upper Body</div>';
-  html+='<div style="font-size:10px;color:#6a8aa8;margin-bottom:10px">Push + pull development \xb7 Shoulder health \xb7 Core capacity \xb7 Transition speed</div>';
+  html+='<div style="font-size:13px;font-weight:800;color:#4af08a;margin-bottom:2px">&#128170; Day 3 \u2014 Upper Body</div>';
+  html+='<div style="font-size:10px;color:#6a8aa8;margin-bottom:10px">Push + pull development \xb7 Shoulder health \xb7 Core capacity</div>';
   html+=tpStarsBlock('S \u2014 Stability / Shoulder Prep','#4af08a',[
     {ex:tpEx('stability'),sch:'2\xd710 \u2014 rotator cuff activation'},
     {ex:tpEx('stability'),sch:'2\xd78 each \u2014 thoracic mobility'}
   ]);
   html+=tpStarsBlock('T \u2014 Speed Track (Transition \u2014 Decel)','#4a8af0',[
-    {ex:tpEx('speed_trans'),sch:'3 reps \u2014 decel + COD'},
-    {ex:tpEx('speed_trans'),sch:'2 reps \u2014 reactive agility'}
+    {ex:tpEx(speedCat3),sch:'3 reps \u2014 decel + COD'},
+    {ex:tpEx(speedCat3),sch:'2 reps \u2014 reactive agility'}
   ]);
   html+=tpStarsBlock('A \u2014 Primary Push + Pull (U1 \u2014 U2)','#C9A228',[
-    {ex:tpEx('U1_upper'),sch:blk.t1rep},
-    {ex:tpEx('U2_upper'),sch:blk.t2rep}
+    {ex:tpExByArch('U1_upper',arch),sch:blk.t1rep},
+    {ex:tpExByArch('U2_upper',arch),sch:blk.t2rep}
   ]);
   html+=tpStarsBlock('R \u2014 Secondary Push + Pull + Shoulders','#f04a8a',[
-    {ex:tpEx('U3_upper'),sch:'3\xd78 \u2014 controlled eccentric'},
-    {ex:tpEx('U4_upper'),sch:'3\xd710 \u2014 strict vertical pull'},
-    {ex:tpEx('U5_upper'),sch:'3\xd712 \u2014 shoulder health'}
+    {ex:tpExByArch('U3_upper',arch),sch:'3\xd78 \u2014 controlled eccentric'},
+    {ex:tpExByArch('U4_upper',arch),sch:'3\xd710 \u2014 strict vertical pull'},
+    {ex:tpExByArch('U5_upper',arch),sch:'3\xd712 \u2014 shoulder health'}
   ]);
   html+=tpStarsBlock('S \u2014 Support / Core Capacity','#8a9bb0',[
     {ex:tpEx('support'),sch:'3\xd712 \u2014 anti-rotation'},
