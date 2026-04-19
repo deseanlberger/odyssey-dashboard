@@ -19,12 +19,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .coach-btn.active{background:#C9A228;border-color:#C9A228;color:#fff}
 .coach-badge{background:#C9A228;color:#fff;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
 
-.tabs{display:flex;background:#0a1520;border-bottom:1px solid #1e3a5f;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.tab{padding:12px 14px;font-size:12px;font-weight:600;cursor:pointer;color:#6a8aa8;border-bottom:2px solid transparent;transition:all .15s;flex-shrink:0}
-.tab.active{color:#C9A228;border-bottom-color:#C9A228}
-.tab:hover:not(.active){color:#ccc}
+.nav-strip{display:flex;background:#0a1520;border-bottom:1px solid #1e3a5f;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;align-items:stretch}
+.nav-tab{padding:12px 16px;font-size:12px;font-weight:600;cursor:pointer;color:#6a8aa8;border-bottom:2px solid transparent;border-top:none;border-left:none;border-right:none;transition:all .15s;flex-shrink:0;background:transparent}
+.nav-tab.active{color:#C9A228;border-bottom-color:#C9A228}
+.nav-tab:hover:not(.active){color:#ccc}
+.nav-tools-btn{margin-left:auto;padding:10px 18px;font-size:12px;font-weight:700;cursor:pointer;color:#8a9bb0;background:#0a1520;border:none;border-left:1px solid #1e3a5f;transition:all .15s;flex-shrink:0;white-space:nowrap}
+.nav-tools-btn:hover{background:#1e3a5f;color:#C9A228}
 .tab-panel{display:none}
 .tab-panel.active{display:block}
+/* Tools overlay */
+.tools-box{background:#0a1520;border-radius:16px;padding:20px;width:300px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.6);border:1px solid #2a4a6a}
+.tools-drum{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.tools-drum-item{padding:14px 16px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;color:#a0bbd4;background:#112233;border:1px solid #1e3a5f;transition:all .15s;display:flex;align-items:center;gap:8px}
+.tools-drum-item:hover,.tools-drum-item.selected{background:#C9A228;color:#fff;border-color:#C9A228}
+.tools-launch-btn{width:100%;padding:11px;background:#1e3a5f;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:background .15s}
+.tools-launch-btn:hover{background:#C9A228}
+/* PB v2 */
+.pb-stars-block{background:#0a1520;border:1px solid #1e3a5f;border-radius:10px;padding:10px 14px;margin-bottom:8px}
+.pb-stars-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px}
+.pb-stars-items{font-size:12px;color:#c0d4e8;line-height:1.7}
 
 
 
@@ -337,58 +350,6 @@ select:focus{border-color:#C9A228}
   .compare-grid{grid-template-columns:1fr}
   .header-title h1{font-size:17px}
 }
-
-/* ── TOOL BAR ── */
-.tool-bar {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:8px 16px; background:#0d1b2a; border-bottom:1px solid #1e3a5f;
-}
-.tool-bar-label { font-size:13px; font-weight:800; color:#C9A228; letter-spacing:.5px; }
-.tool-bar-btn {
-  background:#1e3a5f; border:none; color:#a0bbd4; border-radius:20px;
-  padding:6px 16px; font-size:12px; font-weight:700; cursor:pointer; transition:all .15s;
-}
-.tool-bar-btn:hover { background:#C9A228; color:#000; }
-
-/* ── TOOLS DRUM WHEEL ── */
-.tools-box {
-  background:#0d1b2a; border:1px solid #2a4a6a; border-radius:16px;
-  width:300px; padding:20px; position:relative; text-align:center;
-}
-.tools-box-header {
-  display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;
-}
-.tools-drum-wrap {
-  position:relative; height:210px; margin-bottom:16px; overflow:hidden; border-radius:10px;
-}
-.tools-drum {
-  height:210px; overflow-y:scroll; scroll-snap-type:y mandatory; scrollbar-width:none;
-  padding:0; margin:0;
-}
-.tools-drum::-webkit-scrollbar { display:none; }
-.tools-drum-spacer { height:70px; flex-shrink:0; }
-.tools-drum-item {
-  height:70px; scroll-snap-align:center; display:flex; align-items:center;
-  justify-content:center; font-size:13px; font-weight:700; color:#4a6a8a;
-  cursor:pointer; transition:all .2s; padding:0 16px; text-align:center; line-height:1.3;
-}
-.tools-drum-item.selected { color:#C9A228; font-size:14px; }
-.tools-drum-glow {
-  position:absolute; left:0; right:0; height:70px; pointer-events:none; z-index:2;
-}
-.tools-drum-glow-top { top:0; background:linear-gradient(to bottom,#0d1b2a 40%,transparent); }
-.tools-drum-glow-bot { bottom:0; background:linear-gradient(to top,#0d1b2a 40%,transparent); }
-.tools-drum-highlight {
-  position:absolute; left:8px; right:8px; top:70px; height:70px; pointer-events:none; z-index:1;
-  border-top:1px solid rgba(201,162,40,.4); border-bottom:1px solid rgba(201,162,40,.4);
-  border-radius:8px; background:rgba(201,162,40,.05);
-}
-.tools-launch-btn {
-  width:100%; background:#C9A228; border:none; color:#000; border-radius:10px;
-  padding:12px; font-size:13px; font-weight:800; cursor:pointer; letter-spacing:.5px;
-}
-.tools-launch-btn:hover { background:#e6b830; }
-
 </style>
 </head>
 <body>
@@ -409,36 +370,11 @@ select:focus{border-color:#C9A228}
   </div>
 </div>
 
-<!-- TOOLS DRUM WHEEL MODAL -->
-<div class="pw-overlay" id="tools-overlay" onclick="if(event.target===this)closeTools()">
-  <div class="tools-box">
-    <div class="tools-box-header">
-      <span style="font-size:15px;font-weight:800;color:#C9A228;letter-spacing:.5px">🛠️ TOOLS</span>
-      <button onclick="closeTools()" style="background:none;border:none;color:#6a8aa8;font-size:20px;cursor:pointer;line-height:1">✕</button>
-    </div>
-    <div class="tools-drum-wrap">
-      <div class="tools-drum-glow tools-drum-glow-top"></div>
-      <div class="tools-drum" id="tools-drum">
-        <div class="tools-drum-spacer"></div>
-        <div class="tools-drum-item" data-tool="compare">⚡ How Do You Stack Up?</div>
-        <div class="tools-drum-item" data-tool="1rm">🏋️ 1RM Calculator</div>
-        <div class="tools-drum-item" data-tool="velocity">📈 VBT Velocity Zones</div>
-        <div class="tools-drum-item" data-tool="forty">🏃 40-Yard Estimator</div>
-        <div class="tools-drum-item tools-staff" data-tool="staff" style="display:none">👨‍💼 Staff Profiles</div>
-        <div class="tools-drum-item tools-pb" data-tool="program" style="display:none">📋 Program Builder</div>
-        <div class="tools-drum-item tools-coach" data-tool="newathlete" style="display:none">➕ Add New Athlete</div>
-        <div class="tools-drum-spacer"></div>
-      </div>
-      <div class="tools-drum-glow tools-drum-glow-bot"></div>
-      <div class="tools-drum-highlight"></div>
-    </div>
-    <button class="tools-launch-btn" onclick="openSelectedTool()">Open ↗</button>
-  </div>
-</div>
-
-<div class="tool-bar">
-  <span class="tool-bar-label">📊 Dashboard</span>
-  <button class="tool-bar-btn" onclick="openTools()">🛠️ Tools</button>
+<div class="nav-strip">
+  <button class="nav-tab active" id="nav-rankings" onclick="navSwitch('rankings')">📊 Dashboard</button>
+  <button class="nav-tab" id="nav-compare" onclick="navSwitch('compare')">⚡ Stack Up</button>
+  <button class="nav-tab" id="nav-forty" onclick="navSwitch('forty')">🏃 40-Yard Est</button>
+  <button class="nav-tools-btn" onclick="openTools()">🛠️ Tools</button>
 </div>
 
 <!-- RANKINGS TAB -->
@@ -743,254 +679,126 @@ select:focus{border-color:#C9A228}
   </div>
 </div>
 
-<!-- PROGRAM BUILDER MODAL (v2 — OP Blueprint Engine) -->
+<!-- PROGRAM BUILDER MODAL -->
 <div class="pw-overlay" id="pb-overlay" onclick="if(event.target===this)closePB()">
-  <div class="pw-modal" style="max-width:720px;max-height:90vh;overflow-y:auto;text-align:left;padding:20px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+  <div class="pw-modal" style="max-width:760px;max-height:90vh;overflow-y:auto;text-align:left">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
       <div>
         <div style="font-size:18px;font-weight:800">📋 Program Builder</div>
-        <div style="font-size:11px;color:#6a8aa8;margin-top:2px">Odyssey Performance — OP Blueprint Engine</div>
+        <div style="font-size:11px;color:#6a8aa8;margin-top:2px">OP Blueprint — Odyssey Performance</div>
       </div>
       <button onclick="closePB()" style="background:none;border:none;color:#6a8aa8;font-size:20px;cursor:pointer">✕</button>
     </div>
-
-    <!-- ROW 1: Athlete Search -->
-    <div style="margin-bottom:12px;position:relative">
-      <label class="pb-label">Athlete Search</label>
-      <input id="pb-search" type="text" placeholder="Type name to search…" oninput="pbSearchAthletes()" autocomplete="off"
-        style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 12px;font-size:13px;box-sizing:border-box">
-      <div id="pb-search-results" style="display:none;position:absolute;top:100%;left:0;right:0;background:#0d1b2a;border:1px solid #2a4a6a;border-radius:8px;z-index:99;max-height:180px;overflow-y:auto"></div>
+    <!-- Athlete Search -->
+    <div style="margin-bottom:14px">
+      <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Athlete Search</label>
+      <input id="pb-search" type="text" placeholder="Type name to search…" oninput="pbFilterAthletes()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 12px;font-size:13px;outline:none" autocomplete="off">
+      <div id="pb-athlete-list" style="display:none;background:#0a1520;border:1px solid #2a4a6a;border-radius:8px;margin-top:4px;max-height:160px;overflow-y:auto;position:relative;z-index:10"></div>
+      <div id="pb-selected-ath" style="margin-top:6px;font-size:11px;color:#C9A228;font-weight:700;display:none"></div>
     </div>
-    <div id="pb-athlete-badge" style="display:none;background:#1e3a5f;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#a0d4ff;font-weight:700"></div>
-
-    <!-- ROW 2: Phase + Block + Week -->
+    <!-- Session Type + Sub-Focus + Archetype -->
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
       <div>
-        <label class="pb-label">Macro Phase</label>
-        <select id="pb-macro" onchange="pbUpdateBlocks()" class="pb-select">
-          <option value="triphasic1">Phase 1 — Triphasic (Foundation)</option>
-          <option value="power2">Phase 2 — Power Production</option>
-          <option value="triphasic3">Phase 3 — Triphasic (Intensification+)</option>
-          <option value="power4">Phase 4 — Peak Power</option>
+        <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Session Type</label>
+        <select id="pb-session-type" onchange="pbUpdateSubFocus()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:12px">
+          <option value="all">All-Around</option>
+          <option value="speed">Speed Only</option>
+          <option value="strength">Strength Only</option>
         </select>
       </div>
       <div>
-        <label class="pb-label">Block</label>
-        <select id="pb-block" class="pb-select" onchange="pbGenerate()">
-          <option value="eccentric">Block 1 — Eccentric</option>
-          <option value="isometric">Block 2 — Isometric</option>
-          <option value="concentric">Block 3 — Concentric</option>
+        <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Sub-Focus</label>
+        <select id="pb-sub-focus" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:12px">
+          <option value="auto">Auto (Coach's Choice)</option>
         </select>
       </div>
       <div>
-        <label class="pb-label">Week</label>
-        <select id="pb-week" class="pb-select" onchange="pbGenerate()">
+        <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Archetype</label>
+        <select id="pb-arch" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:12px">
+          <option value="auto">Auto (Detect)</option>
+          <option value="advanced">Advanced (HS / VBT)</option>
+          <option value="intermediate">Intermediate (MS)</option>
+          <option value="beginner">Beginner (Youth / EMOM)</option>
+        </select>
+      </div>
+    </div>
+    <!-- OP Blueprint Phase / Block / Week / Day -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:14px">
+      <div>
+        <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Phase</label>
+        <select id="pb-macro" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:12px">
+          <option value="tri1">Phase 1 — Triphasic</option>
+          <option value="pow1">Phase 2 — Power</option>
+          <option value="tri3">Phase 3 — Triphasic</option>
+          <option value="pow2">Phase 4 — Power</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Block</label>
+        <select id="pb-block" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:12px">
+          <option value="ecc">Block 1 — Eccentric</option>
+          <option value="iso">Block 2 — Isometric</option>
+          <option value="con">Block 3 — Concentric</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Week</label>
+        <select id="pb-week" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:12px">
           <option value="1">Week 1</option>
           <option value="2">Week 2</option>
           <option value="3">Week 3</option>
           <option value="4">Week 4 — CNS Reset</option>
         </select>
       </div>
-    </div>
-
-    <!-- ROW 3: Day + Archetype -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
       <div>
-        <label class="pb-label">Day Pattern</label>
-        <select id="pb-day" class="pb-select" onchange="pbGenerate()">
-          <option value="total">T — Total Body (Hinge / Olympic)</option>
-          <option value="lower">L — Lower Body (Squat Focus)</option>
-          <option value="upper">U — Upper Body (Push / Pull)</option>
-        </select>
-      </div>
-      <div>
-        <label class="pb-label">Athlete Archetype</label>
-        <select id="pb-arch" class="pb-select" onchange="pbGenerate()">
-          <option value="advanced">Advanced (HS — VBT + Density)</option>
-          <option value="intermediate">Intermediate (MS — Running Clock)</option>
-          <option value="beginner">Beginner (Youth — EMOM)</option>
+        <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Day</label>
+        <select id="pb-day" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:12px">
+          <option value="day1">Day 1</option>
+          <option value="day2">Day 2</option>
+          <option value="day3">Day 3</option>
+          <option value="day4">Day 4</option>
         </select>
       </div>
     </div>
-
-    <!-- ROW 4: Session Type + Sub-Focus -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
-      <div>
-        <label class="pb-label">Session Type</label>
-        <select id="pb-session-type" class="pb-select" onchange="pbToggleFocus();pbGenerate()">
-          <option value="allaround">All-Around (Speed + Lift)</option>
-          <option value="speed">Speed Focus</option>
-          <option value="strength">Strength Only</option>
-        </select>
-      </div>
-      <div id="pb-speed-focus-wrap">
-        <label class="pb-label">Speed Focus</label>
-        <select id="pb-speed-focus" class="pb-select" onchange="pbGenerate()">
-          <option value="auto">Auto (follow phase)</option>
-          <option value="acceleration">Acceleration (2-pt / Drive Phase)</option>
-          <option value="topend">Top-End Speed (Fly 10)</option>
-          <option value="transition">Transition (30–40yd)</option>
-        </select>
-      </div>
-      <div id="pb-strength-focus-wrap">
-        <label class="pb-label">Strength Focus</label>
-        <select id="pb-strength-focus" class="pb-select" onchange="pbGenerate()">
-          <option value="auto">Auto (follow day pattern)</option>
-          <option value="olympic">Olympic / Total Body</option>
-          <option value="lower">Lower Body (Squat)</option>
-          <option value="upper">Upper Body (Press / Pull)</option>
-        </select>
-      </div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button onclick="pbGen()" style="flex:1;background:#C9A228;border:none;color:#fff;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer">⚡ Generate Session</button>
+      <button onclick="pbPrint()" id="pb-print-btn" style="display:none;background:#1e3a5f;border:none;color:#fff;border-radius:8px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer">🖨️ Print</button>
     </div>
-
+    <div id="pb-output" style="font-size:12px;color:#c0d4e8">
+      <div style="color:#3a5a7a;font-size:12px;text-align:center;padding:20px">Configure options above, then tap Generate Session.</div>
+    </div>
     <!-- Custom Exercise Library (masterMode only) -->
-    <div id="pb-custom-lib-btn-wrap" style="display:none;margin-bottom:12px">
-      <button onclick="openCustomLib()" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#C9A228;border-radius:8px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer">⚙️ Manage Custom Exercise Library</button>
-    </div>
-
-    <!-- Generate button -->
-    <button onclick="pbGenerate()" style="width:100%;background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:8px;padding:8px;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:16px">▶ Generate Session Plan</button>
-
-    <!-- Output -->
-    <div id="pb-output" style="font-size:12px;color:#c0d4e8"></div>
-    <button onclick="pbPrint()" id="pb-print-btn" style="display:none;margin-top:14px;background:#C9A228;border:none;color:#000;border-radius:8px;padding:9px 18px;font-size:12px;font-weight:700;cursor:pointer">🖨️ Print / Export</button>
-  </div>
-</div>
-
-<!-- CUSTOM EXERCISE LIBRARY MODAL (masterMode only) -->
-<div class="pw-overlay" id="custom-lib-overlay" onclick="if(event.target===this)closeCustomLib()">
-  <div class="pw-modal" style="max-width:560px;max-height:80vh;overflow-y:auto;text-align:left;padding:20px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <div style="font-size:16px;font-weight:800">⚙️ Custom Exercise Library</div>
-      <button onclick="closeCustomLib()" style="background:none;border:none;color:#6a8aa8;font-size:20px;cursor:pointer">✕</button>
-    </div>
-    <div style="font-size:11px;color:#6a8aa8;margin-bottom:14px">Add custom exercises to any tier. These will appear in the Program Builder for your use only.</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
-      <div>
-        <label class="pb-label">Tier / Category</label>
-        <select id="custom-lib-tier" class="pb-select">
-          <option value="T1_total">T1 — Total Body (Tier 1)</option>
-          <option value="T2_total">T2 — Total Body (Tier 2)</option>
-          <option value="T3_total">T3 — Total Body (Tier 3)</option>
-          <option value="L1_lower">L1 — Lower Body (Tier 1)</option>
-          <option value="L2_lower">L2 — Lower Body (Tier 2)</option>
-          <option value="L3_lower">L3 — Lower Body (Tier 3)</option>
-          <option value="U1_upper">U1 — Upper Body (Tier 1)</option>
-          <option value="U2_upper">U2 — Upper Body (Tier 2)</option>
-          <option value="speed_accel">Speed — Acceleration</option>
-          <option value="speed_topend">Speed — Top-End</option>
-          <option value="plyos">Plyometrics</option>
-          <option value="carries">Loaded Carries</option>
-          <option value="mobility">Mobility</option>
-        </select>
-      </div>
-      <div>
-        <label class="pb-label">Exercise Name</label>
-        <input id="custom-lib-name" type="text" placeholder="e.g. Hex Bar Jump Squat" class="pb-select" style="padding:8px 12px">
-      </div>
-    </div>
-    <button onclick="addCustomExercise()" style="background:#C9A228;border:none;color:#000;border-radius:8px;padding:8px 18px;font-size:12px;font-weight:800;cursor:pointer;margin-bottom:16px">+ Add Exercise</button>
-    <div id="custom-lib-list" style="font-size:11px;color:#a0bbd4"></div>
-  </div>
-</div>
-
-<style>
-.pb-label { font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px; }
-.pb-select { width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:12px; }
-</style>
-
-<!-- ADD NEW ATHLETE MODAL -->
-<div class="pw-overlay" id="newathlete-overlay" onclick="if(event.target===this)closeNewAthlete()">
-  <div class="pw-modal" style="max-width:500px;text-align:left;padding:20px;max-height:90vh;overflow-y:auto">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <div style="font-size:16px;font-weight:800">➕ Add New Athlete</div>
-      <button onclick="closeNewAthlete()" style="background:none;border:none;color:#6a8aa8;font-size:20px;cursor:pointer">✕</button>
-    </div>
-    <div style="font-size:11px;color:#6a8aa8;margin-bottom:14px">Added athletes are available immediately in this session. All fields except Name are optional.</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-      <div>
-        <label class="pb-label">First Name *</label>
-        <input id="na-first" type="text" placeholder="e.g. Jordan" class="pb-select" style="padding:8px 12px">
-      </div>
-      <div>
-        <label class="pb-label">Last Name *</label>
-        <input id="na-last" type="text" placeholder="e.g. Smith" class="pb-select" style="padding:8px 12px">
-      </div>
-      <div>
-        <label class="pb-label">Sport</label>
-        <input id="na-sport" type="text" placeholder="e.g. Baseball" class="pb-select" style="padding:8px 12px">
-      </div>
-      <div>
-        <label class="pb-label">Position</label>
-        <input id="na-pos" type="text" placeholder="e.g. Pitcher" class="pb-select" style="padding:8px 12px">
-      </div>
-      <div>
-        <label class="pb-label">Grade</label>
-        <select id="na-grade" class="pb-select">
-          <option value="">Select…</option>
-          <option value="freshman">Freshman</option>
-          <option value="sophomore">Sophomore</option>
-          <option value="junior">Junior</option>
-          <option value="senior">Senior</option>
-          <option value="8th">8th Grade</option>
-          <option value="college">College</option>
-        </select>
-      </div>
-      <div>
-        <label class="pb-label">Gender</label>
-        <select id="na-gender" class="pb-select">
-          <option value="">Select…</option>
-          <option value="M">Male</option>
-          <option value="F">Female</option>
-        </select>
-      </div>
-      <div>
-        <label class="pb-label">Body Weight (kg)</label>
-        <input id="na-bw" type="number" step="0.1" placeholder="e.g. 72.5" class="pb-select" style="padding:8px 12px">
-      </div>
-      <div>
-        <label class="pb-label">Grad Year</label>
-        <input id="na-year" type="number" placeholder="e.g. 2027" class="pb-select" style="padding:8px 12px">
-      </div>
-    </div>
-    <div style="border:1px solid #1e3a5f;border-radius:8px;padding:12px;margin-bottom:12px">
-      <div style="font-size:10px;font-weight:800;color:#C9A228;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Sprint Times (optional)</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div id="pb-custom-section" style="display:none;margin-top:18px;border-top:1px solid #1e3a5f;padding-top:14px">
+      <div style="font-size:11px;font-weight:800;color:#C9A228;margin-bottom:8px">⚙️ Custom Exercise Library</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:end">
         <div>
-          <label class="pb-label">0–10yd (sec)</label>
-          <input id="na-010" type="number" step="0.001" placeholder="e.g. 1.65" class="pb-select" style="padding:8px 12px">
+          <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Tier</label>
+          <select id="clib-tier" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:6px 8px;font-size:11px">
+            <option value="T1_total">T1 Total Body</option>
+            <option value="T2_total">T2 Total Body</option>
+            <option value="L1_lower">L1 Lower</option>
+            <option value="L2_lower">L2 Lower</option>
+            <option value="L3_lower">L3 Lower</option>
+            <option value="L4_lower">L4 Lower</option>
+            <option value="L5_lower">L5 Lower</option>
+            <option value="U1_upper">U1 Upper</option>
+            <option value="U2_upper">U2 Upper</option>
+            <option value="speed_accel">Speed — Accel</option>
+            <option value="speed_topend">Speed — Top End</option>
+            <option value="speed_trans">Speed — Transition</option>
+            <option value="stability">Stability</option>
+            <option value="support">Support</option>
+          </select>
         </div>
         <div>
-          <label class="pb-label">20–30yd (sec)</label>
-          <input id="na-2030" type="number" step="0.001" placeholder="e.g. 1.10" class="pb-select" style="padding:8px 12px">
+          <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Exercise Name</label>
+          <input id="clib-ex" type="text" placeholder="Exercise name…" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:6px 10px;font-size:12px;outline:none">
         </div>
+        <button onclick="addCustomEx()" style="background:#4caf50;border:none;color:#fff;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">+ Add</button>
       </div>
+      <div id="clib-status" style="font-size:10px;color:#4caf50;display:none;margin-bottom:6px"></div>
+      <div id="clib-list" style="font-size:11px;color:#6a8aa8"></div>
     </div>
-    <div style="border:1px solid #1e3a5f;border-radius:8px;padding:12px;margin-bottom:12px">
-      <div style="font-size:10px;font-weight:800;color:#C9A228;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Force Plate (optional)</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div>
-          <label class="pb-label">CMJ Jump Height (in)</label>
-          <input id="na-cmj" type="number" step="0.1" placeholder="e.g. 14.5" class="pb-select" style="padding:8px 12px">
-        </div>
-        <div>
-          <label class="pb-label">CMJ RSI</label>
-          <input id="na-rsi" type="number" step="0.01" placeholder="e.g. 0.65" class="pb-select" style="padding:8px 12px">
-        </div>
-        <div>
-          <label class="pb-label">CMJ Power/BM</label>
-          <input id="na-power" type="number" step="0.1" placeholder="e.g. 48.0" class="pb-select" style="padding:8px 12px">
-        </div>
-        <div>
-          <label class="pb-label">Iso Force/BM</label>
-          <input id="na-iso" type="number" step="0.1" placeholder="e.g. 35.0" class="pb-select" style="padding:8px 12px">
-        </div>
-      </div>
-    </div>
-    <div id="na-error" style="color:#ef5350;font-size:11px;margin-bottom:8px;display:none"></div>
-    <div id="na-success" style="color:#4caf50;font-size:11px;margin-bottom:8px;display:none"></div>
-    <button onclick="saveNewAthlete()" style="width:100%;background:#C9A228;border:none;color:#000;border-radius:10px;padding:12px;font-size:13px;font-weight:800;cursor:pointer">➕ Add to Roster</button>
-    <div style="font-size:10px;color:#4a6a8a;margin-top:8px;text-align:center">Added for this session · Full profile approval by Coach Berger required for permanent save</div>
   </div>
 </div>
 
@@ -1012,6 +820,65 @@ select:focus{border-color:#C9A228}
     </div>
     <div id="upload-status" style="font-size:11px;color:#4caf50;margin-bottom:10px;display:none"></div>
     <div id="upload-error" style="font-size:11px;color:#ef5350;margin-bottom:10px;display:none"></div>
+  </div>
+</div>
+
+
+<!-- TOOLS WHEEL OVERLAY -->
+<div class="pw-overlay" id="tools-overlay" onclick="if(event.target===this)closeTools()">
+  <div class="tools-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:16px;font-weight:800">🛠️ Tools</div>
+      <button onclick="closeTools()" style="background:none;border:none;color:#6a8aa8;font-size:18px;cursor:pointer">✕</button>
+    </div>
+    <div class="tools-drum" id="tools-drum">
+      <div class="tools-drum-item selected" data-tool="1rm" onclick="selectTool(this)">🏋️ 1RM Calculator</div>
+      <div class="tools-drum-item" data-tool="velocity" onclick="selectTool(this)">📈 VBT Velocity Zones</div>
+      <div class="tools-drum-item tools-coach-only" data-tool="staff" style="display:none" onclick="selectTool(this)">👨‍💼 Staff Profiles</div>
+      <div class="tools-drum-item tools-master-only" data-tool="program" style="display:none" onclick="selectTool(this)">📋 Program Builder</div>
+      <div class="tools-drum-item tools-coach-only" data-tool="newathlete" style="display:none" onclick="selectTool(this)">➕ Add New Athlete</div>
+    </div>
+    <button class="tools-launch-btn" onclick="launchTool()">Open →</button>
+  </div>
+</div>
+
+<!-- ADD NEW ATHLETE MODAL -->
+<div class="pw-overlay" id="newath-overlay" onclick="if(event.target===this)closeNewAth()">
+  <div class="pw-modal" style="max-width:440px;text-align:left">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:16px;font-weight:800">➕ Add New Athlete</div>
+      <button onclick="closeNewAth()" style="background:none;border:none;color:#6a8aa8;font-size:20px;cursor:pointer">✕</button>
+    </div>
+    <div style="font-size:12px;color:#8a9bb0;margin-bottom:14px">Add an athlete to this session. Desean will receive an email to permanently save them.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div>
+        <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">First Name</label>
+        <input id="newath-first" type="text" placeholder="First" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
+      </div>
+      <div>
+        <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Last Name</label>
+        <input id="newath-last" type="text" placeholder="Last" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div>
+        <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Sport</label>
+        <input id="newath-sport" type="text" placeholder="Sport" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
+      </div>
+      <div>
+        <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Grad Year</label>
+        <input id="newath-year" type="number" placeholder="2026" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
+      </div>
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Gender</label>
+      <select id="newath-gender" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
+        <option value="M">Male</option>
+        <option value="F">Female</option>
+      </select>
+    </div>
+    <div id="newath-status" style="font-size:11px;color:#4caf50;margin-bottom:8px;display:none"></div>
+    <button onclick="saveNewAth()" style="width:100%;background:#C9A228;border:none;color:#fff;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer">➕ Add to Session</button>
   </div>
 </div>
 
@@ -1066,7 +933,7 @@ async function pinSubmit() {
     document.getElementById('coach-indicator').style.display = 'flex';
     document.getElementById('mode-label').textContent = masterMode
       ? 'Master view — Desean Berger' : `Coach view — ${currentCoach}`;
-    if (masterMode) document.getElementById('pb-custom-lib-btn-wrap').style.display = 'block';
+    // Tools wheel handles staff/PB visibility dynamically
     renderStaffTab();
     render();
   } else {
@@ -1096,7 +963,7 @@ function logoutCoach() {
   document.getElementById('coach-btn').classList.remove('active');
   document.getElementById('coach-indicator').style.display = 'none';
   document.getElementById('mode-label').textContent = 'Public view — coach login required to see body weight';
-  document.getElementById('pb-custom-lib-btn-wrap').style.display = 'none';
+  // Tools wheel handles visibility
   switchTab('rankings');
   render();
 }
@@ -1236,7 +1103,18 @@ function resetFilters() {
   const fs = document.getElementById('f-search'); if(fs) fs.value='';
   render();
 }
-// switchTab defined below near tools wheel
+function switchTab(t) {
+  ['rankings','compare','1rm','velocity','forty','staff'].forEach(p=>{
+    const el = document.getElementById('tab-'+p);
+    if(el) el.classList.toggle('active', p===t);
+  });
+}
+function navSwitch(t) {
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  const btn = document.getElementById('nav-'+t);
+  if(btn) btn.classList.add('active');
+  switchTab(t);
+}
 function cs(y) { return y ? `Class of '${String(y).slice(2)}` : ''; }
 function bucketClass(b) { return{'Apex':'bApex','Velocity Bias':'bVelocityBias','Force Bias':'bForceBias','Foundation':'bFoundation'}[b]||'bNA'; }
 
@@ -1280,404 +1158,357 @@ const COACHES = [
 // ═══════════════════════════════════════════════════════════════
 // PROGRAM BUILDER
 // ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// ODYSSEY EXERCISE LIBRARY (OLIB + Custom)
+// ═══════════════════════════════════════════════════════════════
+const OLIB = {
+  T1_total: ['Power Clean','Hang Clean','Trap Bar Deadlift','Power Snatch','Clean Pull','Hang Snatch'],
+  T2_total: ['Hang Clean Below Knee','Clean High Pull','Snatch High Pull','Trap Bar Jump Squat'],
+  L1_lower: ['Back Squat','Front Squat','Safety Bar Squat','Barbell Box Squat'],
+  L2_lower: ['Romanian Deadlift','Trap Bar Deadlift','Hex Bar RDL','Sumo Deadlift'],
+  L3_lower: ['Bulgarian Split Squat','B-Stance RDL','Rear-Foot Elevated Split Squat','Step-Up'],
+  L4_lower: ['Nordic Curl','GHR Hamstring Curl','Single-Leg Press','Leg Curl'],
+  L5_lower: ['Glute Bridge','Hip Thrust','Single-Leg Hip Thrust','Calf Raise'],
+  U1_upper: ['Barbell Bench Press','Push Press','DB Shoulder Press','Landmine Press'],
+  U2_upper: ['DB Incline Press','Cable Row','Barbell Row','Seated Row'],
+  U3_upper: ['DB Lateral Raise','Face Pull','Band Pull-Apart','Cable External Rotation'],
+  U4_upper: ['Push-Up','Ring Row','Chin-Up','Pull-Up'],
+  U5_upper: ['Plank','Side Plank','Dead Bug','Pallof Press'],
+  speed_accel: ['3-Point Start × 20yd','A-Skip × 20yd','Wall Drive × 10/side','Heavy Sled Sprint 40% BW × 20yd','Block Start × 10yd','Wicket Drill × 20yd (tight spacing)'],
+  speed_topend: ['Flying 10yd Sprint','A-Run × 30yd','B-Skip × 30yd','Wicket Run × 30yd (wide spacing)','Sled March → Release','Stride-Out × 30yd @ 90%'],
+  speed_trans: ['Sled Release Fly 10','30yd Build-Up Sprint','French Contrast: Sled → Sprint','Acceleration to Max-V 30yd','Resisted → Unresisted Sprint'],
+  stability: ['Ankle Pogo 3×20s','Single-Leg Balance Reach × 10/side','Hip Flexor March × 10yd','T-Spine Rotation × 8/side','Copenhagen Adductor Hold 3×10s','Dead Bug 3×8','Pallof Press 3×10/side'],
+  support: ['Hip Thrust 3×12','Copenhagen Adductor 3×10/side','Nordic Curl 3×5','GHR 3×8','Calf Raise w/ pause 3×12','Single-Leg RDL 3×8/side','Band Clamshell 2×15/side']
+};
+let CLIB = {};
+function gEx(t) { return [...(OLIB[t]||[]), ...(CLIB[t]||[])]; }
+function rEx(t, n) {
+  n = n || 1;
+  const pool = gEx(t);
+  const result = [];
+  const used = new Set();
+  let attempts = 0;
+  while (result.length < n && result.length < pool.length && attempts < 50) {
+    attempts++;
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    if (!used.has(pick)) { used.add(pick); result.push(pick); }
+  }
+  return result;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TOOLS WHEEL
+// ═══════════════════════════════════════════════════════════════
+let _toolSel = '1rm';
+let _pbAthIdx = null;
+
+function openTools() {
+  document.querySelectorAll('.tools-coach-only').forEach(function(el) { el.style.display = coachMode ? 'flex' : 'none'; });
+  document.querySelectorAll('.tools-master-only').forEach(function(el) { el.style.display = masterMode ? 'flex' : 'none'; });
+  // Reset selection to first visible item
+  var items = document.querySelectorAll('#tools-drum .tools-drum-item');
+  var first = null;
+  items.forEach(function(item) {
+    item.classList.remove('selected');
+    if (item.style.display !== 'none' && !first) first = item;
+  });
+  if (first) { first.classList.add('selected'); _toolSel = first.dataset.tool; }
+  document.getElementById('tools-overlay').classList.add('open');
+}
+function closeTools() { document.getElementById('tools-overlay').classList.remove('open'); }
+function selectTool(el) {
+  document.querySelectorAll('#tools-drum .tools-drum-item').forEach(function(x) { x.classList.remove('selected'); });
+  el.classList.add('selected');
+  _toolSel = el.dataset.tool;
+}
+function launchTool() {
+  closeTools();
+  if (_toolSel === '1rm' || _toolSel === 'velocity') { switchTab(_toolSel); return; }
+  if (_toolSel === 'staff') { if (!coachMode) { return; } switchTab('staff'); return; }
+  if (_toolSel === 'program') { if (!masterMode) return; openPB(); return; }
+  if (_toolSel === 'newathlete') { if (!coachMode) return; openNewAth(); return; }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ADD NEW ATHLETE
+// ═══════════════════════════════════════════════════════════════
+function openNewAth() {
+  ['newath-first','newath-last','newath-sport','newath-year'].forEach(function(id) { document.getElementById(id).value = ''; });
+  document.getElementById('newath-status').style.display = 'none';
+  document.getElementById('newath-overlay').classList.add('open');
+}
+function closeNewAth() { document.getElementById('newath-overlay').classList.remove('open'); }
+function saveNewAth() {
+  var first = document.getElementById('newath-first').value.trim();
+  var last = document.getElementById('newath-last').value.trim();
+  var sport = document.getElementById('newath-sport').value.trim();
+  var year = parseInt(document.getElementById('newath-year').value) || null;
+  var gender = document.getElementById('newath-gender').value;
+  if (!first || !last) { alert('First and last name are required.'); return; }
+  var newA = { name: first + ' ' + last, sport: sport, grad_year: year, gender: gender, bucket: 'N/A', _new: true };
+  A.push(newA);
+  computeScores();
+  render();
+  var body = encodeURIComponent('New athlete added by Coach ' + currentCoach + ':\n\nName: ' + first + ' ' + last + '\nSport: ' + (sport||'—') + '\nGrad Year: ' + (year||'—') + '\nGender: ' + gender + '\n\nAdded: ' + new Date().toLocaleString() + '\n\nPlease add to the permanent roster.');
+  window.location.href = 'mailto:deseanlberger@gmail.com?subject=' + encodeURIComponent('New Athlete: ' + first + ' ' + last) + '&body=' + body;
+  var stat = document.getElementById('newath-status');
+  stat.textContent = '✓ ' + first + ' ' + last + ' added to this session. Email to Desean opened.';
+  stat.style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PROGRAM BUILDER v2 — OP BLUEPRINT
+// ═══════════════════════════════════════════════════════════════
 function openPB() {
   if (!masterMode) return;
-  pbSelectedAthlete = null;
+  _pbAthIdx = null;
   document.getElementById('pb-search').value = '';
-  document.getElementById('pb-athlete-badge').style.display = 'none';
-  document.getElementById('pb-output').innerHTML = '<div style="color:#3a5a7a;font-size:12px;text-align:center;padding:20px">Search for an athlete above, then generate their session plan.</div>';
+  document.getElementById('pb-selected-ath').style.display = 'none';
+  document.getElementById('pb-athlete-list').style.display = 'none';
+  document.getElementById('pb-output').innerHTML = '<div style="color:#3a5a7a;font-size:12px;text-align:center;padding:20px">Configure options above, then tap Generate Session.</div>';
   document.getElementById('pb-print-btn').style.display = 'none';
-  document.getElementById('pb-custom-lib-btn-wrap').style.display = masterMode ? 'block' : 'none';
-  pbUpdateBlocks();
+  document.getElementById('pb-custom-section').style.display = masterMode ? 'block' : 'none';
+  pbUpdateSubFocus();
   document.getElementById('pb-overlay').classList.add('open');
 }
 function closePB() { document.getElementById('pb-overlay').classList.remove('open'); }
 
-
-// ═══════════════════════════════════════════════════════════
-// OP BLUEPRINT EXERCISE LIBRARY
-// ═══════════════════════════════════════════════════════════
-const ODYSSEY_LIB = {
-  T1_total: ['Power Clean','Hang Clean','Trap Bar Deadlift','Power Snatch','Hang Snatch','Clean Pull'],
-  T2_total: ['Hang Clean (Contrast)','DB Clean','KB Swing (Heavy)','Romanian Deadlift','Sumo Deadlift'],
-  T3_total: ['KB Swing','Good Morning','Single-Leg RDL','Glute Ham Raise','Hip Thrust'],
-  T4_total: ['Seated Hamstring Curl','Lying Hamstring Curl','Nordic Curl (Eccentric)'],
-  T5_total: ['Calf Raise (Double)','Hyperextension','Back Extension','Tibialis Raise'],
-
-  L1_lower: ['Back Squat','Front Squat','Safety Bar Squat','Barbell Box Squat'],
-  L2_lower: ['Barbell Lunge','Barbell Step-Up','BB Bulgarian Split Squat'],
-  L3_lower: ['DB Bulgarian Split Squat','Goblet Squat','DB Step-Up','DB Reverse Lunge','Goblet Lateral Lunge'],
-  L4_lower: ['Leg Extension','Sissy Squat','Spanish Squat','Wall Sit (Iso)'],
-  L5_lower: ['Tibialis Raise','Single-Leg Calf Raise','Ankle Circle (Band)'],
-
-  U1_upper: ['Barbell Bench Press','Push Press','DB Shoulder Press','Landmine Press'],
-  U2_upper: ['Bent-Over Row','DB Row','Pull-Up (Weighted)','Pendlay Row','Inverted Row'],
-  U3_upper: ['DB Incline Press','Cable Row','Face Pull','Band Pull-Apart','DB Lateral Raise'],
-  U4_upper: ['Tricep Pushdown','DB Curl','Band Tricep Extension','Hammer Curl'],
-  U5_upper: ['Wrist Roller','Finger Extension Band','Band Face Pull'],
-
-  speed_accel: ['3-Point Start x20yd','A-Skip x20yd','Wall Drive x10/side','Drive Phase x30yd','Heavy Sled Push (80% BW) x15yd','Wicket Runs x30yd','Falling Start x20yd','Partner-Resisted Run x20yd'],
-  speed_topend: ['Flying 10yd Sprint (3-step buildup)','A-Run x30yd','B-Skip x30yd','Light Sled Run-Off (10% BW) x20yd','Wicket Fly 10','Max Velocity Sprint x30yd'],
-  speed_transition: ['30yd Build-Up Sprint','40yd Sprint','Build-Up Fly 10 (20→30yd)','Med Sled Run-Off (30% BW) x30yd','10yd→30yd Acceleration'],
-
-  plyos: ['Box Jump','Hurdle Hop x5','Broad Jump','Single-Leg Bound','Pogo Hop x10','Reactive Rebound Jump','Med Ball Slam','Med Ball Rotational Throw','Depth Drop → Broad Jump'],
-  carries: ['Farmer Carry x20yd','Suitcase Carry (L+R) x20yd','Overhead Carry x20yd','Bear Hug Carry x20yd'],
-  mobility: ['Cat-Cow x8','Kneeling Rotation x5/side','Hip 90/90 x5/side','World's Greatest Stretch x5/side','Spiderman Lunge x5/side','Ankle Circle x10/side','Side Bend x8/side'],
-  stability: ['Dead Bug x8','Bird Dog x8/side','Copenhagen Plank x10s/side','SL RDL Balance x8/side','Pallof Press x10','McGill Curl-Up x8'],
-};
-
-// Custom exercises (Desean adds these)
-let CUSTOM_LIB = {};
-
-function getAllExercises(tier) {
-  const base = ODYSSEY_LIB[tier] || [];
-  const custom = CUSTOM_LIB[tier] || [];
-  return [...base, ...custom];
-}
-
-// ── custom library management ──
-function openCustomLib() {
-  document.getElementById('custom-lib-overlay').classList.add('open');
-  renderCustomLibList();
-}
-function closeCustomLib() {
-  document.getElementById('custom-lib-overlay').classList.remove('open');
-}
-function addCustomExercise() {
-  const tier = document.getElementById('custom-lib-tier').value;
-  const name = document.getElementById('custom-lib-name').value.trim();
-  if (!name) return;
-  if (!CUSTOM_LIB[tier]) CUSTOM_LIB[tier] = [];
-  if (!CUSTOM_LIB[tier].includes(name)) CUSTOM_LIB[tier].push(name);
-  document.getElementById('custom-lib-name').value = '';
-  renderCustomLibList();
-}
-function removeCustomExercise(tier, name) {
-  if (!CUSTOM_LIB[tier]) return;
-  CUSTOM_LIB[tier] = CUSTOM_LIB[tier].filter(x => x !== name);
-  renderCustomLibList();
-}
-function renderCustomLibList() {
-  const el = document.getElementById('custom-lib-list');
-  const entries = Object.entries(CUSTOM_LIB).filter(([,v]) => v.length > 0);
-  if (!entries.length) { el.innerHTML = '<div style="color:#4a6a8a;font-style:italic">No custom exercises added yet.</div>'; return; }
-  el.innerHTML = entries.map(([tier, exs]) =>
-    `<div style="margin-bottom:10px"><div style="font-weight:700;color:#C9A228;margin-bottom:4px">${tier}</div>${
-      exs.map(e => `<div style="display:flex;justify-content:space-between;padding:3px 8px;background:#0a1520;border-radius:4px;margin-bottom:2px">
-        <span>${e}</span>
-        <button onclick="removeCustomExercise('${tier}','${e.replace(/'/g,"\'")}')" style="background:none;border:none;color:#ef5350;cursor:pointer;font-size:10px">✕</button>
-      </div>`).join('')
-    }</div>`
-  ).join('');
-}
-
-// ── athlete search ──
-let pbSelectedAthlete = null;
-function pbSearchAthletes() {
-  const q = document.getElementById('pb-search').value.toLowerCase();
-  const res = document.getElementById('pb-search-results');
-  if (q.length < 1) { res.style.display = 'none'; return; }
-  const matches = A.filter(a => a.name.toLowerCase().includes(q));
-  if (!matches.length) { res.style.display = 'none'; return; }
-  res.style.display = 'block';
-  res.innerHTML = matches.map(a =>
-    `<div onclick="pbSelectAthlete(${A.indexOf(a)})" style="padding:8px 12px;cursor:pointer;border-bottom:1px solid #1e3a5f;font-size:12px;color:#a0bbd4">
-      ${a.name} <span style="color:#6a8aa8;font-size:10px">${a.sport||''} · ${a.grade||''} · ${a.bucket||'N/A'}</span>
-    </div>`
-  ).join('');
-}
-function pbSelectAthlete(idx) {
-  pbSelectedAthlete = A[idx];
-  document.getElementById('pb-search').value = pbSelectedAthlete.name;
-  document.getElementById('pb-search-results').style.display = 'none';
-  // auto-detect archetype
-  const grade = (pbSelectedAthlete.grade || '').toLowerCase();
-  let arch = 'advanced';
-  if (grade.includes('8th') || grade.includes('middle') || grade.includes('ms')) arch = 'intermediate';
-  document.getElementById('pb-arch').value = arch;
-  // show athlete badge
-  const {pct} = profileCompleteness(pbSelectedAthlete);
-  const b = pbSelectedAthlete;
-  document.getElementById('pb-athlete-badge').style.display = 'block';
-  document.getElementById('pb-athlete-badge').innerHTML =
-    `<b>${b.name}</b> · ${b.sport||'—'} · ${b.grade||'—'} · <span style="color:${b.bucket==='Velocity Bias'?'#ff9800':b.bucket==='Force Bias'?'#2196f3':b.bucket==='Apex'?'#9c27b0':'#8bc34a'}">${b.bucket||'N/A'}</span>`+
-    ` · Profile: ${pct}%${b.injuries&&b.injuries.length?` · <span style="color:#ef5350">⚠️ ${b.injuries.map(i=>i.condition).join(', ')}</span>`:''}`;
-  pbGenerate();
-}
-
-function pbUpdateBlocks() {
-  const macro = document.getElementById('pb-macro').value;
-  const blockSel = document.getElementById('pb-block');
-  blockSel.innerHTML = macro.startsWith('triphasic') ?
-    `<option value="eccentric">Block 1 — Eccentric (Force Absorption)</option>
-     <option value="isometric">Block 2 — Isometric (Positional Stiffness)</option>
-     <option value="concentric">Block 3 — Concentric (RFD / Explosive)</option>` :
-    `<option value="highforce">Block 1 — High Force (85%+ 1RM)</option>
-     <option value="power">Block 2 — Power (60–80% 1RM)</option>
-     <option value="velocity">Block 3 — Velocity (40–60% 1RM)</option>`;
-  pbGenerate();
-}
-
-function pbToggleFocus() {
-  const t = document.getElementById('pb-session-type').value;
-  document.getElementById('pb-speed-focus-wrap').style.opacity = t==='strength' ? '0.3' : '1';
-  document.getElementById('pb-strength-focus-wrap').style.opacity = t==='speed' ? '0.3' : '1';
-}
-
-function pick(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
-function pickN(arr, n) { const s=[...arr]; const r=[]; for(let i=0;i<n&&s.length;i++){const j=Math.floor(Math.random()*s.length);r.push(s.splice(j,1)[0]);} return r; }
-
-function pbGenerate() {
-  const macro  = document.getElementById('pb-macro').value;
-  const block  = document.getElementById('pb-block').value;
-  const week   = parseInt(document.getElementById('pb-week').value);
-  const day    = document.getElementById('pb-day').value;
-  const arch   = document.getElementById('pb-arch').value;
-  const stype  = document.getElementById('pb-session-type').value;
-  const sfocus = document.getElementById('pb-speed-focus').value;
-  const stfoc  = document.getElementById('pb-strength-focus').value;
-  const out    = document.getElementById('pb-output');
-
-  const isPower = macro.startsWith('power');
-  const isPhase3 = macro === 'triphasic3';
-
-  // ── VBT zones ──
-  const VBT = {
-    highforce: { lb:'0.3–0.6 m/s @ 85%+ 1RM', ub:'0.17–0.4 m/s @ 85%+ 1RM', peak:'Power Clean: 1.8–2.0 m/s · Hang Clean: 1.8–2.0 · TBJ: 1.8–2.0' },
-    power:     { lb:'0.75–1.0 m/s @ 60–80% 1RM', ub:'0.5–0.75 m/s @ 50–70% 1RM', peak:'Power Clean: 2.2–2.5 m/s · Hang Clean: 2.3–2.6 · TBJ: 2.4–2.8' },
-    velocity:  { lb:'1.1–1.5 m/s @ 40–60% 1RM', ub:'0.8–1.1 m/s @ 30–50% 1RM', peak:'Power Clean: 2.5+ m/s · Hang Clean: 2.6+ · TBJ: 2.8+' },
-    eccentric:  null, isometric: null, concentric: null,
-  };
-
-  // ── Isometric hold duration ──
-  let isoHold = '';
-  if (block === 'isometric') {
-    if (isPhase3) isoHold = week===1?'8s':week===2?'9s':week===3?'10s':'5x5 @ 70%';
-    else isoHold = week===1?'3s':week===2?'4s':week===3?'5s':'5x5 @ 70%';
+function pbFilterAthletes() {
+  var q = document.getElementById('pb-search').value.trim().toLowerCase();
+  var list = document.getElementById('pb-athlete-list');
+  if (!q) { list.style.display = 'none'; return; }
+  var matches = [];
+  for (var i = 0; i < A.length; i++) {
+    if (A[i].name.toLowerCase().indexOf(q) !== -1) matches.push({a: A[i], i: i});
+    if (matches.length >= 8) break;
   }
-  if (block === 'eccentric') {
-    if (isPhase3) isoHold = week===1?'8s eccentric':week===2?'9s eccentric':week===3?'10s eccentric':'5x5 @ 70%';
-    else isoHold = week===1?'3s eccentric':week===2?'4s eccentric':week===3?'5s eccentric':'5x5 @ 70%';
+  if (!matches.length) { list.style.display = 'none'; return; }
+  list.innerHTML = matches.map(function(m) {
+    return '<div onclick="selectPbAth(' + m.i + ')" style="padding:8px 12px;cursor:pointer;font-size:12px;border-bottom:1px solid #1e3a5f;color:#e6edf3" onmouseover="this.style.background='#1e3a5f'" onmouseout="this.style.background=''">' +
+      '<strong>' + m.a.name + '</strong> <span style="color:#6a8aa8;font-size:11px">' + (m.a.sport||'—') + ' · ' + (m.a.bucket||'N/A') + '</span></div>';
+  }).join('');
+  list.style.display = 'block';
+}
+
+function selectPbAth(idx) {
+  _pbAthIdx = idx;
+  var a = A[idx];
+  document.getElementById('pb-search').value = a.name;
+  document.getElementById('pb-athlete-list').style.display = 'none';
+  var sel = document.getElementById('pb-selected-ath');
+  sel.textContent = '✓ ' + a.name + ' — ' + (a.sport||'—') + ' | Bucket: ' + (a.bucket||'N/A') + (a.grad_year ? ' | Grad: ' + a.grad_year : '');
+  sel.style.display = 'block';
+}
+
+function pbUpdateSubFocus() {
+  var type = document.getElementById('pb-session-type').value;
+  var sf = document.getElementById('pb-sub-focus');
+  sf.innerHTML = '<option value="auto">Auto (Coach's Choice)</option>';
+  if (type === 'speed' || type === 'all') {
+    sf.innerHTML += '<option value="accel">⚡ Acceleration</option><option value="topend">🚀 Top-End Speed</option><option value="trans">🔀 Transition (Accel → Max-V)</option>';
+  }
+  if (type === 'strength' || type === 'all') {
+    sf.innerHTML += '<option value="olympic">🏋️ Olympic Lifting</option><option value="lower">🦵 Lower Body Priority</option><option value="upper">💪 Upper Body Priority</option>';
+  }
+}
+
+function addCustomEx() {
+  if (!masterMode) return;
+  var tier = document.getElementById('clib-tier').value;
+  var ex = document.getElementById('clib-ex').value.trim();
+  if (!ex) return;
+  if (!CLIB[tier]) CLIB[tier] = [];
+  CLIB[tier].push(ex);
+  document.getElementById('clib-ex').value = '';
+  var stat = document.getElementById('clib-status');
+  stat.textContent = '✓ "' + ex + '" added to ' + tier;
+  stat.style.display = 'block';
+  // Update list display
+  var listEl = document.getElementById('clib-list');
+  var allCustom = [];
+  Object.keys(CLIB).forEach(function(k) { CLIB[k].forEach(function(e) { allCustom.push(k + ': ' + e); }); });
+  listEl.innerHTML = allCustom.length ? 'Custom: ' + allCustom.join(' · ') : '';
+  setTimeout(function() { stat.style.display = 'none'; }, 2500);
+}
+
+function starsBlock(label, items) {
+  var icons = {'Stability':'🔒','Technique':'🎯','Speed':'⚡','Acceleration':'⚡','Resistance':'🏋️','Support':'🛡️'};
+  var colors = {'Stability':'#6e8efb','Technique':'#4caf50','Speed':'#C9A228','Acceleration':'#C9A228','Resistance':'#ef5350','Support':'#8a9bb0'};
+  var icon = icons[label] || '•';
+  var color = colors[label] || '#6a8aa8';
+  var itemsHtml = Array.isArray(items) ? items.map(function(i) { return '• ' + i; }).join('<br>') : items;
+  return '<div style="background:#0a1520;border:1px solid #1e3a5f;border-left:3px solid ' + color + ';border-radius:10px;padding:10px 14px;margin-bottom:8px">' +
+    '<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:' + color + ';margin-bottom:7px">' + icon + ' ' + label + '</div>' +
+    '<div style="font-size:12px;color:#c0d4e8;line-height:1.7">' + itemsHtml + '</div>' +
+    '</div>';
+}
+
+function buildPBHeader(ath, macro, block, week, day, arch) {
+  var phaseNames = {tri1:'Phase 1 — Triphasic',pow1:'Phase 2 — Power',tri3:'Phase 3 — Triphasic',pow2:'Phase 4 — Power'};
+  var blockNames = {ecc:'Block 1 — Eccentric',iso:'Block 2 — Isometric',con:'Block 3 — Concentric'};
+  var dayNames = {day1:'Day 1',day2:'Day 2',day3:'Day 3',day4:'Day 4'};
+  var athBadge = ath ? '<span style="font-size:10px;background:#C9A228;border-radius:5px;padding:2px 8px;color:#fff">' + (ath.bucket||'N/A') + '</span>' : '';
+  return '<div style="background:#0a1520;border-radius:8px;padding:10px 14px;margin-bottom:10px">' +
+    '<div style="font-size:13px;font-weight:800">' + (ath ? ath.name + ' · ' + (ath.sport||'—') : 'General Session') + '</div>' +
+    '<div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">' +
+    '<span style="font-size:10px;background:#1e3a5f;border-radius:5px;padding:2px 8px;color:#a0bbd4">' + (phaseNames[macro]||macro) + '</span>' +
+    '<span style="font-size:10px;background:#1e3a5f;border-radius:5px;padding:2px 8px;color:#a0bbd4">' + (blockNames[block]||block) + '</span>' +
+    '<span style="font-size:10px;background:#1e3a5f;border-radius:5px;padding:2px 8px;color:#a0bbd4">Week ' + week + '</span>' +
+    '<span style="font-size:10px;background:#1e3a5f;border-radius:5px;padding:2px 8px;color:#a0bbd4">' + (dayNames[day]||day) + '</span>' +
+    athBadge +
+    '<span style="font-size:10px;background:#2a1a5f;border-radius:5px;padding:2px 8px;color:#a08bd4">' + arch + '</span>' +
+    '</div></div>';
+}
+
+function pbGen() {
+  var macro = document.getElementById('pb-macro').value;
+  var block = document.getElementById('pb-block').value;
+  var week = parseInt(document.getElementById('pb-week').value);
+  var day = document.getElementById('pb-day').value;
+  var arch = document.getElementById('pb-arch').value;
+  var sessionType = document.getElementById('pb-session-type').value;
+  var subFocus = document.getElementById('pb-sub-focus').value;
+  var isPow = macro.startsWith('pow');
+  var isP3 = (macro === 'tri3');
+  var ath = (_pbAthIdx !== null) ? A[_pbAthIdx] : null;
+  var bkt = ath ? (ath.bucket || 'N/A') : 'N/A';
+
+  // Detect archetype
+  var archLabel = arch;
+  if (arch === 'auto') {
+    if (!ath) { archLabel = 'intermediate'; }
+    else if (ath.grad_year && (new Date().getFullYear() - ath.grad_year >= 0)) { archLabel = 'advanced'; }
+    else { archLabel = 'intermediate'; }
   }
 
-  // ── Week 4 CNS Reset ──
+  // Week 4 = CNS Reset
   if (week === 4) {
-    const resetEx = day==='total' ? pick(getAllExercises('T1_total')) : day==='lower' ? pick(getAllExercises('L1_lower')) : pick(getAllExercises('U1_upper'));
-    out.innerHTML = `
-      <div style="background:#1a1a0a;border:1px solid #C9A228;border-radius:10px;padding:16px;margin-bottom:12px">
-        <div style="font-size:13px;font-weight:800;color:#C9A228;margin-bottom:8px">⚠️ WEEK 4 — CNS RESET / Pattern Flush</div>
-        <div style="color:#8a9bb0;font-size:11px;margin-bottom:12px">Remove all tempos, density sets & VBT constraints. Groove patterns at low intensity. Both Acceleration and Resistance shift to 16-minute running clock.</div>
-        <div style="font-size:12px;color:#c0d4e8;line-height:1.8">
-          <b style="color:#C9A228">A — ACCELERATION | 16' Running Clock</b><br>
-          1️⃣ <b>${resetEx}</b> — 5×5 @ 70–75% 1RM (no tempo, explosive intent)<br>
-          2️⃣ ${pick(getAllExercises('mobility'))} — pattern primer<br>
-          <br>
-          <b style="color:#C9A228">R — RESISTANCE | 16' Running Clock</b><br>
-          1️⃣ ${day==='total'?pick(getAllExercises('U1_upper')):day==='lower'?pick(getAllExercises('T2_total')):pick(getAllExercises('L2_lower'))} — 5×5 @ 70%<br>
-          2️⃣ ${pick(getAllExercises('carries'))}<br>
-          <br>
-          <div style="color:#6a8aa8;font-size:10px;margin-top:4px">🔑 Advanced: 5×5 strict 70–75% | Intermediate: "6/10" difficulty, explosive intent | No velocity constraints</div>
-        </div>
-      </div>`;
-    document.getElementById('pb-print-btn').style.display = 'block';
+    var L1r = rEx('L1_lower', 1)[0];
+    var U1r = rEx('U1_upper', 1)[0];
+    var out4 = buildPBHeader(ath, macro, block, week, day, archLabel);
+    out4 += '<div style="background:#1a2a1a;border:1px solid #2d7a4a;border-radius:10px;padding:12px 14px;margin-bottom:10px">' +
+      '<div style="font-size:11px;font-weight:800;color:#4caf50;margin-bottom:4px">🔄 WEEK 4 — CNS RESET</div>' +
+      '<div style="font-size:11px;color:#8a9bb0">No tempo. No VBT targets. Pure neural reset — 16-minute running clock, rest as needed.</div></div>';
+    out4 += starsBlock('Stability', rEx('stability', 3));
+    out4 += starsBlock('Technique', ['A-Skip 2×20yd', 'Wall Drive 2×10', 'Stride-Out 1×30yd @ 80%']);
+    out4 += starsBlock('Acceleration', ['10yd Build-Up × 2 @ 75%', 'No max effort today']);
+    out4 += starsBlock('Resistance', [L1r + ' — 5×5 @ 70–75% (no tempo)', U1r + ' — 5×5 @ 70–75% (no tempo)', '16-min clock — rest as needed between sets']);
+    out4 += starsBlock('Support', rEx('support', 2));
+    document.getElementById('pb-output').innerHTML = out4;
+    document.getElementById('pb-print-btn').style.display = 'inline-block';
     return;
   }
 
-  // ── Select exercises based on day + phase ──
-  let tier1, tier2, tier3, speedDrills, plyoDrill, resistEx, supportEx;
-
-  if (day === 'total') {
-    tier1 = isPower ? pick(getAllExercises('T1_total')) : pick(getAllExercises('T1_total'));
-    tier2 = isPower ? pick(getAllExercises('T2_total')) : pick(getAllExercises('T2_total'));
-    tier3 = pick(getAllExercises('T3_total'));
-    resistEx = isPower ? pick(getAllExercises('U1_upper')) : pick(getAllExercises('U2_upper'));
-  } else if (day === 'lower') {
-    tier1 = isPower ? pick(getAllExercises('L1_lower')) : pick(getAllExercises('L1_lower'));
-    tier2 = pick(getAllExercises('L2_lower'));
-    tier3 = pick(getAllExercises('L3_lower'));
-    resistEx = isPower ? pick(getAllExercises('T2_total')) : pick(getAllExercises('T3_total'));
-  } else { // upper
-    tier1 = pick(getAllExercises('U1_upper'));
-    tier2 = pick(getAllExercises('U2_upper'));
-    tier3 = pick(getAllExercises('U3_upper'));
-    resistEx = isPower ? pick(getAllExercises('L2_lower')) : pick(getAllExercises('L3_lower'));
-  }
-
-  // Speed drill selection
-  const speedType = sfocus === 'auto' ?
-    (block==='eccentric'||block==='highforce' ? 'acceleration' : block==='concentric'||block==='velocity' ? 'topend' : 'transition')
-    : sfocus;
-  speedDrills = speedType==='acceleration' ? pickN(getAllExercises('speed_accel'),3) :
-                speedType==='topend' ? pickN(getAllExercises('speed_topend'),2) :
-                pickN(getAllExercises('speed_transition'),2);
-  plyoDrill = pick(getAllExercises('plyos'));
-
-  // Support circuit
-  const supportItems = [
-    pick(getAllExercises('carries')),
-    pick(getAllExercises('stability')),
-    pick(getAllExercises(day==='total'?'T3_total':day==='lower'?'L3_lower':'U3_upper')),
-  ];
-
-  // ── Tempo / VBT prescription ──
-  let tempoStr = '';
-  let vbtStr = '';
-  if (!isPower) {
-    // Triphasic
-    if (block==='eccentric') tempoStr = `${isoHold} descent, explode up`;
-    else if (block==='isometric') tempoStr = `${isoHold} pause at position, then explode`;
-    else tempoStr = 'Max concentric intent, controlled descent';
+  // Tempo / VBT context
+  var holdStr = '';
+  var vbtNote = '';
+  if (!isPow) {
+    // Triphasic phases
+    var holds = isP3 ? [8, 9, 10] : [3, 4, 5];
+    var h = holds[week - 1] || holds[2];
+    if (block === 'ecc') holdStr = h + 's eccentric';
+    else if (block === 'iso') holdStr = h + 's isometric hold at bottom';
+    else holdStr = 'concentric emphasis — explode up';
   } else {
-    // Power
-    const zone = VBT[block] || VBT['power'];
-    if (zone) {
-      vbtStr = day==='upper' ? zone.ub : zone.lb;
-      if (day==='total' && (tier1.includes('Clean')||tier1.includes('Snatch'))) vbtStr = zone.peak;
+    // Power phases
+    var powBlocks = ['High Force (85–92%)','Power (75–85%)','Velocity (60–75% — max speed)'];
+    var powIdx = (block === 'ecc') ? 0 : (block === 'iso') ? 1 : 2;
+    vbtNote = powBlocks[powIdx];
+    var sqVBT = [['0.3–0.6','0.17–0.4'],['0.75–1.0','0.5–0.75'],['1.1–1.5','0.8–1.1']];
+    var pcVBT = ['1.8–2.0','2.2–2.5','2.5+'];
+    holdStr = vbtNote + ' | Squat MV: ' + sqVBT[powIdx][0] + ' m/s | PC PV: ≥' + pcVBT[powIdx] + ' m/s';
+  }
+
+  function fmtEx(ex) {
+    if (holdStr) return ex + ' — 4×5 (' + holdStr + ')';
+    return ex + ' — 4×5';
+  }
+
+  // Archetype structure note
+  var structNote = '';
+  if (archLabel === 'advanced') structNote = '🎯 Advanced: VBT tracking required. Use Density Sets for accessories (3 sets × 45s on / 15s off).';
+  else if (archLabel === 'intermediate') structNote = '⏱️ Intermediate: Running clock format. Pair A1/A2 with minimal rest.';
+  else structNote = '📋 Beginner: EMOM format — 1 set per minute on the minute.';
+
+  var out = buildPBHeader(ath, macro, block, week, day, archLabel);
+  out += '<div style="background:#0a1520;border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:11px;color:#a0bbd4;border:1px solid #1e3a5f">' + structNote + '</div>';
+
+  // Stability
+  out += starsBlock('Stability', rEx('stability', 3));
+
+  // Speed block
+  if (sessionType !== 'strength') {
+    // Determine speed sub-focus
+    var sf = subFocus;
+    if (sf === 'auto') {
+      sf = (bkt === 'Force Bias' || bkt === 'Foundation') ? 'accel' : 'topend';
     }
+    var speedItems = [];
+    if (sf === 'accel') speedItems = rEx('speed_accel', 3);
+    else if (sf === 'topend') speedItems = rEx('speed_topend', 3);
+    else if (sf === 'trans') speedItems = rEx('speed_trans', 3);
+    else speedItems = rEx('speed_accel', 2).concat(rEx('speed_topend', 1));
+    out += starsBlock('Technique', ['A-Skip 2×20yd', 'Hip Hinge March 2×10yd', 'Wall Drive 2×10']);
+    out += starsBlock('Acceleration', speedItems.map(function(e) {
+      return e + ' — Full recovery (3–4 min)';
+    }));
+  } else {
+    // Strength-only: reactive/plyometric technique work
+    out += starsBlock('Technique', ['Box Jump 3×5 (track peak height)', 'Broad Jump 3×4 — max horizontal intent', 'CMJ × 3 (track power output)']);
   }
 
-  // ── Archetype-specific clock ──
-  let accelClock, resistClock;
-  if (arch==='advanced') {
-    accelClock = `16-Minute Running Clock`;
-    resistClock = `8–12 Min Density Set (Accumulation)`;
-  } else if (arch==='intermediate') {
-    accelClock = `${week===1?'12':week===2?'13':'14'}-Minute Running Clock`;
-    resistClock = `10-Minute Running Clock`;
-  } else { // beginner
-    accelClock = week===1?'1-Minute EMOM':week===2?'75s EMOM':week===3?'90s EMOM':'10-Minute Clock';
-    resistClock = '4 Rounds 40/20';
+  // Resistance block
+  if (sessionType !== 'speed') {
+    var sf2 = subFocus;
+    var rItems = [];
+    if (sf2 === 'olympic' || sf2 === 'auto' || sf2 === 'accel' || sf2 === 'topend' || sf2 === 'trans') {
+      rItems = rItems.concat(rEx('T1_total', 2).map(fmtEx));
+      rItems = rItems.concat(rEx('L1_lower', 1).map(fmtEx));
+      rItems = rItems.concat(rEx('U1_upper', 1).map(fmtEx));
+    } else if (sf2 === 'lower') {
+      rItems = rItems.concat(rEx('T1_total', 1).map(fmtEx));
+      rItems = rItems.concat(rEx('L1_lower', 2).map(fmtEx));
+      rItems = rItems.concat(rEx('L3_lower', 1).map(fmtEx));
+    } else if (sf2 === 'upper') {
+      rItems = rItems.concat(rEx('T1_total', 1).map(fmtEx));
+      rItems = rItems.concat(rEx('U1_upper', 2).map(fmtEx));
+      rItems = rItems.concat(rEx('U2_upper', 1).map(fmtEx));
+    }
+    out += starsBlock('Resistance', rItems);
   }
 
-  // ── Build set/rep prescriptions ──
-  let t1Sets;
-  if (arch==='advanced') t1Sets = isPower ? `6–5–4 sets (wave) × 3 reps` : `5×5`;
-  else if (arch==='intermediate') t1Sets = `×5 reps`;
-  else t1Sets = `×5 reps`;
+  // Support
+  out += starsBlock('Support', rEx('support', 3));
 
-  const blockLabel = {
-    eccentric:`Eccentric Block — ${isoHold}`, isometric:`Isometric Block — ${isoHold}`,
-    concentric:'Concentric Block — Max RFD', highforce:'High Force Block',
-    power:'Power Block', velocity:'Velocity Block'
-  }[block] || block;
-
-  const macroLabel = {triphasic1:'Phase 1 Triphasic',triphasic3:'Phase 3 Triphasic+',power2:'Phase 2 Power',power4:'Phase 4 Peak'}[macro]||macro;
-
-  // ── INJURY ALERT ──
-  let injuryAlert = '';
-  if (pbSelectedAthlete && pbSelectedAthlete.injuries && pbSelectedAthlete.injuries.length) {
-    injuryAlert = `<div style="background:#1a0a0a;border:1px solid #ef5350;border-radius:8px;padding:10px;margin-bottom:12px">
-      <b style="color:#ef5350">⚠️ INJURY NOTE for ${pbSelectedAthlete.name}</b><br>
-      ${pbSelectedAthlete.injuries.map(i=>`<span style="color:#ff8a80;font-size:11px">${i.condition}: ${i.notes}</span>`).join('<br>')}
-    </div>`;
+  // Asymmetry addendum
+  if (ath && (ath.uni_asym_pct || 0) >= 15) {
+    out += '<div style="background:#2a0a0a;border:1px solid #7a2020;border-radius:10px;padding:12px 14px;margin-top:8px">' +
+      '<div style="font-size:10px;font-weight:800;color:#ef5350;margin-bottom:6px">⚠️ ASYMMETRY PROTOCOL — Add to Every Session (' + ath.uni_asym_pct + '% imbalance)</div>' +
+      '<div style="font-size:11px;color:#c9d1d9">' +
+      (ath.uni_asym_pct >= 30
+        ? '• Single-leg broad jump (weak side 2× volume)<br>• Single-leg box drop — unilateral landing stiffness<br>• BB Reverse lunge — weak side lead every session'
+        : '• B-stance RDL — unilateral priority each session<br>• Single-leg landing drill (2 sets each session)') +
+      '</div></div>';
   }
 
-  // ── Speed section (skip if strength-only) ──
-  let speedSection = '';
-  if (stype !== 'strength') {
-    const speedLabel = speedType==='acceleration'?'ACCELERATION MECHANICS':speedType==='topend'?'MAX VELOCITY / FLY 10':'TRANSITION SPEED (30–40yd)';
-    speedSection = `
-      <div style="margin-bottom:10px">
-        <div style="font-size:11px;font-weight:800;color:#4a9a7a;margin-bottom:6px;letter-spacing:.5px">T — TECHNIQUE: ${speedLabel}</div>
-        <div style="color:#c0d4e8;line-height:1.8">
-          ${speedDrills.map((d,i)=>`${['1️⃣','2️⃣','3️⃣'][i]||'•'} <b>${d}</b>`).join('<br>')}
-          ${plyoDrill ? `<br>⚡ <b>${plyoDrill}</b> — ballistic contrast` : ''}
-        </div>
-        ${speedType==='topend'?'<div style="color:#6a8aa8;font-size:10px;margin-top:4px">📏 Track Fly 10 time — goal: sub-1.1s (elite), 1.1–1.2s (advanced)</div>':''}
-      </div>`;
-  }
-
-  // ── Resistance section (skip if speed-only) ──
-  let resistSection = '';
-  if (stype !== 'speed') {
-    const rpeStr = arch==='advanced' ? 'RPE 7.5–8.5' : arch==='intermediate' ? 'RPE 7' : '';
-    resistSection = `
-      <div style="margin-bottom:10px">
-        <div style="font-size:11px;font-weight:800;color:#4a7aaa;margin-bottom:6px;letter-spacing:.5px">R — RESISTANCE | ${resistClock}</div>
-        <div style="color:#c0d4e8;line-height:1.8">
-          1️⃣ <b>${resistEx}</b>${isPower ? ` — 8–12 min density${arch==='advanced'?' (Giant Set ok)':''}` : ` — ${isPower?'5×5':'3×8'} @ ${rpeStr}`}<br>
-          ${arch==='advanced'&&isPower?`<div style="color:#6a8aa8;font-size:10px;padding-left:20px">⚠️ Stop at 20% velocity drop-off</div>`:''}
-          2️⃣ ${pick(getAllExercises('mobility'))} — structural flush<br>
-          3️⃣ ${pick(getAllExercises('stability'))} — accessory
-        </div>
-      </div>`;
-  }
-
-  // ── Full output ──
-  out.innerHTML = `
-${injuryAlert}
-<div style="background:#0a1520;border:1px solid #2a4a6a;border-radius:10px;padding:16px;margin-bottom:12px">
-  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap;gap:6px">
-    <div>
-      <div style="font-size:14px;font-weight:800;color:#C9A228">${macroLabel} · ${blockLabel}</div>
-      <div style="font-size:11px;color:#6a8aa8;margin-top:2px">Week ${week} · ${day==='total'?'Total Body Day':'day'==='lower'?'Lower Body Day':'Upper Body Day'} · ${arch.charAt(0).toUpperCase()+arch.slice(1)} Archetype</div>
-    </div>
-    ${isPower && VBT[block] ? `<div style="background:#0d1520;border:1px solid #1e3a5f;border-radius:8px;padding:6px 10px;font-size:10px;color:#a0bbd4">
-      <div style="font-weight:700;color:#C9A228;margin-bottom:2px">VBT Zone</div>
-      <div>${vbtStr||''}</div>
-    </div>` : ''}
-  </div>
-
-  <!-- STABILITY -->
-  <div style="margin-bottom:10px">
-    <div style="font-size:11px;font-weight:800;color:#8a6a4a;margin-bottom:6px;letter-spacing:.5px">S — STABILITY | 0:00–0:05 | 2 Exercises</div>
-    <div style="color:#c0d4e8;line-height:1.8">
-      1️⃣ <b>${pick(getAllExercises('stability'))}</b><br>
-      2️⃣ <b>${pick(getAllExercises('mobility'))}</b>
-    </div>
-    <div style="color:#6a8aa8;font-size:10px;margin-top:2px">🔑 Flash the connective tissue. Prime tendon stiffness. No fatigue.</div>
-  </div>
-
-  <hr style="border:none;border-top:1px solid #1e3a5f;margin:10px 0">
-
-  <!-- TECHNIQUE -->
-  ${speedSection}
-
-  <!-- ACCELERATION -->
-  <div style="margin-bottom:10px">
-    <div style="font-size:11px;font-weight:800;color:#7a6aaa;margin-bottom:6px;letter-spacing:.5px">A — ACCELERATION | ${accelClock}</div>
-    <div style="color:#c0d4e8;line-height:1.8">
-      1️⃣ <b>${tier1}</b>${tempoStr?` <span style="color:#C9A228">(${tempoStr})</span>`:''} — ${t1Sets}${vbtStr&&day!=='upper'&&(day==='total'&&tier1.includes('Clean')||tier1.includes('Snatch'))?`<br><span style="color:#4a9a7a;font-size:10px;padding-left:20px">📊 Peak Vel target: ${VBT[block]?.peak?.split('·')[0]||''}</span>`:vbtStr?`<br><span style="color:#4a9a7a;font-size:10px;padding-left:20px">📊 ${vbtStr}</span>`:''}<br>
-      2️⃣ <b>${tier2}</b>${isPower?` — Dynamic Match (${day==='total'?'explosive pull':'day'==='lower'?'jump':'throw'})`:' — structural flush'}<br>
-      3️⃣ <b>${tier3}</b> — CNS primer for tomorrow's pattern<br>
-    </div>
-    <div style="color:#6a8aa8;font-size:10px;margin-top:4px">🔥 Warm-Up Block (5 min): 3×10s Max Iso Hold → Light ${tier1} 1×5, 1×3</div>
-  </div>
-
-  <hr style="border:none;border-top:1px solid #1e3a5f;margin:10px 0">
-
-  <!-- RESISTANCE -->
-  ${resistSection}
-
-  <hr style="border:none;border-top:1px solid #1e3a5f;margin:10px 0">
-
-  <!-- SUPPORT -->
-  <div>
-    <div style="font-size:11px;font-weight:800;color:#5a8a5a;margin-bottom:6px;letter-spacing:.5px">S — SUPPORT | 1:20–1:30 | Get It Done Circuit</div>
-    <div style="color:#c0d4e8;line-height:1.8">
-      1️⃣ <b>${supportItems[0]}</b> — Tomorrow's Prep<br>
-      2️⃣ <b>${supportItems[1]}</b> — Yesterday's Flush<br>
-      3️⃣ <b>${supportItems[2]}</b> — Conditional Carry / Structural Volume
-    </div>
-  </div>
-</div>`;
-
-  document.getElementById('pb-print-btn').style.display = 'block';
+  document.getElementById('pb-output').innerHTML = out;
+  document.getElementById('pb-print-btn').style.display = 'inline-block';
 }
 
 function pbPrint() {
-  const content = document.getElementById('pb-output').innerHTML;
-  const win = window.open('','_blank');
-  win.document.write(`<html><head><title>Odyssey Program</title>
-  <style>body{font-family:sans-serif;background:#060e18;color:#c0d4e8;padding:20px}b{color:#C9A228}</style>
-  </head><body>${content}</body></html>`);
-  win.document.close(); win.print();
+  var content = document.getElementById('pb-output').innerHTML;
+  var name = (_pbAthIdx !== null && A[_pbAthIdx]) ? A[_pbAthIdx].name : 'General Session';
+  var w = window.open('', '_blank');
+  w.document.write('<!DOCTYPE html><html><head><title>Program — ' + name + '</title>' +
+    '<style>body{font-family:sans-serif;background:#0D1B2A;color:#fff;padding:24px;max-width:700px}' +
+    '@media print{body{background:#fff;color:#000}}</style></head>' +
+    '<body><h2 style="color:#C9A228;margin-bottom:4px">Odyssey Performance</h2>' +
+    '<div style="font-size:12px;color:#6a8aa8;margin-bottom:16px">Generated: ' + new Date().toLocaleDateString() + '</div>' +
+    content + '</body></html>');
+  w.document.close();
+  setTimeout(function() { w.print(); }, 400);
 }
 
-
-
-
-// ═══════════════════════════════════════════════════════════════
 // COACH CSV / PHOTO UPLOAD
 // ═══════════════════════════════════════════════════════════════
 let uploadTargetCoach = null;
@@ -1698,54 +1529,13 @@ function handleCoachPhoto() {
   if (!file || !uploadTargetCoach) return;
   const reader = new FileReader();
   reader.onload = e => {
-    const dataUrl = e.target.result;
-    coachPhotos[uploadTargetCoach] = dataUrl;
-    attemptPhotoOCR(dataUrl, uploadTargetCoach);
+    coachPhotos[uploadTargetCoach] = e.target.result;
+    const stat = document.getElementById('upload-status');
+    stat.textContent = `✓ Photo uploaded for ${uploadTargetCoach}. Refresh staff tab to see it.`;
+    stat.style.display = 'block';
     renderStaffTab();
   };
   reader.readAsDataURL(file);
-}
-
-function attemptPhotoOCR(dataUrl, coachName) {
-  const statusEl = document.getElementById('upload-status');
-  const errorEl  = document.getElementById('upload-error');
-  statusEl.style.display = 'block';
-  statusEl.textContent = '⏳ Analyzing photo for data…';
-  const img = new Image();
-  img.onload = () => {
-    const canvas = document.createElement('canvas');
-    canvas.width = img.width; canvas.height = img.height;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0);
-    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-    let dark = 0, light = 0;
-    for (let i = 0; i < data.length; i += 16) {
-      const lum = 0.299*data[i] + 0.587*data[i+1] + 0.114*data[i+2];
-      if (lum < 80) dark++; else if (lum > 180) light++;
-    }
-    const total = dark + light || 1;
-    const contrast = Math.abs(dark - light) / total;
-    if (contrast > 0.15) {
-      statusEl.textContent = '✓ Photo received. Opening email to Coach Berger for manual data entry…';
-      emailPhotoToDesean(dataUrl, coachName);
-    } else {
-      statusEl.style.display = 'none';
-      errorEl.style.display = 'block';
-      errorEl.textContent = '⚠️ Photo quality too low. Retake in better lighting and try again.';
-    }
-  };
-  img.src = dataUrl;
-}
-
-function emailPhotoToDesean(dataUrl, coachName) {
-  const subject = encodeURIComponent(`Force Plate Data Upload — ${coachName}`);
-  const body = encodeURIComponent(
-    `Hi Desean,\n\nCoach ${coachName} uploaded a photo of their force plate data from the dashboard.\n\n` +
-    `Please manually update ${coachName}'s profile with the numbers in the attached image.\n\n` +
-    `[IMPORTANT: Attach the screenshot image to this email before sending]\n\nOdyssey Dashboard — Auto Notification`
-  );
-  window.open(`mailto:deseanlberger@gmail.com?subject=${subject}&body=${body}`, '_blank');
-  document.getElementById('upload-status').textContent = `✓ Email draft opened — attach the photo and send to Coach Berger for data entry.`;
 }
 
 function parseCoachCSV() {
@@ -3056,124 +2846,6 @@ function init() {
   render();
 }
 init();
-
-
-// ── TOOLS DRUM WHEEL ──
-let toolsDrumSelectedTool = 'compare';
-function openTools() {
-  document.getElementById('tools-overlay').classList.add('open');
-  // Show auth-gated items
-  document.querySelectorAll('.tools-staff').forEach(el=>el.style.display=coachMode?'flex':'none');
-  document.querySelectorAll('.tools-pb').forEach(el=>el.style.display=masterMode?'flex':'none');
-  document.querySelectorAll('.tools-coach').forEach(el=>el.style.display=coachMode?'flex':'none');
-  // init selection
-  setTimeout(()=>initToolsDrum(), 50);
-}
-function closeTools() {
-  document.getElementById('tools-overlay').classList.remove('open');
-}
-function initToolsDrum() {
-  const drum = document.getElementById('tools-drum');
-  drum.querySelectorAll('.tools-drum-item').forEach((item,i) => {
-    item.addEventListener('click', ()=>{
-      drum.querySelectorAll('.tools-drum-item').forEach(x=>x.classList.remove('selected'));
-      item.classList.add('selected');
-      toolsDrumSelectedTool = item.dataset.tool;
-    });
-  });
-  // Select first visible item
-  const first = drum.querySelector('.tools-drum-item[style*="display:flex"], .tools-drum-item:not([style*="display:none"])');
-  if (first) { first.classList.add('selected'); toolsDrumSelectedTool = first.dataset.tool; }
-}
-function openSelectedTool() {
-  closeTools();
-  const tool = toolsDrumSelectedTool;
-  if (tool === 'program') { openPB(); return; }
-  if (tool === 'newathlete') { openNewAthlete(); return; }
-  // Show the tab panel
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  const panel = document.getElementById('tab-'+tool);
-  if (panel) {
-    panel.classList.add('active');
-    if (tool === 'staff') renderStaffTab();
-  }
-}
-
-// ── ADD NEW ATHLETE ──
-function openNewAthlete() {
-  document.getElementById('newathlete-overlay').classList.add('open');
-  document.getElementById('na-error').style.display = 'none';
-  document.getElementById('na-success').style.display = 'none';
-}
-function closeNewAthlete() {
-  document.getElementById('newathlete-overlay').classList.remove('open');
-}
-function saveNewAthlete() {
-  const first = document.getElementById('na-first').value.trim();
-  const last  = document.getElementById('na-last').value.trim();
-  const errEl = document.getElementById('na-error');
-  const sucEl = document.getElementById('na-success');
-  if (!first || !last) {
-    errEl.textContent = 'First and last name are required.';
-    errEl.style.display = 'block'; sucEl.style.display = 'none'; return;
-  }
-  const name = first + ' ' + last;
-  if (A.find(a=>a.name.toLowerCase()===name.toLowerCase())) {
-    errEl.textContent = `${name} is already in the database.`;
-    errEl.style.display = 'block'; sucEl.style.display = 'none'; return;
-  }
-  const bw   = parseFloat(document.getElementById('na-bw').value)||null;
-  const cmj  = parseFloat(document.getElementById('na-cmj').value)||null;
-  const rsi  = parseFloat(document.getElementById('na-rsi').value)||null;
-  const pw   = parseFloat(document.getElementById('na-power').value)||null;
-  const iso  = parseFloat(document.getElementById('na-iso').value)||null;
-  const t010 = parseFloat(document.getElementById('na-010').value)||null;
-  const t2030= parseFloat(document.getElementById('na-2030').value)||null;
-
-  // Determine bucket from DSI if enough data
-  let dsi = null, bucket = 'N/A', source = 'sprint_only';
-  if (cmj && iso && bw) {
-    dsi = (cmj * 0.0254) / (iso / bw);
-    bucket = dsi > 0.09 ? 'Velocity Bias' : dsi >= 0.065 ? 'Force Bias' : 'Foundation';
-    source = 'both';
-  } else if (cmj) { source = 'fp_only'; }
-
-  const newAthlete = {
-    name, gender: document.getElementById('na-gender').value||'M',
-    bw_kg: bw, cmj_jh_in: cmj, cmj_rsi: rsi, cmj_power_bm: pw, iso_force_bm: iso,
-    dsi, bucket, source, dsi_type: dsi?'Standard':'Modified',
-    best_010: t010, best_2030: t2030,
-    sport: document.getElementById('na-sport').value.trim()||null,
-    position: document.getElementById('na-pos').value.trim()||null,
-    grade: document.getElementById('na-grade').value||null,
-    grad_year: parseInt(document.getElementById('na-year').value)||null,
-    has_vbt: null, added_by: currentCoach, session_only: true
-  };
-  A.push(newAthlete);
-
-  // Clear form
-  ['na-first','na-last','na-sport','na-pos','na-bw','na-cmj','na-rsi','na-power','na-iso','na-010','na-2030'].forEach(id=>{
-    document.getElementById(id).value='';
-  });
-  document.getElementById('na-grade').value='';
-  document.getElementById('na-gender').value='';
-
-  sucEl.innerHTML = `✓ <b>${name}</b> added to roster for this session! <span style="color:#6a8aa8">(Bucket: ${bucket})</span>`;
-  sucEl.style.display = 'block'; errEl.style.display = 'none';
-  render(); // refresh rankings
-  // Notify Desean
-  const subject = encodeURIComponent(`New Athlete Added — ${name} (${document.getElementById('na-sport').value||'Unknown sport'})`);
-  const body = encodeURIComponent(`Hi Desean,\n\nCoach ${currentCoach} added a new athlete during a session:\n\nName: ${name}\nSport: ${newAthlete.sport||'—'}\nGrade: ${newAthlete.grade||'—'}\nBucket: ${bucket}\n\nPlease review and permanently add to the dashboard.\n\nOdyssey Dashboard`);
-  setTimeout(()=>window.open(`mailto:deseanlberger@gmail.com?subject=${subject}&body=${body}`,'_blank'), 500);
-}
-
-// Keep switchTab for backward compat
-function switchTab(name) {
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  const p = document.getElementById('tab-'+name);
-  if (p) { p.classList.add('active'); if(name==='staff') renderStaffTab(); }
-}
-
 </script>
 </body>
 </html>
