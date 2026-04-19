@@ -271,6 +271,15 @@ select:focus{border-color:#C9A228}
 /* PASSWORD MODAL */
 .pw-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:2000;align-items:center;justify-content:center;padding:20px}
 .pw-overlay.open{display:flex}
+.pin-digit{width:52px;height:60px;font-size:28px;font-weight:800;text-align:center;background:#0a1520;color:#C9A228;border:2px solid #2a4a6a;border-radius:12px;outline:none;transition:border-color .15s}
+.pin-digit:focus{border-color:#C9A228}
+.pb-day{background:#0a1520;border:1px solid #1e3a5f;border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.pb-day-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#C9A228;margin-bottom:8px}
+.pb-block{margin-bottom:6px;padding:6px 8px;background:#112233;border-radius:6px}
+.pb-block-cat{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#6a8aa8;margin-bottom:3px}
+.pb-block-items{font-size:11px;color:#c0d4e8;line-height:1.6}
+.pb-week-header{font-size:13px;font-weight:800;color:#fff;margin:14px 0 8px;padding-bottom:6px;border-bottom:1px solid #1e3a5f}
+.pb-note{font-size:10px;color:#6a8aa8;font-style:italic;margin-top:4px}
 .pw-modal{background:#112233;border:1px solid #2a4a6a;border-radius:16px;padding:28px;max-width:380px;width:100%;text-align:center}
 .pw-modal h2{font-size:20px;font-weight:800;margin-bottom:8px}
 .pw-modal p{font-size:13px;color:#6a8aa8;margin-bottom:20px}
@@ -355,6 +364,7 @@ select:focus{border-color:#C9A228}
   <div class="tab" onclick="switchTab('velocity')">⚡ Velocity Zones</div>
   <div class="tab" onclick="switchTab('forty')">🏃 40-Yard Est</div>
   <div class="tab staff-tab" id="staff-tab-btn" onclick="switchTab('staff')" style="display:none">👨‍💼 Staff Profiles</div>
+  <div class="tab" id="pb-tab-btn" onclick="openPB()" style="display:none">📋 Program Builder</div>
 </div>
 
 <!-- RANKINGS TAB -->
@@ -645,13 +655,77 @@ select:focus{border-color:#C9A228}
 <!-- PASSWORD MODAL -->
 <div class="pw-overlay" id="pw-overlay" onclick="closePwModal(event)">
   <div class="pw-modal">
-    <div style="font-size:32px;margin-bottom:12px">🔒</div>
-    <h2>Coach Login</h2>
-    <p>Enter your password to unlock full athlete stats</p>
-    <input class="pw-input" type="password" id="pw-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')submitPw()">
-    <div class="pw-error" id="pw-error">Incorrect password. Try again.</div>
-    <button class="pw-btn" onclick="submitPw()">Unlock Coach View</button>
+    <div style="font-size:32px;margin-bottom:8px">🔒</div>
+    <h2>Staff Login</h2>
+    <p>Enter your 4-digit PIN</p>
+    <div style="display:flex;gap:8px;justify-content:center;margin-bottom:14px">
+      <input class="pin-digit" type="password" maxlength="1" id="pin0" inputmode="numeric" pattern="[0-9]" oninput="pinNext(this,1)" onkeydown="pinBack(event,this,null)">
+      <input class="pin-digit" type="password" maxlength="1" id="pin1" inputmode="numeric" pattern="[0-9]" oninput="pinNext(this,2)" onkeydown="pinBack(event,this,0)">
+      <input class="pin-digit" type="password" maxlength="1" id="pin2" inputmode="numeric" pattern="[0-9]" oninput="pinNext(this,3)" onkeydown="pinBack(event,this,1)">
+      <input class="pin-digit" type="password" maxlength="1" id="pin3" inputmode="numeric" pattern="[0-9]" oninput="pinSubmit()" onkeydown="pinBack(event,this,2)">
+    </div>
+    <div class="pw-error" id="pw-error">Incorrect PIN. Try again.</div>
     <button class="pw-cancel" onclick="closePwModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- PROGRAM BUILDER MODAL -->
+<div class="pw-overlay" id="pb-overlay" onclick="if(event.target===this)closePB()">
+  <div class="pw-modal" style="max-width:680px;max-height:85vh;overflow-y:auto;text-align:left">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div>
+        <div style="font-size:18px;font-weight:800">📋 Program Builder</div>
+        <div style="font-size:11px;color:#6a8aa8;margin-top:2px">Odyssey Performance — Desean Berger</div>
+      </div>
+      <button onclick="closePB()" style="background:none;border:none;color:#6a8aa8;font-size:20px;cursor:pointer">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+      <div>
+        <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Athlete</label>
+        <select id="pb-athlete" onchange="pbGenerate()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:12px">
+          <option value="">Select athlete…</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Training Phase</label>
+        <select id="pb-phase" onchange="pbGenerate()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:12px">
+          <option value="accumulation">Accumulation (GPP)</option>
+          <option value="intensification">Intensification</option>
+          <option value="realization">Realization (Peak)</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Weeks</label>
+        <select id="pb-weeks" onchange="pbGenerate()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:12px">
+          <option value="3">3 weeks</option>
+          <option value="4" selected>4 weeks</option>
+          <option value="6">6 weeks</option>
+        </select>
+      </div>
+    </div>
+    <div id="pb-output" style="font-size:12px;color:#c0d4e8"></div>
+    <button onclick="pbPrint()" id="pb-print-btn" style="display:none;margin-top:14px;background:#C9A228;border:none;color:#fff;border-radius:8px;padding:9px 18px;font-size:12px;font-weight:700;cursor:pointer">🖨️ Print / Export</button>
+  </div>
+</div>
+
+<!-- COACH CSV UPLOAD MODAL -->
+<div class="pw-overlay" id="upload-overlay" onclick="if(event.target===this)closeUpload()">
+  <div class="pw-modal" style="max-width:440px;text-align:left">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:16px;font-weight:800" id="upload-title">📤 Update Your Profile</div>
+      <button onclick="closeUpload()" style="background:none;border:none;color:#6a8aa8;font-size:20px;cursor:pointer">✕</button>
+    </div>
+    <div style="font-size:12px;color:#8a9bb0;margin-bottom:12px">Upload a VALD ForceDecks CMJ export CSV and your profile stats will auto-update for this session.</div>
+    <div style="margin-bottom:10px">
+      <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">ForceDecks CMJ Export (.csv)</label>
+      <input type="file" id="upload-csv" accept=".csv" onchange="parseCoachCSV()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px;font-size:12px">
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Profile Photo (optional)</label>
+      <input type="file" id="upload-photo" accept="image/*" onchange="handleCoachPhoto()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px;font-size:12px">
+    </div>
+    <div id="upload-status" style="font-size:11px;color:#4caf50;margin-bottom:10px;display:none"></div>
+    <div id="upload-error" style="font-size:11px;color:#ef5350;margin-bottom:10px;display:none"></div>
   </div>
 </div>
 
@@ -662,19 +736,68 @@ const A=[{"name":"Addison Erro","gender":"F","bw_kg":61.47,"cmj_jh_in":12.8,"cmj
 // AUTH
 // =====================================================
 let coachMode = false;
-const COACH_HASH = "72d4e36626eca910377de2a45487440681c504ecc108f509aefaab0699f6726f";
+let masterMode = false; // Desean only
+let currentCoach = null; // 'Desean'|'Ty'|'Matthew'|'Jake'
+
+const PIN_HASHES = {
+  'Desean':  '4103f0a4e707b1c7bebbc42809ab0ace8dd3f56d844d7903bfe9f95a2ccc6972',
+  'Ty':      '084d9897d40c63e437d57e2c4bd01e889ca4781088b5a73aa9761d6134993a75',
+  'Matthew': 'c3e64604cb6275890df269cce33991366a0a008a53c5b639206a802759c21fb1',
+  'Jake':    'af34ee645e2a6dda5e82265a028664f98b75946d1e73f978915208817609ae79',
+};
+
+const coachPhotos = {}; // name → base64 data URL
 
 async function sha256(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
+// ── PIN entry helpers ──
+function pinNext(el, nextIdx) {
+  if (el.value.length === 1) {
+    const next = document.getElementById('pin' + nextIdx);
+    if (next) next.focus();
+  }
+}
+function pinBack(e, el, prevIdx) {
+  if (e.key === 'Backspace' && el.value === '' && prevIdx !== null) {
+    document.getElementById('pin' + prevIdx).focus();
+  }
+}
+async function pinSubmit() {
+  const pin = [0,1,2,3].map(i => document.getElementById('pin'+i).value).join('');
+  if (pin.length < 4) return;
+  const h = await sha256(pin);
+  const matched = Object.entries(PIN_HASHES).find(([,v]) => v === h);
+  if (matched) {
+    currentCoach = matched[0];
+    coachMode = true;
+    masterMode = (currentCoach === 'Desean');
+    document.getElementById('pw-overlay').classList.remove('open');
+    document.getElementById('coach-btn').textContent = `🔓 ${currentCoach}`;
+    document.getElementById('coach-btn').classList.add('active');
+    document.getElementById('coach-indicator').style.display = 'flex';
+    document.getElementById('mode-label').textContent = masterMode
+      ? 'Master view — Desean Berger' : `Coach view — ${currentCoach}`;
+    document.getElementById('staff-tab-btn').style.display = '';
+    if (masterMode) document.getElementById('pb-tab-btn').style.display = '';
+    renderStaffTab();
+    render();
+  } else {
+    document.getElementById('pw-error').style.display = 'block';
+    [0,1,2,3].forEach(i => { document.getElementById('pin'+i).value = ''; });
+    document.getElementById('pin0').focus();
+    setTimeout(()=>{ document.getElementById('pw-error').style.display='none'; }, 2000);
+  }
+}
+
 function openPwModal() {
   if (coachMode) { logoutCoach(); return; }
-  document.getElementById('pw-input').value = '';
+  [0,1,2,3].forEach(i => { document.getElementById('pin'+i).value = ''; });
   document.getElementById('pw-error').style.display = 'none';
   document.getElementById('pw-overlay').classList.add('open');
-  setTimeout(()=>document.getElementById('pw-input').focus(), 100);
+  setTimeout(()=>document.getElementById('pin0').focus(), 100);
 }
 
 function closePwModal(e) {
@@ -682,33 +805,14 @@ function closePwModal(e) {
     document.getElementById('pw-overlay').classList.remove('open');
 }
 
-async function submitPw() {
-  const val = document.getElementById('pw-input').value;
-  const h = await sha256(val);
-  if (h === COACH_HASH) {
-    coachMode = true;
-    document.getElementById('pw-overlay').classList.remove('open');
-    document.getElementById('coach-btn').textContent = '🔓 Logout';
-    document.getElementById('coach-btn').classList.add('active');
-    document.getElementById('coach-indicator').style.display = 'flex';
-    document.getElementById('mode-label').textContent = 'Coach view — full stats visible';
-    document.getElementById('staff-tab-btn').style.display = '';
-    renderStaffTab();
-    render();
-  } else {
-    document.getElementById('pw-error').style.display = 'block';
-    document.getElementById('pw-input').value = '';
-    document.getElementById('pw-input').focus();
-  }
-}
-
 function logoutCoach() {
-  coachMode = false;
+  coachMode = false; masterMode = false; currentCoach = null;
   document.getElementById('coach-btn').textContent = '🔒 Coach Login';
   document.getElementById('coach-btn').classList.remove('active');
   document.getElementById('coach-indicator').style.display = 'none';
   document.getElementById('mode-label').textContent = 'Public view — coach login required to see body weight';
   document.getElementById('staff-tab-btn').style.display = 'none';
+  document.getElementById('pb-tab-btn').style.display = 'none';
   switchTab('rankings');
   render();
 }
@@ -896,41 +1000,326 @@ const COACHES = [
   }
 ];
 
+
+
+// ═══════════════════════════════════════════════════════════════
+// PROGRAM BUILDER
+// ═══════════════════════════════════════════════════════════════
+function openPB() {
+  if (!masterMode) return;
+  // populate athlete dropdown
+  const sel = document.getElementById('pb-athlete');
+  sel.innerHTML = '<option value="">Select athlete…</option>';
+  [...A].sort((a,b)=>a.name.localeCompare(b.name)).forEach((a,i)=>{
+    const opt = document.createElement('option');
+    opt.value = A.indexOf(a);
+    opt.textContent = `${a.name} — ${a.sport||'—'} (${a.bucket||'N/A'})`;
+    sel.appendChild(opt);
+  });
+  document.getElementById('pb-output').innerHTML = '<div style="color:#3a5a7a;font-size:12px;text-align:center;padding:20px">Select an athlete to generate their program.</div>';
+  document.getElementById('pb-print-btn').style.display = 'none';
+  document.getElementById('pb-overlay').classList.add('open');
+}
+function closePB() { document.getElementById('pb-overlay').classList.remove('open'); }
+
+function pbGenerate() {
+  const idx = document.getElementById('pb-athlete').value;
+  if (!idx && idx !== 0) return;
+  const a = A[parseInt(idx)];
+  const phase = document.getElementById('pb-phase').value;
+  const weeks = parseInt(document.getElementById('pb-weeks').value);
+  const bkt = a.bucket || 'N/A';
+  const recs = getExRecs(a);
+
+  // Phase modifiers
+  const phaseNotes = {
+    accumulation:   { vol:'HIGH', int:'LOW–MOD (65–75% 1RM)', focus:'Volume, GPP, movement quality, tissue loading', sprintPct:'85–90%' },
+    intensification:{ vol:'MOD',  int:'MOD–HIGH (75–85% 1RM)', focus:'Strength specificity, power development', sprintPct:'90–95%' },
+    realization:    { vol:'LOW',  int:'HIGH (85–95% 1RM)', focus:'Peak expression, minimal fatigue, max velocity', sprintPct:'95–100%' },
+  };
+  const pm = phaseNotes[phase];
+
+  // Day structures by bucket
+  const dayPlans = {
+    'Apex': [
+      { day:'Day 1 — Max Velocity', blocks:[
+        {cat:'Warm-Up', items:['A-skip 2×20yd','High knee wall drill 2×10','Hamstring sweep 2×10']},
+        {cat:'Speed', items:['Flying 10s — 4×', `${pm.sprintPct}% intent`, 'Full recovery between reps (3–4 min)']},
+        {cat:'Power', items:['Drop jump → sprint — 3×3','Max effort CMJ — 3×3 (track peak height)']},
+      ]},
+      { day:'Day 2 — Max Strength', blocks:[
+        {cat:'Primary Lift', items:['Back Squat — 5×3 @ 85–90%','Power Clean — 4×3 @ 80%']},
+        {cat:'Accessories', items:['Supramaximal Trap Bar eccentric — 3×5 (8s eccentric)','Single-leg RDL — 3×8 each']},
+      ]},
+      { day:'Day 3 — Power Expression', blocks:[
+        {cat:'Contrast', items:['Trap Bar DL @ 80% → immediate CMJ — 4×3','Heavy sled 30% BW → fly 10 — 3×']},
+        {cat:'Reactive', items:['Continuous hurdle hops — 3×8','Ankle pogo 3×20s']},
+      ]},
+      { day:'Day 4 — Speed Endurance', blocks:[
+        {cat:'Speed', items:['Repeat 20-yd at 85%  — 6–8 reps, 90s rest','Wicket runs — stride mechanic focus']},
+        {cat:'Recovery Strength', items:['Nordic curl — 3×5','Hip flexor carry — 2×20yd each']},
+      ]},
+    ],
+    'Velocity Bias': [
+      { day:'Day 1 — Max Velocity', blocks:[
+        {cat:'Warm-Up', items:['A-skip 2×20yd','Wicket drill 2×20yd','Stride-out 2×30yd @ 85%']},
+        {cat:'Speed', items:[`Flying 10s — 4–5× @ ${pm.sprintPct}`, 'GCT focus — land and go under 0.25s', '3–4 min full recovery']},
+        {cat:'Reactive', items:['Drop jump — 3×5 (GCT < 0.25s)','Continuous hurdle hops — 2×10']},
+      ]},
+      { day:'Day 2 — Strength Foundation', blocks:[
+        {cat:'Primary', items:[`Back Squat — 4×5 @ ${pm.int}`, 'Trap Bar Jump — 4×4 (track peak velocity ≥ 2.4 m/s)']},
+        {cat:'Accessories', items:['Romanian DL — 3×8','Copenhagen adductor — 3×10 each']},
+      ]},
+      { day:'Day 3 — Power Bridge', blocks:[
+        {cat:'Olympic', items:['Power Clean — 5×3 (target 2.2–2.5 m/s)','Hang Snatch — 3×3 (velocity emphasis)']},
+        {cat:'Plyometrics', items:['Broad jump — 4×4 (max horizontal)','Single-leg pogo — 3×15s each']},
+      ]},
+    ],
+    'Force Bias': [
+      { day:'Day 1 — Acceleration + Contrast', blocks:[
+        {cat:'Warm-Up', items:['Wall drill 2×10','Hip hinge march 2×10yd','Sled march 10yd × 2']},
+        {cat:'Speed', items:[`Heavy sled 40% BW — 4×20yd @ ${pm.sprintPct}`, 'Block start → 10yd — 4×', 'Full recovery between efforts']},
+        {cat:'Contrast', items:['CMJ contrast sets (Trap Bar 75% → CMJ) — 4×3+3','Broad jump — 3×4']},
+      ]},
+      { day:'Day 2 — Strength + Power', blocks:[
+        {cat:'Primary', items:[`Trap Bar DL — 5×3 @ ${pm.int}`, 'Hang Clean — 4×3 (target 2.3–2.6 m/s)']},
+        {cat:'Accessories', items:['B-stance RDL — 3×8 each','Split squat — 3×8 each','Glute bridge → single-leg progression']},
+      ]},
+      { day:'Day 3 — Reactive + Speed Expression', blocks:[
+        {cat:'Reactive', items:['Drop jump — 3×5 (focus: short GCT)','Ankle pogo → continuous hops — 3×15s']},
+        {cat:'Speed', items:['Fly 10 unresisted — 3× @ 95%', 'Wicket run — 2×20yd (hip height + stride length)']},
+      ]},
+    ],
+    'Foundation': [
+      { day:'Day 1 — Strength Base', blocks:[
+        {cat:'Primary', items:[`Trap Bar DL — 4×5 @ ${pm.int}`, 'Back Squat — 4×5 @ same', 'Eccentric emphasis — 3s down']},
+        {cat:'Accessories', items:['Triphasic split squat — 3×5 each (3s eccentric)','Single-leg RDL — 3×10','Hip thrust — 3×10']},
+      ]},
+      { day:'Day 2 — Acceleration Mechanics', blocks:[
+        {cat:'Speed', items:['Heavy sled 80% BW — 4×20yd', 'Wall drive drill — 3×10', 'Resisted sprint start → release — 3×']},
+        {cat:'Jump Foundation', items:['Box jump (controlled landing) — 3×5','Squat jump — 3×5 (track peak effort)']},
+      ]},
+      { day:'Day 3 — Structural Capacity', blocks:[
+        {cat:'Isometrics', items:['Overcoming ISO squat — 3×10s holds','Ankle ISO hold — 3×10s each']},
+        {cat:'GPP', items:['Sled push + pull circuit — 3 rounds','Nordic curl — 3×5','Calf raise with pause — 3×12']},
+      ]},
+    ],
+    'N/A': [
+      { day:'Day 1 — Baseline Testing', blocks:[
+        {cat:'Sprint Assessment', items:['0–10 yd sprint timing × 3 attempts','Flying 10 (20–30 yd) timing × 3 attempts']},
+        {cat:'Strength Baseline', items:['Load-velocity profile: Back Squat across 3 loads','Trap Bar DL — establish 1RM estimate']},
+      ]},
+      { day:'Day 2 — Force Plate Screen', blocks:[
+        {cat:'FP Assessment', items:['CMJ protocol × 3 trials','ISOSQT protocol × 2 trials','SLJ single-leg screen']},
+      ]},
+      { day:'Day 3 — General Development', blocks:[
+        {cat:'Movement Quality', items:['Sprint mechanics — A-skip, B-skip, stride-out','Hip hinge progression']},
+        {cat:'General Strength', items:['Back Squat — work up to moderate effort','RDL — 3×10','Core circuit — 3 rounds']},
+      ]},
+    ],
+  };
+
+  const days = dayPlans[bkt] || dayPlans['N/A'];
+
+  // Generate asymmetry addendum if needed
+  let asymAddendum = '';
+  if ((a.uni_asym_pct||0) >= 15) {
+    asymAddendum = `<div class="pb-day" style="border-color:#ef5350">
+      <div class="pb-day-title" style="color:#ef5350">⚠️ Asymmetry Protocol — Add to Every Session</div>
+      <div class="pb-block">
+        <div class="pb-block-items">
+          ${a.uni_asym_pct >= 30
+            ? '• Single-leg broad jump (weak side 2× volume before bilateral)<br>• Single-leg box drop — unilateral landing stiffness<br>• BB Reverse lunge or Split Squat (weak side lead every session)'
+            : '• B-stance RDL or single-leg press — unilateral priority<br>• Single-leg landing drill (2 sets each session)'}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Build output HTML
+  let out = `<div style="margin-bottom:12px;background:#0a1520;border-radius:8px;padding:10px 14px">
+    <div style="font-size:13px;font-weight:800">${a.name} · ${a.sport||'—'}${a.position?' · '+a.position:''}</div>
+    <div style="display:flex;gap:10px;margin-top:6px;flex-wrap:wrap">
+      <span style="font-size:10px;background:#1e3a5f;border-radius:5px;padding:2px 8px;color:#a0bbd4">Bucket: ${bkt}</span>
+      <span style="font-size:10px;background:#1e3a5f;border-radius:5px;padding:2px 8px;color:#a0bbd4">Phase: ${phase.charAt(0).toUpperCase()+phase.slice(1)}</span>
+      <span style="font-size:10px;background:#1e3a5f;border-radius:5px;padding:2px 8px;color:#a0bbd4">Volume: ${pm.vol} | Intensity: ${pm.int}</span>
+    </div>
+    <div style="font-size:10px;color:#6a8aa8;margin-top:5px">📌 Focus: ${pm.focus}</div>
+  </div>`;
+
+  for (let w = 1; w <= weeks; w++) {
+    const wavePct = phase === 'accumulation' ? `${Math.round(65 + (w-1)*3)}–${Math.round(70 + (w-1)*3)}%`
+                 : phase === 'intensification' ? `${Math.round(75 + (w-1)*3)}–${Math.round(80 + (w-1)*3)}%`
+                 : `${Math.round(83 + (w-1)*3)}–${Math.round(88 + (w-1)*3)}%`;
+    out += `<div class="pb-week-header">Week ${w} — Target Intensity: ${wavePct}</div>`;
+    days.forEach(d => {
+      out += `<div class="pb-day"><div class="pb-day-title">${d.day}</div>`;
+      d.blocks.forEach(b => {
+        out += `<div class="pb-block"><div class="pb-block-cat">${b.cat}</div><div class="pb-block-items">${b.items.map(i=>'• '+i).join('<br>')}</div></div>`;
+      });
+      out += '</div>';
+    });
+  }
+
+  out += asymAddendum;
+
+  document.getElementById('pb-output').innerHTML = out;
+  document.getElementById('pb-print-btn').style.display = 'inline-block';
+}
+
+function pbPrint() {
+  const content = document.getElementById('pb-output').innerHTML;
+  const athlete = document.getElementById('pb-athlete');
+  const name = athlete.options[athlete.selectedIndex]?.text || 'Athlete';
+  const w = window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>Program — ${name}</title>
+  <style>body{font-family:sans-serif;background:#0D1B2A;color:#fff;padding:24px;max-width:700px}
+  .pb-day{background:#0a1520;border:1px solid #1e3a5f;border-radius:10px;padding:12px 14px;margin-bottom:8px;page-break-inside:avoid}
+  .pb-day-title{font-size:11px;font-weight:800;text-transform:uppercase;color:#C9A228;margin-bottom:8px}
+  .pb-block{margin-bottom:6px;padding:6px 8px;background:#112233;border-radius:6px}
+  .pb-block-cat{font-size:9px;font-weight:700;text-transform:uppercase;color:#6a8aa8;margin-bottom:3px}
+  .pb-block-items{font-size:11px;color:#c0d4e8;line-height:1.6}
+  .pb-week-header{font-size:13px;font-weight:800;color:#fff;margin:14px 0 8px;padding-bottom:6px;border-bottom:1px solid #1e3a5f}
+  @media print{body{background:#fff;color:#000}.pb-day{background:#f5f5f5;border:1px solid #ccc}.pb-block{background:#eee}.pb-day-title{color:#b8890d}.pb-block-items{color:#333}.pb-week-header{color:#000}}</style></head>
+  <body><h2 style="color:#C9A228;margin-bottom:4px">Odyssey Performance</h2>
+  <div style="font-size:12px;color:#6a8aa8;margin-bottom:16px">Program generated: ${new Date().toLocaleDateString()}</div>
+  ${content}</body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(), 400);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// COACH CSV / PHOTO UPLOAD
+// ═══════════════════════════════════════════════════════════════
+let uploadTargetCoach = null;
+
+function openUpload(coachName) {
+  uploadTargetCoach = coachName;
+  document.getElementById('upload-title').textContent = `📤 Update ${coachName}'s Profile`;
+  document.getElementById('upload-status').style.display = 'none';
+  document.getElementById('upload-error').style.display = 'none';
+  document.getElementById('upload-csv').value = '';
+  document.getElementById('upload-photo').value = '';
+  document.getElementById('upload-overlay').classList.add('open');
+}
+function closeUpload() { document.getElementById('upload-overlay').classList.remove('open'); }
+
+function handleCoachPhoto() {
+  const file = document.getElementById('upload-photo').files[0];
+  if (!file || !uploadTargetCoach) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    coachPhotos[uploadTargetCoach] = e.target.result;
+    const stat = document.getElementById('upload-status');
+    stat.textContent = `✓ Photo uploaded for ${uploadTargetCoach}. Refresh staff tab to see it.`;
+    stat.style.display = 'block';
+    renderStaffTab();
+  };
+  reader.readAsDataURL(file);
+}
+
+function parseCoachCSV() {
+  const file = document.getElementById('upload-csv').files[0];
+  if (!file || !uploadTargetCoach) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const lines = e.target.result.split('\n').map(l=>l.trim()).filter(Boolean);
+      // Expect VALD CMJ format: Name,ExternalId,Test Type,Date,Time,BW[KG],Reps,Tags,Additional Load,Peak Landing Force,Peak Power/BM,RSI-modified,Jump Height in,Concentric Impulse
+      const nameTarget = uploadTargetCoach;
+      let bestRsi = null, bestPwr = null, bestJH = null, bestBW = null;
+      lines.slice(1).forEach(line => {
+        const cols = line.split(',').map(c=>c.replace(/^"|"$/g,'').trim());
+        const rowName = cols[0];
+        const testType = cols[2];
+        if (!rowName.toLowerCase().includes(nameTarget.toLowerCase())) return;
+        if (testType !== 'CMJ') return;
+        const rsi = parseFloat(cols[11]);
+        const pwr = parseFloat(cols[10]);
+        const jh  = parseFloat(cols[12]);
+        const bw  = parseFloat(cols[5]);
+        if (!isNaN(rsi) && (bestRsi === null || rsi > bestRsi)) { bestRsi = rsi; bestPwr = pwr; bestJH = jh; bestBW = bw; }
+      });
+      if (bestRsi !== null) {
+        // Update COACHES array in memory
+        const coach = COACHES.find(c=>c.name.includes(nameTarget) || nameTarget.includes(c.name.split(' ')[0]));
+        if (coach) {
+          if (!isNaN(bestRsi)) coach.cmj_rsi = bestRsi;
+          if (!isNaN(bestPwr)) coach.cmj_power_bm = bestPwr;
+          if (!isNaN(bestJH))  coach.cmj_jh_in = bestJH;
+          if (!isNaN(bestBW) && bestBW > 0) coach.bw_kg = bestBW;
+          coach.tested = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+          coach.notes = `Best RSI: ${bestRsi.toFixed(2)} | Power: ${isNaN(bestPwr)?'—':bestPwr.toFixed(1)+' W/kg'} | Updated: ${coach.tested}`;
+        }
+        const stat = document.getElementById('upload-status');
+        stat.textContent = `✓ Profile updated — RSI: ${bestRsi.toFixed(2)}, Power: ${isNaN(bestPwr)?'—':bestPwr.toFixed(1)+' W/kg'}, JH: ${isNaN(bestJH)?'—':bestJH.toFixed(1)+'"'}`;
+        stat.style.display = 'block';
+        renderStaffTab();
+      } else {
+        throw new Error(`No CMJ rows found for "${nameTarget}" in this file.`);
+      }
+    } catch(err) {
+      const errEl = document.getElementById('upload-error');
+      errEl.textContent = '✗ ' + err.message;
+      errEl.style.display = 'block';
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ATHLETE SUGGEST EDIT (email to Desean)
+// ═══════════════════════════════════════════════════════════════
+function suggestAthleteEdit(idx) {
+  const a = A[idx];
+  const subject = encodeURIComponent(`Profile Update Request — ${a.name}`);
+  const body = encodeURIComponent(
+    `Athlete: ${a.name}\nSport: ${a.sport||'—'} | Position: ${a.position||'—'}\nCurrent Bucket: ${a.bucket||'N/A'}\n\n--- Suggested Changes ---\n\n[Describe changes here]\n\n---\nSent from Odyssey Dashboard`
+  );
+  window.open(`mailto:deseanlberger@gmail.com?subject=${subject}&body=${body}`);
+}
+
+// ─── Update renderStaffTab to support upload + photos ───
 function renderStaffTab() {
   const container = document.getElementById('staff-cards');
   if (!container) return;
   container.innerHTML = COACHES.map(c => {
     const bClass = bucketClass(c.bucket);
-    const bColor = {Apex:'#C9A228','Velocity Bias':'#4fc3f7','Force Bias':'#ef6c00',Foundation:'#78909c'}[c.bucket]||'#6a8aa8';
+    const firstName = c.name.split(' ')[0];
+    const canUpload = masterMode || (currentCoach === firstName);
+    const photoSrc = coachPhotos[firstName] || null;
+    const avatarHtml = photoSrc
+      ? `<img src="${photoSrc}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0">`
+      : `<div style="width:44px;height:44px;border-radius:50%;background:#1e3a5f;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">👨‍💼</div>`;
     const metrics = [
-      {label:'Body Weight', val: c.bw_kg ? c.bw_kg.toFixed(1)+' kg' : '—'},
-      {label:'CMJ Jump Height', val: c.cmj_jh_in ? c.cmj_jh_in.toFixed(1)+'"' : '—'},
-      {label:'RSI-Modified', val: c.cmj_rsi != null ? c.cmj_rsi.toFixed(2) : '—'},
-      {label:'CMJ Power/BM', val: c.cmj_power_bm ? c.cmj_power_bm.toFixed(1)+' W/kg' : '—'},
-      {label:'ISO Force/BM', val: c.iso_force_bm ? c.iso_force_bm.toFixed(1)+' N/kg' : '—'},
-      {label:'SLJ Asymmetry', val: c.uni_asym_pct != null ? c.uni_asym_pct+'%' : '—'},
+      {label:'Body Weight',   val: c.bw_kg        ? c.bw_kg.toFixed(1)+' kg'       : '—'},
+      {label:'CMJ Height',    val: c.cmj_jh_in    ? c.cmj_jh_in.toFixed(1)+'"'     : '—'},
+      {label:'RSI-Modified',  val: c.cmj_rsi!=null? c.cmj_rsi.toFixed(2)           : '—'},
+      {label:'CMJ Power/BM',  val: c.cmj_power_bm ? c.cmj_power_bm.toFixed(1)+' W/kg' : '—'},
+      {label:'ISO Force/BM',  val: c.iso_force_bm ? c.iso_force_bm.toFixed(1)+' N/kg' : '—'},
+      {label:'SLJ Asymmetry', val: c.uni_asym_pct!=null ? c.uni_asym_pct+'%'       : '—'},
     ];
     return `
-    <div style="background:#0d1b2a;border:1px solid #1e3a5f;border-radius:14px;padding:18px;position:relative">
+    <div style="background:#0d1b2a;border:1px solid ${canUpload?'#C9A228':'#1e3a5f'};border-radius:14px;padding:18px">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-        <div style="width:44px;height:44px;border-radius:50%;background:#1e3a5f;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">👨‍💼</div>
-        <div>
+        ${avatarHtml}
+        <div style="flex:1">
           <div style="font-weight:800;font-size:15px">${c.name}</div>
           <div style="font-size:11px;color:#6a8aa8;margin-top:1px">${c.title}</div>
         </div>
-        <div style="margin-left:auto">
-          <span class="bucket-badge ${bClass}" style="font-size:10px;padding:3px 8px">${c.bucket}</span>
-        </div>
+        <span class="bucket-badge ${bClass}" style="font-size:10px;padding:3px 8px">${c.bucket}</span>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
-        ${metrics.map(m=>`
-        <div style="background:#0a1520;border-radius:8px;padding:7px 10px">
+        ${metrics.map(m=>`<div style="background:#0a1520;border-radius:8px;padding:7px 10px">
           <div style="font-size:9px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px">${m.label}</div>
           <div style="font-size:15px;font-weight:700;color:${m.val==='—'?'#3a5a7a':'#fff'}">${m.val}</div>
         </div>`).join('')}
       </div>
       <div style="font-size:10px;color:#6a8aa8;background:#0a1520;border-radius:6px;padding:6px 10px;margin-bottom:8px">${c.notes}</div>
-      <div style="font-size:10px;color:#3a5a7a">📅 Last tested: ${c.tested}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:10px;color:#3a5a7a">📅 Last tested: ${c.tested}</div>
+        ${canUpload ? `<button onclick="openUpload('${firstName}')" style="background:#1e3a5f;border:none;color:#a0bbd4;border-radius:6px;padding:5px 10px;font-size:10px;font-weight:700;cursor:pointer">📤 Update</button>` : ''}
+      </div>
     </div>`;
   }).join('');
 }
@@ -1554,6 +1943,12 @@ function openModal(idx) {
   if (coachMode) {
     // ── COACH VIEW: full profile ──
     body = renderCoachProfile(a);
+    body += `<div style="margin-top:14px;padding:12px 14px;background:#0a1520;border-radius:10px;text-align:center">
+      <button onclick="suggestAthleteEdit(${idx})" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:8px;padding:8px 16px;font-size:11px;font-weight:700;cursor:pointer">
+        ✏️ Suggest Profile Update → Desean
+      </button>
+      <div style="font-size:9px;color:#3a5a7a;margin-top:4px">Opens email to deseanlberger@gmail.com for approval</div>
+    </div>`;
   } else {
     // ── PUBLIC VIEW: metrics + basic stats ──
     const fpHtml = METRICS.filter(m=>a[m.key]!=null).map(m=>{
