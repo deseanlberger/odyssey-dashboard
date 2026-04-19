@@ -733,6 +733,17 @@ function computeScores() {
                + (a.college_commit ? TAG_BONUS.commit  : 0)
                + (a.prospect       ? TAG_BONUS.prospect : 0);
     a._age  = a._raw!=null ? Math.min(99,Math.max(1,a._raw+b+tagB)) : null;
+
+    // ── AUTO-APEX: elite on both force AND velocity sides (≥75th pct each) ──
+    if (a.source === 'both' || a.source === 'fp_only') {
+      const forcePcts  = ['cmj_power_bm','iso_force_bm'].map(k=>mp[k]).filter(v=>v!=null);
+      const velPcts    = ['cmj_rsi','cmj_jh_in','best_010','best_2030'].map(k=>mp[k]).filter(v=>v!=null);
+      const forceScore = forcePcts.length  ? Math.max(...forcePcts)  : null;
+      const velScore   = velPcts.length    ? Math.max(...velPcts)    : null;
+      if (forceScore != null && velScore != null && forceScore >= 75 && velScore >= 75) {
+        a.bucket = 'Apex';
+      }
+    }
   });
 }
 
