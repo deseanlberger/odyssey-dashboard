@@ -377,7 +377,7 @@ select:focus{border-color:#C9A228}
   <button class="nav-tab active" id="nav-rankings" onclick="navSwitch('rankings')">📊 Dashboard</button>
   <button class="nav-tab" id="nav-compare" onclick="navSwitch('compare')">⚡ Stack Up</button>
   <button class="nav-tab" id="nav-forty" onclick="navSwitch('forty')">🏃 40-Yard Est</button>
-  <button class="nav-tab" id="nav-leaderboards" onclick="navSwitch('leaderboards')" style="display:none">🏆 Boards</button>
+  <button class="nav-tab" id="nav-leaderboards" onclick="navSwitch('leaderboards')">🏆 Boards</button>
   <button class="nav-tools-btn" onclick="openTools()">🛠️ Tools</button>
 </div>
 
@@ -442,22 +442,28 @@ select:focus{border-color:#C9A228}
 <div class="content" id="content"></div>
 </div>
 
-<!-- LEADERBOARDS TAB (coach/master only) -->
+<!-- LEADERBOARDS TAB (public) -->
 <div id="tab-leaderboards" class="tab-panel">
 <div style="padding:16px">
-  <div style="font-size:18px;font-weight:800;color:#C9A228;margin-bottom:4px">🏆 Leaderboards</div>
-  <div style="font-size:11px;color:#6a8aa8;margin-bottom:14px">Coach view only · Rankings by gender and age group</div>
-  <!-- Gender + Age Group filters -->
-  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+  <div style="font-size:20px;font-weight:900;color:#C9A228;letter-spacing:-0.5px;margin-bottom:2px">🏆 Leaderboards</div>
+  <div style="font-size:11px;color:#6a8aa8;margin-bottom:16px">Odyssey Performance · All-time top 10 per category</div>
+  <!-- Gender toggle -->
+  <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
     <div style="display:flex;gap:4px">
-      <button id="lb-male-btn" onclick="lbSetGender('M')" style="background:#1e3a5f;border:2px solid #C9A228;color:#C9A228;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer">♂ Male</button>
-      <button id="lb-female-btn" onclick="lbSetGender('F')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer">♀ Female</button>
+      <button id="lb-male-btn" onclick="lbSetGender('M')" style="background:#1e3a5f;border:2px solid #C9A228;color:#C9A228;border-radius:8px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer">♂ Male</button>
+      <button id="lb-female-btn" onclick="lbSetGender('F')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer">♀ Female</button>
     </div>
-    <div style="display:flex;gap:4px">
-      <button id="lb-age0-btn" onclick="lbSetAge('0-10')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer">Youth<br><span style="font-size:9px">0–10</span></button>
-      <button id="lb-age1-btn" onclick="lbSetAge('10-20')" style="background:#1e3a5f;border:2px solid #4a8af0;color:#4a8af0;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer">Teen<br><span style="font-size:9px">10–20</span></button>
-      <button id="lb-age2-btn" onclick="lbSetAge('20-30')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer">Adult<br><span style="font-size:9px">20–30</span></button>
-    </div>
+    <!-- Sport filter -->
+    <select id="lb-sport-filter" onchange="renderLeaderboards()" style="background:#0a1520;color:#e6edf3;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:11px;cursor:pointer">
+      <option value="">All Sports</option>
+    </select>
+    <!-- Age group filter (optional refinement) -->
+    <select id="lb-age-filter" onchange="renderLeaderboards()" style="background:#0a1520;color:#e6edf3;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:11px;cursor:pointer">
+      <option value="">All Ages</option>
+      <option value="0-10">Youth (0–10)</option>
+      <option value="10-20">Teen (10–20)</option>
+      <option value="20-30">Adult (20–30)</option>
+    </select>
   </div>
   <div id="lb-output"></div>
 </div>
@@ -1073,9 +1079,6 @@ async function pinSubmit() {
     // Tools wheel handles staff/PB visibility dynamically
     renderStaffTab();
     render();
-    // Show leaderboard tab for master mode
-    var lbBtn = document.getElementById('nav-leaderboards');
-    if(lbBtn) lbBtn.style.display = masterMode ? '' : 'none';
     updatePublicCoachView();
   } else {
     document.getElementById('pw-error').style.display = 'block';
@@ -1106,8 +1109,6 @@ function logoutCoach() {
   document.getElementById('mode-label').textContent = 'Public view — coach login required to see body weight';
   // Tools wheel handles visibility
   switchTab('rankings');
-  var lbBtn = document.getElementById('nav-leaderboards');
-  if(lbBtn) lbBtn.style.display = 'none';
   updatePublicCoachView();
   render();
 }
@@ -1167,7 +1168,6 @@ function renderPublicSearch() {
 
 // ─── LEADERBOARD STATE ─────────────────────────────
 var _lbGender = 'M';
-var _lbAge = '10-20';
 
 function lbSetGender(g) {
   _lbGender = g;
@@ -1181,62 +1181,41 @@ function lbSetGender(g) {
   renderLeaderboards();
 }
 
-function lbSetAge(band) {
-  _lbAge = band;
-  [['0-10','age0'],['10-20','age1'],['20-30','age2']].forEach(function(pair){
-    var btn = document.getElementById('lb-' + pair[1] + '-btn');
-    if(!btn) return;
-    btn.style.background = (pair[0]===band) ? '#1e3a5f' : '#0a1520';
-    btn.style.borderColor = (pair[0]===band) ? '#4a8af0' : '#2a4a6a';
-    btn.style.color = (pair[0]===band) ? '#4a8af0' : '#6a8aa8';
-  });
-  renderLeaderboards();
-}
-
 function approxAge(a) {
-  // Senior graduating 2026 ≈ 18 yrs. Each grad_year step = 1 year.
   if (!a.grad_year) return null;
-  return 2044 - a.grad_year;
-}
-
-function lbAgeFilter(a) {
-  var age = approxAge(a);
-  if (age === null) return false;
-  if (_lbAge === '0-10')  return age >= 0  && age < 10;
-  if (_lbAge === '10-20') return age >= 10 && age < 20;
-  if (_lbAge === '20-30') return age >= 20 && age < 30;
-  return true;
+  return 2044 - a.grad_year; // senior 2026 ≈ 18 yrs
 }
 
 function lbRow(rank, a, key, unit, fmt) {
   var val = a[key];
   if (val == null) return '';
   var display = fmt ? fmt(val) : (val + (unit||''));
-  var medal = rank===1 ? '🥇' : rank===2 ? '🥈' : rank===3 ? '🥉' : rank;
-  var bg = rank<=3 ? '#1a1208' : '#0d1b2a';
-  var border = rank===1 ? '#C9A228' : rank===2 ? '#8a9bb0' : rank===3 ? '#b87333' : '#1e3a5f';
+  var medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':('<span style="font-size:12px;font-weight:700;color:#6a8aa8">'+rank+'</span>');
+  var bg = rank===1?'#1a1208':rank===2?'#131820':rank===3?'#130d0a':'#0d1b2a';
+  var border = rank===1?'#C9A228':rank===2?'#8a9bb0':rank===3?'#b87333':'#1e3a5f';
+  var nameColor = rank<=3 ? '#e6edf3' : '#aab8c8';
   return '<div style="display:flex;align-items:center;gap:10px;background:' + bg + ';border:1px solid ' + border + ';border-radius:8px;padding:9px 12px;margin-bottom:5px">' +
-    '<div style="font-size:14px;min-width:30px;text-align:center">' + medal + '</div>' +
+    '<div style="font-size:15px;min-width:28px;text-align:center">' + medal + '</div>' +
     '<div style="flex:1">' +
-    '<div style="font-size:13px;font-weight:700;color:#e6edf3">' + a.name + '</div>' +
-    '<div style="font-size:10px;color:#6a8aa8">' + (a.sport||'—') + ' · ' + cs(a.grad_year) + '</div>' +
+    '<div style="font-size:13px;font-weight:700;color:' + nameColor + '">' + a.name + '</div>' +
+    '<div style="font-size:10px;color:#6a8aa8">' + (a.sport||'—') + ' · ' + cs(a.grad_year) + (a.position?' · '+a.position:'') + '</div>' +
     '</div>' +
-    '<div style="font-size:16px;font-weight:800;color:#C9A228">' + display + '</div>' +
+    '<div style="font-size:15px;font-weight:800;color:#C9A228">' + display + '</div>' +
     '</div>';
 }
 
 function lbSection(title, icon, color, athletes, key, unit, fmt) {
-  var sorted = athletes.filter(function(a){ return a[key] != null; })
-    .sort(function(a,b){ return (b[key]??-1) - (a[key]??-1); })
-    .slice(0, 10);
-  var h = '<div style="margin-bottom:20px">';
-  h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
-  h += '<span style="font-size:16px">' + icon + '</span>';
-  h += '<div style="font-size:13px;font-weight:800;color:' + color + '">' + title + '</div>';
-  h += '<div style="font-size:10px;color:#6a8aa8">(' + sorted.length + ' athletes with data)</div>';
+  var sorted = athletes.filter(function(a){ return a[key]!=null; })
+    .sort(function(a,b){ return (b[key]??-1)-(a[key]??-1); })
+    .slice(0,10);
+  var h = '<div style="background:#060f18;border:1px solid #1e3a5f;border-radius:12px;padding:14px;margin-bottom:16px">';
+  h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
+  h += '<span style="font-size:18px">' + icon + '</span>';
+  h += '<div style="flex:1"><div style="font-size:13px;font-weight:800;color:' + color + '">' + title + '</div>';
+  h += '<div style="font-size:9px;color:#4a6a8a;text-transform:uppercase;letter-spacing:.5px">Top 10 · ' + sorted.length + ' athletes with data</div></div>';
   h += '</div>';
   if (!sorted.length) {
-    h += '<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-radius:8px;padding:12px;text-align:center;color:#3a5a7a;font-size:11px">No data yet for this group</div>';
+    h += '<div style="text-align:center;color:#3a5a7a;font-size:11px;padding:12px">No data recorded yet — check back soon</div>';
   } else {
     sorted.forEach(function(a,i){ h += lbRow(i+1, a, key, unit, fmt); });
   }
@@ -1244,13 +1223,40 @@ function lbSection(title, icon, color, athletes, key, unit, fmt) {
   return h;
 }
 
+function lbPopulateSportFilter() {
+  var sel = document.getElementById('lb-sport-filter');
+  if (!sel || sel.options.length > 1) return;
+  var sports = [...new Set(A.map(function(a){return a.sport;}).filter(Boolean))].sort();
+  sports.forEach(function(s){
+    var o = document.createElement('option');
+    o.value = s; o.text = s;
+    sel.appendChild(o);
+  });
+}
+
 function renderLeaderboards() {
   var out = document.getElementById('lb-output');
   if (!out) return;
-  var pool = A.filter(function(a){ return a.gender === _lbGender && lbAgeFilter(a); });
-  var gLabel = _lbGender === 'M' ? 'Male' : 'Female';
-  var ageLabel = _lbAge === '0-10' ? 'Youth (0–10)' : _lbAge === '10-20' ? 'Teen (10–20)' : 'Adult (20–30)';
-  var h = '<div style="font-size:11px;color:#6a8aa8;margin-bottom:14px">' + gLabel + ' · ' + ageLabel + ' · ' + pool.length + ' athletes in group</div>';
+  lbPopulateSportFilter();
+  var sport = (document.getElementById('lb-sport-filter')?.value) || '';
+  var ageBand = (document.getElementById('lb-age-filter')?.value) || '';
+  var pool = A.filter(function(a){
+    if (a.gender !== _lbGender) return false;
+    if (sport && a.sport !== sport) return false;
+    if (ageBand) {
+      var age = approxAge(a);
+      if (age === null) return false;
+      if (ageBand==='0-10'  && !(age>=0  && age<10)) return false;
+      if (ageBand==='10-20' && !(age>=10 && age<20)) return false;
+      if (ageBand==='20-30' && !(age>=20 && age<30)) return false;
+    }
+    return true;
+  });
+  var gLabel = _lbGender==='M' ? 'Male' : 'Female';
+  var filterNote = [sport, ageBand ? (ageBand==='0-10'?'Youth':ageBand==='10-20'?'Teen':'Adult') : ''].filter(Boolean).join(' · ');
+  var h = '<div style="font-size:11px;color:#6a8aa8;margin-bottom:14px">' +
+    gLabel + (filterNote ? ' · ' + filterNote : ' · All Athletes') +
+    ' · <span style="color:#4a8af0">' + pool.length + ' in pool</span></div>';
   h += lbSection('CMJ Jump Height', '⬆️', '#C9A228', pool, 'cmj_jh_in', '"', null);
   h += lbSection('Reactive Strength Index (RSI)', '⚡', '#4a8af0', pool, 'cmj_rsi', '', null);
   h += lbSection('CMJ Peak Power', '💥', '#4af08a', pool, 'cmj_power_bm', ' W/kg', null);
@@ -1258,7 +1264,7 @@ function renderLeaderboards() {
   h += lbSection('Back Squat Peak Power', '🦵', '#f04a8a', pool, 'squat_pp', ' W/kg', null);
   h += lbSection('Trap Bar Deadlift Peak Power', '🔩', '#a078f0', pool, 'trapbar_pp', ' W/kg', null);
   h += lbSection('Power Clean — Max Weight', '🏅', '#ffd700', pool, 'power_clean_kg', ' kg',
-    function(v){ return v + ' kg (' + Math.round(v*2.205) + ' lbs)'; });
+    function(v){ return v+' kg ('+Math.round(v*2.205)+' lbs)'; });
   out.innerHTML = h;
 }
 
