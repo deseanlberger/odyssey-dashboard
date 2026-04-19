@@ -26,6 +26,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .tab-panel{display:none}
 .tab-panel.active{display:block}
 
+
+/* College commit logo on card */
+.commit-logo-wrap{display:flex;align-items:center;gap:5px;margin-top:3px}
+.commit-logo{width:20px;height:20px;object-fit:contain;border-radius:3px;background:#fff;padding:1px}
+.commit-text{font-size:10px;color:#C9A228;font-weight:700;letter-spacing:.3px}
+
 /* ===== CALCULATOR TABS ===== */
 .calc-section{padding:24px 20px;max-width:720px;margin:0 auto}
 .calc-card{background:#161b22;border-radius:14px;padding:24px;margin-bottom:20px;border:1px solid #21262d}
@@ -59,8 +65,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .rec-card-title{font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
 .rec-card-val{font-size:18px;font-weight:900;color:#C9A228}
 .rec-card-sub{font-size:11px;color:#6a8aa8;margin-top:2px}
-.split-visual{display:flex;gap:1px;margin-top:14px;border-radius:8px;overflow:hidden}
-.split-seg{flex:1;padding:12px 8px;text-align:center}
+.split-visual{display:flex;gap:1px;margin-top:14px;border-radius:8px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.split-seg{flex:0 0 auto;min-width:70px;padding:12px 8px;text-align:center}
 .seg-label{font-size:9px;text-transform:uppercase;letter-spacing:.4px;color:rgba(255,255,255,.6);margin-bottom:4px}
 .seg-val{font-size:15px;font-weight:900;color:#fff}
 .s0{background:#1a2e4a}
@@ -578,6 +584,16 @@ function logoutCoach() {
 // =====================================================
 // SCORING
 // =====================================================
+const COMMIT_LOGOS = {
+  "UC Santa Barbara":"logos/ucsb.svg",
+  "Mercer University":"logos/mercer.svg",
+  "Boise State":"logos/boise-state.png",
+  "Idaho State":"logos/idaho-state.png",
+  "University of Arizona":"logos/arizona.png",
+  "Northwest University":"logos/northwest.svg",
+  "Regis College":"logos/regis.svg",
+  "Edmonds College":"logos/edmonds.svg"
+};
 const METRICS = [
   {key:'best_010',    higher:false, label:'0–10 Sprint',   unit:'s',    w:1.5},
   {key:'best_2030',   higher:false, label:'20–30 Sprint',  unit:'s',    w:1.5},
@@ -587,7 +603,7 @@ const METRICS = [
   {key:'iso_force_bm',higher:true,  label:'ISO Force',     unit:' N/kg',w:1.0},
 ];
 const AGE_BONUS = {2022:0,2023:0,2024:0,2025:2,2026:3,2027:5,2028:7,2029:9,2030:12,2031:14,2032:16};
-const TAG_BONUS = {elite:5, commit:4, prospect:3};
+const TAG_BONUS = {elite:4, commit:6, prospect:3};
 
 function pctOf(val, arr, hi) {
   const v = arr.filter(x => x!=null && !isNaN(x));
@@ -694,6 +710,10 @@ function render() {
           <span style="color:#bbb">·</span>
           <span class="class-chip">${cs(a.grad_year)}</span>
           ${bkt}
+        ${a.college_commit ? `<div class="commit-logo-wrap">
+          <img class="commit-logo" src="${COMMIT_LOGOS[a.college_commit]||''}" alt="${a.college_commit}" onerror="this.style.display='none'">
+          <span class="commit-text">✓ ${a.college_commit}</span>
+        </div>` : ''}
         </div>
         ${chips ? `<div class="metrics-row">${chips}</div>` : pubBar}
       </div>
@@ -994,10 +1014,10 @@ function calcForty() {
   // Split visual
   const splits = document.getElementById('forty-splits');
   const segs = [
-    {label:'0–10m', val:t010,  cls:'s0', note:s010?'':'est'},
-    {label:'10–20m',val:t1020, cls:'s1', note:s1020?'':'est'},
-    {label:'20–30m',val:t2030, cls:'s2', note:s2030?'':'est'},
-    {label:'30–37m',val:t3037, cls:'s3', note:'est'},
+    {label:'🚀 0-10m', val:t010,  cls:'s0', note:s010?'':'est'},
+    {label:'⚡ 10-20m',val:t1020, cls:'s1', note:s1020?'':'est'},
+    {label:'💨 20-30m',val:t2030, cls:'s2', note:s2030?'':'est'},
+    {label:'🏁 30-37m',val:t3037, cls:'s3', note:'est'},
   ];
   splits.innerHTML = segs.map(s =>
     '<div class="split-seg ' + s.cls + '">' +
