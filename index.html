@@ -317,9 +317,27 @@ select:focus{border-color:#C9A228}
 .pw-error{color:#e74c3c;font-size:13px;margin-top:-6px;margin-bottom:10px;display:none}
 
 /* PROGRAM BUILDER + TEAM PLAN + NEW ATHLETE + SUBMIT STATS + IMPORT SESSION — full screen override */
-#pb-overlay,#teamplan-overlay,#newath-overlay,#submitstats-overlay,#import-overlay{background:#0D1B2A!important;padding:0!important;align-items:stretch!important;justify-content:stretch!important}
-#pb-overlay.open,#teamplan-overlay.open,#newath-overlay.open,#submitstats-overlay.open,#import-overlay.open{display:block!important;overflow-y:auto!important}
-#pb-overlay>.pb-fullscreen,#teamplan-overlay>.pb-fullscreen,#newath-overlay>.pb-fullscreen,#submitstats-overlay>.pb-fullscreen,#import-overlay>.pb-fullscreen{min-height:100vh;display:flex;flex-direction:column}
+#pb-overlay,#teamplan-overlay,#newath-overlay,#submitstats-overlay,#import-overlay,#core6-overlay{background:#0D1B2A!important;padding:0!important;align-items:stretch!important;justify-content:stretch!important}
+#pb-overlay.open,#teamplan-overlay.open,#newath-overlay.open,#submitstats-overlay.open,#import-overlay.open,#core6-overlay.open{display:block!important;overflow-y:auto!important}
+#pb-overlay>.pb-fullscreen,#teamplan-overlay>.pb-fullscreen,#newath-overlay>.pb-fullscreen,#submitstats-overlay>.pb-fullscreen,#import-overlay>.pb-fullscreen,#core6-overlay>.pb-fullscreen{min-height:100vh;display:flex;flex-direction:column}
+/* CORE 6 EVAL */
+.c6-rating-btns{display:flex;gap:6px;margin:6px 0 8px}
+.c6-rating-btn{flex:1;padding:10px 4px;border-radius:8px;border:2px solid #2a4a6a;background:#112233;color:#6a8aa8;font-size:16px;font-weight:900;cursor:pointer;text-align:center;transition:all .15s;line-height:1}
+.c6-rating-btn:hover{border-color:#C9A228;color:#C9A228}
+.c6-rating-btn.selected{background:#C9A228;border-color:#C9A228;color:#0D1B2A}
+.c6-reasons{display:none;flex-direction:column;gap:5px;margin-bottom:10px}
+.c6-reasons.show{display:flex}
+.c6-reason-pill{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#112233;border:1px solid #1e3a5f;border-radius:8px;cursor:pointer;font-size:11px;color:#a0bbd4;transition:all .15s;user-select:none}
+.c6-reason-pill:hover{border-color:#C9A228;color:#fff}
+.c6-reason-pill.checked{background:#1a2a0a;border-color:#4caf50;color:#9cde9c}
+.c6-reason-pill input[type=checkbox]{accent-color:#4caf50;flex-shrink:0}
+.c6-quality-card{background:#112233;border:1px solid #1e3a5f;border-radius:12px;padding:14px 14px 10px;margin-bottom:12px}
+.c6-q-title{font-size:13px;font-weight:800;color:#C9A228;letter-spacing:.3px;margin-bottom:2px}
+.c6-q-desc{font-size:10px;color:#6a8aa8;margin-bottom:8px}
+.c6-phrase-box{background:#0a1a0a;border:1px solid #2d7a4a;border-radius:10px;padding:12px 14px;font-size:13px;color:#9cde9c;line-height:1.6;margin-top:8px;display:none}
+.c6-phrase-box.show{display:block}
+.c6-score-bubble{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;font-size:14px;font-weight:900;flex-shrink:0}
+/* core6 print handled in combined @media print block below */
 
 /* PRINT CARD */
 #print-card-overlay{display:flex;align-items:center;justify-content:center;width:100%;border:1px solid #1e3a5f;border-radius:10px}
@@ -516,11 +534,13 @@ select:focus{border-color:#C9A228}
 }
 
 @media print {
-  body > *:not(#print-card-overlay):not(#team-report-print-wrapper) { display: none !important; }
+  body > *:not(#print-card-overlay):not(#team-report-print-wrapper):not(#core6-print-wrap) { display: none !important; }
   #print-card-overlay { position: static !important; background: white !important; display: flex !important; }
   #print-card-content { width: 100% !important; color: #0D1B2A !important; }
   @page { size: 11in 8.5in; margin: 0.4in; }
   #team-report-print-wrapper { display: block !important; }
+  #core6-print-wrap { display: block !important; }
+  #core6-print-wrap * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 </style>
 </head>
@@ -555,6 +575,7 @@ select:focus{border-color:#C9A228}
   <button onclick="openNewAth()" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#C9A228;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">➕ Add Athlete</button>
   <button onclick="navSwitch('tools');toolsSub('teamreport')" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">📋 Team Report</button>
   <button onclick="openSubmitStats()" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">📊 Submit Stats</button>
+  <button onclick="openCore6()" style="background:#1e3a5f;border:1px solid #C9A228;color:#C9A228;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">📋 CORE 6 Eval</button>
 </div>
 
 <!-- ATHLETE LOOKUP TAB -->
@@ -1383,6 +1404,83 @@ CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
     </div>
   </div>
 </div>
+
+<!-- CORE 6 IN-SESSION EVALUATION -->
+<div class="pw-overlay" id="core6-overlay">
+  <div class="pb-fullscreen">
+    <!-- Sticky Header -->
+    <div style="position:sticky;top:0;background:#0D1B2A;z-index:20;padding:13px 16px;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;justify-content:space-between">
+      <button onclick="closeCore6()" style="background:none;border:none;color:#6a8aa8;font-size:15px;font-weight:700;cursor:pointer;padding:4px 0;min-width:52px;text-align:left">‹ Back</button>
+      <div style="font-size:15px;font-weight:800;color:#fff;text-align:center">📋 CORE 6 Eval</div>
+      <button onclick="core6PrintCard()" style="background:#C9A228;border:none;color:#0D1B2A;border-radius:10px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer">🖨️ Print</button>
+    </div>
+    <div style="padding:14px 14px 60px">
+
+      <!-- Athlete Info -->
+      <div style="background:#112233;border:1px solid #1e3a5f;border-left:3px solid #C9A228;border-radius:10px;padding:12px 14px;margin-bottom:14px">
+        <div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;font-weight:700">Athlete Info</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div>
+            <label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px">Athlete Name</label>
+            <input id="c6-name" type="text" placeholder="Full name" style="width:100%;background:#0D1B2A;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;box-sizing:border-box">
+          </div>
+          <div>
+            <label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px">Grad Year</label>
+            <input id="c6-year" type="number" placeholder="2027" style="width:100%;background:#0D1B2A;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;box-sizing:border-box">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div>
+            <label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px">Sport</label>
+            <select id="c6-sport" onchange="c6UpdatePositions()" style="width:100%;background:#0D1B2A;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;box-sizing:border-box">
+              <option value="">Select Sport</option>
+              <option>Football</option><option>Basketball</option><option>Baseball</option><option>Softball</option>
+              <option>Soccer</option><option>Track &amp; Field</option><option>Volleyball</option><option>Lacrosse</option>
+              <option>Wrestling</option><option>Swimming</option><option>Tennis</option><option>Golf</option><option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px">Position</label>
+            <select id="c6-position" style="width:100%;background:#0D1B2A;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;box-sizing:border-box">
+              <option value="">Select Sport First</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px">Training Level</label>
+          <select id="c6-level" style="width:100%;background:#0D1B2A;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;box-sizing:border-box">
+            <option value="">Select Level</option>
+            <option>Beginner – First time in a real program</option>
+            <option>Intermediate – Has some training background</option>
+            <option>Advanced – Serious multi-year training history</option>
+            <option>Elite – Varsity / Club / Recruited level</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Quality Cards -->
+      <div id="c6-qualities"></div>
+
+      <!-- Generate Button -->
+      <button onclick="core6GenerateAll()" style="width:100%;background:#C9A228;border:none;color:#0D1B2A;border-radius:14px;padding:15px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:14px;box-sizing:border-box">⚡ Generate Coaching Summary</button>
+
+      <!-- Coaching Summary Output -->
+      <div id="c6-summary" style="display:none;background:#0a1520;border:1px solid #2a4a6a;border-radius:12px;padding:14px;margin-bottom:14px">
+        <div style="font-size:11px;font-weight:800;color:#C9A228;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">📣 Coaching Summary</div>
+        <div id="c6-summary-text" style="font-size:13px;color:#c8dff0;line-height:1.7"></div>
+      </div>
+
+      <!-- Sport Translation -->
+      <div id="c6-sport-trans" style="display:none;background:#0a1520;border:1px solid #2a4a6a;border-radius:12px;padding:14px;margin-bottom:14px">
+        <div style="font-size:11px;font-weight:800;color:#C9A228;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">🏆 Sport Translation</div>
+        <div id="c6-trans-text" style="font-size:12px;color:#a0bbd4;line-height:1.8"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- CORE 6 PRINT WRAPPER (hidden until print) -->
+<div id="core6-print-wrap" style="display:none;font-family:Arial,sans-serif;background:#fff;color:#000;padding:20px 24px;max-width:700px;margin:0 auto"></div>
 
 <!-- TEAM PROGRAM BUILDER MODAL -->
 <div class="pw-overlay" id="teamplan-overlay">
@@ -5810,7 +5908,11 @@ function renderCoachProfile(a) {
   </div>`;
 
   const progressHtml = renderProgressSection(a, A.indexOf(a));
-  return bucketHtml + metricsSection + progressHtml + sportContextHtml + correctiveHtml + (dsiSection ? `<div class="cp-section"><div class="cp-section-title">DSI Analysis</div><div class="cp-dsi-row">${dsiSection}</div></div>` : '') + sprintEstHtml + asymHtml + rxHtml + qrHtml;
+  const evalHtml = `<div class="cp-section">
+    <div class="cp-section-title">In-Session Tools</div>
+    <button onclick="closeModalDirect();openCore6('${a.name.replace(/'/g,"\\'")}');" style="width:100%;background:#1e3a5f;border:1px solid #C9A228;color:#C9A228;border-radius:10px;padding:12px;font-size:13px;font-weight:800;cursor:pointer;box-sizing:border-box">📋 Start CORE 6 Evaluation</button>
+  </div>`;
+  return bucketHtml + metricsSection + progressHtml + sportContextHtml + correctiveHtml + (dsiSection ? `<div class="cp-section"><div class="cp-section-title">DSI Analysis</div><div class="cp-dsi-row">${dsiSection}</div></div>` : '') + sprintEstHtml + asymHtml + rxHtml + evalHtml + qrHtml;
 }
 
 function openModal(idx) {
@@ -6584,6 +6686,433 @@ function initializeHistory() {
   });
 }
 
+// =====================================================
+// CORE 6 IN-SESSION EVALUATION
+// =====================================================
+var C6_RATINGS = {vertical:0,lateral:0,linear:0,strength:0,coordination:0,mobility:0};
+var C6_REASONS = {vertical:{},lateral:{},linear:{},strength:{},coordination:{},mobility:{}};
+
+var C6_DATA = {
+  vertical:{
+    label:'Vertical Ability',icon:'⬆️',
+    desc:'Jump mechanics, landing quality, penultimate step, elasticity',
+    reasons:{
+      1:['Can\'t jump at all','Collapses or falls on landing','Kicks feet behind body instead of driving knees up','Visibly scared or apprehensive about jumping','No penultimate step awareness whatsoever','Can\'t get onto plyo box at any height','Can\'t single-leg jump at all'],
+      2:['Can jump but lands with a heavy thud','Doesn\'t fall but landing is uncontrolled','Somewhat apprehensive — hesitates before jumping','Poor approach jump mechanics','Can only reach 20–24\" box height, not 30\"','Can\'t single-leg jump without losing balance'],
+      3:['Jumps well enough to get through progressions','Consistent at 24\" box, occasional 30\" reps','Lands without falling — normal but not soft','Can single-leg jump decently','Not elastic or springy off the ground','Functional but not athletic-looking'],
+      4:['Shows a penultimate step — knows what it is, executes inconsistently','Can tell they jump for their sport','Consistent at 30\" box, can add plates on top','Starts to show elasticity off the ground','Coordinated approach jump','Not quite springy but close'],
+      5:['Explosive, elite jumper','Very elastic and springy off the ground','Clean penultimate step — automatic','Consistent at 30\"+ with additional height','Soft, controlled landing with quick ground contact','Bouncy, reactive, looks effortless']
+    }
+  },
+  lateral:{
+    label:'Lateral Ability',icon:'↔️',
+    desc:'Hip drop, change of direction, shuffle mechanics, deceleration',
+    reasons:{
+      1:['Crosses feet when shuffling — can\'t stay in a shuffle','Stumbles or falls on lateral cuts','No hip drop on change of direction','Scared or stiff when asked to move laterally','No deceleration ability — runs through the cone','Stands upright — no athletic base at all'],
+      2:['Can shuffle but very stiff and robotic','Slow to change direction, poor deceleration','Falls or stumbles on sharp cuts','Uses upper body to compensate — arms flailing','No explosion off the outside foot','Hesitant and mechanical in lateral drills'],
+      3:['Can shuffle and change direction functionally','Gets through lateral drills without hurting themselves','Deceleration is okay — not great','Some hip drop but inconsistent','Average first step laterally','Functional but not quick'],
+      4:['Hip drop on cuts is solid','Quick first lateral step','Can tell they play a sport requiring lateral movement','Explosive off outside foot','Reads direction changes well','Stays low in their base — athletic'],
+      5:['Elite lateral mover — explosive in all directions','Hip drop is automatic and sharp','Elastic change of direction — no wasted steps','Plays very low — natural athletic stance','Reactive and anticipatory','Looks like a trained athlete laterally']
+    }
+  },
+  linear:{
+    label:'Linear Ability',icon:'🏃',
+    desc:'Sprint mechanics, acceleration, arm drive, ground contact',
+    reasons:{
+      1:['Runs with almost no forward lean — straight upright','No arm drive — arms barely move or cross the body','Heel striking heavily — almost no toe-off','Shuffles or waddles rather than sprinting','No acceleration phase — same speed step one through ten','Scared or reluctant to run at full speed'],
+      2:['Can run but mechanics are visibly poor','Head bobbing, arms crossing the midline','Heavy foot strike — loud and slow','Very little acceleration — reaches top speed slowly','Slow overall — clearly not a speed athlete','Can get through drills but looks labored'],
+      3:['Adequate straight-line speed','Mechanics are acceptable but not coached','Can accelerate to average speed','Gets through sprint drills without issues','Not particularly fast but not slow','Average ground contact — not elastic'],
+      4:['Good acceleration phase — quick out of stance','Arm drive is solid','Forward lean is natural and consistent','Can tell they play a speed-based sport','Good top-end speed','Mechanics look athletic and natural'],
+      5:['Elite sprinter','Explosive first three steps — separation happens early','Perfect forward lean and arm drive','Elastic off the ground — barely touching it','Looks like a track athlete','Effortless at top speed']
+    }
+  },
+  strength:{
+    label:'Relative / Absolute Strength',icon:'🏋️',
+    desc:'Bodyweight control, posterior chain, eccentric strength, load tolerance',
+    reasons:{
+      1:['Can\'t perform a bodyweight squat with proper form','Can\'t do a single push-up','No control of their own bodyweight','Collapses under any eccentric load','No posterior chain awareness — glutes and hamstrings not firing','Limbs shaking in basic holds'],
+      2:['Can do basic bodyweight movements but barely','Falls apart under any added load','Very weak eccentric control','Limited posterior chain strength','Can\'t hold basic positions for more than a few reps','Clearly hasn\'t trained before'],
+      3:['Can handle some external load with coaching','Basic movements look functional — not impressive','Adequate relative strength for their size','Gets through strength drills without breaking down','Not strong but not a liability','Can control their own bodyweight in most movements'],
+      4:['Moves well under load','Obvious they have some training background','Good relative strength — controls bodyweight plus','Solid eccentric control','Posterior chain is active and strong','Handles heavier loads with decent mechanics'],
+      5:['Very powerful relative to bodyweight','Handles heavy loads smoothly','Posterior chain is elite — glutes and hamstrings dominant','Eccentric control is exceptional','Strength is visually obvious — looks strong','Could handle advanced loading from day one']
+    }
+  },
+  coordination:{
+    label:'Coordination',icon:'🎯',
+    desc:'Body awareness, movement pattern learning, multi-step drills',
+    reasons:{
+      1:['Complete lack of body awareness','Limbs going in wrong directions on basic drills','Can\'t mirror or copy a simple movement pattern','Struggles to do a basic ladder or cone drill','Falls apart on any multi-step movement','Looks lost on the floor'],
+      2:['Poor coordination on multi-step drills','Slow to pick up new movement patterns — needs many reps','Clumsy and hesitant','Can do one-step movements but breaks down at two or more','Arms and legs not working together','Gets confused easily on new drills'],
+      3:['Can learn movements with coaching and repetition','Gets through basic coordination drills','Arms and legs mostly in sync','Not fluid but functional','Takes a few reps to pick up new patterns — average learning speed','No standout moments of athleticism'],
+      4:['Picks up new movements quickly — one or two reps','Fluid in multi-step drills','Arms and legs work together naturally','Moves athletically and with purpose','Pattern recognition is sharp','Clearly an experienced athlete'],
+      5:['Picks up anything immediately — first rep looks good','Fluid, smooth, and effortless in all movement patterns','Natural body awareness — adjusts on the fly','Multi-step drills feel easy for them','Looks like they\'ve done everything before','Elite movement IQ']
+    }
+  },
+  mobility:{
+    label:'Mobility',icon:'🤸',
+    desc:'Joint range of motion, squat depth, hamstring flexibility, thoracic rotation',
+    reasons:{
+      1:['Can\'t squat to parallel — major ankle or hip restriction','Can\'t touch their toes — severe hamstring tightness','Thoracic spine is locked — can\'t rotate at all','Hip flexors are extremely tight — anterior tilt visible at rest','Can\'t get into a basic athletic stance comfortably','Multiple restrictions present at the same time'],
+      2:['Very stiff through hips and hamstrings','Ankle mobility limits squat depth significantly','Can\'t hold a deep squat — falls backward','Thoracic rotation limited','Struggles to get into athletic positions properly','Has to compensate in almost every movement'],
+      3:['Functional range of motion in most joints','Can squat to parallel or slightly below','Some tightness present but manageable','Gets through drills without mobility being a blocker','Hip flexors a little tight but workable','Nothing alarming — typical high school athlete'],
+      4:['Full range of motion on most movements','Good hip mobility — deep squat is clean','Hamstrings are flexible — minimal compensation','Athletic positions come naturally','Above average flexibility for their age and sport','No significant mobility restrictions'],
+      5:['Exceptional range of motion across all joints','Can get into any position requested','Hypermobile or close to it','Squat is deep and clean with no restriction','Thoracic rotation is excellent','Looks like they\'ve done yoga or gymnastics']
+    }
+  }
+};
+
+var C6_POSITIONS = {
+  'Football':['QB','RB','WR','TE','OL','DL','LB','CB','S','K/P','ATH'],
+  'Basketball':['PG','SG','SF','PF','C'],
+  'Baseball':['Pitcher','Catcher','1B','2B','3B','SS','OF','DH','Utility'],
+  'Softball':['Pitcher','Catcher','1B','2B','3B','SS','OF','DP/Flex'],
+  'Soccer':['GK','Defender','Midfielder','Forward','Wing','Sweeper'],
+  'Track & Field':['Sprinter','Distance','Jumper','Thrower','Multi-Event','Pole Vault'],
+  'Volleyball':['Setter','Outside Hitter','Middle Blocker','Opposite','Libero','DS'],
+  'Lacrosse':['Attack','Midfield','Defense','Goalie','LSM'],
+  'Wrestling':['<125','<130','<138','<145','<152','<160','<170','<182','<195','<220','<285'],
+  'Swimming':['Sprinter','Mid-Distance','Distance','IM','Backstroke','Butterfly','Breaststroke'],
+  'Tennis':['Singles','Doubles','All-Around'],
+  'Golf':['Driver','Iron Game','Short Game','All-Around'],
+  'Other':['Athlete']
+};
+
+var C6_SPORT_TRANS = {
+  vertical:{
+    'Football':{'QB':'Height + jump ability helps back-shoulder throws and reading the field.','WR':'Vertical is directly tied to contested catches, jump balls, and red-zone success.','CB':'Jump ball coverage requires elite vertical ability.','default':'Vertical ability ties directly to explosive burst off the line and contested ball situations.'},
+    'Basketball':{default:'Vertical ability is one of the most directly sport-relevant qualities — finishing at the rim, rebounding, and shot contesting all depend on it.'},
+    'Volleyball':{default:'Vertical is your most important CORE 6 quality in volleyball — attacking and blocking are completely dependent on jump quality and timing.'},
+    default:'Vertical ability relates to explosive burst, jump quality, and how quickly an athlete can apply force into the ground.'
+  },
+  lateral:{
+    'Football':{'CB':'Elite lateral is non-negotiable for man coverage — hip drop and change of direction are your bread and butter.','LB':'Dropping into zone and re-routing routes requires quick lateral first steps.','default':'Lateral ability affects pursuit angles, coverage technique, and open-field tackling.'},
+    'Basketball':{default:'On-ball defense, closeouts, and picking up ball-handlers off screens all live here. Lateral quickness is your defensive foundation.'},
+    'Soccer':{default:'Almost every movement in soccer is lateral or diagonal. This is your base movement quality.'},
+    default:'Lateral ability measures how explosive and efficient an athlete is in side-to-side movement — critical for most team sports.'
+  },
+  linear:{
+    'Football':{'WR':'Linear speed is your route-running foundation — every route break starts from a linear burst.','RB':'Burst through the hole is the most important quality for a back.','CB':'Linear close speed is what lets you recover when beaten.','default':'Linear ability determines explosiveness off the line and straight-line separation.'},
+    'Track & Field':{'Sprinter':'This IS your sport — linear mechanics and ground contact time are everything.','default':'Linear ability is primary in track — every event demands elite straight-line movement.'},
+    default:'Linear ability measures acceleration, sprint mechanics, and top-end speed — directly tied to separation and burst in any sport.'
+  },
+  strength:{
+    'Football':{'OL':'Absolute strength is more important here than anywhere else on the field — you anchor everything.','DL':'You need strength to hold the point of attack and disengage blocks.','default':'Strength underpins blocking, tackling, and resisting contact.'},
+    'Wrestling':{default:'Relative strength is arguably the highest-priority CORE 6 quality in wrestling — controlling another body requires it.'},
+    default:'Relative strength determines how well an athlete handles contact, resists forces, and produces power in sport-specific positions.'
+  },
+  coordination:{
+    'Football':{'QB':'Coordination drives throwing mechanics, footwork in the pocket, and pre-snap processing.','default':'Route precision, blocking footwork, and reading defenses all require high coordination.'},
+    'Baseball':{'Pitcher':'Arm path, hip-to-shoulder separation, and landing mechanics are all coordination-driven.','default':'Hitting mechanics, fielding footwork, and throwing delivery are all coordination-dependent.'},
+    default:'Coordination determines how quickly an athlete can learn new movements, chain skills together, and execute under pressure.'
+  },
+  mobility:{
+    'Football':{'OL':'Hip mobility is critical for getting into a proper drive block stance and pulling on the run.','default':'Mobility affects stance depth, backpedal efficiency, and injury resilience.'},
+    'Track & Field':{default:'Hip flexor mobility and hamstring flexibility directly affect stride length and running efficiency.'},
+    default:'Mobility determines how well an athlete can get into sport-specific positions and how much their movement quality will be limited by restriction.'
+  }
+};
+
+var C6_PHRASES = {
+  1: [
+    'This is ground zero. We have real foundational work to do here — but that\'s okay, that\'s what we\'re here for.',
+    'This quality needs to be addressed immediately. We\'re starting from scratch, and that\'s actually an advantage — no bad habits to undo.',
+    'This is a development priority. We\'ll put a dedicated focus here before anything else gets layered on top.'
+  ],
+  2: [
+    'There\'s something here to work with, but it needs a lot of attention. We\'re building the foundation right now.',
+    'Below where we need to be, but there\'s movement ability here. With the right coaching cues and consistent reps, this moves.',
+    'This quality is holding back the rest of what this athlete can be. We address it directly and watch everything else improve.'
+  ],
+  3: [
+    'Functional — gets the job done but nothing stands out. The goal is to make this a strength, not just an acceptable quality.',
+    'This is average, which means it\'s coachable. The ceiling here is high if we commit to the details.',
+    'Good enough to not be a problem right now, but we\'re not leaving it here. There\'s upside to unlock.'
+  ],
+  4: [
+    'This is a real strength. The details are there — now it\'s about making it automatic and relentless.',
+    'Above average. The talent is visible. We sharpen the fine details and this becomes a weapon.',
+    'Strong here. Close to elite. The gap between a 4 and a 5 is details and consistency — both are coachable.'
+  ],
+  5: [
+    'Elite. This quality doesn\'t need fixing — it needs protecting. We train around it and build everything else to match it.',
+    'This is a weapon. We showcase it, build confidence around it, and let it set the standard for the rest of the profile.',
+    'Top-end quality here. This is what separates this athlete. We program to reinforce it and make sure it shows up on game day.'
+  ]
+};
+
+function c6GetPhrase(rating, reasons) {
+  var templates = C6_PHRASES[rating];
+  var base = templates[Math.floor(Math.random() * templates.length)];
+  if (reasons && reasons.length > 0) {
+    var top = reasons.slice(0,2).map(function(r){return r.toLowerCase();}).join(' and ');
+    if (rating <= 2) return 'What I\'m seeing: ' + top + '. ' + base;
+    if (rating === 3) return base + ' What I\'m seeing: ' + top + '.';
+    return base + ' What\'s standing out: ' + top + '.';
+  }
+  return base;
+}
+
+function c6SportTrans(quality, sport, position) {
+  var q = C6_SPORT_TRANS[quality];
+  if (!q) return null;
+  var sportBlock = q[sport] || q['default'];
+  if (typeof sportBlock === 'object' && sportBlock !== null) {
+    return sportBlock[position] || sportBlock['default'] || q['default'];
+  }
+  return sportBlock || null;
+}
+
+function openCore6(prefillName) {
+  var ov = document.getElementById('core6-overlay');
+  ov.classList.add('open');
+  ov.scrollTop = 0;
+  C6_RATINGS = {vertical:0,lateral:0,linear:0,strength:0,coordination:0,mobility:0};
+  C6_REASONS = {vertical:{},lateral:{},linear:{},strength:{},coordination:{},mobility:{}};
+  if (prefillName) document.getElementById('c6-name').value = prefillName;
+  document.getElementById('c6-summary').style.display = 'none';
+  document.getElementById('c6-sport-trans').style.display = 'none';
+  c6RenderQualities();
+}
+
+function closeCore6() {
+  document.getElementById('core6-overlay').classList.remove('open');
+}
+
+function c6UpdatePositions() {
+  var sport = document.getElementById('c6-sport').value;
+  var pos = document.getElementById('c6-position');
+  pos.innerHTML = '';
+  var positions = C6_POSITIONS[sport] || ['Athlete'];
+  pos.innerHTML = '<option value="">Select Position</option>';
+  positions.forEach(function(p) {
+    var o = document.createElement('option'); o.value = p; o.textContent = p; pos.appendChild(o);
+  });
+}
+
+function c6RenderQualities() {
+  var container = document.getElementById('c6-qualities');
+  container.innerHTML = '';
+  Object.keys(C6_DATA).forEach(function(key) {
+    var q = C6_DATA[key];
+    var card = document.createElement('div');
+    card.className = 'c6-quality-card';
+    card.id = 'c6-card-' + key;
+
+    var btnHtml = '';
+    for (var r = 1; r <= 5; r++) {
+      var colors = ['#e74c3c','#e67e22','#f1c40f','#3498db','#2ecc71'];
+      var labels = ['1','2','3','4','5'];
+      btnHtml += '<button class="c6-rating-btn" data-q="'+key+'" data-r="'+r+'" onclick="c6SetRating(\''+key+'\','+r+')" style="border-color:'+colors[r-1]+'20">'+labels[r-1]+'</button>';
+    }
+
+    card.innerHTML =
+      '<div class="c6-q-title">'+q.icon+' '+q.label+'</div>'+
+      '<div class="c6-q-desc">'+q.desc+'</div>'+
+      '<div class="c6-rating-btns" id="c6-btns-'+key+'">' + btnHtml + '</div>'+
+      '<div class="c6-reasons" id="c6-reasons-'+key+'"></div>'+
+      '<div class="c6-phrase-box" id="c6-phrase-'+key+'"></div>';
+
+    container.appendChild(card);
+  });
+}
+
+function c6SetRating(quality, rating) {
+  C6_RATINGS[quality] = rating;
+  C6_REASONS[quality] = {};
+
+  // Update button styles
+  var btns = document.querySelectorAll('#c6-btns-'+quality+' .c6-rating-btn');
+  var ratingColors = ['','#e74c3c','#e67e22','#f1c40f','#3498db','#2ecc71'];
+  btns.forEach(function(btn) {
+    var r = parseInt(btn.getAttribute('data-r'));
+    btn.classList.remove('selected');
+    btn.style.background = '#112233';
+    btn.style.color = '#6a8aa8';
+    btn.style.borderColor = '#2a4a6a';
+    if (r === rating) {
+      btn.classList.add('selected');
+      btn.style.background = ratingColors[rating];
+      btn.style.borderColor = ratingColors[rating];
+      btn.style.color = rating === 4 ? '#fff' : (rating === 3 ? '#0D1B2A' : '#fff');
+    }
+  });
+
+  // Render reasons
+  var reasonsContainer = document.getElementById('c6-reasons-'+quality);
+  var reasons = C6_DATA[quality].reasons[rating] || [];
+  reasonsContainer.innerHTML = '';
+  reasonsContainer.classList.add('show');
+
+  var header = document.createElement('div');
+  header.style.cssText = 'font-size:9px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;font-weight:700';
+  header.textContent = 'What I\'m seeing (pick 1–2):';
+  reasonsContainer.appendChild(header);
+
+  reasons.forEach(function(r, idx) {
+    var pill = document.createElement('label');
+    pill.className = 'c6-reason-pill';
+    pill.innerHTML = '<input type="checkbox" onchange="c6ToggleReason(\''+quality+'\','+idx+')" style="flex-shrink:0;accent-color:#4caf50"> ' + r;
+    pill.querySelector('input').addEventListener('change', function() {
+      if (this.checked) { pill.classList.add('checked'); } else { pill.classList.remove('checked'); }
+    });
+    reasonsContainer.appendChild(pill);
+  });
+
+  // Hide phrase box when rating changes
+  var phraseBox = document.getElementById('c6-phrase-'+quality);
+  phraseBox.classList.remove('show');
+}
+
+function c6ToggleReason(quality, idx) {
+  if (!C6_REASONS[quality]) C6_REASONS[quality] = {};
+  C6_REASONS[quality][idx] = !C6_REASONS[quality][idx];
+}
+
+function c6GetSelectedReasons(quality) {
+  var rating = C6_RATINGS[quality];
+  if (!rating) return [];
+  var reasons = C6_DATA[quality].reasons[rating] || [];
+  var selected = C6_REASONS[quality] || {};
+  var result = [];
+  Object.keys(selected).forEach(function(idx) {
+    if (selected[idx] && reasons[parseInt(idx)]) result.push(reasons[parseInt(idx)]);
+  });
+  // If nothing explicitly checked, grab first reason as default
+  if (result.length === 0 && reasons.length > 0) result.push(reasons[0]);
+  return result;
+}
+
+function c6RatingLabel(r) {
+  return ['','1 – Needs Work','2 – Below Average','3 – Average','4 – Above Average','5 – Elite'][r] || r+'';
+}
+
+function c6RatingColor(r) {
+  return ['','#e74c3c','#e67e22','#f1c40f','#3498db','#2ecc71'][r] || '#fff';
+}
+
+function core6GenerateAll() {
+  var name = document.getElementById('c6-name').value.trim() || 'This athlete';
+  var firstName = name.split(' ')[0];
+  var sport = document.getElementById('c6-sport').value;
+  var position = document.getElementById('c6-position').value;
+  var allRated = true;
+
+  // Generate individual phrases per quality
+  Object.keys(C6_DATA).forEach(function(key) {
+    var rating = C6_RATINGS[key];
+    if (!rating) { allRated = false; return; }
+    var reasons = c6GetSelectedReasons(key);
+    var phrase = c6GetPhrase(rating, reasons);
+    var phraseBox = document.getElementById('c6-phrase-'+key);
+    phraseBox.innerHTML =
+      '<span style="font-size:11px;font-weight:800;color:'+c6RatingColor(rating)+'">'+c6RatingLabel(rating)+'</span> — ' + phrase;
+    phraseBox.classList.add('show');
+  });
+
+  // Build overall summary
+  var summaryLines = [];
+  var scores = Object.keys(C6_DATA).map(function(k){ return C6_RATINGS[k]||0; });
+  var avg = scores.reduce(function(a,b){return a+b;},0) / scores.length;
+  var avgRounded = Math.round(avg * 10) / 10;
+
+  summaryLines.push('<strong style="color:#C9A228">' + name + '</strong> — CORE 6 Profile');
+  summaryLines.push('');
+
+  var strengths = [], areas = [];
+  Object.keys(C6_DATA).forEach(function(key) {
+    var r = C6_RATINGS[key];
+    if (!r) return;
+    var q = C6_DATA[key];
+    if (r >= 4) strengths.push(q.label + ' (' + r + ')');
+    if (r <= 2) areas.push(q.label + ' (' + r + ')');
+  });
+
+  if (strengths.length > 0) summaryLines.push('⚡ <strong>Strengths:</strong> ' + strengths.join(', '));
+  if (areas.length > 0) summaryLines.push('🔧 <strong>Priority Development Areas:</strong> ' + areas.join(', '));
+  summaryLines.push('📊 <strong>Overall CORE 6 Average:</strong> ' + avgRounded + ' / 5');
+
+  if (avg >= 4) summaryLines.push('');summaryLines.push('🏆 This is a high-level athlete. The CORE 6 profile shows elite qualities across the board. Programming from day one should reflect this ceiling.');
+  else if (avg >= 3) summaryLines.push('');summaryLines.push('📈 Solid foundation. ' + firstName + ' has the raw material — now it\'s about sharpening the details and building consistency across all six qualities.');
+  else summaryLines.push('');summaryLines.push('🔨 This athlete has real upside and real things to address. We have a clear development roadmap. That\'s exactly what we need to get started.');
+
+  var summaryDiv = document.getElementById('c6-summary');
+  document.getElementById('c6-summary-text').innerHTML = summaryLines.join('<br>');
+  summaryDiv.style.display = 'block';
+
+  // Sport translation
+  if (sport) {
+    var transLines = [];
+    transLines.push('<strong>' + firstName + '</strong> plays <strong>' + sport + '</strong>' + (position ? ' — <strong>' + position + '</strong>' : '') + '. Here\'s what these scores mean for that sport:<br>');
+    Object.keys(C6_DATA).forEach(function(key) {
+      var r = C6_RATINGS[key];
+      if (!r) return;
+      var trans = c6SportTrans(key, sport, position);
+      if (trans) {
+        transLines.push('<span style="color:'+c6RatingColor(r)+'">'+C6_DATA[key].icon+' <strong>'+C6_DATA[key].label+'</strong> ('+r+'):</span> ' + trans);
+      }
+    });
+    var transDiv = document.getElementById('c6-sport-trans');
+    document.getElementById('c6-trans-text').innerHTML = transLines.join('<br>');
+    transDiv.style.display = 'block';
+  }
+
+  // Scroll to summary
+  document.getElementById('core6-overlay').scrollTop = document.getElementById('c6-summary').offsetTop - 80;
+}
+
+function core6PrintCard() {
+  var name = document.getElementById('c6-name').value.trim() || 'Athlete';
+  var sport = document.getElementById('c6-sport').value;
+  var position = document.getElementById('c6-position').value;
+  var year = document.getElementById('c6-year').value;
+  var level = document.getElementById('c6-level').value;
+  var today = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+
+  var rows = '';
+  Object.keys(C6_DATA).forEach(function(key) {
+    var q = C6_DATA[key];
+    var r = C6_RATINGS[key] || '—';
+    var reasons = c6GetSelectedReasons(key);
+    var rColor = r !== '—' ? c6RatingColor(r) : '#999';
+    rows += '<tr style="border-bottom:1px solid #e5e5e5">' +
+      '<td style="padding:9px 12px;font-weight:700;font-size:13px">' + q.icon + ' ' + q.label + '</td>' +
+      '<td style="padding:9px 12px;text-align:center;font-size:20px;font-weight:900;color:' + rColor + '">' + r + '</td>' +
+      '<td style="padding:9px 12px;font-size:11px;color:#555;line-height:1.5">' + (reasons.join('<br>') || '') + '</td>' +
+    '</tr>';
+  });
+
+  var printHtml =
+    '<div style="background:#0D1B2A;color:#fff;padding:16px 20px;border-radius:6px;margin-bottom:18px">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">' +
+        '<div style="font-size:22px;font-weight:900;letter-spacing:1px;color:#C9A228">CORE 6</div>' +
+        '<div style="font-size:11px;color:#6a8aa8">IN-SESSION EVALUATION</div>' +
+      '</div>' +
+      '<div style="font-size:18px;font-weight:800">' + name + '</div>' +
+      '<div style="font-size:12px;color:#8a9bb0;margin-top:2px">' +
+        [sport, position, year ? 'Class of \''+year.toString().slice(-2) : '', level].filter(Boolean).join(' · ') +
+      '</div>' +
+      '<div style="font-size:10px;color:#6a8aa8;margin-top:4px">Evaluated: ' + today + ' · Odyssey Performance</div>' +
+    '</div>' +
+    '<table style="width:100%;border-collapse:collapse;font-family:Arial,sans-serif">' +
+      '<thead><tr style="background:#f5f5f5">' +
+        '<th style="padding:8px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#666">Quality</th>' +
+        '<th style="padding:8px 12px;text-align:center;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#666">Score</th>' +
+        '<th style="padding:8px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#666">Notes</th>' +
+      '</tr></thead>' +
+      '<tbody>' + rows + '</tbody>' +
+    '</table>' +
+    '<div style="margin-top:16px;padding:12px;background:#f9f9f9;border-radius:6px;font-size:11px;color:#666">' +
+      '<strong>Scale:</strong> 1 = Needs Work &nbsp;·&nbsp; 2 = Below Average &nbsp;·&nbsp; 3 = Average &nbsp;·&nbsp; 4 = Above Average &nbsp;·&nbsp; 5 = Elite' +
+    '</div>';
+
+  var wrap = document.getElementById('core6-print-wrap');
+  wrap.innerHTML = printHtml;
+  wrap.style.display = 'block';
+  window.print();
+  setTimeout(function(){ wrap.style.display = 'none'; }, 1000);
+}
+
+// =====================================================
 // INIT
 // =====================================================
 function init() {
