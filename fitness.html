@@ -225,6 +225,35 @@ var foods      = load(LS_FOODS, [
   });
 })();
 
+var LS_HEALTH  = 'of_health_v1';
+var healthLog  = load(LS_HEALTH, []);  // [{date, steps, move_cal, move_goal, exercise_min, stand_hr, dist_mi}]
+
+// ── APPLE HEALTH URL IMPORT ───────────────────────────────────
+// Shortcut calls: fitness.html?date=2026-04-19&steps=5196&move=577&move_goal=700&exercise=3&stand=10&dist=2.26
+(function importHealthFromURL() {
+  var params = new URLSearchParams(window.location.search);
+  if (!params.get('steps') && !params.get('move')) return;
+  var date = params.get('date') || todayStrStatic();
+  var entry = {
+    date:         date,
+    steps:        params.get('steps')     ? parseInt(params.get('steps'))         : null,
+    move_cal:     params.get('move')      ? parseInt(params.get('move'))           : null,
+    move_goal:    params.get('move_goal') ? parseInt(params.get('move_goal'))      : 700,
+    exercise_min: params.get('exercise')  ? parseInt(params.get('exercise'))       : null,
+    exercise_goal:params.get('ex_goal')   ? parseInt(params.get('ex_goal'))        : 30,
+    stand_hr:     params.get('stand')     ? parseInt(params.get('stand'))          : null,
+    stand_goal:   params.get('stand_goal')? parseInt(params.get('stand_goal'))     : 12,
+    dist_mi:      params.get('dist')      ? parseFloat(params.get('dist'))         : null,
+  };
+  healthLog = healthLog.filter(function(h){ return h.date !== date; });
+  healthLog.push(entry);
+  save(LS_HEALTH, healthLog);
+  // Clean URL without reloading
+  window.history.replaceState({}, '', window.location.pathname);
+})();
+
+function todayStrStatic(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
 var activePage = 'today';
 var activeWorkoutTab = 'log';
 var activeNutritionTab = 'log';
@@ -280,12 +309,50 @@ function renderToday(){
   var latestWeight = weightLog.length ? weightLog[weightLog.length-1].weight : null;
   var calRemain = prefs.calTarget - totalCals;
 
+  // Apple Health data for today
+  var health = healthLog.find(function(h){ return h.date===td; });
+
   var html = '<div class="header"><div class="header-row"><h1>Odyssey Fitness</h1><span class="streak-badge">🔥 '+streak+' day streak</span></div><div class="header-sub">'+new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+'</div></div>';
 
   html += '<div class="section">';
 
+  // Apple Health rings
+  if(health){
+    function ring(pct, color, size){
+      var r = size/2 - 4; var circ = 2*Math.PI*r;
+      var dash = Math.min(pct/100, 1)*circ;
+      return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'">'
+        +'<circle cx="'+(size/2)+'" cy="'+(size/2)+'" r="'+r+'" fill="none" stroke="#222" stroke-width="6"/>'
+        +'<circle cx="'+(size/2)+'" cy="'+(size/2)+'" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="6" stroke-dasharray="'+dash+' '+circ+'" stroke-linecap="round" transform="rotate(-90 '+(size/2)+' '+(size/2)+')" style="transition:stroke-dasharray .4s"/>'
+        +'</svg>';
+    }
+    var movePct  = health.move_goal  ? Math.round(health.move_cal/health.move_goal*100)  : 0;
+    var exPct    = health.exercise_goal ? Math.round(health.exercise_min/health.exercise_goal*100) : 0;
+    var standPct = health.stand_goal ? Math.round(health.stand_hr/health.stand_goal*100)  : 0;
+    html += '<div class="card" style="display:flex;align-items:center;gap:14px;padding:14px;">';
+    // Stacked rings
+    html += '<div style="position:relative;width:80px;height:80px;flex-shrink:0;">';
+    html += '<div style="position:absolute;top:0;left:0;">'+ring(movePct,'#fa3e5f',80)+'</div>';
+    html += '<div style="position:absolute;top:10px;left:10px;">'+ring(exPct,'#a5f53e',60)+'</div>';
+    html += '<div style="position:absolute;top:20px;left:20px;">'+ring(standPct,'#3eebf5',40)+'</div>';
+    html += '</div>';
+    // Stats
+    html += '<div style="flex:1;">';
+    html += '<div style="font-size:12px;font-weight:700;color:#aaa;margin-bottom:8px;letter-spacing:.5px;text-transform:uppercase;">Apple Health</div>';
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;">';
+    if(health.move_cal!=null) html += '<div style="font-size:12px;"><span style="color:#fa3e5f;font-weight:700;">'+health.move_cal+'</span><span style="color:#666;">/'+(health.move_goal||700)+' cal</span></div>';
+    if(health.exercise_min!=null) html += '<div style="font-size:12px;"><span style="color:#a5f53e;font-weight:700;">'+health.exercise_min+'</span><span style="color:#666;">/'+(health.exercise_goal||30)+' min</span></div>';
+    if(health.stand_hr!=null) html += '<div style="font-size:12px;"><span style="color:#3eebf5;font-weight:700;">'+health.stand_hr+'</span><span style="color:#666;">/'+(health.stand_goal||12)+' hrs</span></div>';
+    if(health.steps!=null) html += '<div style="font-size:12px;"><span style="color:#e8c84a;font-weight:700;">'+health.steps.toLocaleString()+'</span><span style="color:#666;"> steps</span></div>';
+    if(health.dist_mi!=null) html += '<div style="font-size:12px;"><span style="color:#e8c84a;font-weight:700;">'+health.dist_mi+'</span><span style="color:#666;"> mi</span></div>';
+    html += '</div></div></div>';
+  } else {
+    html += '<div class="card" style="text-align:center;padding:14px;"><div style="font-size:12px;color:var(--muted);margin-bottom:8px;">📱 Apple Health not synced today</div>';
+    html += '<button class="btn btn-ghost btn-sm" onclick="openHealthSetup()">Set up Shortcut</button></div>';
+  }
+
   // Quick log weight
-  html += '<div style="display:flex;gap:8px;margin-bottom:14px;">';
+  html += '<div style="display:flex;gap:8px;margin:14px 0 0;">';
   html += '<button class="btn btn-primary w-full" onclick="openLogWeight()">+ Log Weight</button>';
   html += '<button class="btn btn-ghost w-full" onclick="openLogWorkout()">+ Log Workout</button>';
   html += '</div>';
@@ -546,6 +613,29 @@ function openModal(content){
   document.getElementById('modal-overlay').onclick = function(e){ if(e.target===document.getElementById('modal-overlay')) closeModal(); };
 }
 function closeModal(){ document.getElementById('modal-overlay').classList.add('hidden'); }
+
+// APPLE HEALTH SETUP
+function openHealthSetup(){
+  var base = 'https://deseanlberger.github.io/odyssey-dashboard/fitness.html';
+  openModal('<div class="modal-title">📱 Connect Apple Health</div>'+
+    '<p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Create a free Shortcut on your iPhone that syncs your rings and steps here automatically.</p>'+
+    '<div class="section-title">Setup Steps</div>'+
+    '<div style="font-size:13px;line-height:1.8;color:var(--text);">'+
+    '<div style="padding:6px 0;border-bottom:1px solid var(--border);">1. Open the <strong>Shortcuts</strong> app on your iPhone</div>'+
+    '<div style="padding:6px 0;border-bottom:1px solid var(--border);">2. Tap <strong>+</strong> to create a new Shortcut</div>'+
+    '<div style="padding:6px 0;border-bottom:1px solid var(--border);">3. Add these actions in order:<br>'+
+    '<span style="color:var(--muted);font-size:12px;margin-left:12px;display:block;margin-top:4px;">• <strong>Get My Steps</strong> (Health → Steps → Today)<br>'+
+    '• <strong>Get Active Energy Burned</strong> (Health → Today)<br>'+
+    '• <strong>Get Exercise Minutes</strong> (Health → Today)<br>'+
+    '• <strong>Get Stand Hours</strong> (Health → Today)<br>'+
+    '• <strong>Get Walking + Running Distance</strong> (Health → Today, miles)</span></div>'+
+    '<div style="padding:6px 0;border-bottom:1px solid var(--border);">4. Add an <strong>Open URLs</strong> action with this URL:<br>'+
+    '<span style="font-size:10px;color:var(--accent);word-break:break-all;display:block;margin-top:4px;background:var(--bg3);padding:6px;border-radius:6px;">'+base+'?steps=[Steps]&move=[Active Energy]&exercise=[Exercise Minutes]&stand=[Stand Hours]&dist=[Distance]</span>'+
+    '<span style="font-size:11px;color:var(--muted);">Replace each [bracket] with the variable from the step above</span></div>'+
+    '<div style="padding:6px 0;">5. Name it <strong>"Sync Health"</strong> — tap it each morning or set it to run automatically via Automations</div>'+
+    '</div>'+
+    '<div class="mt16"><button class="btn btn-primary w-full" onclick="closeModal()">Got it</button></div>');
+}
 
 // LOG WEIGHT
 function openLogWeight(){
