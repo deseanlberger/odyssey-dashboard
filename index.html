@@ -1540,8 +1540,8 @@ function renderLeaderboards() {
   h += lbSection('Bench Peak Power', '🏋️', '#f0a04a', pool, 'bench_pp', ' W/kg', null, false);
   h += lbSection('Squat Peak Power', '🦵', '#f04a8a', pool, 'squat_pp', ' W/kg', null, false);
   h += lbSection('Trap Bar Peak Power', '🔩', '#a078f0', pool, 'trapbar_pp', ' W/kg', null, false);
-  h += lbSection('Power Clean Max', '🏅', '#ffd700', pool, 'power_clean_kg', ' kg',
-    function(v){ return v+' kg ('+Math.round(v*2.205)+' lbs)'; }, false);
+  h += lbSection('Power Clean Max', '🏅', '#ffd700', pool, 'power_clean_lbs', ' lbs',
+    function(v){ return Math.round(v*2.205)+' lbs'; }, false);
   h += lbSection('RSI', '🌀', '#4a8af0', pool, 'best_rsi', '', null, false);
   out.innerHTML = h;
 }
@@ -1573,8 +1573,8 @@ function renderPublicLeaderboards() {
   h += lbSection('Bench Peak Power', '🏋️', '#f0a04a', pool, 'bench_pp', ' W/kg', null, false);
   h += lbSection('Squat Peak Power', '🦵', '#f04a8a', pool, 'squat_pp', ' W/kg', null, false);
   h += lbSection('Trap Bar Peak Power', '🔩', '#a078f0', pool, 'trapbar_pp', ' W/kg', null, false);
-  h += lbSection('Power Clean Max', '🏅', '#ffd700', pool, 'power_clean_kg', ' kg',
-    function(v){ return v+' kg ('+Math.round(v*2.205)+' lbs)'; }, false);
+  h += lbSection('Power Clean Max', '🏅', '#ffd700', pool, 'power_clean_lbs', ' lbs',
+    function(v){ return Math.round(v*2.205)+' lbs'; }, false);
   h += lbSection('RSI', '🌀', '#4a8af0', pool, 'best_rsi', '', null, false);
   out.innerHTML = h;
 }
@@ -1600,7 +1600,7 @@ const METRICS = [
   {key:'bench_pp',     higher:true,  label:'Bench Peak Power',       unit:' W/kg',w:1.0},
   {key:'squat_pp',     higher:true,  label:'Squat Peak Power',       unit:' W/kg',w:1.0},
   {key:'trapbar_pp',   higher:true,  label:'Trap Bar Peak Power',    unit:' W/kg',w:1.0},
-  {key:'power_clean_kg',higher:true, label:'Power Clean Max',   unit:' kg',  w:1.0},
+  {key:'power_clean_lbs',higher:true, label:'Power Clean Max',   unit:' lbs', w:1.0},
   {key:'best_rsi',     higher:true,  label:'RSI',               unit:'',     w:0.5},
 ];
 const AGE_BONUS = {2022:0,2023:0,2024:0,2025:2,2026:3,2027:5,2028:7,2029:9,2030:10,2031:12,2032:14};
@@ -1696,7 +1696,7 @@ function profileCompleteness(a) {
     {k:'bench_pp',        label:'Bench Peak Power'},
     {k:'squat_pp',        label:'Squat Peak Power'},
     {k:'trapbar_pp',      label:'Trap Bar Peak Power'},
-    {k:'power_clean_kg',  label:'Power Clean Max'},
+    {k:'power_clean_lbs',  label:'Power Clean Max'},
     {k:'uni_asym_pct',    label:'Asymmetry (SLJ)'},
   ];
   const have = checks.filter(c => a[c.k] != null && a[c.k] !== false);
@@ -4384,7 +4384,7 @@ function renderCoachProfile(a) {
     {key:'bench_pp',       label:'Bench Peak Power',        unit:' W/kg',higher:true},
     {key:'squat_pp',       label:'Squat Peak Power',        unit:' W/kg',higher:true},
     {key:'trapbar_pp',     label:'Trap Bar Peak Power',     unit:' W/kg',higher:true},
-    {key:'power_clean_kg', label:'Power Clean Max',    unit:' kg',  higher:true},
+    {key:'power_clean_lbs', label:'Power Clean Max',    unit:' lbs', higher:true},
     {key:'best_rsi',       label:'RSI',                unit:'',     higher:true},
     {key:'dj_jh_in',       label:'DJ Height',          unit:'"',    higher:true},
     {key:'dj_ct',          label:'DJ Contact Time',    unit:'s',    higher:false},
