@@ -543,9 +543,18 @@ select:focus{border-color:#C9A228}
 </div>
 
 <div class="nav-strip">
-  <button class="nav-tab active" id="nav-lookup" onclick="navSwitch('lookup')">🔍 Athlete Lookup</button>
+  <button class="nav-tab active" id="nav-lookup" onclick="navSwitch('lookup')">🔍 Athletes</button>
   <button class="nav-tab" id="nav-compare" onclick="navSwitch('compare')">⚡ Stack Up</button>
   <button class="nav-tab" id="nav-tools" onclick="navSwitch('tools')">🛠️ Tools</button>
+</div>
+
+<!-- COACH QUICK-ACCESS BAR (visible only in coach mode) -->
+<div id="coach-quickbar" style="display:none;background:#0a1a2e;border-bottom:2px solid #1e3a5f;padding:8px 12px;gap:8px;flex-wrap:wrap;align-items:center">
+  <span style="font-size:9px;color:#6a8aa8;font-weight:700;letter-spacing:1px;text-transform:uppercase;flex-shrink:0">Coach Actions:</span>
+  <button onclick="openImportSession()" style="background:#C9A228;border:none;color:#0D1B2A;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px">📥 Upload Session</button>
+  <button onclick="openNewAth()" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#C9A228;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">➕ Add Athlete</button>
+  <button onclick="navSwitch('tools');toolsSub('teamreport')" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">📋 Team Report</button>
+  <button onclick="openSubmitStats()" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">📊 Submit Stats</button>
 </div>
 
 <!-- ATHLETE LOOKUP TAB -->
@@ -1634,6 +1643,7 @@ async function pinSubmit() {
     document.getElementById('coach-btn').textContent = `🔓 ${currentCoach}`;
     document.getElementById('coach-btn').classList.add('active');
     document.getElementById('coach-indicator').style.display = 'flex';
+    document.getElementById('coach-quickbar').style.display = 'flex';
     document.getElementById('mode-label').textContent = masterMode
       ? 'Master view — Desean Berger' : `Coach view — ${currentCoach}`;
     // Tools wheel handles staff/PB visibility dynamically
@@ -1666,6 +1676,7 @@ function logoutCoach() {
   document.getElementById('coach-btn').textContent = '🔒 Coach Login';
   document.getElementById('coach-btn').classList.remove('active');
   document.getElementById('coach-indicator').style.display = 'none';
+  document.getElementById('coach-quickbar').style.display = 'none';
   document.getElementById('mode-label').textContent = 'Public view — coach login required to see body weight';
   // Tools wheel handles visibility
   navSwitch('lookup');
