@@ -171,6 +171,9 @@ select.form-input option{background:var(--bg2);}
 </nav>
 
 <script>
+window.onerror = function(msg, src, line, col, err) {
+  document.body.innerHTML = '<div style="padding:20px;background:#1a0000;color:#f44;font-family:monospace;font-size:13px;"><strong>JS Error:</strong><br>'+msg+'<br>Line '+line+':'+col+'<br>'+(err&&err.stack?err.stack.slice(0,400):'')+'</div>';
+};
 // ========================
 // STATE
 // ========================
