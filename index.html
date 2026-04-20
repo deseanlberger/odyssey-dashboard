@@ -4477,6 +4477,126 @@ function getCorrectiveRx(injuries) {
     return { condition: inj.condition, severity: inj.severity, notes: inj.notes, lib };
   }).filter(Boolean);
 }
+// ── PROGRESS TIMELINE ──
+const PROGRESS_TRACK = [
+  {key:'cmj_jh_in',       label:'CMJ Height',        unit:'"',     higher:true},
+  {key:'best_rsi',        label:'RSI',               unit:'',      higher:true},
+  {key:'iso_force_bm',    label:'Peak Force/BW',     unit:' N/kg', higher:true},
+  {key:'best_010',        label:'0–10 Sprint',        unit:'s',     higher:false},
+  {key:'best_2030',       label:'20–30 Fly',          unit:'s',     higher:false},
+  {key:'bench_pp',        label:'Bench Peak Power',   unit:' W/kg', higher:true},
+  {key:'squat_pp',        label:'Squat Peak Power',   unit:' W/kg', higher:true},
+  {key:'trapbar_pp',      label:'Trap Bar Peak Power',unit:' W/kg', higher:true},
+  {key:'power_clean_lbs', label:'Power Clean Max',    unit:' lbs',  higher:true},
+];
+
+function renderProgressSection(a, idx) {
+  const hkey = a.name.toLowerCase().replace(/\s+/g, '_');
+  const sessions = HISTORY[hkey] || [];
+
+  let rows = '';
+  PROGRESS_TRACK.forEach(def => {
+    const withVal = sessions.filter(s => s[def.key] != null);
+    const current = a[def.key];
+    if (current == null && !withVal.length) return;
+
+    const first = withVal.length ? withVal[0][def.key] : null;
+    const displayCurrent = current ?? (withVal.length ? withVal[withVal.length-1][def.key] : null);
+    const displayFirst = first ?? current;
+
+    let delta = '';
+    if (displayFirst != null && displayCurrent != null && displayFirst !== displayCurrent) {
+      const pct = Math.round((displayCurrent - displayFirst) / displayFirst * 100);
+      const improving = def.higher ? pct > 0 : pct < 0;
+      const clr = improving ? '#4caf50' : '#ef5350';
+      const icon = pct > 0 ? '▲' : '▼';
+      delta = `<span style="color:${clr};font-size:10px;font-weight:700;margin-left:6px">${icon} ${Math.abs(pct)}%</span>`;
+    }
+
+    let sparkHtml = '';
+    const allVals = sessions.map(s => s[def.key]).filter(v => v != null);
+    if (allVals.length >= 2) sparkHtml = renderSparkline(sessions, def.key, def.higher);
+
+    const dispVal = displayCurrent != null ? `${displayCurrent}${def.unit}` : '—';
+    const firstDisp = (displayFirst != null && displayFirst !== displayCurrent)
+      ? `<span style="color:#6a8aa8;font-size:9px">${displayFirst}${def.unit} → </span>` : '';
+
+    rows += `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #0d1e30">
+      <span style="font-size:11px;color:#8a9bb0;flex:1">${def.label}</span>
+      <div style="display:flex;align-items:center;gap:4px">
+        ${sparkHtml}${firstDisp}
+        <span style="font-size:12px;font-weight:700;color:#e6edf3">${dispVal}</span>
+        ${delta}
+      </div>
+    </div>`;
+  });
+
+  const sessionCount = sessions.length;
+  const firstDate = sessionCount ? sessions[0].date : null;
+  const headerNote = sessionCount
+    ? `<span style="color:#6a8aa8;font-size:10px">${sessionCount} session${sessionCount>1?'s':''} · Since ${firstDate}</span>`
+    : `<span style="color:#6a8aa8;font-size:10px">No sessions logged yet</span>`;
+
+  return `<div class="cp-section" id="progress-section-${idx}">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div class="cp-section-title" style="margin-bottom:0">📈 Progress Timeline</div>
+      ${headerNote}
+    </div>
+    ${rows || '<div style="color:#6a8aa8;font-size:11px;text-align:center;padding:8px 0">Log the first test session to start tracking.</div>'}
+    <button onclick="logTestSession(${idx})" style="width:100%;margin-top:10px;background:#0d2a1a;border:1px solid #1a4a2a;color:#4caf50;border-radius:8px;padding:8px;font-size:11px;font-weight:700;cursor:pointer">
+      + Log New Test Session
+    </button>
+  </div>`;
+}
+
+function logTestSession(idx) {
+  const a = A[idx];
+  const today = new Date().toISOString().split('T')[0];
+  const iStyle = 'width:100%;background:#0a1825;border:1px solid #1e3a5f;color:#e6edf3;border-radius:6px;padding:5px 8px;font-size:12px;box-sizing:border-box';
+  const formRows = PROGRESS_TRACK.map(f => {
+    const ph = a[f.key] ?? '';
+    const unitLabel = f.unit.trim() ? ` <span style="color:#6a8aa8;font-size:9px">(${f.unit.trim()})</span>` : '';
+    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <label style="font-size:11px;color:#8a9bb0;width:140px;flex-shrink:0">${f.label}${unitLabel}</label>
+      <input id="sess-${idx}-${f.key}" type="number" step="0.01" placeholder="${ph}" style="${iStyle}" />
+    </div>`;
+  }).join('');
+
+  document.getElementById(`progress-section-${idx}`).innerHTML = `
+    <div class="cp-section-title">📈 Log Test Session</div>
+    <div style="margin-bottom:10px">
+      <label style="font-size:11px;color:#8a9bb0;display:block;margin-bottom:4px">Test Date</label>
+      <input id="sess-${idx}-date" type="date" value="${today}" style="${iStyle}" />
+    </div>
+    <div style="font-size:10px;color:#6a8aa8;margin-bottom:10px">Leave blank to skip metrics not tested today.</div>
+    ${formRows}
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button onclick="saveTestSession(${idx})" style="flex:1;background:#1a4a2a;border:1px solid #2a6a3a;color:#4caf50;border-radius:8px;padding:9px;font-size:12px;font-weight:700;cursor:pointer">💾 Save Session</button>
+      <button onclick="openModal(${idx})" style="flex:1;background:#1e3040;border:1px solid #2a4a5f;color:#8a9bb0;border-radius:8px;padding:9px;font-size:12px;cursor:pointer">Cancel</button>
+    </div>`;
+}
+
+function saveTestSession(idx) {
+  const a = A[idx];
+  const hkey = a.name.toLowerCase().replace(/\s+/g, '_');
+  const dateEl = document.getElementById(`sess-${idx}-date`);
+  const date = dateEl ? dateEl.value : new Date().toISOString().split('T')[0];
+  const entry = { date };
+  let hasData = false;
+  PROGRESS_TRACK.forEach(def => {
+    const el = document.getElementById(`sess-${idx}-${def.key}`);
+    if (el && el.value !== '') {
+      const v = parseFloat(el.value);
+      if (!isNaN(v)) { entry[def.key] = v; hasData = true; }
+    }
+  });
+  if (!hasData) { alert('No data entered. Fill in at least one metric.'); return; }
+  if (!HISTORY[hkey]) HISTORY[hkey] = [];
+  HISTORY[hkey].push(entry);
+  HISTORY[hkey].sort((x,y) => x.date.localeCompare(y.date));
+  openModal(idx);
+}
+
 function renderCoachProfile(a) {
   const recs = getExRecs(a);
 
@@ -4728,7 +4848,8 @@ function renderCoachProfile(a) {
     </div>
   </div>`;
 
-  return bucketHtml + metricsSection + sportContextHtml + correctiveHtml + (dsiSection ? `<div class="cp-section"><div class="cp-section-title">DSI Analysis</div><div class="cp-dsi-row">${dsiSection}</div></div>` : '') + sprintEstHtml + asymHtml + rxHtml + qrHtml;
+  const progressHtml = renderProgressSection(a, A.indexOf(a));
+  return bucketHtml + metricsSection + progressHtml + sportContextHtml + correctiveHtml + (dsiSection ? `<div class="cp-section"><div class="cp-section-title">DSI Analysis</div><div class="cp-dsi-row">${dsiSection}</div></div>` : '') + sprintEstHtml + asymHtml + rxHtml + qrHtml;
 }
 
 function openModal(idx) {
