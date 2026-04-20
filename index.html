@@ -690,7 +690,7 @@ select:focus{border-color:#C9A228}
       <div class="calc-sub">Input your lift, load, and average bar velocity to identify your training zone — and get a recommended weight for any target zone.</div>
       <div class="calc-grid">
         <div class="calc-field">
-          <label>Exercise</label>
+          <label>Exercise <span id="vz-body-type-label" style="font-size:10px;color:#C9A228;font-weight:700;margin-left:6px"></span></label>
           <select id="vz-exercise" onchange="vzUpdateProfile()">
             <option value="squat">Back Squat</option>
             <option value="bench">Bench Press</option>
@@ -711,12 +711,11 @@ select:focus{border-color:#C9A228}
         <div class="calc-field">
           <label>Target Zone</label>
           <select id="vz-target">
-            <option value="abs">Absolute Strength (&lt;0.50 m/s)</option>
-            <option value="str">Strength (0.50–0.75 m/s)</option>
-            <option value="ss">Strength-Speed (0.75–1.00 m/s)</option>
-            <option value="pwr" selected>Power (1.00–1.30 m/s)</option>
-            <option value="spd">Speed-Strength (1.30–1.60 m/s)</option>
-            <option value="ball">Ballistic / Speed (&gt;1.60 m/s)</option>
+            <option value="ball">Ballistic</option>
+            <option value="spd">Speed-Strength</option>
+            <option value="pwr" selected>Power</option>
+            <option value="ss">Strength-Speed</option>
+            <option value="abs">Absolute Strength</option>
           </select>
         </div>
       </div>
@@ -2849,9 +2848,9 @@ function pbGen() {
     }
   } else {
     var powBlocks = [
-      {name:'High Force (85–92%)', sqMean:'0.3–0.6 m/s', bchMean:'0.15–0.35 m/s', pcPeak:'≥1.8 m/s', jmPeak:'≥2.0 m/s'},
-      {name:'Power (75–85%)',      sqMean:'0.75–1.0 m/s', bchMean:'0.5–0.75 m/s', pcPeak:'≥2.2 m/s', jmPeak:'≥2.5 m/s'},
-      {name:'Velocity (60–75%)',   sqMean:'1.1–1.5 m/s',  bchMean:'0.8–1.1 m/s',  pcPeak:'≥2.5 m/s', jmPeak:'≥2.8 m/s'}
+      {name:'Strength-Speed (85–90%)', sqLower:'0.35–0.50 m/s', bchUpper:'0.20–0.40 m/s', pcPeak:'≥1.8 m/s', jmPeak:'≥2.0 m/s', drop:'25–35% vel drop'},
+      {name:'Power (75–85%)',          sqLower:'0.50–0.75 m/s', bchUpper:'0.40–0.60 m/s', pcPeak:'≥2.2 m/s', jmPeak:'≥2.5 m/s', drop:'25–35% vel drop'},
+      {name:'Speed-Strength (60–75%)', sqLower:'0.75–1.10 m/s', bchUpper:'0.60–0.80 m/s', pcPeak:'≥2.5 m/s', jmPeak:'≥2.8 m/s', drop:'5–10% vel drop'}
     ];
     var pi = (block === 'ecc') ? 0 : (block === 'iso') ? 1 : 2;
     var pb = powBlocks[pi];
@@ -2874,9 +2873,11 @@ function pbGen() {
       return ex + ' — 4×3 @ ' + vbtNote + ' | Peak Vel: ' + pcPeaks[pi2];
     }
     if (isAdv && vbtNote) {
-      var sqMeans = ['0.3–0.6 m/s','0.75–1.0 m/s','1.1–1.5 m/s'];
+      var lbMeans = ['0.35–0.50 m/s','0.50–0.75 m/s','0.75–1.10 m/s'];
+      var ubMeans = ['0.20–0.40 m/s','0.40–0.60 m/s','0.60–0.80 m/s'];
       var pi3 = (block==='ecc')?0:(block==='iso')?1:2;
-      return ex + ' — 4×4 @ ' + vbtNote + ' | Mean Vel: ' + sqMeans[pi3];
+      var isUpper = /bench|press|row|pull|chin|push/i.test(ex);
+      return ex + ' — 4×4 @ ' + vbtNote + ' | Mean Vel: ' + (isUpper ? ubMeans[pi3] : lbMeans[pi3]);
     }
     return ex + ' — ' + (isBeg ? '3×5' : '4×4') + ' @ ' + vbtNote;
   }
@@ -4942,75 +4943,113 @@ const VZ_PROFILES = {
   pclean: {name:'Power Clean',         v0:2.50, v100:0.80},
   tbjump: {name:'Trap Bar Jump',       v0:2.20, v100:0.80},
 };
-const VZ_ZONES = [
-  {key:'abs',  label:'Absolute Strength',  min:0,    max:0.50, cls:'zone-abs',  desc:'Max force expression. Train at 90–100% 1RM. Builds neural drive and limit strength.'},
-  {key:'str',  label:'Strength',           min:0.50, max:0.75, cls:'zone-str',  desc:'High-load strength zone. 80–90% 1RM. Core of a strength development block.'},
-  {key:'ss',   label:'Strength-Speed',     min:0.75, max:1.00, cls:'zone-ss',   desc:'Moving heavy loads fast. 70–80% 1RM. Bridges max strength and power.'},
-  {key:'pwr',  label:'Power',              min:1.00, max:1.30, cls:'zone-pwr',  desc:'Peak rate-of-force development. 55–70% 1RM. Prime zone for sport performance.'},
-  {key:'spd',  label:'Speed-Strength',     min:1.30, max:1.60, cls:'zone-spd',  desc:'Lighter loads, high velocity. 40–55% 1RM. Develops fast-twitch recruitment.'},
-  {key:'ball', label:'Ballistic / Speed',  min:1.60, max:99,   cls:'zone-ball', desc:'Jump variations, throws, unloaded movements. <40% 1RM. Maximal speed expression.'},
+// ── Output Sports VBT Zones (Upper Body vs Lower Body) ────────
+const VZ_UPPER = [
+  {key:'ball', label:'Ballistic',          min:0.80, max:99,   rm:'30–50%',  drop:'5–10%',  cls:'zone-ball', desc:'Max velocity expression. 30–50% 1RM. Max intent every rep.'},
+  {key:'spd',  label:'Speed-Strength',     min:0.60, max:0.80, rm:'50–70%',  drop:'5–10%',  cls:'zone-spd',  desc:'Fast, light-moderate loads. 50–70% 1RM. Recruits fast-twitch.'},
+  {key:'pwr',  label:'Power',              min:0.40, max:0.60, rm:'70–80%',  drop:'25–35%', cls:'zone-pwr',  desc:'Peak RFD zone. 70–80% 1RM. Prime sport performance zone.'},
+  {key:'ss',   label:'Strength-Speed',     min:0.20, max:0.40, rm:'80–90%',  drop:'25–35%', cls:'zone-ss',   desc:'Heavy loads moved fast. 80–90% 1RM. Bridges strength and power.'},
+  {key:'abs',  label:'Absolute Strength',  min:0,    max:0.20, rm:'90–100%', drop:'25–35%', cls:'zone-abs',  desc:'Max force. 90–100% 1RM. Neural drive and limit strength.'},
 ];
-function vzGetZone(vel) {
-  return VZ_ZONES.find(z => vel >= z.min && vel < z.max) || VZ_ZONES[VZ_ZONES.length-1];
+const VZ_LOWER = [
+  {key:'ball', label:'Ballistic',          min:1.10, max:99,   rm:'40–60%',  drop:'5–10%',  cls:'zone-ball', desc:'Ballistic / explosive expression. 40–60% 1RM. Jump variations and reactive work.'},
+  {key:'spd',  label:'Speed-Strength',     min:0.75, max:1.10, rm:'60–80%',  drop:'5–10%',  cls:'zone-spd',  desc:'Speed-dominant power. 60–80% 1RM. Explosive compound lifts.'},
+  {key:'pwr',  label:'Power',              min:0.50, max:0.75, rm:'75–85%',  drop:'25–35%', cls:'zone-pwr',  desc:'Power zone. 75–85% 1RM. Peak RFD with moderate-heavy loads.'},
+  {key:'ss',   label:'Strength-Speed',     min:0.35, max:0.50, rm:'85–90%',  drop:'25–35%', cls:'zone-ss',   desc:'Strength-speed. 85–90% 1RM. Heavy loads with explosive intent.'},
+  {key:'abs',  label:'Absolute Strength',  min:0,    max:0.35, rm:'90–100%', drop:'25–35%', cls:'zone-abs',  desc:'Max strength. 90–100% 1RM. Limit force production.'},
+];
+const VZ_EX_TYPE = {
+  squat:'lower', bench:'upper', deadlift:'lower', tbdl:'lower', pclean:'lower', tbjump:'lower'
+};
+function vzZonesFor(ex) {
+  return (VZ_EX_TYPE[ex] === 'upper') ? VZ_UPPER : VZ_LOWER;
+}
+function vzGetZone(vel, ex) {
+  var zones = vzZonesFor(ex || 'squat');
+  return zones.find(function(z){ return vel >= z.min && vel < z.max; }) || zones[zones.length-1];
 }
 function vzPctFromVel(vel, profile) {
-  // Linear LV relationship: vel = v0 - (v0-v100)*pct/100
-  const pct = (profile.v0 - vel) / (profile.v0 - profile.v100) * 100;
+  var pct = (profile.v0 - vel) / (profile.v0 - profile.v100) * 100;
   return Math.max(0, Math.min(100, pct));
 }
 function vzVelFromPct(pct, profile) {
   return profile.v0 - (profile.v0 - profile.v100) * pct / 100;
 }
-function vzTargetVel(zoneKey) {
-  const z = VZ_ZONES.find(z => z.key === zoneKey);
-  return (z.min + Math.min(z.max, z.min + 0.25)) / 2;
+function vzTargetVel(zoneKey, ex) {
+  var zones = vzZonesFor(ex || 'squat');
+  var z = zones.find(function(z){ return z.key === zoneKey; });
+  if (!z) return 0.5;
+  return (z.min + Math.min(z.max, z.min + 0.20)) / 2;
+}
+function vzUpdateProfile() {
+  var ex = document.getElementById('vz-exercise').value;
+  var zones = vzZonesFor(ex);
+  var type = VZ_EX_TYPE[ex] || 'lower';
+  var sel = document.getElementById('vz-target');
+  var curVal = sel.value;
+  sel.innerHTML = zones.map(function(z){
+    var rangeStr = z.min === 0
+      ? ('< ' + z.max.toFixed(2) + ' m/s')
+      : (z.max > 10 ? ('> ' + z.min.toFixed(2) + ' m/s') : (z.min.toFixed(2) + '–' + z.max.toFixed(2) + ' m/s'));
+    return '<option value="' + z.key + '"' + (z.key === curVal ? ' selected' : '') + '>' + z.label + ' (' + rangeStr + ')</option>';
+  }).join('');
+  // Show upper/lower label near the exercise select
+  var lbl = document.getElementById('vz-body-type-label');
+  if (lbl) lbl.textContent = type === 'upper' ? '📊 Upper Body Zones' : '📊 Lower Body Zones';
 }
 function calcVelocity() {
-  const ex   = document.getElementById('vz-exercise').value;
-  const lbs  = parseFloat(document.getElementById('vz-weight').value);
-  const vel  = parseFloat(document.getElementById('vz-vel').value);
-  const tgt  = document.getElementById('vz-target').value;
+  var ex   = document.getElementById('vz-exercise').value;
+  var lbs  = parseFloat(document.getElementById('vz-weight').value);
+  var vel  = parseFloat(document.getElementById('vz-vel').value);
+  var tgt  = document.getElementById('vz-target').value;
   if (!lbs || !vel) { alert('Enter weight and velocity.'); return; }
-  const prof  = VZ_PROFILES[ex];
-  const zone  = vzGetZone(vel);
-  const curPct = vzPctFromVel(vel, prof);
-  const est1RM = lbs / (curPct / 100);
-  const tgtZone = VZ_ZONES.find(z => z.key === tgt);
-  const tgtVelMid = (tgtZone.min + Math.min(tgtZone.max, tgtZone.min + 0.20)) / 2;
-  const tgtPct = vzPctFromVel(tgtVelMid, prof);
-  const tgtLbs = Math.round(est1RM * tgtPct / 100 / 5) * 5;
+  var prof   = VZ_PROFILES[ex];
+  var zones  = vzZonesFor(ex);
+  var type   = VZ_EX_TYPE[ex] || 'lower';
+  var zone   = vzGetZone(vel, ex);
+  var curPct = vzPctFromVel(vel, prof);
+  var est1RM = lbs / (curPct / 100);
+  var tgtZone = zones.find(function(z){ return z.key === tgt; }) || zones[2];
+  var tgtVelMid = (tgtZone.min + Math.min(tgtZone.max, tgtZone.min + 0.20)) / 2;
+  var tgtPct = vzPctFromVel(tgtVelMid, prof);
+  var tgtLbs = Math.round(est1RM * tgtPct / 100 / 5) * 5;
   // Badge
-  const badge = document.getElementById('vz-zone-badge');
+  var badge = document.getElementById('vz-zone-badge');
   badge.textContent = zone.label;
   badge.className = 'result-zone ' + zone.cls;
-  document.getElementById('vz-zone-desc').textContent = zone.desc;
+  document.getElementById('vz-zone-desc').textContent = zone.desc + '  |  Stop set at ' + zone.drop + ' velocity drop.';
   // Current
   document.getElementById('vz-pct-cur').textContent = Math.round(curPct) + '% 1RM';
   document.getElementById('vz-lbs-cur').textContent = lbs + ' lbs · ' + vel + ' m/s';
   // Target
   document.getElementById('vz-pct-tgt').textContent = Math.round(tgtPct) + '% 1RM';
   document.getElementById('vz-lbs-tgt').textContent = tgtLbs + ' lbs · ~' + tgtVelMid.toFixed(2) + ' m/s';
-  // Mini velocity chart
-  const chartDiv = document.getElementById('vz-velocity-chart');
-  let chartHtml = '<div style="font-size:11px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:8px">Load-Velocity Profile — ' + prof.name + '</div>';
-  chartHtml += '<div style="background:#0d1b2a;border-radius:8px;padding:12px;font-size:11px">';
-  VZ_ZONES.forEach(z => {
-    const midVel = (z.min + Math.min(z.max, z.min+0.20))/2;
-    const p = vzPctFromVel(midVel, prof);
-    const lbsEst = Math.round(est1RM * p / 100 / 5) * 5;
-    const active = z.key === zone.key;
-    chartHtml += '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #21262d;' +
-      (active ? 'color:#C9A228;font-weight:700' : 'color:#8a9bb0') + '">' +
-      '<span>' + z.label + '</span>' +
-      '<span>' + z.min.toFixed(2) + '–' + (z.max > 5 ? '∞' : z.max.toFixed(2)) + ' m/s</span>' +
-      '<span>~' + Math.round(p) + '% / ' + lbsEst + ' lbs</span>' +
+  // Velocity chart
+  var chartDiv = document.getElementById('vz-velocity-chart');
+  var typeLabel = type === 'upper' ? 'Upper Body' : 'Lower Body';
+  var chartHtml = '<div style="font-size:10px;font-weight:800;color:#C9A228;text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px">' + typeLabel + ' Zones — ' + prof.name + '</div>';
+  chartHtml += '<div style="background:#0d1b2a;border-radius:8px;overflow:hidden;font-size:11px">';
+  chartHtml += '<div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 0.8fr;padding:5px 10px;font-size:9px;color:#6a8aa8;font-weight:700;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid #2a4a6a">' +
+    '<span>Zone</span><span>Mean Vel</span><span>%1RM / Est lbs</span><span>Vel Drop</span></div>';
+  zones.forEach(function(z) {
+    var midVel = (z.min + Math.min(z.max, z.min + 0.20)) / 2;
+    var p = vzPctFromVel(midVel, prof);
+    var lbsEst = Math.round(est1RM * p / 100 / 5) * 5;
+    var active = z.key === zone.key;
+    var rangeStr = z.min === 0 ? ('< ' + z.max.toFixed(2)) : (z.max > 10 ? ('> ' + z.min.toFixed(2)) : (z.min.toFixed(2) + '–' + z.max.toFixed(2)));
+    chartHtml += '<div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 0.8fr;padding:7px 10px;border-bottom:1px solid #1a2a3a;' +
+      (active ? 'background:#1a2e10;color:#C9A228;font-weight:700' : 'color:#8a9bb0') + '">' +
+      '<span style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block;opacity:.7"></span>' + z.label + '</span>' +
+      '<span>' + rangeStr + ' m/s</span>' +
+      '<span>' + z.rm + ' / ' + lbsEst + ' lbs</span>' +
+      '<span>' + z.drop + '</span>' +
       '</div>';
   });
   chartHtml += '</div>';
   chartDiv.innerHTML = chartHtml;
   document.getElementById('vz-note').textContent =
-    'Est. 1RM: ' + Math.round(est1RM) + ' lbs (based on load-velocity profile for ' + prof.name + '). ' +
-    'Values are estimates; individual force-velocity curves vary.';
+    'Est. 1RM: ' + Math.round(est1RM) + ' lbs (load-velocity profile for ' + prof.name + '). ' +
+    'Zones: Output Sports VBT — ' + typeLabel + '. Individual curves vary.';
   document.getElementById('vz-result').classList.add('show');
 }
 
@@ -5451,6 +5490,7 @@ function initializeHistory() {
 function init() {
   computeScores();
   initializeHistory();
+  vzUpdateProfile(); // seed dropdown with correct zones for default exercise
 
   // Check for recruit parameter
   const params = new URLSearchParams(window.location.search);
