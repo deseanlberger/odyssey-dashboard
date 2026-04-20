@@ -207,6 +207,10 @@ var foods      = load(LS_FOODS, [
   {id:'f12',name:'Ground Beef 80/20 (4oz)',cals:287,p:20,c:0,f:23},
   {id:'f13',name:'Salmon (6oz)',cals:354,p:40,c:0,f:20},
   {id:'f14',name:'Whole Milk (1 cup)',cals:149,p:8,c:12,f:8},
+  {id:'f20',name:'Ninja Creami (Fairlife + Premier Protein + Strawberries)',cals:258,p:44,c:21,f:2},
+  {id:'f21',name:'Fairlife Skim Milk (1 cup)',cals:80,p:13,c:6,f:0},
+  {id:'f22',name:'Premier Protein Powder (1 scoop)',cals:130,p:30,c:3,f:2},
+  {id:'f23',name:'Frozen Strawberries (1 cup)',cals:48,p:1,c:12,f:0},
 ]);
 
 // ── ONE-TIME FOOD LOG SEEDS ───────────────────────────────────
@@ -214,6 +218,8 @@ var foods      = load(LS_FOODS, [
   var seeds = [
     { key:'seed_20260419_ribeye', date:'2026-04-19',
       entry:{foodId:'f11',food:'Ribeye Steak (12oz)',cals:840,p:74,c:0,f:60,qty:2} },
+    { key:'seed_20260419_creami', date:'2026-04-19',
+      entry:{foodId:'f20',food:'Ninja Creami (Fairlife + Premier Protein + Strawberries)',cals:258,p:44,c:21,f:2,qty:1} },
   ];
   seeds.forEach(function(s) {
     if (localStorage.getItem(s.key)) return;
