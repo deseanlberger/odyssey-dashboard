@@ -1165,11 +1165,8 @@ select:focus{border-color:#C9A228}
         <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Gender</label>
           <select id="newath-gender" style="width:100%;background:#112233;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;box-sizing:border-box">
             <option value="M">Male</option><option value="F">Female</option></select></div>
-        <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Grade</label>
-          <select id="newath-grade" style="width:100%;background:#112233;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;box-sizing:border-box">
-            <option value="">— Select —</option>
-            <option value="K">Kindergarten</option><option value="1st">1st</option><option value="2nd">2nd</option><option value="3rd">3rd</option><option value="4th">4th</option><option value="5th">5th</option><option value="6th">6th</option><option value="7th">7th</option><option value="8th">8th</option>
-            <option value="freshman">Freshman</option><option value="sophomore">Sophomore</option><option value="junior">Junior</option><option value="senior">Senior</option></select></div>
+        <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Date of Birth</label>
+          <input id="newath-dob" type="date" style="width:100%;background:#112233;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;box-sizing:border-box"></div>
         <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Sport</label>
           <input id="newath-sport" type="text" placeholder="Youth Speed, Football…" style="width:100%;background:#112233;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;box-sizing:border-box"></div>
         <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Grad Year</label>
@@ -3023,7 +3020,7 @@ function newathParseCSV(text) {
   if (row.grad_year)  document.getElementById('newath-year').value   = row.grad_year;
   if (row.gender && (row.gender.toUpperCase() === 'M' || row.gender.toUpperCase() === 'F'))
     document.getElementById('newath-gender').value = row.gender.toUpperCase();
-  if (row.grade) document.getElementById('newath-grade').value = row.grade;
+  if (row.dob) document.getElementById('newath-dob').value = row.dob;
   var map = { accel_010:'ns-accel010', fly_1020:'ns-fly1020', fly_2030:'ns-fly2030',
     stand_vert:'ns-standvert', broad_jump:'ns-broad', four_hop:'ns-fourhop',
     five_ten_five:'ns-51050', pushups:'ns-pushups', bw_lbs:'ns-bwlbs' };
@@ -3037,7 +3034,7 @@ function newathParseCSV(text) {
 }
 
 function newathDownloadTemplate() {
-  var csv = 'first_name,last_name,gender,sport,grade,grad_year,accel_010,fly_1020,fly_2030,stand_vert,broad_jump,four_hop,five_ten_five,pushups,bw_lbs\nJohn,Smith,M,Youth Speed,5th,2033,1.85,1.52,3.10,22.5,72,2.10,5.20,25,95';
+  var csv = 'first_name,last_name,gender,sport,dob,grad_year,accel_010,fly_1020,fly_2030,stand_vert,broad_jump,four_hop,five_ten_five,pushups,bw_lbs\nJohn,Smith,M,Youth Speed,2015-06-14,2033,1.85,1.52,3.10,22.5,72,2.10,5.20,25,95';
   var blob = new Blob([csv], { type: 'text/csv' });
   var url = URL.createObjectURL(blob);
   var a = document.createElement('a');
@@ -3051,7 +3048,7 @@ function saveNewAth() {
   var sport  = document.getElementById('newath-sport').value.trim();
   var year   = parseInt(document.getElementById('newath-year').value) || null;
   var gender = document.getElementById('newath-gender').value;
-  var grade  = document.getElementById('newath-grade').value  || null;
+  var dob    = document.getElementById('newath-dob').value    || null;
   var notes  = document.getElementById('ns-notes').value.trim();
   if (!first || !last) { alert('First and last name are required.'); return; }
   var fv = function(id) { var v = parseFloat(document.getElementById(id).value); return isNaN(v) ? null : v; };
@@ -3061,7 +3058,7 @@ function saveNewAth() {
   var bwkg = bwlbs !== null ? Math.round(bwlbs / 2.205 * 100) / 100 : null;
   var newA = {
     name: first + ' ' + last, gender: gender, sport: sport || 'Unspecified',
-    grade: grade, grad_year: year, bucket: 'N/A', source: 'sprint_only', dsi_type: 'N/A',
+    dob: dob, grad_year: year, bucket: 'N/A', source: 'sprint_only', dsi_type: 'N/A',
     bw_kg: bwkg, best_010: accel010, best_2030: fly2030, fly_1020: fly1020,
     stand_vert_in: standvert, broad_jump_in: broad, four_hop_m: fourhop,
     five_ten_five: proctile, pushups: pushups, coach_notes: notes || null,
@@ -3075,7 +3072,7 @@ function saveNewAth() {
   var lines = [
     'New athlete added by Coach ' + currentCoach + ':','',
     'Name: ' + first + ' ' + last, 'Gender: ' + gender,
-    'Sport: ' + (sport||'—'), 'Grade: ' + (grade||'—'), 'Grad Year: ' + (year||'—'),'',
+    'Sport: ' + (sport||'—'), 'Date of Birth: ' + (dob||'—'), 'Grad Year: ' + (year||'—'),'',
     '--- Performance Stats ---',
     '0-10m Split:   ' + (accel010  !== null ? accel010  + 's'    : '—'),
     '10-20 Fly:     ' + (fly1020   !== null ? fly1020   + 's'    : '—'),
