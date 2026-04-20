@@ -7,6 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>Odyssey Performance Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0D1B2A;color:#fff;min-height:100vh}
@@ -220,6 +221,7 @@ select:focus{border-color:#C9A228}
 .athlete-card{background:#fff;color:#0D1B2A;border-radius:12px;padding:13px 15px;margin-bottom:9px;display:grid;grid-template-columns:42px 1fr auto;gap:11px;align-items:center;cursor:pointer;transition:transform .1s,box-shadow .1s;box-shadow:0 2px 8px rgba(0,0,0,.2)}
 .athlete-card:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(0,0,0,.25)}
 .athlete-card.elite{border-left:4px solid #C9A228}
+.athlete-card.asym-risk-high{border-left:4px solid #b71c1c;background:#fef5f5}
 .rank{width:38px;height:38px;border-radius:50%;background:#0D1B2A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
 .rank.gold{background:#C9A228}
 .rank.silver{background:#536878}
@@ -353,6 +355,29 @@ select:focus{border-color:#C9A228}
 
 .empty{text-align:center;padding:60px 20px;color:#6a8aa8}
 .empty h3{font-size:18px;margin-bottom:8px}
+
+/* RECRUITING CARD */
+.recruit-card-container{background:#fff;color:#0d1b2a;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px}
+.recruit-card{background:#fff;max-width:500px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.2);border-radius:16px;overflow:hidden}
+.recruit-header{background:linear-gradient(135deg,#0d1b2a,#1e2d4a);padding:30px 20px;text-align:center}
+.recruit-logo{height:50px;margin:0 auto 15px;background:#fff;border-radius:8px;padding:5px;display:flex;align-items:center;justify-content:center}
+.recruit-logo img{height:40px;width:auto}
+.recruit-title{font-size:28px;font-weight:900;color:#fff;margin-bottom:4px}
+.recruit-meta{font-size:13px;color:#a0bbd4;margin-bottom:20px}
+.recruit-badges{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.recruit-badge{background:#C9A228;color:#fff;border-radius:4px;padding:4px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.recruit-body{padding:30px 20px}
+.recruit-metrics{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:20px}
+.recruit-metric-card{background:#f5f7fa;border-left:4px solid #C9A228;border-radius:8px;padding:12px 14px}
+.recruit-metric-name{font-size:11px;color:#667788;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.recruit-metric-val{font-size:20px;font-weight:900;color:#0d1b2a}
+.recruit-metric-pct{font-size:10px;color:#aaa;margin-top:3px}
+.recruit-badge-box{background:#fff3e6;border:2px solid #C9A228;border-radius:10px;padding:20px;text-align:center;margin-bottom:20px}
+.recruit-tested-badge{font-size:12px;color:#c94a00;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.recruit-tested{font-size:14px;font-weight:800;color:#0d1b2a}
+.recruit-qrcode{text-align:center;padding:20px;background:#f5f7fa;border-radius:8px;margin-bottom:20px}
+.recruit-qrcode-label{font-size:10px;color:#667788;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.recruit-footer{background:#0d1b2a;color:#fff;padding:15px;text-align:center;font-size:10px}
 
 @media(max-width:600px){
   .content{padding:10px 14px}
@@ -1605,6 +1630,110 @@ const METRICS = [
 ];
 const AGE_BONUS = {2022:0,2023:0,2024:0,2025:2,2026:3,2027:5,2028:7,2029:9,2030:10,2031:12,2032:14};
 const TAG_BONUS = {elite:4, commit:6, prospect:3};
+
+// ── HISTORY: Test session tracking ──
+const HISTORY = {};
+
+// ── SPORT NORMS: D1/D2/HS benchmarks ──
+const SPORT_NORMS = {
+  'cmj_jh_in': {
+    'D1_F': {elite:18, good:15, average:12, label:'D1 Female'},
+    'D1_M': {elite:28, good:24, average:20, label:'D1 Male'},
+    'HS_F': {elite:16, good:13, average:10, label:'HS Female'},
+    'HS_M': {elite:24, good:20, average:16, label:'HS Male'},
+  },
+  'best_rsi': {
+    'D1_F': {elite:2.0, good:1.5, average:1.1, label:'D1 Female'},
+    'D1_M': {elite:2.8, good:2.2, average:1.6, label:'D1 Male'},
+    'HS_F': {elite:1.6, good:1.2, average:0.9, label:'HS Female'},
+    'HS_M': {elite:2.2, good:1.8, average:1.3, label:'HS Male'},
+  },
+  'best_010': {
+    'D1_F': {elite:1.45, good:1.55, average:1.65, label:'D1 Female'},
+    'D1_M': {elite:1.35, good:1.45, average:1.60, label:'D1 Male'},
+    'HS_F': {elite:1.55, good:1.65, average:1.75, label:'HS Female'},
+    'HS_M': {elite:1.45, good:1.55, average:1.70, label:'HS Male'},
+  },
+  'best_2030': {
+    'D1_F': {elite:1.05, good:1.15, average:1.25, label:'D1 Female'},
+    'D1_M': {elite:0.95, good:1.05, average:1.15, label:'D1 Male'},
+    'HS_F': {elite:1.15, good:1.25, average:1.35, label:'HS Female'},
+    'HS_M': {elite:1.05, good:1.15, average:1.25, label:'HS Male'},
+  },
+  'iso_force_bm': {
+    'D1_F': {elite:50, good:42, average:35, label:'D1 Female'},
+    'D1_M': {elite:65, good:55, average:45, label:'D1 Male'},
+    'HS_F': {elite:42, good:36, average:30, label:'HS Female'},
+    'HS_M': {elite:55, good:48, average:40, label:'HS Male'},
+  },
+};
+
+// ── ASYMMETRY RISK LEVELS ──
+function asymRiskLevel(pct) {
+  if (pct == null) return null;
+  if (pct > 20) return 'high';
+  if (pct >= 15) return 'moderate';
+  return 'ok';
+}
+
+// ── SPARKLINE: Simple SVG trend chart ──
+function renderSparkline(history, key, higher) {
+  if (!history || history.length < 2) return '';
+  const vals = history.map(h => h[key]).filter(v => v != null);
+  if (vals.length < 2) return '';
+
+  const min = Math.min(...vals);
+  const max = Math.max(...vals);
+  const range = max - min || 1;
+  const w = 60, h = 16;
+  const points = vals.map((v, i) => {
+    const x = (i / (vals.length - 1)) * (w - 4) + 2;
+    const y = h - ((v - min) / range) * (h - 4) + 2;
+    return `${x},${y}`;
+  }).join(' ');
+
+  const pctChange = vals.length >= 2
+    ? Math.round((vals[vals.length - 1] - vals[0]) / vals[0] * 100)
+    : 0;
+  const trendIcon = pctChange > 0 ? (higher ? '▲' : '▼') : (higher ? '▼' : '▲');
+  const trendColor = pctChange > 0 ? (higher ? '#4caf50' : '#ef5350') : (higher ? '#ef5350' : '#4caf50');
+
+  return `<svg width="${w}" height="${h}" style="vertical-align:middle;margin:0 4px">
+    <polyline points="${points}" fill="none" stroke="${trendColor}" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+  </svg> <span style="color:${trendColor};font-weight:600;font-size:10px">${trendIcon} ${Math.abs(pctChange)}% since baseline</span>`;
+}
+
+// ── ATHLETE LEVEL from grad_year ──
+function athleteLevel(gradYear, gender) {
+  if (!gradYear) return 'HS_M';
+  const year = parseInt(gradYear);
+  const isF = gender === 'F' ? '_F' : '_M';
+  if (year <= 2027) return 'HS' + isF;
+  return 'D1' + isF;
+}
+
+// ── NORM COMPARISON ──
+function normComparison(athlete, metricKey) {
+  if (!SPORT_NORMS[metricKey]) return null;
+  const val = athlete[metricKey];
+  if (val == null) return null;
+  const level = athleteLevel(athlete.grad_year, athlete.gender);
+  const norms = SPORT_NORMS[metricKey][level];
+  if (!norms) return null;
+
+  const higher = metricKey === 'best_010' || metricKey === 'best_2030' ? false : true;
+  if (higher) {
+    if (val >= norms.elite) return 'Elite ' + norms.label;
+    if (val >= norms.good) return 'Good ' + norms.label;
+    if (val >= norms.average) return 'Average ' + norms.label;
+    return 'Below ' + norms.label;
+  } else {
+    if (val <= norms.elite) return 'Elite ' + norms.label;
+    if (val <= norms.good) return 'Good ' + norms.label;
+    if (val <= norms.average) return 'Average ' + norms.label;
+    return 'Below ' + norms.label;
+  }
+}
 
 function pctOf(val, arr, hi) {
   const v = arr.filter(x => x!=null && !isNaN(x));
@@ -3790,7 +3919,14 @@ function render() {
          ${sortMode==='age'&&a._raw!=null&&coachMode?`<div class="score-sub">Raw: ${a._raw}</div>`:''}`
       : `<div class="no-score">Sprint<br>only</div>`;
 
-    return `<div class="athlete-card${a.elite_star?' elite':''}" onclick="openModal(${A.indexOf(a)})">
+    // ── Asymmetry badge ──
+    const asymRisk = asymRiskLevel(a.uni_asym_pct);
+    const asymBadge = asymRisk === 'high' ? `<span style="background:#b71c1c;color:#fff;border-radius:4px;padding:2px 6px;font-size:9px;font-weight:700;margin-left:6px">🔴 HIGH ASYM</span>`
+                    : asymRisk === 'moderate' ? `<span style="background:#f57c00;color:#fff;border-radius:4px;padding:2px 6px;font-size:9px;font-weight:700;margin-left:6px">🟡 WATCH</span>`
+                    : asymRisk === 'ok' && a.uni_asym_pct != null ? `<span style="background:#2e7d32;color:#fff;border-radius:4px;padding:2px 6px;font-size:9px;font-weight:700;margin-left:6px">✅ OK</span>`
+                    : '';
+
+    return `<div class="athlete-card${a.elite_star?' elite':''}${asymRisk === 'high' ? ' asym-risk-high' : ''}" onclick="openModal(${A.indexOf(a)})">
       <div class="rank ${rankCls}">${r}</div>
       <div>
         <div class="athlete-name">${a.elite_star?'<span class="elite-tag">ELITE</span> ':''}${a.prospect?'<span class="prospect-tag">PROSPECT</span> ':''}${a.name}</div>
@@ -3800,6 +3936,7 @@ function render() {
           <span style="color:#bbb">·</span>
           <span class="class-chip">${cs(a.grad_year)}</span>
           ${bkt}
+          ${asymBadge}
         ${a.college_commit ? `<div class="commit-logo-wrap">
           <img class="commit-logo" src="${COMMIT_LOGOS[a.college_commit]||''}" alt="${a.college_commit}" onerror="this.style.display='none'">
           <span class="commit-text">✓ ${a.college_commit}</span>
@@ -4404,6 +4541,8 @@ function renderCoachProfile(a) {
     const barW = p != null ? p : 0;
     const barCol = barW >= 70 ? '#4caf50' : barW >= 40 ? '#ffc107' : '#ef5350';
     const dispVal = m.fmt ? m.fmt(a[m.key]) : a[m.key];
+    const normComp = normComparison(a, m.key);
+    const normHtml = normComp ? `<div style="font-size:9px;color:#6a8aa8;margin-top:2px">${normComp}</div>` : '';
     return `<div class="cp-metric-row">
       <div class="cp-metric-top">
         <span class="cp-metric-name">${m.label}</span>
@@ -4411,6 +4550,7 @@ function renderCoachProfile(a) {
       </div>
       ${p != null ? `<div class="cp-pbar-wrap"><div class="cp-pbar" style="width:${barW}%;background:${barCol}"></div></div>
       <div class="cp-pct-lbl">${p}th pct · ${a.gender==='F'?'female':'male'} athletes</div>` : ''}
+      ${normHtml}
     </div>`;
   }).join('');
 
@@ -4558,7 +4698,18 @@ function renderCoachProfile(a) {
     </div>`).join('');
   }
 
-  return bucketHtml + metricsSection + sportContextHtml + correctiveHtml + (dsiSection ? `<div class="cp-section"><div class="cp-section-title">DSI Analysis</div><div class="cp-dsi-row">${dsiSection}</div></div>` : '') + sprintEstHtml + asymHtml + rxHtml;
+  // ── QR Code for recruiting card ──
+  const recruitUrl = `${window.location.origin}${window.location.pathname}?recruit=${encodeURIComponent(a.name)}`;
+  const qrHtml = `<div class="cp-section">
+    <div class="cp-section-title">Share Profile</div>
+    <div style="background:#0a1520;border-radius:10px;padding:14px;text-align:center">
+      <div style="font-size:10px;color:#8a9bb0;margin-bottom:10px">Scan to view recruiting card</div>
+      <div id="coach-qr-${A.indexOf(a)}" style="display:inline-block"></div>
+      <div style="font-size:9px;color:#6a8aa8;margin-top:8px;word-break:break-all">${recruitUrl}</div>
+    </div>
+  </div>`;
+
+  return bucketHtml + metricsSection + sportContextHtml + correctiveHtml + (dsiSection ? `<div class="cp-section"><div class="cp-section-title">DSI Analysis</div><div class="cp-dsi-row">${dsiSection}</div></div>` : '') + sprintEstHtml + asymHtml + rxHtml + qrHtml;
 }
 
 function openModal(idx) {
@@ -4575,10 +4726,13 @@ function openModal(idx) {
     // ── COACH VIEW: full profile ──
     body = renderCoachProfile(a);
     body += `<div style="margin-top:14px;padding:12px 14px;background:#0a1520;border-radius:10px;text-align:center">
-      <button onclick="suggestAthleteEdit(${idx})" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:8px;padding:8px 16px;font-size:11px;font-weight:700;cursor:pointer">
-        ✏️ Suggest Profile Update → Desean
+      <button onclick="suggestAthleteEdit(${idx})" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:8px;padding:8px 16px;font-size:11px;font-weight:700;cursor:pointer;margin-right:6px">
+        ✏️ Suggest Profile Update
       </button>
-      <div style="font-size:9px;color:#3a5a7a;margin-top:4px">Opens email to deseanlberger@gmail.com for approval</div>
+      <button onclick="copyRecruitUrl('${a.name}')" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:8px;padding:8px 16px;font-size:11px;font-weight:700;cursor:pointer">
+        📤 Share Profile
+      </button>
+      <div style="font-size:9px;color:#3a5a7a;margin-top:4px">Copy recruiting card URL to clipboard</div>
     </div>`;
   } else {
     // ── PUBLIC VIEW: metrics + basic stats ──
@@ -4617,6 +4771,29 @@ function openModal(idx) {
     ${scoreRow}${body}`;
 
   document.getElementById('modal').classList.add('open');
+
+  // Generate QR code for recruiting card if in coach mode
+  if (coachMode) {
+    setTimeout(() => {
+      const qrContainer = document.getElementById(`coach-qr-${idx}`);
+      if (qrContainer && typeof QRCode !== 'undefined') {
+        try {
+          const recruitUrl = `${window.location.origin}${window.location.pathname}?recruit=${encodeURIComponent(a.name)}`;
+          qrContainer.innerHTML = '';
+          new QRCode(qrContainer, {
+            text: recruitUrl,
+            width: 100,
+            height: 100,
+            colorDark: '#fff',
+            colorLight: '#0a1520',
+            correctLevel: QRCode.CorrectLevel.H
+          });
+        } catch(e) {
+          console.log('QR code generation failed:', e);
+        }
+      }
+    }, 100);
+  }
 }
 
 function closeThenLogin() {
@@ -4946,10 +5123,104 @@ function sprintCard(time, dist, sport, acc, accCls, accNote, style, mph) {
     '</div>';
 }
 
+// ═══════════════════════════════════════════════════════════
+// RECRUITING CARD
+// ═══════════════════════════════════════════════════════════
+function renderRecruitingCard(a) {
+  const topMetrics = METRICS.filter(m => a[m.key] != null).slice(0, 5);
+  const metricsHtml = topMetrics.map(m => {
+    const val = a[m.key];
+    const pct = a._pcts?.[m.key] ?? null;
+    return `<div class="recruit-metric-card">
+      <div class="recruit-metric-name">${m.label}</div>
+      <div class="recruit-metric-val">${val}${m.unit}</div>
+      ${pct != null ? `<div class="recruit-metric-pct">${pct}th percentile · ${a.gender === 'F' ? 'female' : 'male'}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  const recruitUrl = `${window.location.origin}${window.location.pathname}?recruit=${encodeURIComponent(a.name)}`;
+
+  return `<div class="recruit-card">
+    <div class="recruit-header">
+      <div class="recruit-logo">
+        <img src="logo.png" alt="Odyssey Performance" onerror="this.style.display='none'">
+      </div>
+      <div class="recruit-title">${a.name}</div>
+      <div class="recruit-meta">${a.sport}${a.position ? ' · ' + a.position : ''} · ${cs(a.grad_year)}</div>
+    </div>
+    <div class="recruit-body">
+      <div class="recruit-metrics">${metricsHtml}</div>
+      <div class="recruit-badge-box">
+        <div class="recruit-tested-badge">Tested at</div>
+        <div class="recruit-tested">Odyssey Performance</div>
+      </div>
+      <div class="recruit-qrcode">
+        <div class="recruit-qrcode-label">Scan to view full profile</div>
+        <div id="recruit-qr-code" style="display:flex;justify-content:center"></div>
+      </div>
+    </div>
+    <div class="recruit-footer">
+      North County San Diego · Elite Athlete Development
+    </div>
+  </div>`;
+}
+
+function displayRecruitingCard(athleteName) {
+  const a = A.find(x => x.name === athleteName);
+  if (!a) {
+    document.body.innerHTML = '<div style="padding:40px;text-align:center">Athlete not found</div>';
+    return;
+  }
+
+  const container = document.createElement('div');
+  container.className = 'recruit-card-container';
+  container.innerHTML = renderRecruitingCard(a);
+
+  document.body.innerHTML = '';
+  document.body.appendChild(container);
+  document.body.style.background = '#f5f7fa';
+
+  // Generate QR code
+  const recruitUrl = `${window.location.origin}${window.location.pathname}?recruit=${encodeURIComponent(a.name)}`;
+  const qrContainer = document.getElementById('recruit-qr-code');
+  if (typeof QRCode !== 'undefined' && qrContainer) {
+    try {
+      new QRCode(qrContainer, {
+        text: recruitUrl,
+        width: 120,
+        height: 120,
+        colorDark: '#0d1b2a',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    } catch(e) {
+      console.log('QR code generation failed:', e);
+    }
+  }
+}
+
+function copyRecruitUrl(athleteName) {
+  const recruitUrl = `${window.location.origin}${window.location.pathname}?recruit=${encodeURIComponent(athleteName)}`;
+  navigator.clipboard.writeText(recruitUrl).then(() => {
+    alert('Profile URL copied to clipboard!');
+  }).catch(() => {
+    prompt('Copy this URL:', recruitUrl);
+  });
+}
+
 // INIT
 // =====================================================
 function init() {
   computeScores();
+
+  // Check for recruit parameter
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('recruit')) {
+    const athleteName = params.get('recruit');
+    displayRecruitingCard(athleteName);
+    return;
+  }
+
   updatePublicCoachView();
   renderPublicLeaderboards();
   const sel = document.getElementById('f-sport');
