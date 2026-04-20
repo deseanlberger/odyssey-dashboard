@@ -1537,9 +1537,9 @@ function renderLeaderboards() {
   h += lbSection('0–10 Sprint', '🏃', '#f0c84a', pool, 'best_010', 's', null, true);
   h += lbSection('20–30 Fly', '⚡', '#f0874a', pool, 'best_2030', 's', null, true);
   h += lbSection('Peak Force / BW', '🔬', '#4af08a', pool, 'iso_force_bm', ' N/kg', null, false);
-  h += lbSection('Bench Mean Power', '🏋️', '#f0a04a', pool, 'bench_pp', ' W/kg', null, false);
-  h += lbSection('Squat Mean Power', '🦵', '#f04a8a', pool, 'squat_pp', ' W/kg', null, false);
-  h += lbSection('Trap Bar Mean Power', '🔩', '#a078f0', pool, 'trapbar_pp', ' W/kg', null, false);
+  h += lbSection('Bench Peak Power', '🏋️', '#f0a04a', pool, 'bench_pp', ' W/kg', null, false);
+  h += lbSection('Squat Peak Power', '🦵', '#f04a8a', pool, 'squat_pp', ' W/kg', null, false);
+  h += lbSection('Trap Bar Peak Power', '🔩', '#a078f0', pool, 'trapbar_pp', ' W/kg', null, false);
   h += lbSection('Power Clean Max', '🏅', '#ffd700', pool, 'power_clean_kg', ' kg',
     function(v){ return v+' kg ('+Math.round(v*2.205)+' lbs)'; }, false);
   h += lbSection('RSI', '🌀', '#4a8af0', pool, 'best_rsi', '', null, false);
@@ -1570,9 +1570,9 @@ function renderPublicLeaderboards() {
   h += lbSection('0–10 Sprint', '🏃', '#f0c84a', pool, 'best_010', 's', null, true);
   h += lbSection('20–30 Fly', '⚡', '#f0874a', pool, 'best_2030', 's', null, true);
   h += lbSection('Peak Force / BW', '🔬', '#4af08a', pool, 'iso_force_bm', ' N/kg', null, false);
-  h += lbSection('Bench Mean Power', '🏋️', '#f0a04a', pool, 'bench_pp', ' W/kg', null, false);
-  h += lbSection('Squat Mean Power', '🦵', '#f04a8a', pool, 'squat_pp', ' W/kg', null, false);
-  h += lbSection('Trap Bar Mean Power', '🔩', '#a078f0', pool, 'trapbar_pp', ' W/kg', null, false);
+  h += lbSection('Bench Peak Power', '🏋️', '#f0a04a', pool, 'bench_pp', ' W/kg', null, false);
+  h += lbSection('Squat Peak Power', '🦵', '#f04a8a', pool, 'squat_pp', ' W/kg', null, false);
+  h += lbSection('Trap Bar Peak Power', '🔩', '#a078f0', pool, 'trapbar_pp', ' W/kg', null, false);
   h += lbSection('Power Clean Max', '🏅', '#ffd700', pool, 'power_clean_kg', ' kg',
     function(v){ return v+' kg ('+Math.round(v*2.205)+' lbs)'; }, false);
   h += lbSection('RSI', '🌀', '#4a8af0', pool, 'best_rsi', '', null, false);
@@ -1597,9 +1597,9 @@ const METRICS = [
   {key:'best_010',     higher:false, label:'0–10 Sprint',       unit:'s',    w:1.5},
   {key:'best_2030',    higher:false, label:'20–30 Sprint',      unit:'s',    w:1.5},
   {key:'iso_force_bm', higher:true,  label:'Peak Force/BW',     unit:' N/kg',w:1.5},
-  {key:'bench_pp',     higher:true,  label:'Bench Mean Power',       unit:' W/kg',w:1.0},
-  {key:'squat_pp',     higher:true,  label:'Squat Mean Power',       unit:' W/kg',w:1.0},
-  {key:'trapbar_pp',   higher:true,  label:'Trap Bar Mean Power',    unit:' W/kg',w:1.0},
+  {key:'bench_pp',     higher:true,  label:'Bench Peak Power',       unit:' W/kg',w:1.0},
+  {key:'squat_pp',     higher:true,  label:'Squat Peak Power',       unit:' W/kg',w:1.0},
+  {key:'trapbar_pp',   higher:true,  label:'Trap Bar Peak Power',    unit:' W/kg',w:1.0},
   {key:'power_clean_kg',higher:true, label:'Power Clean Max',   unit:' kg',  w:1.0},
   {key:'best_rsi',     higher:true,  label:'RSI',               unit:'',     w:0.5},
 ];
@@ -1693,9 +1693,9 @@ function profileCompleteness(a) {
     {k:'iso_force_bm',    label:'Peak Force/BW'},
     {k:'best_010',        label:'0–10 Sprint'},
     {k:'best_2030',       label:'20–30 Fly'},
-    {k:'bench_pp',        label:'Bench Mean Power'},
-    {k:'squat_pp',        label:'Squat Mean Power'},
-    {k:'trapbar_pp',      label:'Trap Bar Mean Power'},
+    {k:'bench_pp',        label:'Bench Peak Power'},
+    {k:'squat_pp',        label:'Squat Peak Power'},
+    {k:'trapbar_pp',      label:'Trap Bar Peak Power'},
     {k:'power_clean_kg',  label:'Power Clean Max'},
     {k:'uni_asym_pct',    label:'Asymmetry (SLJ)'},
   ];
@@ -4381,9 +4381,9 @@ function renderCoachProfile(a) {
     {key:'best_010',       label:'0–10 Sprint',        unit:'s',    higher:false},
     {key:'best_2030',      label:'20–30 Fly',          unit:'s',    higher:false},
     {key:'iso_force_bm',   label:'Peak Force/BW',      unit:' N/kg',higher:true},
-    {key:'bench_pp',       label:'Bench Mean Power',        unit:' W/kg',higher:true},
-    {key:'squat_pp',       label:'Squat Mean Power',        unit:' W/kg',higher:true},
-    {key:'trapbar_pp',     label:'Trap Bar Mean Power',     unit:' W/kg',higher:true},
+    {key:'bench_pp',       label:'Bench Peak Power',        unit:' W/kg',higher:true},
+    {key:'squat_pp',       label:'Squat Peak Power',        unit:' W/kg',higher:true},
+    {key:'trapbar_pp',     label:'Trap Bar Peak Power',     unit:' W/kg',higher:true},
     {key:'power_clean_kg', label:'Power Clean Max',    unit:' kg',  higher:true},
     {key:'best_rsi',       label:'RSI',                unit:'',     higher:true},
     {key:'dj_jh_in',       label:'DJ Height',          unit:'"',    higher:true},
