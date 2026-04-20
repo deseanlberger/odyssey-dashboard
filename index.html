@@ -7031,9 +7031,14 @@ function core6GenerateAll() {
   if (areas.length > 0) summaryLines.push('🔧 <strong>Priority Development Areas:</strong> ' + areas.join(', '));
   summaryLines.push('📊 <strong>Overall CORE 6 Average:</strong> ' + avgRounded + ' / 5');
 
-  if (avg >= 4) summaryLines.push('');summaryLines.push('🏆 This is a high-level athlete. The CORE 6 profile shows elite qualities across the board. Programming from day one should reflect this ceiling.');
-  else if (avg >= 3) summaryLines.push('');summaryLines.push('📈 Solid foundation. ' + firstName + ' has the raw material — now it\'s about sharpening the details and building consistency across all six qualities.');
-  else summaryLines.push('');summaryLines.push('🔨 This athlete has real upside and real things to address. We have a clear development roadmap. That\'s exactly what we need to get started.');
+  summaryLines.push('');
+  if (avg >= 4) {
+    summaryLines.push('🏆 This is a high-level athlete. The CORE 6 profile shows elite qualities across the board. Programming from day one should reflect this ceiling.');
+  } else if (avg >= 3) {
+    summaryLines.push('📈 Solid foundation. ' + firstName + ' has the raw material — now it\'s about sharpening the details and building consistency across all six qualities.');
+  } else {
+    summaryLines.push('🔨 This athlete has real upside and real things to address. We have a clear development roadmap. That\'s exactly what we need to get started.');
+  }
 
   var summaryDiv = document.getElementById('c6-summary');
   document.getElementById('c6-summary-text').innerHTML = summaryLines.join('<br>');
