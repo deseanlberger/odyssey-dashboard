@@ -2366,15 +2366,15 @@ function showPerformanceCard(athData, isPending) {
 function generatePerformanceCard(athData) {
   var metricsHtml = '';
   var metricLabels = {
-    cmj_jh_in: { label: 'CMJ Jump Height', unit: 'in', higher: true, desc: 'This measures how high your athlete can jump from a standing position using a full arm swing and leg dip. It reflects explosive leg power and the ability to generate force quickly. Higher is better — elite high school athletes jump 20+ inches.' },
-    cmj_rsi: { label: 'RSI (Reactive Strength Index)', unit: '', higher: true, desc: 'RSI measures how quickly your athlete can jump off the ground after landing — the faster the better. It reflects the springiness and elasticity of their tendons and muscles. This is one of the best indicators of athletic bounce and injury resilience.' },
-    cmj_power_bm: { label: 'Squat Peak Power', unit: 'W/kg', higher: true, desc: 'This measures explosive leg power during a squat movement, adjusted for body weight. An athlete with high squat peak power can produce force fast — which translates directly to jumping, sprinting, and change of direction.' },
-    iso_force_bm: { label: 'Peak Force / Body Weight (ISO Force)', unit: 'BW', higher: true, desc: 'This measures the maximum force your athlete can produce relative to their body weight during a held push or pull. Think of it as raw strength per pound of body. A higher number means more usable strength.' },
-    best_010: { label: '0–10 Sprint', unit: 's', higher: false, desc: 'This is how fast your athlete covers the first 10 yards from a standing start. It measures pure acceleration — the ability to get moving quickly. Faster (lower) times indicate elite starting burst.' },
-    best_2030: { label: '20–30 Fly', unit: 's', higher: false, desc: 'This measures top-end speed — how fast your athlete is running at full stride between the 20 and 30 yard mark. It\'s the closest thing to true maximum speed we can measure in a straight line. Lower time = faster athlete.' },
-    bench_pp: { label: 'Bench Peak Power', unit: ' W/kg', higher: true, desc: 'This measures how much power your athlete produces during a bench press movement relative to their body weight. Power is a combination of strength and speed. It reflects upper body explosiveness, not just raw strength.' },
-    trapbar_pp: { label: 'Trap Bar Peak Power', unit: ' W/kg', higher: true, desc: 'Similar to squat power but measured using a trap bar deadlift pattern. This reflects total lower body and hip explosive output. It\'s often the best overall indicator of athletic power potential.' },
-    power_clean_lbs: { label: 'Power Clean Max', unit: ' lbs', higher: true, desc: 'The heaviest weight your athlete successfully cleaned with quality mechanics and speed. The power clean is one of the most athletic lifts in existence — it requires full-body coordination, explosive hip drive, and fast hands. It\'s a direct measure of athletic power transfer.' },
+    cmj_jh_in: { label: 'CMJ Jump Height', unit: 'in', higher: true, desc: 'How high they jump from a standing start' },
+    cmj_rsi: { label: 'RSI (Reactive Strength Index)', unit: '', higher: true, desc: 'How quickly they absorb and redirect force off the ground (bounciness)' },
+    cmj_power_bm: { label: 'Squat Peak Power', unit: 'W/kg', higher: true, desc: 'Lower body explosive power during a squat' },
+    iso_force_bm: { label: 'Peak Force / Body Weight (ISO Force)', unit: 'BW', higher: true, desc: 'Maximum strength output relative to their body weight' },
+    best_010: { label: '0–10 Sprint', unit: 's', higher: false, desc: 'First 10 yards from a dead stop — pure acceleration' },
+    best_2030: { label: '20–30 Fly', unit: 's', higher: false, desc: 'Top-end speed at full stride (yards 20 to 30)' },
+    bench_pp: { label: 'Bench Peak Power', unit: ' W/kg', higher: true, desc: 'Upper body explosive power during a pressing movement' },
+    trapbar_pp: { label: 'Trap Bar Peak Power', unit: ' W/kg', higher: true, desc: 'Total body explosive power — hips, legs, and back' },
+    power_clean_lbs: { label: 'Power Clean Max', unit: ' lbs', higher: true, desc: 'Heaviest successful full-body power lift' },
     bw_kg: { label: 'Body Weight', unit: 'kg', higher: false }
   };
 
