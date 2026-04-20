@@ -4744,13 +4744,16 @@ function openModal(idx) {
     // ── COACH VIEW: full profile ──
     body = renderCoachProfile(a);
     body += `<div style="margin-top:14px;padding:12px 14px;background:#0a1520;border-radius:10px;text-align:center">
-      <button onclick="suggestAthleteEdit(${idx})" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:8px;padding:8px 16px;font-size:11px;font-weight:700;cursor:pointer;margin-right:6px">
-        ✏️ Suggest Profile Update
+      <button onclick="suggestAthleteEdit(${idx})" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:8px;padding:8px 16px;font-size:11px;font-weight:700;cursor:pointer;margin-right:4px">
+        ✏️ Edit
       </button>
-      <button onclick="copyRecruitUrl('${a.name}')" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:8px;padding:8px 16px;font-size:11px;font-weight:700;cursor:pointer">
-        📤 Share Profile
+      <button onclick="copyRecruitUrl('${a.name}')" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:8px;padding:8px 16px;font-size:11px;font-weight:700;cursor:pointer;margin-right:4px">
+        📤 Share
       </button>
-      <div style="font-size:9px;color:#3a5a7a;margin-top:4px">Copy recruiting card URL to clipboard</div>
+      <button onclick="printAthleteReport(${idx})" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:8px;padding:8px 16px;font-size:11px;font-weight:700;cursor:pointer">
+        🖨️ Print Report
+      </button>
+      <div style="font-size:9px;color:#3a5a7a;margin-top:4px">Coach tools: edit profile, share recruiting card, print test report</div>
     </div>`;
   } else {
     // ── PUBLIC VIEW: metrics + basic stats ──
@@ -5321,10 +5324,133 @@ function quickSaveGoal(athleteIdx) {
   openModal(athleteIdx);
 }
 
+// ═══════════════════════════════════════════════════════════
+// PRINT / PDF REPORT
+// ═══════════════════════════════════════════════════════════
+function printAthleteReport(athleteIdx) {
+  const a = A[athleteIdx];
+  const metricDefs = [
+    {key:'cmj_jh_in',      label:'CMJ Jump Height',   unit:'"',    higher:true},
+    {key:'best_010',       label:'0–10 Sprint',        unit:'s',    higher:false},
+    {key:'best_2030',      label:'20–30 Fly',          unit:'s',    higher:false},
+    {key:'iso_force_bm',   label:'Peak Force/BW',      unit:' N/kg',higher:true},
+    {key:'bench_pp',       label:'Bench Peak Power',        unit:' W/kg',higher:true},
+    {key:'squat_pp',       label:'Squat Peak Power',        unit:' W/kg',higher:true},
+    {key:'trapbar_pp',     label:'Trap Bar Peak Power',     unit:' W/kg',higher:true},
+    {key:'power_clean_lbs', label:'Power Clean Max',    unit:' lbs', higher:true},
+    {key:'best_rsi',       label:'RSI',                unit:'',     higher:true},
+  ];
+
+  const peers = A.filter(x => x.gender === a.gender && x.source !== 'vbt_only');
+  function cpPct(key, val, higher) {
+    const vals = peers.map(x => x[key]).filter(v => v !== null && v !== undefined);
+    if (!vals.length) return null;
+    const below = vals.filter(v => higher ? v < val : v > val).length;
+    return Math.round(below / vals.length * 100);
+  }
+
+  const metricsRows = metricDefs.filter(m => a[m.key] != null).map(m => {
+    const p = cpPct(m.key, a[m.key], m.higher);
+    const dispVal = m.key === 'bw_kg' ? Math.round(a[m.key]*2.205) : a[m.key];
+    return `<tr><td>${m.label}</td><td style="text-align:right;font-weight:700">${dispVal}${m.unit}</td><td style="text-align:right">${p}th pct</td></tr>`;
+  }).join('');
+
+  const reportHtml = `<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body{font-family:Arial,sans-serif;background:#fff;color:#333;padding:40px;max-width:800px;margin:0 auto}
+  .header{border-bottom:3px solid #C9A228;padding-bottom:20px;margin-bottom:30px}
+  .logo{font-size:28px;font-weight:900;color:#0d1b2a}
+  .subtitle{color:#666;font-size:13px;margin-top:4px}
+  .meta{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:13px}
+  .meta-item{display:flex;flex-direction:column}
+  .meta-label{color:#666;font-size:11px;font-weight:700;text-transform:uppercase}
+  .meta-val{font-size:16px;font-weight:700;color:#0d1b2a;margin-top:4px}
+  .section{margin-bottom:30px}
+  .section-title{font-size:16px;font-weight:800;color:#C9A228;border-bottom:2px solid #f0f0f0;padding-bottom:8px;margin-bottom:12px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  tr{border-bottom:1px solid #f0f0f0}
+  th{text-align:left;padding:10px 0;font-weight:700;color:#0d1b2a;background:#f9f9f9}
+  td{padding:10px 0}
+  .footer{margin-top:40px;padding-top:20px;border-top:1px solid #ddd;font-size:11px;color:#666;text-align:center}
+  @media print{body{padding:0}}
+</style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">ODYSSEY PERFORMANCE</div>
+    <div class="subtitle">Athlete Performance Report</div>
+    <div class="meta">
+      <div class="meta-item">
+        <span class="meta-label">Athlete</span>
+        <span class="meta-val">${a.name}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Sport / Class</span>
+        <span class="meta-val">${a.sport || '—'} · ${cs(a.grad_year)}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Gender</span>
+        <span class="meta-val">${a.gender === 'F' ? 'Female' : 'Male'}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Test Date</span>
+        <span class="meta-val">April 20, 2026</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Performance Metrics</div>
+    <table>
+      <thead><tr><th>Metric</th><th style="text-align:right">Value</th><th style="text-align:right">Percentile</th></tr></thead>
+      <tbody>${metricsRows}</tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Athletic Profile</div>
+    <p><strong>Classification:</strong> ${a.bucket || 'Unclassified'}</p>
+    <p>This athlete has been assessed and classified based on force plate and sprint performance data. Regular testing is recommended to track progress and inform training adjustments.</p>
+  </div>
+
+  <div class="footer">
+    Odyssey Performance · North County San Diego · Elite Athlete Development<br>
+    Tested at Odyssey Performance
+  </div>
+</body>
+</html>`;
+
+  const printWindow = window.open('', '', 'width=800,height=600');
+  printWindow.document.write(reportHtml);
+  printWindow.document.close();
+  printWindow.print();
+}
+
+// ═══════════════════════════════════════════════════════════
+// HISTORY TRACKING & SPARKLINES
+// ═══════════════════════════════════════════════════════════
+function initializeHistory() {
+  // Pre-populate HISTORY with baseline data from current athletes
+  const trackMetrics = ['cmj_jh_in', 'best_rsi', 'iso_force_bm', 'best_010', 'best_2030', 'bench_pp', 'squat_pp', 'trapbar_pp', 'power_clean_lbs'];
+  A.forEach(a => {
+    const key = a.name.toLowerCase().replace(/\s+/g, '_');
+    const baseline = { date: '2026-01-01' };
+    trackMetrics.forEach(m => {
+      if (a[m] != null) baseline[m] = a[m];
+    });
+    if (Object.keys(baseline).length > 1) {
+      HISTORY[key] = [baseline];
+    }
+  });
+}
+
 // INIT
 // =====================================================
 function init() {
   computeScores();
+  initializeHistory();
 
   // Check for recruit parameter
   const params = new URLSearchParams(window.location.search);
