@@ -1487,22 +1487,43 @@ function approxAge(a) {
   return 2044 - a.grad_year; // senior 2026 ≈ 18 yrs
 }
 
-function lbRow(rank, a, key, unit, fmt) {
+function lbRow(rank, a, key, unit, fmt, lowerIsBetter) {
   var val = a[key];
   if (val == null) return '';
-  var srcTag = '';
-  var display = (fmt ? fmt(val) : (val + (unit||''))) + srcTag;
+  var display = fmt ? fmt(val) : (val + (unit||''));
   var medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':('<span style="font-size:12px;font-weight:700;color:#6a8aa8">'+rank+'</span>');
   var bg = rank===1?'#1a1208':rank===2?'#131820':rank===3?'#130d0a':'#0d1b2a';
   var border = rank===1?'#C9A228':rank===2?'#8a9bb0':rank===3?'#b87333':'#1e3a5f';
   var nameColor = rank<=3 ? '#e6edf3' : '#aab8c8';
+
+  // Improvement badge from history
+  var improveBadge = '';
+  var hkey = a.name.toLowerCase().replace(/\s+/g, '_');
+  var sessions = HISTORY[hkey] || [];
+  if (sessions.length >= 2) {
+    var firstSession = sessions.find(function(s){ return s[key] != null; });
+    if (firstSession) {
+      var baseVal = firstSession[key];
+      if (baseVal && baseVal !== val) {
+        var pct = Math.round((val - baseVal) / Math.abs(baseVal) * 100);
+        var improving = lowerIsBetter ? pct < 0 : pct > 0;
+        var clr = improving ? '#4caf50' : '#ef5350';
+        var icon = pct > 0 ? '▲' : '▼';
+        improveBadge = '<div style="font-size:9px;color:' + clr + ';font-weight:700;text-align:right;margin-top:2px">' + icon + ' ' + Math.abs(pct) + '% improvement</div>';
+      }
+    }
+  }
+
   return '<div style="display:flex;align-items:center;gap:10px;background:' + bg + ';border:1px solid ' + border + ';border-radius:8px;padding:9px 12px;margin-bottom:5px">' +
     '<div style="font-size:15px;min-width:28px;text-align:center">' + medal + '</div>' +
     '<div style="flex:1">' +
     '<div style="font-size:13px;font-weight:700;color:' + nameColor + '">' + a.name + '</div>' +
     '<div style="font-size:10px;color:#6a8aa8">' + (a.sport||'—') + ' · ' + cs(a.grad_year) + (a.position?' · '+a.position:'') + '</div>' +
     '</div>' +
+    '<div style="text-align:right">' +
     '<div style="font-size:15px;font-weight:800;color:#C9A228">' + display + '</div>' +
+    improveBadge +
+    '</div>' +
     '</div>';
 }
 
@@ -1519,7 +1540,7 @@ function lbSection(title, icon, color, athletes, key, unit, fmt, lowerIsBetter) 
   if (!sorted.length) {
     h += '<div style="text-align:center;color:#3a5a7a;font-size:11px;padding:12px">No data recorded yet — check back soon</div>';
   } else {
-    sorted.forEach(function(a,i){ h += lbRow(i+1, a, key, unit, fmt); });
+    sorted.forEach(function(a,i){ h += lbRow(i+1, a, key, unit, fmt, lowerIsBetter); });
   }
   h += '</div>';
   return h;
@@ -4594,6 +4615,7 @@ function saveTestSession(idx) {
   if (!HISTORY[hkey]) HISTORY[hkey] = [];
   HISTORY[hkey].push(entry);
   HISTORY[hkey].sort((x,y) => x.date.localeCompare(y.date));
+  saveHistoryToStorage();
   openModal(idx);
 }
 
@@ -5591,18 +5613,35 @@ function printAthleteReport(athleteIdx) {
 // ═══════════════════════════════════════════════════════════
 // HISTORY TRACKING & SPARKLINES
 // ═══════════════════════════════════════════════════════════
+const HISTORY_STORAGE_KEY = 'odyssey_athlete_history_v1';
+
+function saveHistoryToStorage() {
+  try { localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(HISTORY)); } catch(e) {}
+}
+
+function loadHistoryFromStorage() {
+  try {
+    const stored = localStorage.getItem(HISTORY_STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      // Merge: stored entries take priority over in-memory (they have real session data)
+      Object.keys(parsed).forEach(k => { HISTORY[k] = parsed[k]; });
+    }
+  } catch(e) {}
+}
+
 function initializeHistory() {
-  // Pre-populate HISTORY with baseline data from current athletes
+  // First load any persisted sessions from localStorage
+  loadHistoryFromStorage();
+
+  // Then seed baseline entries ONLY for athletes with no history yet
   const trackMetrics = ['cmj_jh_in', 'best_rsi', 'iso_force_bm', 'best_010', 'best_2030', 'bench_pp', 'squat_pp', 'trapbar_pp', 'power_clean_lbs'];
   A.forEach(a => {
     const key = a.name.toLowerCase().replace(/\s+/g, '_');
-    const baseline = { date: '2026-01-01' };
-    trackMetrics.forEach(m => {
-      if (a[m] != null) baseline[m] = a[m];
-    });
-    if (Object.keys(baseline).length > 1) {
-      HISTORY[key] = [baseline];
-    }
+    if (HISTORY[key]) return; // already has real history — don't overwrite
+    const baseline = { date: '2026-04-20' };
+    trackMetrics.forEach(m => { if (a[m] != null) baseline[m] = a[m]; });
+    if (Object.keys(baseline).length > 1) HISTORY[key] = [baseline];
   });
 }
 
