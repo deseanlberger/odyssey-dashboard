@@ -406,7 +406,7 @@ function RevenueList({revenue, onDelete, month}) {
 }
 
 // ── MAIN APP ─────────────────────────────────────────────────
-export default function App() {
+function App() {
   const [view, setView] = useState("business");
   const [data, setData] = useState(()=>loadData());
   const [month] = useState(getCurrentMonth);
