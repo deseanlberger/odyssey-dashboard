@@ -134,6 +134,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="bottom-inner">
     <button class="clear-btn" onclick="clearDone()">Clear Done</button>
     <button class="clear-btn" onclick="clearToday()">Clear Today</button>
+    <button class="clear-btn" onclick="shareStatus()" style="background:#1e3a5f;border-color:#C9A228;color:#C9A228">📋 Share</button>
   </div>
 </div>
 
@@ -408,6 +409,47 @@ function clearToday() {
   if (!confirm('Move all Today tasks back to Bank?')) return;
   tasks.forEach(function(t){ if(t.today) t.today=false; });
   saveTasks(); render();
+}
+
+function shareStatus() {
+  var lines = [];
+  var d = new Date();
+  lines.push('📋 Task Status — ' + (d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear());
+  lines.push('');
+
+  // Priority
+  var pri = priorityTasks();
+  if (pri.length) {
+    lines.push('⭐ PRIORITY');
+    pri.forEach(function(t){ lines.push((t.done?'[x] ':'[ ] ')+t.text); });
+    lines.push('');
+  }
+
+  // Today
+  var tod = todayTasks();
+  if (tod.length) {
+    lines.push('📋 TODAY');
+    tod.forEach(function(t){ lines.push((t.done?'[x] ':'[ ] ')+t.text); });
+    lines.push('');
+  }
+
+  // Bank (pending only)
+  var bank = bankTasks().filter(function(t){ return !t.done; });
+  if (bank.length) {
+    lines.push('🗂 BANK (pending)');
+    bank.forEach(function(t){ lines.push('[ ] '+t.text); });
+  }
+
+  var text = lines.join('\n');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function(){
+      alert('Status copied to clipboard — paste it into Dispatch!');
+    }, function(){
+      prompt('Copy this and paste into Dispatch:', text);
+    });
+  } else {
+    prompt('Copy this and paste into Dispatch:', text);
+  }
 }
 
 function addTask() {
