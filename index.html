@@ -1326,42 +1326,21 @@ select:focus{border-color:#C9A228}
           </label>
         </div>
 
-        <!-- Manual Entry -->
+        <!-- Manual Entry (free-text) -->
         <div id="im-area-manual" style="display:none">
-          <div style="background:#112233;border:1px solid #1e3a5f;border-radius:10px;padding:14px;margin-bottom:10px">
-            <div style="font-size:10px;color:#C9A228;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Athlete Info</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-              <div style="grid-column:1/-1"><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Athlete Name</label><input id="mn-name" type="text" placeholder="First Last" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:13px;box-sizing:border-box"></div>
-              <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Sport</label><input id="mn-sport" type="text" placeholder="e.g. Softball" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>
-              <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Position</label><input id="mn-pos" type="text" placeholder="e.g. Pitcher" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>
-              <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Grad Year</label><select id="mn-year" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px"></select></div>
-              <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Gender</label><div style="display:flex;gap:6px"><button id="mn-gm" onclick="mnSetGender('M')" style="flex:1;background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:6px;padding:7px;font-size:12px;font-weight:700;cursor:pointer">M</button><button id="mn-gf" onclick="mnSetGender('F')" style="flex:1;background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:6px;padding:7px;font-size:12px;font-weight:700;cursor:pointer">F</button><input type="hidden" id="mn-gender" value=""></div></div>
-              <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Test Date</label><input id="mn-date" type="date" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>
-            </div>
+          <div style="background:#112233;border-left:3px solid #C9A228;border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:11px;color:#8a9bb0;line-height:1.6">
+            Type or paste stats for one athlete or a full session. Any format works — Coach Desean will review and add to the system.
           </div>
-          <div style="background:#112233;border:1px solid #1e3a5f;border-radius:10px;padding:14px;margin-bottom:10px">
-            <div style="font-size:10px;color:#C9A228;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Jump & Force Metrics</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-              <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">CMJ Height (in)</label><input id="mn-cmj" type="number" step="0.1" placeholder="e.g. 18.5" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>
-              <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">RSI Score</label><input id="mn-rsi" type="number" step="0.01" placeholder="e.g. 0.38" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>
-              <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Peak Power / BM (W/kg)</label><input id="mn-pp" type="number" step="0.1" placeholder="e.g. 44.2" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>
-              <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Peak Force / BM (N/kg)</label><input id="mn-force" type="number" step="0.1" placeholder="e.g. 52.0" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>
-              <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Asymmetry % (worst)</label><input id="mn-asym" type="number" step="0.1" placeholder="e.g. 14.5" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>
-              <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Body Weight (lbs)</label><input id="mn-bw" type="number" step="0.1" placeholder="e.g. 165" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>
-            </div>
-          </div>
-          <div style="background:#112233;border:1px solid #1e3a5f;border-radius:10px;padding:14px;margin-bottom:10px">
-            <div style="font-size:10px;color:#C9A228;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Speed & Strength (optional)</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-              <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">0–10 Sprint (s)</label><input id="mn-010" type="number" step="0.01" placeholder="e.g. 1.68" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>
-              <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">20–30 Fly (s)</label><input id="mn-2030" type="number" step="0.01" placeholder="e.g. 1.12" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>
-              <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Squat Peak Power (W/kg)</label><input id="mn-squat" type="number" step="0.1" placeholder="e.g. 38.4" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>
-              <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Trap Bar Peak Power (W/kg)</label><input id="mn-trap" type="number" step="0.1" placeholder="e.g. 42.1" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>
-              <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Power Clean Max (lbs)</label><input id="mn-clean" type="number" step="1" placeholder="e.g. 195" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>
-              <div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Bench Peak Power (W/kg)</label><input id="mn-bench" type="number" step="0.1" placeholder="e.g. 18.5" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>
-            </div>
-          </div>
-          <button onclick="importSubmitManual()" style="width:100%;background:#C9A228;border:none;color:#0D1B2A;border-radius:12px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;box-sizing:border-box">Continue →</button>
+          <textarea id="mn-freetext" placeholder="Examples:
+John Smith | Track | 2026 | M
+CMJ: 18.5in | RSI: 0.42 | Power: 49 W/kg | 0-10: 1.68s
+
+Jane Doe | Soccer | 2027 | F
+CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
+
+(one athlete or ten — any format you have)" style="width:100%;min-height:220px;background:#0a1520;color:#e0eaf4;border:1px solid #2a4a6a;border-radius:10px;padding:12px;font-size:12px;font-family:-apple-system,BlinkMacSystemFont,monospace;resize:vertical;box-sizing:border-box;line-height:1.65;margin-bottom:10px"></textarea>
+          <input id="mn-coach-name" type="text" placeholder="Your name (optional — e.g. Coach Mike)" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:12px;box-sizing:border-box;margin-bottom:10px">
+          <button onclick="importSubmitFreetext()" style="width:100%;background:#C9A228;border:none;color:#0D1B2A;border-radius:12px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;box-sizing:border-box">📧 Send for Review →</button>
         </div>
 
         <!-- Photo Upload -->
@@ -2503,19 +2482,11 @@ function openImportSession() {
   document.getElementById('import-step-4').style.display = 'none';
   document.getElementById('import-csv-status').style.display = 'none';
   importSetMethod('csv');
-
-  // Init year picker
-  var ys = document.getElementById('mn-year');
-  if (ys && !ys.options.length) {
-    for (var y = 2026; y <= 2032; y++) {
-      var o = document.createElement('option'); o.value=y; o.text=y;
-      if (y===2026) o.selected=true;
-      ys.appendChild(o);
-    }
-  }
-  // Set today date
-  var dt = document.getElementById('mn-date');
-  if (dt) dt.value = new Date().toISOString().slice(0,10);
+  // Clear the free-text area on open
+  var ft = document.getElementById('mn-freetext');
+  if (ft) ft.value = '';
+  var cn = document.getElementById('mn-coach-name');
+  if (cn) cn.value = '';
 
   document.getElementById('import-overlay').scrollTop = 0;
   document.getElementById('import-overlay').classList.add('open');
@@ -2538,51 +2509,26 @@ function importSetMethod(method) {
   });
 }
 
-function mnSetGender(g) {
-  document.getElementById('mn-gender').value = g;
-  document.getElementById('mn-gm').style.background = g==='M' ? '#1e3a5f' : '#0a1520';
-  document.getElementById('mn-gm').style.borderColor = g==='M' ? '#C9A228' : '#2a4a6a';
-  document.getElementById('mn-gm').style.color = g==='M' ? '#C9A228' : '#6a8aa8';
-  document.getElementById('mn-gf').style.background = g==='F' ? '#1e3a5f' : '#0a1520';
-  document.getElementById('mn-gf').style.borderColor = g==='F' ? '#C9A228' : '#2a4a6a';
-  document.getElementById('mn-gf').style.color = g==='F' ? '#C9A228' : '#6a8aa8';
+function mnSetGender(g) { /* no-op: gender now entered as free text */ }
+
+function importSubmitFreetext() {
+  var text = (document.getElementById('mn-freetext').value || '').trim();
+  if (!text) { alert('Please enter athlete stats before sending.'); return; }
+  var coach = (document.getElementById('mn-coach-name').value || '').trim();
+  var d = new Date();
+  var dateStr = (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear();
+  var subject = 'Odyssey Session Upload — Manual Entry' + (coach ? ' from ' + coach : '') + ' — Pending Review';
+  var body = '=== ODYSSEY SESSION DATA ===\n'
+    + 'Submitted: ' + dateStr + (coach ? '\nCoach: ' + coach : '') + '\n'
+    + '============================\n\n'
+    + text
+    + '\n\n============================\n'
+    + 'Sent via Odyssey Dashboard';
+  window.location.href = 'mailto:deseanlberger@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  setTimeout(function(){ showImportStep3Msg(1); }, 500);
 }
 
-function importSubmitManual() {
-  var name = (document.getElementById('mn-name').value || '').trim();
-  if (!name) { alert('Please enter the athlete name.'); return; }
-  var gender = document.getElementById('mn-gender').value;
-  if (!gender) { alert('Please select gender.'); return; }
-
-  var metrics = {};
-  var fv = function(id) { var v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; };
-  if (fv('mn-cmj')!==null) metrics.cmj_jh_in = fv('mn-cmj');
-  if (fv('mn-rsi')!==null) metrics.cmj_rsi = fv('mn-rsi');
-  if (fv('mn-pp')!==null) metrics.cmj_power_bm = fv('mn-pp');
-  if (fv('mn-force')!==null) metrics.iso_force_bm = fv('mn-force');
-  if (fv('mn-asym')!==null) metrics.uni_asym_pct = fv('mn-asym');
-  if (fv('mn-bw')!==null) metrics.bw_kg = fv('mn-bw') / 2.205;
-  if (fv('mn-010')!==null) metrics.best_010 = fv('mn-010');
-  if (fv('mn-2030')!==null) metrics.best_2030 = fv('mn-2030');
-  if (fv('mn-squat')!==null) metrics.squat_pp = fv('mn-squat');
-  if (fv('mn-trap')!==null) metrics.trapbar_pp = fv('mn-trap');
-  if (fv('mn-clean')!==null) metrics.power_clean_lbs = fv('mn-clean');
-  if (fv('mn-bench')!==null) metrics.bench_pp = fv('mn-bench');
-
-  window.importAthletesData = [{
-    name: name,
-    source_type: 'manual',
-    prefill: {
-      grad_year: parseInt(document.getElementById('mn-year').value),
-      sport: (document.getElementById('mn-sport').value||'').trim(),
-      position: (document.getElementById('mn-pos').value||'').trim(),
-      gender: gender,
-      date: document.getElementById('mn-date').value
-    },
-    metrics: metrics
-  }];
-  showImportStep2(window.importAthletesData);
-}
+function importSubmitManual() { importSubmitFreetext(); }
 
 function importHandlePhoto(input) {
   var file = input.files[0];
