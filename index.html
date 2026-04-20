@@ -1412,7 +1412,7 @@ CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
     <div style="position:sticky;top:0;background:#0D1B2A;z-index:20;padding:13px 16px;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;justify-content:space-between">
       <button onclick="closeCore6()" style="background:none;border:none;color:#6a8aa8;font-size:15px;font-weight:700;cursor:pointer;padding:4px 0;min-width:52px;text-align:left">‹ Back</button>
       <div style="font-size:15px;font-weight:800;color:#fff;text-align:center">📋 CORE 6 Eval</div>
-      <button onclick="core6PrintCard()" style="background:#C9A228;border:none;color:#0D1B2A;border-radius:10px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer">🖨️ Print</button>
+      <button onclick="core6PrintCard()" style="background:#C9A228;border:none;color:#0D1B2A;border-radius:10px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer">📄 Export PDF</button>
     </div>
     <div style="padding:14px 14px 60px">
 
@@ -7071,50 +7071,151 @@ function core6PrintCard() {
   var position = document.getElementById('c6-position').value;
   var year = document.getElementById('c6-year').value;
   var level = document.getElementById('c6-level').value;
-  var today = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  var today = new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
 
+  // Build scores rows
   var rows = '';
+  var totalRated = 0, ratingSum = 0;
   Object.keys(C6_DATA).forEach(function(key) {
     var q = C6_DATA[key];
-    var r = C6_RATINGS[key] || '—';
+    var r = C6_RATINGS[key] || 0;
     var reasons = c6GetSelectedReasons(key);
-    var rColor = r !== '—' ? c6RatingColor(r) : '#999';
-    rows += '<tr style="border-bottom:1px solid #e5e5e5">' +
-      '<td style="padding:9px 12px;font-weight:700;font-size:13px">' + q.icon + ' ' + q.label + '</td>' +
-      '<td style="padding:9px 12px;text-align:center;font-size:20px;font-weight:900;color:' + rColor + '">' + r + '</td>' +
-      '<td style="padding:9px 12px;font-size:11px;color:#555;line-height:1.5">' + (reasons.join('<br>') || '') + '</td>' +
+    var rColor = r ? c6RatingColor(r) : '#bbb';
+    var rLabel = r ? ['','Needs Work','Below Avg','Average','Above Avg','Elite'][r] : '—';
+    if (r) { totalRated++; ratingSum += r; }
+    var bgColor = r ? ['','#fff0f0','#fff8f0','#fffcf0','#f0f6ff','#f0fff5'][r] : '#fafafa';
+    rows += '<tr>' +
+      '<td style="padding:11px 14px;font-weight:700;font-size:13px;color:#0D1B2A;border-bottom:1px solid #eee">' +
+        '<span style="font-size:15px">' + q.icon + '</span> ' + q.label + '</td>' +
+      '<td style="padding:11px 14px;text-align:center;border-bottom:1px solid #eee;background:' + bgColor + '">' +
+        '<span style="font-size:24px;font-weight:900;color:' + rColor + ';line-height:1">' + (r||'—') + '</span>' +
+        '<div style="font-size:9px;font-weight:700;color:' + rColor + ';text-transform:uppercase;letter-spacing:.4px;margin-top:1px">' + rLabel + '</div>' +
+      '</td>' +
+      '<td style="padding:11px 14px;font-size:11.5px;color:#444;line-height:1.6;border-bottom:1px solid #eee">' +
+        (reasons.length ? reasons.map(function(r){return '• '+r;}).join('<br>') : '<span style="color:#bbb;font-style:italic">No notes added</span>') +
+      '</td>' +
     '</tr>';
   });
 
-  var printHtml =
-    '<div style="background:#0D1B2A;color:#fff;padding:16px 20px;border-radius:6px;margin-bottom:18px">' +
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">' +
-        '<div style="font-size:22px;font-weight:900;letter-spacing:1px;color:#C9A228">CORE 6</div>' +
-        '<div style="font-size:11px;color:#6a8aa8">IN-SESSION EVALUATION</div>' +
-      '</div>' +
-      '<div style="font-size:18px;font-weight:800">' + name + '</div>' +
-      '<div style="font-size:12px;color:#8a9bb0;margin-top:2px">' +
-        [sport, position, year ? 'Class of \''+year.toString().slice(-2) : '', level].filter(Boolean).join(' · ') +
-      '</div>' +
-      '<div style="font-size:10px;color:#6a8aa8;margin-top:4px">Evaluated: ' + today + ' · Odyssey Performance</div>' +
+  var avg = totalRated ? (ratingSum / totalRated).toFixed(1) : null;
+  var avgColor = avg ? c6RatingColor(Math.round(avg)) : '#999';
+
+  // Grab coaching summary if generated
+  var summaryText = '';
+  var summaryDiv = document.getElementById('c6-summary');
+  if (summaryDiv && summaryDiv.style.display !== 'none') {
+    var rawHtml = document.getElementById('c6-summary-text').innerHTML;
+    summaryText = rawHtml.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g,'').trim();
+  }
+
+  // Grab sport translation if generated
+  var transText = '';
+  var transDiv = document.getElementById('c6-sport-trans');
+  if (transDiv && transDiv.style.display !== 'none') {
+    var rawTrans = document.getElementById('c6-trans-text').innerHTML;
+    transText = rawTrans;
+  }
+
+  var metaLine = [sport, position, year ? 'Class of \'' + year.toString().slice(-2) : '', level].filter(Boolean).join(' · ');
+
+  var summarySection = summaryText ? (
+    '<div style="margin-top:22px;padding:16px 18px;background:#0D1B2A;border-radius:8px;page-break-inside:avoid">' +
+      '<div style="font-size:10px;font-weight:800;color:#C9A228;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">📣 Coaching Summary</div>' +
+      '<div style="font-size:12px;color:#d0e8f8;line-height:1.8;white-space:pre-line">' + summaryText + '</div>' +
+    '</div>'
+  ) : '';
+
+  var transSection = transText ? (
+    '<div style="margin-top:16px;padding:16px 18px;background:#f5f9ff;border:1px solid #d0e4f7;border-radius:8px;page-break-inside:avoid">' +
+      '<div style="font-size:10px;font-weight:800;color:#1a4a8a;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">🏅 Sport Translation</div>' +
+      '<div style="font-size:12px;color:#2c3e50;line-height:1.8">' + transText + '</div>' +
+    '</div>'
+  ) : '';
+
+  var avgBadge = avg ? (
+    '<div style="text-align:right">' +
+      '<span style="display:inline-block;background:rgba(255,255,255,.12);border-radius:8px;padding:6px 14px">' +
+        '<span style="font-size:11px;color:#8a9bb0;display:block;text-transform:uppercase;letter-spacing:.5px">Avg Score</span>' +
+        '<span style="font-size:26px;font-weight:900;color:' + avgColor + ';line-height:1">' + avg + '</span>' +
+      '</span>' +
+    '</div>'
+  ) : '';
+
+  var fullDoc = '<!DOCTYPE html><html><head>' +
+    '<meta charset="utf-8">' +
+    '<title>CORE 6 Eval — ' + name + '</title>' +
+    '<style>' +
+      'body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:#fff;color:#222}' +
+      '@page{size:letter portrait;margin:.5in .6in .6in .6in}' +
+      '@media print{' +
+        '.no-print{display:none!important}' +
+        'body{padding:0}' +
+        '.page-wrap{padding:0}' +
+      '}' +
+      'table{border-collapse:collapse;width:100%}' +
+      'th{background:#f0f0f0;color:#555;font-size:10px;text-transform:uppercase;letter-spacing:.6px;padding:8px 14px;text-align:left}' +
+      'th:nth-child(2){text-align:center;width:80px}' +
+      'td:nth-child(2){text-align:center;width:80px}' +
+    '</style>' +
+    '</head><body>' +
+
+    // Print button bar (hidden when printing)
+    '<div class="no-print" style="position:sticky;top:0;z-index:99;background:#1a1a2e;padding:10px 20px;display:flex;align-items:center;justify-content:space-between">' +
+      '<span style="color:#8a9bb0;font-size:12px">CORE 6 Evaluation Report · Odyssey Performance</span>' +
+      '<button onclick="window.print()" style="background:#C9A228;border:none;color:#0D1B2A;font-weight:800;font-size:13px;padding:8px 22px;border-radius:8px;cursor:pointer">⬇ Save as PDF / Print</button>' +
     '</div>' +
-    '<table style="width:100%;border-collapse:collapse;font-family:Arial,sans-serif">' +
-      '<thead><tr style="background:#f5f5f5">' +
-        '<th style="padding:8px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#666">Quality</th>' +
-        '<th style="padding:8px 12px;text-align:center;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#666">Score</th>' +
-        '<th style="padding:8px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#666">Notes</th>' +
+
+    '<div class="page-wrap" style="max-width:720px;margin:0 auto;padding:24px 20px 40px">' +
+
+    // Header
+    '<div style="background:#0D1B2A;color:#fff;padding:20px 24px;border-radius:10px;margin-bottom:20px;display:flex;align-items:flex-start;justify-content:space-between">' +
+      '<div>' +
+        '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">' +
+          '<div style="font-size:26px;font-weight:900;letter-spacing:1.5px;color:#C9A228">CORE 6</div>' +
+          '<div style="background:rgba(201,162,40,.15);border:1px solid rgba(201,162,40,.3);border-radius:5px;padding:3px 10px;font-size:9px;font-weight:800;color:#C9A228;letter-spacing:1px;text-transform:uppercase">In-Session Evaluation</div>' +
+        '</div>' +
+        '<div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:4px">' + name + '</div>' +
+        (metaLine ? '<div style="font-size:12px;color:#8a9bb0">' + metaLine + '</div>' : '') +
+        '<div style="font-size:10px;color:#506070;margin-top:6px">Evaluated: ' + today + ' &nbsp;·&nbsp; Odyssey Performance</div>' +
+      '</div>' +
+      avgBadge +
+    '</div>' +
+
+    // Scores table
+    '<table>' +
+      '<thead><tr>' +
+        '<th style="width:auto">Quality</th>' +
+        '<th style="width:80px;text-align:center">Score</th>' +
+        '<th>Observations</th>' +
       '</tr></thead>' +
       '<tbody>' + rows + '</tbody>' +
     '</table>' +
-    '<div style="margin-top:16px;padding:12px;background:#f9f9f9;border-radius:6px;font-size:11px;color:#666">' +
-      '<strong>Scale:</strong> 1 = Needs Work &nbsp;·&nbsp; 2 = Below Average &nbsp;·&nbsp; 3 = Average &nbsp;·&nbsp; 4 = Above Average &nbsp;·&nbsp; 5 = Elite' +
-    '</div>';
 
-  var wrap = document.getElementById('core6-print-wrap');
-  wrap.innerHTML = printHtml;
-  wrap.style.display = 'block';
-  window.print();
-  setTimeout(function(){ wrap.style.display = 'none'; }, 1000);
+    // Scale legend
+    '<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">' +
+      ['1 — Needs Work','2 — Below Avg','3 — Average','4 — Above Avg','5 — Elite'].map(function(lbl,i){
+        var colors=['#e74c3c','#e67e22','#f1c40f','#3498db','#2ecc71'];
+        return '<span style="background:#f8f8f8;border:1px solid #e5e5e5;border-radius:4px;padding:3px 8px;font-size:10px;color:'+colors[i]+';font-weight:700">'+lbl+'</span>';
+      }).join('') +
+    '</div>' +
+
+    summarySection +
+    transSection +
+
+    // Footer
+    '<div style="margin-top:28px;padding-top:14px;border-top:1px solid #e8e8e8;display:flex;justify-content:space-between;align-items:center">' +
+      '<div style="font-size:10px;color:#aaa">ODYSSEY PERFORMANCE &nbsp;·&nbsp; Confidential Athlete Report</div>' +
+      '<div style="font-size:10px;color:#aaa">' + today + '</div>' +
+    '</div>' +
+
+    '</div>' + // page-wrap
+    '</body></html>';
+
+  var win = window.open('', '_blank', 'width=800,height=900,toolbar=0,menubar=0,location=0');
+  if (!win) { alert('Please allow pop-ups for this page to generate the PDF report.'); return; }
+  win.document.write(fullDoc);
+  win.document.close();
+  win.focus();
 }
 
 // =====================================================
