@@ -1534,13 +1534,15 @@ function renderLeaderboards() {
     gLabel + (filterNote ? ' · ' + filterNote : ' · All Athletes') +
     ' · <span style="color:#4a8af0">' + pool.length + ' in pool</span></div>';
   h += lbSection('CMJ Jump Height', '⬆️', '#C9A228', pool, 'cmj_jh_in', '"', null);
-  h += lbSection('Reactive Strength Index (RSI)', '⚡', '#4a8af0', pool, 'best_rsi', '', null);
-  h += lbSection('CMJ Peak Power', '💥', '#4af08a', pool, 'cmj_power_bm', ' W/kg', null);
+  h += lbSection('0–10 Sprint', '🏃', '#f0c84a', pool, 'best_010', 's', null);
+  h += lbSection('20–30 Fly', '⚡', '#f0874a', pool, 'best_2030', 's', null);
+  h += lbSection('Peak Force / BW', '🔬', '#4af08a', pool, 'iso_force_bm', ' N/kg', null);
   h += lbSection('Bench Peak Power', '🏋️', '#f0a04a', pool, 'bench_pp', ' W/kg', null);
-  h += lbSection('Back Squat Peak Power', '🦵', '#f04a8a', pool, 'squat_pp', ' W/kg', null);
-  h += lbSection('Trap Bar Deadlift Peak Power', '🔩', '#a078f0', pool, 'trapbar_pp', ' W/kg', null);
-  h += lbSection('Power Clean — Max Weight', '🏅', '#ffd700', pool, 'power_clean_kg', ' kg',
+  h += lbSection('Squat Peak Power', '🦵', '#f04a8a', pool, 'squat_pp', ' W/kg', null);
+  h += lbSection('Trap Bar Dead Peak Power', '🔩', '#a078f0', pool, 'trapbar_pp', ' W/kg', null);
+  h += lbSection('Power Clean Max', '🏅', '#ffd700', pool, 'power_clean_kg', ' kg',
     function(v){ return v+' kg ('+Math.round(v*2.205)+' lbs)'; });
+  h += lbSection('RSI', '🌀', '#4a8af0', pool, 'best_rsi', '', null);
   out.innerHTML = h;
 }
 
@@ -1565,13 +1567,15 @@ function renderPublicLeaderboards() {
   var gLabel = _pubLbGender==='M' ? '♂ Male' : '♀ Female';
   var h = '<div style="font-size:10px;color:#6a8aa8;margin-bottom:10px">' + gLabel + ' · ' + pool.length + ' athletes in pool</div>';
   h += lbSection('CMJ Jump Height', '⬆️', '#C9A228', pool, 'cmj_jh_in', '"', null);
-  h += lbSection('Reactive Strength Index (RSI)', '⚡', '#4a8af0', pool, 'best_rsi', '', null);
-  h += lbSection('CMJ Peak Power', '💥', '#4af08a', pool, 'cmj_power_bm', ' W/kg', null);
+  h += lbSection('0–10 Sprint', '🏃', '#f0c84a', pool, 'best_010', 's', null);
+  h += lbSection('20–30 Fly', '⚡', '#f0874a', pool, 'best_2030', 's', null);
+  h += lbSection('Peak Force / BW', '🔬', '#4af08a', pool, 'iso_force_bm', ' N/kg', null);
   h += lbSection('Bench Peak Power', '🏋️', '#f0a04a', pool, 'bench_pp', ' W/kg', null);
-  h += lbSection('Back Squat Peak Power', '🦵', '#f04a8a', pool, 'squat_pp', ' W/kg', null);
-  h += lbSection('Trap Bar DL Peak Power', '🔩', '#a078f0', pool, 'trapbar_pp', ' W/kg', null);
-  h += lbSection('Power Clean — Max Weight', '🏅', '#ffd700', pool, 'power_clean_kg', ' kg',
+  h += lbSection('Squat Peak Power', '🦵', '#f04a8a', pool, 'squat_pp', ' W/kg', null);
+  h += lbSection('Trap Bar Dead Peak Power', '🔩', '#a078f0', pool, 'trapbar_pp', ' W/kg', null);
+  h += lbSection('Power Clean Max', '🏅', '#ffd700', pool, 'power_clean_kg', ' kg',
     function(v){ return v+' kg ('+Math.round(v*2.205)+' lbs)'; });
+  h += lbSection('RSI', '🌀', '#4a8af0', pool, 'best_rsi', '', null);
   out.innerHTML = h;
 }
 
@@ -1589,12 +1593,15 @@ const COMMIT_LOGOS = {
   "Edmonds College":"logos/edmonds.svg"
 };
 const METRICS = [
-  {key:'best_010',    higher:false, label:'0–10 Sprint',   unit:'s',    w:1.5},
-  {key:'best_2030',   higher:false, label:'20–30 Sprint',  unit:'s',    w:1.5},
-  {key:'cmj_jh_in',   higher:true,  label:'CMJ Height',    unit:'"',    w:1.5},
-  {key:'cmj_power_bm',higher:true,  label:'CMJ Power',     unit:' W/kg',w:1.0},
-  {key:'best_rsi',    higher:true,  label:'RSI',           unit:'',     w:1.0},
-  {key:'iso_force_bm',higher:true,  label:'ISO Force',     unit:' N/kg',w:1.0},
+  {key:'cmj_jh_in',    higher:true,  label:'CMJ Height',       unit:'"',    w:1.5},
+  {key:'best_010',     higher:false, label:'0–10 Sprint',       unit:'s',    w:1.5},
+  {key:'best_2030',    higher:false, label:'20–30 Sprint',      unit:'s',    w:1.5},
+  {key:'iso_force_bm', higher:true,  label:'Peak Force/BW',     unit:' N/kg',w:1.5},
+  {key:'bench_pp',     higher:true,  label:'Bench Power',       unit:' W/kg',w:1.0},
+  {key:'squat_pp',     higher:true,  label:'Squat Power',       unit:' W/kg',w:1.0},
+  {key:'trapbar_pp',   higher:true,  label:'Trap Bar Power',    unit:' W/kg',w:1.0},
+  {key:'power_clean_kg',higher:true, label:'Power Clean Max',   unit:' kg',  w:1.0},
+  {key:'best_rsi',     higher:true,  label:'RSI',               unit:'',     w:0.5},
 ];
 const AGE_BONUS = {2022:0,2023:0,2024:0,2025:2,2026:3,2027:5,2028:7,2029:9,2030:10,2031:12,2032:14};
 const TAG_BONUS = {elite:4, commit:6, prospect:3};
@@ -1681,15 +1688,16 @@ function computeScores() {
 // ── Profile Completeness ──
 function profileCompleteness(a) {
   const checks = [
-    {k:'bw_kg',        label:'Body Weight'},
-    {k:'cmj_jh_in',    label:'CMJ Height'},
-    {k:'cmj_rsi',      label:'RSI'},
-    {k:'cmj_power_bm', label:'CMJ Power'},
-    {k:'iso_force_bm', label:'ISO Force'},
-    {k:'uni_asym_pct', label:'Asymmetry (SLJ)'},
-    {k:'best_010',     label:'0–10 Sprint'},
-    {k:'best_2030',    label:'20–30 Fly'},
-    {k:'has_vbt',      label:'VBT Lift Profile'},
+    {k:'bw_kg',           label:'Body Weight'},
+    {k:'cmj_jh_in',       label:'CMJ Height'},
+    {k:'iso_force_bm',    label:'Peak Force/BW'},
+    {k:'best_010',        label:'0–10 Sprint'},
+    {k:'best_2030',       label:'20–30 Fly'},
+    {k:'bench_pp',        label:'Bench Power'},
+    {k:'squat_pp',        label:'Squat Power'},
+    {k:'trapbar_pp',      label:'Trap Bar Power'},
+    {k:'power_clean_kg',  label:'Power Clean Max'},
+    {k:'uni_asym_pct',    label:'Asymmetry (SLJ)'},
   ];
   const have = checks.filter(c => a[c.k] != null && a[c.k] !== false);
   const pct  = Math.round(have.length / checks.length * 100);
@@ -3705,7 +3713,7 @@ function renderStaffTab() {
       {label:'CMJ Height',    val: c.cmj_jh_in    ? c.cmj_jh_in.toFixed(1)+'"'     : '—'},
       {label:'RSI-Modified',  val: c.cmj_rsi!=null? c.cmj_rsi.toFixed(2)           : '—'},
       {label:'CMJ Power/BM',  val: c.cmj_power_bm ? c.cmj_power_bm.toFixed(1)+' W/kg' : '—'},
-      {label:'ISO Force/BM',  val: c.iso_force_bm ? c.iso_force_bm.toFixed(1)+' N/kg' : '—'},
+      {label:'Peak Force/BW',  val: c.iso_force_bm ? c.iso_force_bm.toFixed(1)+' N/kg' : '—'},
       {label:'SLJ Asymmetry', val: c.uni_asym_pct!=null ? c.uni_asym_pct+'%'       : '—'},
     ];
     return `
@@ -4369,16 +4377,20 @@ function renderCoachProfile(a) {
 
   // ── Metrics ──
   const metricDefs = [
-    {key:'cmj_jh_in',   label:'CMJ Jump Height', unit:'"',    higher:true},
-    {key:'best_rsi',    label:'RSI',             unit:'',     higher:true},
-    {key:'dj_jh_in',    label:'DJ Height',        unit:'"',    higher:true},
-    {key:'dj_ct',       label:'DJ Contact Time',  unit:'s',    higher:false},
-    {key:'cmj_power_bm',label:'CMJ Power/BM',    unit:' W/kg',higher:true},
-    {key:'iso_force_bm',label:'ISO Force/BM',    unit:' N/kg',higher:true},
-    {key:'dsi',         label:'DSI',              unit:'',     higher:false},
-    {key:'best_010',    label:'0–10 Sprint',      unit:'s',    higher:false},
-    {key:'best_2030',   label:'20–30 Fly',        unit:'s',    higher:false},
-    {key:'bw_kg',       label:'Body Weight',      unit:' kg',  higher:false},
+    {key:'cmj_jh_in',      label:'CMJ Jump Height',   unit:'"',    higher:true},
+    {key:'best_010',       label:'0–10 Sprint',        unit:'s',    higher:false},
+    {key:'best_2030',      label:'20–30 Fly',          unit:'s',    higher:false},
+    {key:'iso_force_bm',   label:'Peak Force/BW',      unit:' N/kg',higher:true},
+    {key:'bench_pp',       label:'Bench Power',        unit:' W/kg',higher:true},
+    {key:'squat_pp',       label:'Squat Power',        unit:' W/kg',higher:true},
+    {key:'trapbar_pp',     label:'Trap Bar Power',     unit:' W/kg',higher:true},
+    {key:'power_clean_kg', label:'Power Clean Max',    unit:' kg',  higher:true},
+    {key:'best_rsi',       label:'RSI',                unit:'',     higher:true},
+    {key:'dj_jh_in',       label:'DJ Height',          unit:'"',    higher:true},
+    {key:'dj_ct',          label:'DJ Contact Time',    unit:'s',    higher:false},
+    {key:'cmj_power_bm',   label:'CMJ Power/BM',       unit:' W/kg',higher:true},
+    {key:'dsi',            label:'DSI',                unit:'',     higher:false},
+    {key:'bw_kg',          label:'Body Weight',        unit:' kg',  higher:false},
   ];
   const peers = A.filter(x => x.gender === a.gender && x.source !== 'vbt_only');
   function cpPct(key, val, higher) {
