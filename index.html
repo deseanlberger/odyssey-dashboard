@@ -3709,7 +3709,7 @@ function renderStaffTab() {
       ? `<img src="${photoSrc}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0">`
       : `<div style="width:44px;height:44px;border-radius:50%;background:#1e3a5f;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">👨‍💼</div>`;
     const metrics = [
-      {label:'Body Weight',   val: c.bw_kg        ? c.bw_kg.toFixed(1)+' kg'       : '—'},
+      {label:'Body Weight',   val: c.bw_kg        ? Math.round(c.bw_kg*2.205)+' lbs' : '—'},
       {label:'CMJ Height',    val: c.cmj_jh_in    ? c.cmj_jh_in.toFixed(1)+'"'     : '—'},
       {label:'RSI-Modified',  val: c.cmj_rsi!=null? c.cmj_rsi.toFixed(2)           : '—'},
       {label:'CMJ Power/BM',  val: c.cmj_power_bm ? c.cmj_power_bm.toFixed(1)+' W/kg' : '—'},
@@ -4390,7 +4390,7 @@ function renderCoachProfile(a) {
     {key:'dj_ct',          label:'DJ Contact Time',    unit:'s',    higher:false},
     {key:'cmj_power_bm',   label:'CMJ Power/BM',       unit:' W/kg',higher:true},
     {key:'dsi',            label:'DSI',                unit:'',     higher:false},
-    {key:'bw_kg',          label:'Body Weight',        unit:' kg',  higher:false},
+    {key:'bw_kg',          label:'Body Weight',        unit:' lbs', higher:false, fmt:function(v){return Math.round(v*2.205);}},
   ];
   const peers = A.filter(x => x.gender === a.gender && x.source !== 'vbt_only');
   function cpPct(key, val, higher) {
@@ -4403,10 +4403,11 @@ function renderCoachProfile(a) {
     const p = cpPct(m.key, a[m.key], m.higher);
     const barW = p != null ? p : 0;
     const barCol = barW >= 70 ? '#4caf50' : barW >= 40 ? '#ffc107' : '#ef5350';
+    const dispVal = m.fmt ? m.fmt(a[m.key]) : a[m.key];
     return `<div class="cp-metric-row">
       <div class="cp-metric-top">
         <span class="cp-metric-name">${m.label}</span>
-        <span class="cp-metric-val">${a[m.key]}${m.unit}</span>
+        <span class="cp-metric-val">${dispVal}${m.unit}</span>
       </div>
       ${p != null ? `<div class="cp-pbar-wrap"><div class="cp-pbar" style="width:${barW}%;background:${barCol}"></div></div>
       <div class="cp-pct-lbl">${p}th pct · ${a.gender==='F'?'female':'male'} athletes</div>` : ''}
