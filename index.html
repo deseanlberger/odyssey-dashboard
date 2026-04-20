@@ -7085,13 +7085,13 @@ function core6PrintCard() {
     if (r) { totalRated++; ratingSum += r; }
     var bgColor = r ? ['','#fff0f0','#fff8f0','#fffcf0','#f0f6ff','#f0fff5'][r] : '#fafafa';
     rows += '<tr>' +
-      '<td style="padding:8px 10px;font-weight:700;font-size:12px;color:#0D1B2A;border-bottom:1px solid #eee;white-space:nowrap">' +
+      '<td style="padding:5px 9px;font-weight:700;font-size:11px;color:#0D1B2A;border-bottom:1px solid #eee;white-space:nowrap">' +
         q.icon + ' ' + q.label + '</td>' +
-      '<td style="padding:8px 10px;text-align:center;border-bottom:1px solid #eee;background:' + bgColor + ';white-space:nowrap">' +
-        '<span style="font-size:20px;font-weight:900;color:' + rColor + ';line-height:1">' + (r||'—') + '</span>' +
-        '<div style="font-size:8px;font-weight:700;color:' + rColor + ';text-transform:uppercase;letter-spacing:.3px">' + rLabel + '</div>' +
+      '<td style="padding:5px 9px;text-align:center;border-bottom:1px solid #eee;background:' + bgColor + ';white-space:nowrap">' +
+        '<span style="font-size:18px;font-weight:900;color:' + rColor + ';line-height:1">' + (r||'—') + '</span>' +
+        '<div style="font-size:7px;font-weight:700;color:' + rColor + ';text-transform:uppercase;letter-spacing:.3px">' + rLabel + '</div>' +
       '</td>' +
-      '<td style="padding:8px 10px;font-size:11px;color:#444;line-height:1.5;border-bottom:1px solid #eee">' +
+      '<td style="padding:5px 9px;font-size:10px;color:#444;line-height:1.4;border-bottom:1px solid #eee">' +
         (reasons.length ? reasons.map(function(r){return '• '+r;}).join('<br>') : '<span style="color:#ccc;font-style:italic">—</span>') +
       '</td>' +
     '</tr>';
@@ -7122,23 +7122,22 @@ function core6PrintCard() {
   var rightContent = '';
   if (summaryText) {
     rightContent +=
-      '<div style="background:#0D1B2A;border-radius:8px;padding:14px 16px;margin-bottom:12px">' +
-        '<div style="font-size:9px;font-weight:800;color:#C9A228;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">📣 Coaching Summary</div>' +
-        '<div style="font-size:11px;color:#d0e8f8;line-height:1.7;white-space:pre-line">' + summaryText + '</div>' +
+      '<div style="background:#0D1B2A;border-radius:7px;padding:10px 12px">' +
+        '<div style="font-size:8px;font-weight:800;color:#C9A228;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">📣 Coaching Summary</div>' +
+        '<div style="font-size:10px;color:#d0e8f8;line-height:1.5;white-space:pre-line">' + summaryText + '</div>' +
       '</div>';
   }
   if (transText) {
     rightContent +=
-      '<div style="background:#f5f9ff;border:1px solid #d0e4f7;border-radius:8px;padding:14px 16px;margin-bottom:12px">' +
-        '<div style="font-size:9px;font-weight:800;color:#1a4a8a;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">🏅 Sport Translation</div>' +
-        '<div style="font-size:11px;color:#2c3e50;line-height:1.7">' + transText + '</div>' +
+      '<div style="background:#f5f9ff;border:1px solid #d0e4f7;border-radius:7px;padding:10px 12px">' +
+        '<div style="font-size:8px;font-weight:800;color:#1a4a8a;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">🏅 Sport Translation</div>' +
+        '<div style="font-size:10px;color:#2c3e50;line-height:1.5">' + transText + '</div>' +
       '</div>';
   }
   if (!rightContent) {
-    // placeholder when no summary/translation yet
     rightContent =
-      '<div style="background:#f8f8f8;border:1px dashed #ddd;border-radius:8px;padding:20px;text-align:center;color:#bbb;font-size:12px">' +
-        'Generate coaching summary<br>in the eval to populate this section.' +
+      '<div style="background:#f8f8f8;border:1px dashed #ddd;border-radius:7px;padding:16px;text-align:center;color:#bbb;font-size:11px">' +
+        'Generate coaching summary in the eval to populate this section.' +
       '</div>';
   }
 
@@ -7146,45 +7145,47 @@ function core6PrintCard() {
     '<meta charset="utf-8">' +
     '<title>CORE 6 Eval — ' + name + '</title>' +
     '<style>' +
-      // Explicit 11×8.5 = landscape; browsers honor dimensions over keywords
-      '@page{size:11in 8.5in;margin:.4in .5in .4in .5in}' +
-      'html,body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:#fff;color:#222;width:10in}' +
-      '@media print{.no-print{display:none!important}body{padding:0}}' +
+      '@page{size:11in 8.5in;margin:.35in .45in .35in .45in}' +
+      'html,body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:#fff;color:#222}' +
+      // zoom:0.88 scales the whole page down ~12% at print time — guarantees single page fit
+      '@media print{' +
+        '.no-print{display:none!important}' +
+        'body{zoom:0.88;-webkit-print-color-adjust:exact;print-color-adjust:exact}' +
+        '.page-wrap{padding:0!important}' +
+      '}' +
       'table{border-collapse:collapse;width:100%}' +
-      'th{background:#f0f0f0;color:#555;font-size:9px;text-transform:uppercase;letter-spacing:.5px;padding:6px 10px;text-align:left}' +
+      'th{background:#f0f0f0;color:#555;font-size:9px;text-transform:uppercase;letter-spacing:.5px;padding:5px 9px;text-align:left}' +
     '</style>' +
     '</head><body>' +
 
     // Sticky toolbar (screen only)
-    '<div class="no-print" style="position:fixed;top:0;left:0;right:0;z-index:99;background:#0D1B2A;padding:9px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.3)">' +
-      '<span style="color:#8a9bb0;font-size:12px">CORE 6 · Odyssey Performance · <em>Landscape PDF</em></span>' +
-      '<button onclick="window.print()" style="background:#C9A228;border:none;color:#0D1B2A;font-weight:800;font-size:13px;padding:8px 22px;border-radius:8px;cursor:pointer">⬇ Save as PDF / Print</button>' +
+    '<div class="no-print" style="position:fixed;top:0;left:0;right:0;z-index:99;background:#0D1B2A;padding:8px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.3)">' +
+      '<span style="color:#8a9bb0;font-size:12px">CORE 6 · Odyssey Performance · Landscape</span>' +
+      '<button onclick="window.print()" style="background:#C9A228;border:none;color:#0D1B2A;font-weight:800;font-size:13px;padding:7px 20px;border-radius:8px;cursor:pointer">⬇ Save as PDF / Print</button>' +
     '</div>' +
+    '<div class="no-print" style="height:44px"></div>' +
 
-    // Page body — push content below fixed bar on screen
-    '<div style="padding-top:46px" class="no-print"></div>' +
+    // === TWO-COLUMN LANDSCAPE LAYOUT ===
+    '<div class="page-wrap" style="display:flex;gap:14px;align-items:flex-start;padding:0 2px;box-sizing:border-box">' +
 
-    // === LANDSCAPE TWO-COLUMN LAYOUT ===
-    '<div style="display:flex;gap:18px;align-items:flex-start;width:10in;box-sizing:border-box">' +
-
-      // LEFT COLUMN — header + table
-      '<div style="flex:0 0 58%;min-width:0">' +
+      // LEFT COLUMN — header + table (60%)
+      '<div style="flex:0 0 60%;min-width:0">' +
 
         // Header block
-        '<div style="background:#0D1B2A;color:#fff;padding:14px 18px;border-radius:8px;margin-bottom:14px;display:flex;align-items:flex-start;justify-content:space-between">' +
+        '<div style="background:#0D1B2A;color:#fff;padding:11px 14px;border-radius:7px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">' +
           '<div>' +
-            '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">' +
-              '<div style="font-size:22px;font-weight:900;letter-spacing:1.5px;color:#C9A228">CORE 6</div>' +
-              '<div style="background:rgba(201,162,40,.15);border:1px solid rgba(201,162,40,.3);border-radius:4px;padding:2px 8px;font-size:8px;font-weight:800;color:#C9A228;letter-spacing:1px;text-transform:uppercase">In-Session Evaluation</div>' +
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">' +
+              '<div style="font-size:20px;font-weight:900;letter-spacing:1.5px;color:#C9A228">CORE 6</div>' +
+              '<div style="background:rgba(201,162,40,.15);border:1px solid rgba(201,162,40,.3);border-radius:3px;padding:2px 7px;font-size:7px;font-weight:800;color:#C9A228;letter-spacing:1px;text-transform:uppercase">In-Session Evaluation</div>' +
             '</div>' +
-            '<div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:3px">' + name + '</div>' +
-            (metaLine ? '<div style="font-size:11px;color:#8a9bb0">' + metaLine + '</div>' : '') +
-            '<div style="font-size:9px;color:#506070;margin-top:4px">Evaluated: ' + today + ' · Odyssey Performance</div>' +
+            '<div style="font-size:16px;font-weight:800;color:#fff;margin-bottom:2px">' + name + '</div>' +
+            (metaLine ? '<div style="font-size:10px;color:#8a9bb0">' + metaLine + '</div>' : '') +
+            '<div style="font-size:8px;color:#506070;margin-top:3px">Evaluated: ' + today + ' · Odyssey Performance</div>' +
           '</div>' +
           (avg ?
-            '<div style="text-align:center;background:rgba(255,255,255,.08);border-radius:8px;padding:8px 14px;min-width:60px">' +
-              '<div style="font-size:9px;color:#8a9bb0;text-transform:uppercase;letter-spacing:.4px">Avg</div>' +
-              '<div style="font-size:28px;font-weight:900;color:' + avgColor + ';line-height:1">' + avg + '</div>' +
+            '<div style="text-align:center;background:rgba(255,255,255,.08);border-radius:7px;padding:6px 12px">' +
+              '<div style="font-size:8px;color:#8a9bb0;text-transform:uppercase;letter-spacing:.4px">Avg</div>' +
+              '<div style="font-size:26px;font-weight:900;color:' + avgColor + ';line-height:1">' + avg + '</div>' +
             '</div>'
           : '') +
         '</div>' +
@@ -7192,32 +7193,31 @@ function core6PrintCard() {
         // Scores table
         '<table>' +
           '<thead><tr>' +
-            '<th style="width:120px">Quality</th>' +
-            '<th style="width:70px;text-align:center">Score</th>' +
+            '<th style="width:110px">Quality</th>' +
+            '<th style="width:64px;text-align:center">Score</th>' +
             '<th>Observations</th>' +
           '</tr></thead>' +
           '<tbody>' + rows + '</tbody>' +
         '</table>' +
 
         // Scale legend
-        '<div style="margin-top:8px;display:flex;gap:5px;flex-wrap:wrap">' +
+        '<div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">' +
           ['1 — Needs Work','2 — Below Avg','3 — Average','4 — Above Avg','5 — Elite'].map(function(lbl,i){
             var colors=['#e74c3c','#e67e22','#f1c40f','#3498db','#2ecc71'];
-            return '<span style="background:#f8f8f8;border:1px solid #e5e5e5;border-radius:3px;padding:2px 7px;font-size:9px;color:'+colors[i]+';font-weight:700">'+lbl+'</span>';
+            return '<span style="background:#f8f8f8;border:1px solid #e5e5e5;border-radius:3px;padding:2px 6px;font-size:8px;color:'+colors[i]+';font-weight:700">'+lbl+'</span>';
           }).join('') +
         '</div>' +
 
       '</div>' + // end left col
 
-      // RIGHT COLUMN — summary / translation
-      '<div style="flex:1;min-width:0">' +
+      // RIGHT COLUMN — summary / translation / footer (40%)
+      '<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:10px">' +
         rightContent +
-        // Footer in right col bottom
-        '<div style="margin-top:auto;padding-top:12px;border-top:1px solid #eee;display:flex;justify-content:space-between">' +
-          '<div style="font-size:9px;color:#bbb">ODYSSEY PERFORMANCE · Confidential Athlete Report</div>' +
-          '<div style="font-size:9px;color:#bbb">' + today + '</div>' +
+        '<div style="margin-top:auto;padding-top:10px;border-top:1px solid #eee;display:flex;justify-content:space-between">' +
+          '<div style="font-size:8px;color:#bbb">ODYSSEY PERFORMANCE · Confidential Athlete Report</div>' +
+          '<div style="font-size:8px;color:#bbb">' + today + '</div>' +
         '</div>' +
-      '</div>' + // end right col
+      '</div>' +
 
     '</div>' + // end two-col
     '</body></html>';
