@@ -95,6 +95,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 /* ── TODAY BADGE ── */
 .today-badge{display:inline-block;background:#1a3a1a;border:1px solid #2a6a2a;color:#4af08a;font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;padding:2px 6px;border-radius:5px;margin-right:5px}
+
+/* ── TIME BLOCK ── */
+.time-row{display:flex;align-items:center;gap:10px;padding:6px 0 2px;position:relative;}
+.time-label{font-size:13px;font-weight:800;color:var(--gold);min-width:58px;flex-shrink:0;letter-spacing:.3px;}
+.time-label.no-time{color:#2a4a6a;font-size:11px;font-style:italic;}
+.time-divider{flex:1;height:1px;background:var(--border);}
+.time-set-btn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:2px 7px;font-size:10px;cursor:pointer;flex-shrink:0;}
+.time-set-btn:active{background:var(--border);}
+input[type="time"].add-time{background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:13px;width:100%;margin-top:4px;}
 </style>
 </head>
 <body>
@@ -126,6 +135,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <option value="personal">⚪</option>
     </select>
     <button class="add-submit" onclick="addTask()">+</button>
+  </div>
+  <div id="add-time-row" style="display:none;padding:4px 0 0;">
+    <input class="add-time" id="new-task-time" type="time" placeholder="Time (optional)">
   </div>
 </div>
 
@@ -220,6 +232,9 @@ function switchTab(tab) {
   ['today','priority','bank'].forEach(function(t) {
     document.getElementById('tab-'+t).classList.toggle('active', t===tab);
   });
+  // Show time picker only on Today tab
+  var timeRow = document.getElementById('add-time-row');
+  if (timeRow) timeRow.style.display = (tab === 'today') ? 'block' : 'none';
   render();
 }
 
@@ -249,6 +264,16 @@ function render() {
   content.innerHTML = html;
 }
 
+function fmt12(time24) {
+  // Convert "14:30" → "2:30 PM"
+  if (!time24) return '';
+  var parts = time24.split(':');
+  var h = parseInt(parts[0]), m = parts[1];
+  var ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return h + ':' + m + ' ' + ampm;
+}
+
 function taskCard(t, opts) {
   opts = opts || {};
   var ci = getCatInfo(t.cat);
@@ -274,13 +299,20 @@ function taskCard(t, opts) {
   }
   actions += '<button class="task-action-btn" title="Delete" onclick="event.stopPropagation();deleteTask(\''+t.id+'\')">×</button>';
 
+  // Time badge for Today view
+  var timeBadge = '';
+  if (opts.inToday) {
+    var timeStr = t.time ? fmt12(t.time) : '';
+    timeBadge = '<button class="time-set-btn" onclick="event.stopPropagation();setTaskTime(\''+t.id+'\')">'+(timeStr||'+ time')+'</button>';
+  }
+
   return '<div class="'+cls+'">' +
     '<div class="task-check" onclick="toggleTask(\''+t.id+'\')">'+
       (t.done?'✓':'')+'</div>'+
     '<div class="task-body">'+
       (isPriority&&!opts.inPriority?'<span class="priority-star">⭐</span>':'')+
       '<div class="task-text">'+esc(t.text)+'</div>'+
-      '<div class="task-meta">'+ci.emoji+' '+ci.label+'</div>'+
+      '<div class="task-meta">'+ci.emoji+' '+ci.label+(timeBadge?' &nbsp;'+timeBadge:'')+'</div>'+
     '</div>'+
     '<div class="task-actions">'+actions+'</div>'+
   '</div>';
@@ -291,27 +323,31 @@ function renderToday() {
   if (!list.length) {
     return '<div class="empty"><div class="empty-icon">☀️</div>Nothing on today\'s list yet.<br>Move tasks from the Bank or add new ones above.</div>';
   }
-  // Group by category
-  var bySection = SECTIONS.map(function(sec) {
-    var items = list.filter(function(t){ return t.cat===sec.id; });
-    return {sec:sec, items:items};
-  }).filter(function(g){ return g.items.length>0; });
 
-  return bySection.map(function(g) {
-    var sec = g.sec;
-    var isCollapsed = collapsed['today_'+sec.id];
-    var done = g.items.filter(function(t){ return t.done; }).length;
-    var hdr = '<div class="section-hdr" onclick="toggleSection(\'today_\'+\''+sec.id+'\')">' +
-      '<span class="section-emoji">'+sec.emoji+'</span>' +
-      '<span class="section-label" style="color:'+sec.color+'">'+sec.label+'</span>' +
-      '<span class="section-count">'+done+'/'+g.items.length+'</span>' +
-      '<span class="section-arrow'+(isCollapsed?' collapsed':'')+'">▾</span>' +
-      '</div>';
-    var body = '<div class="section-tasks'+(isCollapsed?' hidden':'')+'">'+
-      g.items.map(function(t){ return taskCard(t,{inToday:true}); }).join('')+
-    '</div>';
-    return '<div class="section">'+hdr+body+'</div>';
-  }).join('');
+  // Sort: timed tasks by time ASC, untimed tasks at the end
+  var timed   = list.filter(function(t){ return t.time; }).sort(function(a,b){ return a.time > b.time ? 1 : -1; });
+  var untimed = list.filter(function(t){ return !t.time; });
+  var sorted  = timed.concat(untimed);
+
+  // Render as a single chronological list, with time dividers between time slots
+  var html = '';
+  var lastTime = null;
+
+  sorted.forEach(function(t) {
+    var slotLabel = t.time ? fmt12(t.time) : null;
+    // Show a time row when the slot changes
+    if (slotLabel !== lastTime) {
+      if (slotLabel) {
+        html += '<div class="time-row"><span class="time-label">'+slotLabel+'</span><span class="time-divider"></span></div>';
+      } else {
+        html += '<div class="time-row"><span class="time-label no-time">No time set</span><span class="time-divider"></span></div>';
+      }
+      lastTime = slotLabel;
+    }
+    html += taskCard(t, {inToday:true});
+  });
+
+  return '<div class="section-tasks">'+html+'</div>';
 }
 
 function renderPriority() {
@@ -426,11 +462,19 @@ function shareStatus() {
     lines.push('');
   }
 
-  // Today
-  var tod = todayTasks();
+  // Today (sorted by time)
+  var tod = todayTasks().slice().sort(function(a,b){
+    if (a.time && b.time) return a.time > b.time ? 1 : -1;
+    if (a.time) return -1;
+    if (b.time) return 1;
+    return 0;
+  });
   if (tod.length) {
     lines.push('📋 TODAY');
-    tod.forEach(function(t){ lines.push((t.done?'[x] ':'[ ] ')+t.text); });
+    tod.forEach(function(t){
+      var prefix = t.time ? fmt12(t.time)+' — ' : '';
+      lines.push((t.done?'[x] ':'[ ] ')+prefix+t.text);
+    });
     lines.push('');
   }
 
@@ -460,8 +504,26 @@ function addTask() {
   if (!text) return;
   var id = 'u' + Date.now();
   var addToToday = (activeTab === 'today');
-  tasks.push({ id:id, cat:cat, text:text, done:false, today:addToToday });
+  var timeVal = addToToday ? (document.getElementById('new-task-time').value || null) : null;
+  tasks.push({ id:id, cat:cat, text:text, done:false, today:addToToday, time:timeVal });
   input.value = '';
+  if (document.getElementById('new-task-time')) document.getElementById('new-task-time').value = '';
+  saveTasks(); render();
+}
+
+function setTaskTime(id) {
+  var t = tasks.find(function(x){ return x.id===id; });
+  if (!t) return;
+  var cur = t.time || '';
+  // Use a native time input via prompt-style inline edit
+  var newTime = prompt('Set time for this task (or leave blank to clear):\nFormat: HH:MM (24h, e.g. 09:00 or 14:30)', cur);
+  if (newTime === null) return; // cancelled
+  newTime = newTime.trim();
+  if (newTime && !/^\d{1,2}:\d{2}$/.test(newTime)) {
+    alert('Enter time as HH:MM (e.g. 09:00 or 14:30)');
+    return;
+  }
+  t.time = newTime || null;
   saveTasks(); render();
 }
 
