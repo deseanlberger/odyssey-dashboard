@@ -4536,6 +4536,7 @@ function renderCoachProfile(a) {
     const below = vals.filter(v => higher ? v < val : v > val).length;
     return Math.round(below / vals.length * 100);
   }
+  const athleteGoals = getAthleteGoals(a.name);
   const metricsHtml = metricDefs.filter(m => a[m.key] != null).map(m => {
     const p = cpPct(m.key, a[m.key], m.higher);
     const barW = p != null ? p : 0;
@@ -4543,6 +4544,8 @@ function renderCoachProfile(a) {
     const dispVal = m.fmt ? m.fmt(a[m.key]) : a[m.key];
     const normComp = normComparison(a, m.key);
     const normHtml = normComp ? `<div style="font-size:9px;color:#6a8aa8;margin-top:2px">${normComp}</div>` : '';
+    const goal = athleteGoals[m.key];
+    const goalHtml = goal ? renderGoalProgress(a.name, m.key, a[m.key], goal.target, goal.deadline, m.higher) : '';
     return `<div class="cp-metric-row">
       <div class="cp-metric-top">
         <span class="cp-metric-name">${m.label}</span>
@@ -4551,13 +4554,28 @@ function renderCoachProfile(a) {
       ${p != null ? `<div class="cp-pbar-wrap"><div class="cp-pbar" style="width:${barW}%;background:${barCol}"></div></div>
       <div class="cp-pct-lbl">${p}th pct · ${a.gender==='F'?'female':'male'} athletes</div>` : ''}
       ${normHtml}
+      ${goalHtml}
     </div>`;
   }).join('');
 
-  const metricsSection = metricsHtml ? `<div class="cp-section">
-    <div class="cp-section-title">Performance Metrics</div>
+  const goalsSection = `<div class="cp-section">
+    <div class="cp-section-title">Performance Metrics & Goals</div>
     <div class="cp-metrics-grid">${metricsHtml}</div>
-  </div>` : '';
+    <div style="margin-top:12px;padding:12px 14px;background:#0a1520;border-radius:8px">
+      <div style="font-size:10px;color:#8a9bb0;font-weight:700;margin-bottom:6px">Set New Goal</div>
+      <select id="goal-metric-${A.indexOf(a)}" style="width:100%;background:#0d1b2a;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px;font-size:11px;margin-bottom:6px">
+        <option value="">Select metric...</option>
+        ${metricDefs.filter(m => a[m.key] != null).map(m => `<option value="${m.key}">${m.label}</option>`).join('')}
+      </select>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <input type="number" id="goal-target-new-${A.indexOf(a)}" placeholder="Target" style="background:#0d1b2a;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px;font-size:11px">
+        <input type="date" id="goal-deadline-new-${A.indexOf(a)}" style="background:#0d1b2a;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px;font-size:11px">
+      </div>
+      <button onclick="quickSaveGoal(${A.indexOf(a)})" style="width:100%;background:#C9A228;color:#fff;border:none;border-radius:6px;padding:6px;font-size:11px;font-weight:700;cursor:pointer;margin-top:6px">Save Goal</button>
+    </div>
+  </div>`;
+
+  const metricsSection = metricsHtml ? goalsSection : '';
 
   // ── Sport / Position Context ──
   const sctx = getSportContext(a);
@@ -5206,6 +5224,101 @@ function copyRecruitUrl(athleteName) {
   }).catch(() => {
     prompt('Copy this URL:', recruitUrl);
   });
+}
+
+// ═══════════════════════════════════════════════════════════
+// GOALS & TRACKING
+// ═══════════════════════════════════════════════════════════
+function getGoals() {
+  const stored = localStorage.getItem('op_goals_v1');
+  return stored ? JSON.parse(stored) : {};
+}
+
+function saveGoals(goals) {
+  localStorage.setItem('op_goals_v1', JSON.stringify(goals));
+}
+
+function getAthleteGoals(athleteName) {
+  const goals = getGoals();
+  return goals[athleteName] || {};
+}
+
+function setGoal(athleteName, metricKey, target, deadline) {
+  const goals = getGoals();
+  if (!goals[athleteName]) goals[athleteName] = {};
+  goals[athleteName][metricKey] = {
+    target: target,
+    deadline: deadline,
+    setDate: new Date().toISOString().split('T')[0]
+  };
+  saveGoals(goals);
+}
+
+function deleteGoal(athleteName, metricKey) {
+  const goals = getGoals();
+  if (goals[athleteName]) {
+    delete goals[athleteName][metricKey];
+    if (Object.keys(goals[athleteName]).length === 0) delete goals[athleteName];
+  }
+  saveGoals(goals);
+}
+
+function renderGoalSetter(athleteName, metricKey, metricLabel, currentVal, higher) {
+  return `<div style="padding:14px;background:#0a1520;border-radius:8px;margin-bottom:10px">
+    <div style="font-size:11px;color:#6a8aa8;font-weight:700;margin-bottom:8px">Set Goal: ${metricLabel}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+      <input type="number" id="goal-target-${athleteName}-${metricKey}" placeholder="Target value" style="background:#0d1b2a;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px">
+      <input type="date" id="goal-deadline-${athleteName}-${metricKey}" style="background:#0d1b2a;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px">
+    </div>
+    <button onclick="saveNewGoal('${athleteName}', '${metricKey}', '${metricLabel}', ${higher})" style="width:100%;background:#C9A228;color:#fff;border:none;border-radius:6px;padding:8px;font-size:11px;font-weight:700;cursor:pointer">Save Goal</button>
+  </div>`;
+}
+
+function saveNewGoal(athleteName, metricKey, metricLabel, higher) {
+  const target = parseFloat(document.getElementById(`goal-target-${athleteName}-${metricKey}`)?.value);
+  const deadline = document.getElementById(`goal-deadline-${athleteName}-${metricKey}`)?.value;
+
+  if (!target || !deadline) {
+    alert('Please enter target value and deadline');
+    return;
+  }
+
+  setGoal(athleteName, metricKey, target, deadline);
+  alert('Goal saved!');
+  openModal(A.findIndex(a => a.name === athleteName));
+}
+
+function renderGoalProgress(athleteName, metricKey, currentVal, targetVal, deadline, higher) {
+  const progress = Math.max(0, Math.min(100, Math.abs((currentVal - targetVal) / (currentVal - targetVal || 1)) * 100 || 0));
+  const isOnTrack = new Date() < new Date(deadline);
+  const daysLeft = Math.ceil((new Date(deadline) - new Date()) / (1000*60*60*24));
+
+  return `<div style="margin-top:8px;padding:10px;background:#0d1b2a;border-radius:6px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <span style="font-size:10px;color:#6a8aa8">Goal Progress</span>
+      <span style="font-size:10px;color:${isOnTrack?'#4caf50':'#ef5350'};font-weight:700">${Math.round(progress)}% · Due ${deadline}</span>
+    </div>
+    <div style="height:3px;background:#1e3a5f;border-radius:2px;overflow:hidden">
+      <div style="height:100%;background:${isOnTrack?'#4caf50':'#ffc107'};width:${progress}%"></div>
+    </div>
+    <div style="font-size:9px;color:#8a9bb0;margin-top:3px">${daysLeft} days remaining</div>
+  </div>`;
+}
+
+function quickSaveGoal(athleteIdx) {
+  const a = A[athleteIdx];
+  const metricKey = document.getElementById(`goal-metric-${athleteIdx}`)?.value;
+  const target = parseFloat(document.getElementById(`goal-target-new-${athleteIdx}`)?.value);
+  const deadline = document.getElementById(`goal-deadline-new-${athleteIdx}`)?.value;
+
+  if (!metricKey || !target || !deadline) {
+    alert('Please select metric, enter target, and set deadline');
+    return;
+  }
+
+  setGoal(a.name, metricKey, target, deadline);
+  alert('Goal saved!');
+  openModal(athleteIdx);
 }
 
 // INIT
