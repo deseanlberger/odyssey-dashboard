@@ -209,6 +209,22 @@ var foods      = load(LS_FOODS, [
   {id:'f14',name:'Whole Milk (1 cup)',cals:149,p:8,c:12,f:8},
 ]);
 
+// ── ONE-TIME FOOD LOG SEEDS ───────────────────────────────────
+(function seedFoodLog() {
+  var seeds = [
+    { key:'seed_20260419_ribeye', date:'2026-04-19',
+      entry:{foodId:'f11',food:'Ribeye Steak (12oz)',cals:840,p:74,c:0,f:60,qty:2} },
+  ];
+  seeds.forEach(function(s) {
+    if (localStorage.getItem(s.key)) return;
+    var day = flog.find(function(d){ return d.date===s.date; });
+    if (!day) { day={date:s.date,entries:[]}; flog.push(day); }
+    day.entries.push(s.entry);
+    save(LS_FLOG, flog);
+    localStorage.setItem(s.key,'1');
+  });
+})();
+
 var activePage = 'today';
 var activeWorkoutTab = 'log';
 var activeNutritionTab = 'log';
