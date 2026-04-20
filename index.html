@@ -395,10 +395,132 @@ select:focus{border-color:#C9A228}
   .header-title h1{font-size:17px}
 }
 
+/* Team Report Styles */
+#team-report-output {
+  font-family: Arial, sans-serif;
+}
+#team-report-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #0D1B2A;
+  gap: 16px;
+}
+#team-report-header img {
+  height: 48px;
+  width: auto;
+}
+#team-report-header-text {
+  flex: 1;
+}
+#team-report-header-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0D1B2A;
+  margin-bottom: 2px;
+}
+#team-report-header-date {
+  font-size: 11px;
+  color: #666;
+}
+.team-summary-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+  background: #f9fafb;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+.summary-stat {
+  text-align: center;
+}
+.summary-stat-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0D1B2A;
+}
+.summary-stat-label {
+  font-size: 10px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+#team-report-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+  font-size: 11px;
+}
+#team-report-table thead {
+  background: #0D1B2A;
+  color: #fff;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+#team-report-table th {
+  padding: 10px 8px;
+  text-align: left;
+  font-weight: 800;
+  border: 1px solid #0D1B2A;
+}
+#team-report-table td {
+  padding: 8px;
+  border: 1px solid #e5e7eb;
+  color: #0D1B2A;
+}
+#team-report-table tbody tr:nth-child(odd) {
+  background: #fff;
+}
+#team-report-table tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+#team-report-table tbody tr.apex-row {
+  border-left: 3px solid #C9A228;
+}
+#team-report-table tbody tr.asym-row {
+  border-left: 3px solid #ef5350;
+}
+.bucket-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.bApex { background: #FEF3C7; color: #92400e; }
+.bVelocityBias { background: #BFDBFE; color: #1e40af; }
+.bForceBias { background: #D1D5DB; color: #374151; }
+.bFoundation { background: #DBEAFE; color: #0c4a6e; }
+.bNA { background: #F3F4F6; color: #666; }
+.asym-good { color: #10b981; }
+.asym-bad { color: #ef5350; }
+.improvement-up { color: #10b981; }
+.improvement-down { color: #ef5350; }
+.readiness-ready { color: #10b981; }
+.readiness-due { color: #f59e0b; }
+.readiness-overdue { color: #ef5350; }
+#team-report-footer {
+  font-size: 9px;
+  color: #666;
+  text-align: center;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 16px;
+}
+
 @media print {
-  body > *:not(#print-card-overlay) { display: none !important; }
+  body > *:not(#print-card-overlay):not(#team-report-print-wrapper) { display: none !important; }
   #print-card-overlay { position: static !important; background: white !important; display: flex !important; }
   #print-card-content { width: 100% !important; color: #0D1B2A !important; }
+  @page { size: 11in 8.5in; margin: 0.4in; }
+  #team-report-print-wrapper { display: block !important; }
 }
 </style>
 </head>
@@ -569,6 +691,7 @@ select:focus{border-color:#C9A228}
     <button onclick="toolsSub('1rm')" id="tsub-1rm" class="tsub-btn">🏋️ 1RM</button>
     <button onclick="toolsSub('vbt')" id="tsub-vbt" class="tsub-btn">📈 VBT Zones</button>
     <button onclick="toolsSub('staff')" id="tsub-staff" class="tsub-btn tools-coach-only" style="display:none">👨‍💼 Staff</button>
+    <button onclick="toolsSub('teamreport')" id="tsub-teamreport" class="tsub-btn tools-coach-only" style="display:none">📋 Team Report</button>
     <button onclick="toolsSub('program')" id="tsub-program" class="tsub-btn tools-master-only" style="display:none">📋 Program</button>
     <button onclick="toolsSub('teamplan')" id="tsub-teamplan" class="tsub-btn tools-master-only" style="display:none">🗂️ Team Plan</button>
   </div>
@@ -758,6 +881,18 @@ select:focus{border-color:#C9A228}
   <!-- Staff panel -->
   <div id="tpanel-staff" class="tools-panel" style="display:none">
     <div id="staff-cards" style="padding:12px;display:flex;flex-direction:column;gap:12px"></div>
+  </div>
+
+  <div id="tpanel-teamreport" class="tools-panel" style="display:none">
+    <div style="padding:16px">
+      <div style="font-size:12px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Select Team</div>
+      <select id="team-report-sport" style="width:100%;background:#112233;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 12px;font-size:13px;outline:none;margin-bottom:14px">
+        <option value="">— Choose Sport —</option>
+      </select>
+      <button onclick="generateTeamReport()" style="width:100%;background:#C9A228;color:#0D1B2A;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:14px">Generate Report</button>
+      <div id="team-report-output" style="font-size:13px;color:#c0d4e8;max-height:500px;overflow-y:auto"></div>
+      <button id="team-report-print-btn" onclick="window.print()" style="width:100%;background:#2a4a6a;color:#C9A228;border:1px solid #2a4a6a;border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;margin-top:14px;display:none">🖨️ Print Report</button>
+    </div>
   </div>
 
 </div><!-- end tools inner wrapper -->
@@ -970,6 +1105,7 @@ select:focus{border-color:#C9A228}
       <div class="tools-drum-item tools-coach-only" data-tool="newathlete" style="display:none" onclick="selectTool(this)">➕ Add New Athlete</div>
       <div class="tools-drum-item tools-coach-only" data-tool="submitstats" style="display:none" onclick="selectTool(this)">📊 Submit Athlete Stats</div>
       <div class="tools-drum-item tools-coach-only" data-tool="importsession" style="display:none" onclick="selectTool(this)">📥 Import Session</div>
+      <div class="tools-drum-item tools-coach-only" data-tool="teamreport" style="display:none" onclick="selectTool(this)">📋 Team Report</div>
     </div>
     <button class="tools-launch-btn" onclick="launchTool()">Open →</button>
   </div>
@@ -1957,9 +2093,195 @@ function toolsSub(name) {
   if(panel) panel.style.display='block';
   if(name==='boards') renderLeaderboards();
   if(name==='staff') renderStaffTab();
+  if(name==='teamreport') initTeamReportSports();
 }
 function cs(y) { return y ? `Class of '${String(y).slice(2)}` : ''; }
 function bucketClass(b) { return{'Apex':'bApex','Velocity Bias':'bVelocityBias','Force Bias':'bForceBias','Foundation':'bFoundation'}[b]||'bNA'; }
+
+// =====================================================
+// TEAM REPORT
+// =====================================================
+function initTeamReportSports() {
+  const sports = [];
+  A.forEach(a => {
+    if (a.sport && !sports.includes(a.sport)) {
+      sports.push(a.sport);
+    }
+  });
+  sports.sort();
+  const select = document.getElementById('team-report-sport');
+  select.innerHTML = '<option value="">— Choose Sport —</option>' +
+    sports.map(s => `<option value="${s}">${s}</option>`).join('');
+}
+
+function teamImprovement(a) {
+  const hkey = a.name.toLowerCase().replace(/\s+/g, '_');
+  const sessions = HISTORY[hkey] || [];
+  if (sessions.length < 2) return null;
+  const keys = ['cmj_jh_in','best_rsi','best_010','squat_pp','trapbar_pp'];
+  let bestPct = null;
+  keys.forEach(k => {
+    const first = sessions.find(s => s[k] != null);
+    const cur = a[k];
+    if (!first || cur == null) return;
+    const higher = k !== 'best_010';
+    const pct = Math.round((cur - first[k]) / Math.abs(first[k]) * 100);
+    const improving = higher ? pct > 0 : pct < 0;
+    if (improving && (bestPct === null || Math.abs(pct) > Math.abs(bestPct))) bestPct = pct;
+  });
+  return bestPct;
+}
+
+function getReadiness(a) {
+  const hkey = a.name.toLowerCase().replace(/\s+/g, '_');
+  const sessions = HISTORY[hkey] || [];
+  const lastSession = sessions.length > 0 ? sessions[sessions.length - 1] : null;
+  const lastDate = lastSession ? new Date(lastSession.date) : new Date('2026-04-20');
+  const today = new Date('2026-04-20');
+  const daysSince = Math.floor((today - lastDate) / (1000 * 60 * 60 * 24));
+  if (daysSince < 45) return { status: 'Ready', icon: '🟢', css: 'readiness-ready', days: daysSince };
+  else if (daysSince < 75) return { status: 'Due Soon', icon: '🟡', css: 'readiness-due', days: daysSince };
+  else return { status: 'Overdue', icon: '🔴', css: 'readiness-overdue', days: daysSince };
+}
+
+function generateTeamReport() {
+  const sport = document.getElementById('team-report-sport').value;
+  if (!sport) { alert('Please select a sport.'); return; }
+
+  const teamAthletes = A.filter(a => a.sport === sport).sort((x, y) => {
+    const xScore = (x.cmj_jh_in || 0) + (x.best_rsi || 0) * 5;
+    const yScore = (y.cmj_jh_in || 0) + (y.best_rsi || 0) * 5;
+    return yScore - xScore;
+  });
+
+  const totalAthletes = teamAthletes.length;
+  const testedLast60 = teamAthletes.filter(a => {
+    const hkey = a.name.toLowerCase().replace(/\s+/g, '_');
+    const sessions = HISTORY[hkey] || [];
+    if (sessions.length === 0) return false;
+    const lastDate = new Date(sessions[sessions.length - 1].date);
+    const today = new Date('2026-04-20');
+    const daysSince = Math.floor((today - lastDate) / (1000 * 60 * 60 * 24));
+    return daysSince <= 60;
+  }).length;
+  const testedPct = totalAthletes > 0 ? Math.round(testedLast60 / totalAthletes * 100) : 0;
+
+  const asymCount = teamAthletes.filter(a => a.uni_asym_pct != null && a.uni_asym_pct > 15).length;
+  const eliteCount = teamAthletes.filter(a => a.bucket === 'Apex' || a.bucket === 'Elite').length;
+
+  const today = '2026-04-20';
+  const dateStr = new Date(today).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+  let html = `<div id="team-report-print-wrapper" style="background: white; color: #0D1B2A; padding: 20px; font-family: Arial, sans-serif">`;
+
+  html += `<div id="team-report-header">
+    <img src="logo.png" alt="Odyssey Logo" style="height: 48px; width: auto" onerror="this.style.display='none'">
+    <div id="team-report-header-text">
+      <div id="team-report-header-title">${sport} Performance Report</div>
+      <div id="team-report-header-date">Generated ${dateStr}</div>
+    </div>
+  </div>`;
+
+  html += `<div class="team-summary-bar">
+    <div class="summary-stat">
+      <div class="summary-stat-value">${totalAthletes}</div>
+      <div class="summary-stat-label">Total Athletes</div>
+    </div>
+    <div class="summary-stat">
+      <div class="summary-stat-value">${testedPct}%</div>
+      <div class="summary-stat-label">Tested (60d)</div>
+    </div>
+    <div class="summary-stat">
+      <div class="summary-stat-value">${asymCount}</div>
+      <div class="summary-stat-label">Asymmetry Flags</div>
+    </div>
+    <div class="summary-stat">
+      <div class="summary-stat-value">${eliteCount}</div>
+      <div class="summary-stat-label">Apex/Elite</div>
+    </div>
+  </div>`;
+
+  html += `<table id="team-report-table">
+    <thead>
+      <tr>
+        <th style="width: 3%">#</th>
+        <th style="width: 18%">Athlete</th>
+        <th style="width: 14%">Profile</th>
+        <th style="width: 8%">CMJ</th>
+        <th style="width: 8%">RSI</th>
+        <th style="width: 8%">0–10</th>
+        <th style="width: 10%">Peak Power</th>
+        <th style="width: 10%">Asymmetry</th>
+        <th style="width: 11%">Improvement</th>
+        <th style="width: 10%">Readiness</th>
+      </tr>
+    </thead>
+    <tbody>`;
+
+  teamAthletes.forEach((a, idx) => {
+    const rank = idx + 1;
+    const name = a.name;
+    const pos = a.position || '';
+    const grad = a.grad_year ? `'${String(a.grad_year).slice(2)}` : '';
+    const athleteInfo = [name, pos, grad].filter(x => x).join(' • ');
+
+    const bucket = a.bucket || 'N/A';
+    const bucketHtml = `<span class="bucket-badge ${bucketClass(bucket)}">${bucket}</span>`;
+
+    const cmj = a.cmj_jh_in != null ? a.cmj_jh_in.toFixed(1) + '"' : '—';
+    const rsi = a.best_rsi != null ? a.best_rsi.toFixed(2) : '—';
+    const accel = a.best_010 != null ? a.best_010.toFixed(2) + 's' : '—';
+
+    const pp = Math.max(
+      a.squat_pp || 0,
+      a.trapbar_pp || 0,
+      a.bench_pp || 0
+    );
+    const ppText = pp > 0 ? pp.toFixed(2) + ' W/kg' : '—';
+
+    const asymPct = a.uni_asym_pct;
+    let asymHtml = '—';
+    if (asymPct != null) {
+      const icon = asymPct > 15 ? '⚠️' : '✓';
+      const cls = asymPct > 15 ? 'asym-bad' : 'asym-good';
+      asymHtml = `<span class="${cls}">${asymPct.toFixed(1)}% ${icon}</span>`;
+    }
+
+    const improv = teamImprovement(a);
+    let improvHtml = '—';
+    if (improv != null) {
+      if (improv > 0) improvHtml = `<span class="improvement-up">▲ ${improv}%</span>`;
+      else improvHtml = `<span class="improvement-down">▼ ${Math.abs(improv)}%</span>`;
+    }
+
+    const ready = getReadiness(a);
+    const readyHtml = `<span class="${ready.css}">${ready.icon} ${ready.status}</span>`;
+
+    const isApex = bucket === 'Apex' || bucket === 'Elite';
+    const isAsym = a.uni_asym_pct != null && a.uni_asym_pct > 15;
+    const rowClass = isAsym ? 'asym-row' : (isApex ? 'apex-row' : '');
+
+    html += `<tr class="${rowClass}">
+      <td style="text-align: center">${rank}</td>
+      <td>${athleteInfo}</td>
+      <td>${bucketHtml}</td>
+      <td>${cmj}</td>
+      <td>${rsi}</td>
+      <td>${accel}</td>
+      <td>${ppText}</td>
+      <td>${asymHtml}</td>
+      <td>${improvHtml}</td>
+      <td>${readyHtml}</td>
+    </tr>`;
+  });
+
+  html += `</tbody></table>`;
+  html += `<div id="team-report-footer">Odyssey Performance · Confidential · Coach Use Only · Generated ${dateStr}</div>`;
+  html += `</div>`;
+
+  document.getElementById('team-report-output').innerHTML = html;
+  document.getElementById('team-report-print-btn').style.display = 'block';
+}
 
 // =====================================================
 // STAFF / COACH PROFILES
@@ -2086,6 +2408,7 @@ function launchTool() {
   if (_toolSel === 'newathlete') { if (!coachMode) return; openNewAth(); return; }
   if (_toolSel === 'submitstats') { if (!coachMode) return; openSubmitStats(); return; }
   if (_toolSel === 'importsession') { if (!coachMode) return; openImportSession(); return; }
+  if (_toolSel === 'teamreport') { if (!coachMode) return; navSwitch('tools'); toolsSub('teamreport'); return; }
 }
 
 // ═══════════════════════════════════════════════════════════════
