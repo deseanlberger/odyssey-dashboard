@@ -1565,7 +1565,7 @@ function renderLeaderboards() {
   h += lbSection('Squat Peak Power', '🦵', '#f04a8a', pool, 'squat_pp', ' W/kg', null, false);
   h += lbSection('Trap Bar Peak Power', '🔩', '#a078f0', pool, 'trapbar_pp', ' W/kg', null, false);
   h += lbSection('Power Clean Max', '🏅', '#ffd700', pool, 'power_clean_lbs', ' lbs',
-    function(v){ return Math.round(v*2.205)+' lbs'; }, false);
+    function(v){ return Math.round(v)+' lbs'; }, false);
   h += lbSection('RSI', '🌀', '#4a8af0', pool, 'best_rsi', '', null, false);
   out.innerHTML = h;
 }
@@ -1598,7 +1598,7 @@ function renderPublicLeaderboards() {
   h += lbSection('Squat Peak Power', '🦵', '#f04a8a', pool, 'squat_pp', ' W/kg', null, false);
   h += lbSection('Trap Bar Peak Power', '🔩', '#a078f0', pool, 'trapbar_pp', ' W/kg', null, false);
   h += lbSection('Power Clean Max', '🏅', '#ffd700', pool, 'power_clean_lbs', ' lbs',
-    function(v){ return Math.round(v*2.205)+' lbs'; }, false);
+    function(v){ return Math.round(v)+' lbs'; }, false);
   h += lbSection('RSI', '🌀', '#4a8af0', pool, 'best_rsi', '', null, false);
   out.innerHTML = h;
 }
