@@ -10,67 +10,90 @@
 <title>OP Tasks</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--gold:#C9A228;--bg:#0D1B2A;--card:#112233;--border:#1e3a5f;--text:#e6edf3;--muted:#6a8aa8;--radius:14px}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:env(safe-area-inset-bottom)}
+:root{
+  --gold:#C9A228;--bg:#0D1B2A;--card:#112233;--border:#1e3a5f;
+  --text:#e6edf3;--muted:#6a8aa8;--radius:14px;
+  --safe-top:env(safe-area-inset-top);--safe-bot:env(safe-area-inset-bottom)
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-/* HEADER */
-.header{background:linear-gradient(180deg,#0a1520,var(--bg));padding:calc(env(safe-area-inset-top) + 14px) 18px 14px;border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:100}
-.header-inner{display:flex;align-items:center;justify-content:space-between;max-width:480px;margin:0 auto}
+/* ── HEADER ── */
+.header{background:linear-gradient(180deg,#0a1520,var(--bg));padding:calc(var(--safe-top) + 14px) 18px 0;border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:100}
+.header-inner{display:flex;align-items:center;justify-content:space-between;max-width:480px;margin:0 auto;padding-bottom:10px}
 .header h1{font-size:18px;font-weight:900;letter-spacing:-.3px}
 .header h1 span{color:var(--gold)}
 .header-sub{font-size:11px;color:var(--muted);margin-top:1px}
-.clear-btn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer}
-.clear-btn:active{background:var(--border)}
 
-/* ADD TASK */
-.add-bar{padding:12px 18px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:calc(env(safe-area-inset-top) + 56px);z-index:99}
+/* ── TAB BAR ── */
+.tab-bar{display:flex;max-width:480px;margin:0 auto}
+.tab-btn{flex:1;padding:10px 4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .15s}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap{height:3px;background:var(--border);overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),#e8c060);transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+/* ── CONTENT ── */
+.content{max-width:480px;margin:0 auto;padding:16px 18px calc(var(--safe-bot) + 80px)}
+
+/* ── ADD BAR ── */
+.add-bar{padding:10px 18px;background:var(--bg);border-bottom:1px solid var(--border);position:sticky;top:calc(var(--safe-top) + 86px);z-index:99}
 .add-bar-inner{display:flex;gap:8px;max-width:480px;margin:0 auto}
-.add-input{flex:1;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:10px 14px;font-size:14px;outline:none}
+.add-input{flex:1;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 13px;font-size:14px;outline:none}
 .add-input::placeholder{color:var(--muted)}
-.add-cat{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:10px 8px;font-size:13px;outline:none;cursor:pointer}
-.add-submit{background:var(--gold);border:none;color:#0D1B2A;border-radius:10px;padding:10px 14px;font-size:16px;font-weight:800;cursor:pointer;min-width:42px}
+.add-cat{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 6px;font-size:13px;outline:none;cursor:pointer}
+.add-submit{background:var(--gold);border:none;color:#0D1B2A;border-radius:10px;padding:9px 14px;font-size:16px;font-weight:900;cursor:pointer}
 .add-submit:active{opacity:.8}
 
-/* CONTENT */
-.content{max-width:480px;margin:0 auto;padding:16px 18px 100px}
-
-/* SECTION */
-.section{margin-bottom:20px}
-.section-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer;user-select:none}
-.section-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+/* ── SECTIONS ── */
+.section{margin-bottom:18px}
+.section-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:4px 0;cursor:pointer;user-select:none}
+.section-emoji{font-size:15px}
+.section-label{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
 .section-count{font-size:10px;background:var(--border);color:var(--muted);border-radius:20px;padding:2px 7px;font-weight:700}
-.section-arrow{font-size:12px;color:var(--muted);margin-left:auto;transition:transform .2s}
+.section-arrow{font-size:11px;color:var(--muted);margin-left:auto;transition:transform .2s}
 .section-arrow.collapsed{transform:rotate(-90deg)}
-.section-tasks{display:flex;flex-direction:column;gap:6px}
+.section-tasks{display:flex;flex-direction:column;gap:5px}
 .section-tasks.hidden{display:none}
 
-/* TASK CARD */
-.task{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
-.task:active{transform:scale(.98)}
-.task.done{opacity:.45}
+/* ── TASK CARD ── */
+.task{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 13px;display:flex;align-items:flex-start;gap:11px;position:relative;overflow:hidden}
+.task:active{transform:scale(.985)}
+.task.done{opacity:.4}
 .task.done .task-text{text-decoration:line-through;color:var(--muted)}
-.task-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .2s}
+.task-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;cursor:pointer;transition:all .2s}
 .task.done .task-check{background:var(--gold);border-color:var(--gold);color:#0D1B2A;font-size:13px}
 .task-body{flex:1;min-width:0}
-.task-text{font-size:14px;line-height:1.45;color:var(--text)}
-.task-meta{font-size:11px;color:var(--muted);margin-top:3px}
-.task-del{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:#3a5a7a;font-size:18px;padding:4px;cursor:pointer;opacity:0;transition:opacity .2s}
-.task:hover .task-del{opacity:1}
+.task-text{font-size:14px;line-height:1.4;color:var(--text)}
+.task-meta{font-size:10px;color:var(--muted);margin-top:3px}
+.task-actions{display:flex;gap:4px;align-items:center;flex-shrink:0}
+.task-action-btn{background:none;border:none;color:#3a5a7a;font-size:14px;padding:3px 5px;cursor:pointer;border-radius:5px;transition:all .15s}
+.task-action-btn:hover{color:var(--gold);background:#1e3a5f}
 
-/* DONE SECTION */
-.done-toggle{width:100%;background:none;border:1px dashed var(--border);color:var(--muted);border-radius:10px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px}
-.done-toggle:active{background:var(--border)}
+/* Priority star */
+.task.priority{border-color:#b8780a}
+.task.priority .task-text{color:#fff}
+.priority-star{font-size:11px;color:#C9A228;margin-right:2px}
 
-/* EMPTY */
-.empty{text-align:center;padding:32px 20px;color:var(--muted);font-size:13px}
-.empty-icon{font-size:32px;margin-bottom:8px}
+/* ── EMPTY ── */
+.empty{text-align:center;padding:28px 20px;color:var(--muted);font-size:12px}
+.empty-icon{font-size:28px;margin-bottom:6px}
 
-/* SWIPE HINT */
-.hint{font-size:10px;color:#2a4a6a;text-align:center;padding:8px;margin-bottom:8px}
+/* ── BANK LABEL ── */
+.bank-label{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:#4a7aa8;background:#0a1825;border:1px solid #1e3a5f;border-radius:5px;padding:2px 6px;margin-bottom:4px}
 
-/* PROGRESS BAR */
-.progress-bar-wrap{height:3px;background:var(--border);border-radius:2px;margin-bottom:16px;overflow:hidden}
-.progress-bar{height:100%;background:linear-gradient(90deg,var(--gold),#e8c060);border-radius:2px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+/* ── FLOATING ADD SECTION BTN ── */
+.move-btn{font-size:11px;background:#1e3a5f;border:none;color:#6a8aa8;border-radius:6px;padding:3px 8px;cursor:pointer;font-weight:700;letter-spacing:.3px}
+.move-btn:hover{background:var(--gold);color:#0D1B2A}
+
+/* ── BOTTOM TOOLBAR ── */
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:#0a1520;border-top:1px solid var(--border);padding:10px 18px calc(var(--safe-bot) + 8px);z-index:100}
+.bottom-inner{max-width:480px;margin:0 auto;display:flex;gap:8px}
+.clear-btn{flex:1;background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:9px;font-size:11px;font-weight:700;cursor:pointer}
+.clear-btn:active{background:var(--border)}
+
+/* ── TODAY BADGE ── */
+.today-badge{display:inline-block;background:#1a3a1a;border:1px solid #2a6a2a;color:#4af08a;font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;padding:2px 6px;border-radius:5px;margin-right:5px}
 </style>
 </head>
 <body>
@@ -81,9 +104,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <h1>OP <span>Tasks</span></h1>
       <div class="header-sub" id="progress-text">Loading…</div>
     </div>
-    <button class="clear-btn" onclick="clearDone()">Clear Done</button>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('today')" id="tab-today">📋 Today</button>
+    <button class="tab-btn" onclick="switchTab('priority')" id="tab-priority">⭐ Priority</button>
+    <button class="tab-btn" onclick="switchTab('bank')" id="tab-bank">🗂 Bank</button>
   </div>
 </div>
+<div class="progress-wrap"><div class="progress-fill" id="progress-bar" style="width:0%"></div></div>
 
 <div class="add-bar">
   <div class="add-bar-inner">
@@ -100,139 +128,285 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
-<div class="content">
-  <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
-  <div id="task-list"></div>
+<div class="content" id="main-content"></div>
+
+<div class="bottom-bar">
+  <div class="bottom-inner">
+    <button class="clear-btn" onclick="clearDone()">Clear Done</button>
+    <button class="clear-btn" onclick="clearToday()">Clear Today</button>
+  </div>
 </div>
 
 <script>
-// ── DATA ────────────────────────────────────────────────────────
+// ── SECTIONS CONFIG ──────────────────────────────────────────
 const SECTIONS = [
-  { id:'meet',    emoji:'🟢', label:'Meetings',         color:'#4af08a' },
-  { id:'deep',    emoji:'🔵', label:'Deep Thinking',    color:'#4a8af0' },
-  { id:'admin',   emoji:'🟡', label:'Deep Admin',       color:'#f0c84a' },
-  { id:'multi',   emoji:'🟠', label:'Multitask Admin',  color:'#f0874a' },
-  { id:'coach',   emoji:'⚫', label:'Coaching',         color:'#888' },
-  { id:'personal',emoji:'⚪', label:'Personal / Errands',color:'#aaa' },
-  { id:'recurr',  emoji:'🔁', label:'Recurring',        color:'#7a6aa8' },
+  { id:'meet',     emoji:'🟢', label:'Meetings',          color:'#4af08a' },
+  { id:'deep',     emoji:'🔵', label:'Deep Thinking',     color:'#4a8af0' },
+  { id:'admin',    emoji:'🟡', label:'Deep Admin',        color:'#f0c84a' },
+  { id:'multi',    emoji:'🟠', label:'Multitask Admin',   color:'#f0874a' },
+  { id:'coach',    emoji:'⚫', label:'Coaching',          color:'#888' },
+  { id:'personal', emoji:'⚪', label:'Personal / Errands',color:'#aaa' },
+  { id:'recurr',   emoji:'🔁', label:'Recurring',         color:'#7a6aa8' },
 ];
 
+// ── DEFAULT TASKS ────────────────────────────────────────────
 const DEFAULT_TASKS = [
   // Meetings
-  { id:'t1',  cat:'meet',    text:'Call with Ang — Apr 20 @ 8:00 AM — Odyssey gym membership inquiry', done:false },
-  { id:'t2',  cat:'meet',    text:'Gabby (Ariz.) — THIS WEEK ONLY: Mon night training (Apr 20, 5–8 PM) + Private moved to Tuesday Apr 21', done:false },
-
+  { id:'t1',  cat:'meet',    text:'Call with Ang — Apr 20 @ 8:00 AM — Odyssey gym membership inquiry', done:false, today:true },
+  { id:'t2',  cat:'meet',    text:'Gabby (Ariz.) — THIS WEEK ONLY: Mon night training (Apr 20, 5–8 PM) + Private moved to Tuesday Apr 21', done:false, today:true },
   // Deep Thinking
-  { id:'t3',  cat:'deep',    text:"Coach's Blueprint — Weekly dedicated deep work block (recurring)", done:false },
-  { id:'t4',  cat:'deep',    text:'OP Blueprint — Deep Thinking block #1 (this week)', done:false },
-  { id:'t5',  cat:'deep',    text:'OP Blueprint — Deep Thinking block #2 (this week)', done:false },
-  { id:'t6',  cat:'deep',    text:'Develop NotebookLM programming template system (Tri-City, Volleyball Program)', done:false },
-
+  { id:'t3',  cat:'deep',    text:"Coach's Blueprint — Weekly dedicated deep work block (recurring)", done:false, today:false },
+  { id:'t4',  cat:'deep',    text:'OP Blueprint — Deep Thinking block #1 (this week)', done:false, today:true },
+  { id:'t5',  cat:'deep',    text:'OP Blueprint — Deep Thinking block #2 (this week)', done:false, today:false },
+  { id:'t6',  cat:'deep',    text:'Develop NotebookLM programming template system (Tri-City, Volleyball Program)', done:false, today:false },
   // Deep Admin
-  { id:'t7',  cat:'admin',   text:'Follow up with Peyton (Univ. of Montana Western) — volleyball program programming', done:false },
-  { id:'t8',  cat:'admin',   text:'Review & confirm ads are fully live — OVERDUE (was due Apr 19)', done:false },
-
+  { id:'t7',  cat:'admin',   text:'Follow up with Peyton (Univ. of Montana Western) — volleyball program programming', done:false, today:false },
+  { id:'t8',  cat:'admin',   text:'Review & confirm ads are fully live — OVERDUE (was due Apr 19)', done:false, today:true },
   // Multitask Admin
-  { id:'t9',  cat:'multi',   text:'Finish uploading the Summer Warrior Program', done:false },
-  { id:'t10', cat:'multi',   text:'Post Summer Warrior content + Story — due WEDNESDAY Apr 22', done:false },
-
+  { id:'t9',  cat:'multi',   text:'Finish uploading the Summer Warrior Program', done:false, today:true },
+  { id:'t10', cat:'multi',   text:'Post Summer Warrior content + Story — due WEDNESDAY Apr 22', done:false, today:false },
   // Personal
-  { id:'t11', cat:'personal',text:'Go to the grocery store', done:false },
-  { id:'t12', cat:'personal',text:'Go buy more drinks from Costco', done:false },
-
+  { id:'t11', cat:'personal',text:'Go to the grocery store', done:false, today:false },
+  { id:'t12', cat:'personal',text:'Go buy more drinks from Costco', done:false, today:false },
   // Recurring
-  { id:'r1',  cat:'recurr',  text:'Run payroll — 1st of every month', done:false },
-  { id:'r2',  cat:'recurr',  text:'Pay building rent — 1st of every month', done:false },
-  { id:'r3',  cat:'recurr',  text:'Pay home rent — 1st of every month', done:false },
-  { id:'r4',  cat:'recurr',  text:'Run payroll — 15th of every month', done:false },
+  { id:'r1',  cat:'recurr',  text:'Run payroll — 1st of every month', done:false, today:false },
+  { id:'r2',  cat:'recurr',  text:'Pay building rent — 1st of every month', done:false, today:false },
+  { id:'r3',  cat:'recurr',  text:'Pay home rent — 1st of every month', done:false, today:false },
+  { id:'r4',  cat:'recurr',  text:'Run payroll — 15th of every month', done:false, today:false },
 ];
 
-// ── STATE ────────────────────────────────────────────────────────
+// ── DEFAULT PRIORITY LIST ─────────────────────────────────────
+const DEFAULT_PRIORITY = ['t8','t1','t9']; // task IDs in priority order
+
+// ── STATE ────────────────────────────────────────────────────
 function loadTasks() {
-  try {
-    var saved = localStorage.getItem('op_tasks_v2');
-    if (saved) return JSON.parse(saved);
-  } catch(e) {}
-  return JSON.parse(JSON.stringify(DEFAULT_TASKS));
+  try { var s=localStorage.getItem('op_tasks_v3'); if(s) return JSON.parse(s); } catch(e) {}
+  return DEFAULT_TASKS.map(t=>({...t}));
 }
-function saveTasks() {
-  localStorage.setItem('op_tasks_v2', JSON.stringify(tasks));
+function saveTasks() { try { localStorage.setItem('op_tasks_v3', JSON.stringify(tasks)); } catch(e) {} }
+
+function loadPriority() {
+  try { var s=localStorage.getItem('op_priority_v3'); if(s) return JSON.parse(s); } catch(e) {}
+  return [...DEFAULT_PRIORITY];
 }
+function savePriority() { try { localStorage.setItem('op_priority_v3', JSON.stringify(priority)); } catch(e) {} }
+
 function loadCollapsed() {
-  try { return JSON.parse(localStorage.getItem('op_collapsed') || '{}'); } catch(e) { return {}; }
+  try { return JSON.parse(localStorage.getItem('op_collapsed_v3')||'{}'); } catch(e) { return {}; }
 }
-function saveCollapsed() {
-  localStorage.setItem('op_collapsed', JSON.stringify(collapsed));
-}
+function saveCollapsed() { try { localStorage.setItem('op_collapsed_v3', JSON.stringify(collapsed)); } catch(e) {} }
 
-var tasks = loadTasks();
+var tasks     = loadTasks();
+var priority  = loadPriority(); // array of task IDs
 var collapsed = loadCollapsed();
+var activeTab = 'today';
 
-// ── RENDER ───────────────────────────────────────────────────────
-function render() {
-  var container = document.getElementById('task-list');
-  var html = '';
-  var total = tasks.length, done = tasks.filter(t=>t.done).length;
+// ── HELPERS ──────────────────────────────────────────────────
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function todayTasks()    { return tasks.filter(t=>t.today && !t.beginner); }
+function bankTasks()     { return tasks.filter(t=>!t.today && !t.beginner); }
+function priorityTasks() {
+  return priority.map(id=>tasks.find(t=>t.id===id)).filter(Boolean);
+}
+function getCatInfo(cat) { return SECTIONS.find(s=>s.id===cat)||{emoji:'⚪',label:cat,color:'#aaa'}; }
 
-  SECTIONS.forEach(function(sec) {
-    var secTasks = tasks.filter(t => t.cat === sec.id);
-    if (secTasks.length === 0) return;
-    var secDone = secTasks.filter(t=>t.done).length;
-    var isCollapsed = collapsed[sec.id];
-    html += '<div class="section">';
-    html += '<div class="section-header" onclick="toggleSection(\'' + sec.id + '\')">';
-    html += '<span style="font-size:16px">' + sec.emoji + '</span>';
-    html += '<span class="section-label" style="color:' + sec.color + '">' + sec.label + '</span>';
-    html += '<span class="section-count">' + secDone + '/' + secTasks.length + '</span>';
-    html += '<span class="section-arrow' + (isCollapsed ? ' collapsed' : '') + '">▾</span>';
-    html += '</div>';
-    html += '<div class="section-tasks' + (isCollapsed ? ' hidden' : '') + '">';
-    secTasks.forEach(function(t) {
-      html += '<div class="task' + (t.done ? ' done' : '') + '" onclick="toggleTask(\'' + t.id + '\')">';
-      html += '<div class="task-check">' + (t.done ? '✓' : '') + '</div>';
-      html += '<div class="task-body"><div class="task-text">' + escHtml(t.text) + '</div></div>';
-      html += '<button class="task-del" onclick="event.stopPropagation();deleteTask(\'' + t.id + '\')">×</button>';
-      html += '</div>';
-    });
-    html += '</div></div>';
+// ── SWITCH TAB ───────────────────────────────────────────────
+function switchTab(tab) {
+  activeTab = tab;
+  ['today','priority','bank'].forEach(function(t) {
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
   });
+  render();
+}
 
-  if (html === '') {
-    html = '<div class="empty"><div class="empty-icon">✅</div>All clear — nothing pending.</div>';
+// ── RENDER ───────────────────────────────────────────────────
+function render() {
+  var content = document.getElementById('main-content');
+  var html = '';
+
+  // Progress: Today tasks
+  var todayList = todayTasks();
+  var todayDone = todayList.filter(t=>t.done).length;
+  var total     = tasks.filter(t=>!t.beginner).length;
+  var totalDone = tasks.filter(t=>!t.beginner&&t.done).length;
+  var pct       = total>0 ? Math.round(totalDone/total*100) : 0;
+  document.getElementById('progress-bar').style.width = pct+'%';
+  document.getElementById('progress-text').textContent =
+    'Today: '+todayDone+'/'+todayList.length+'  ·  Overall: '+totalDone+'/'+total+' ('+pct+'%)';
+
+  if (activeTab === 'today') {
+    html = renderToday();
+  } else if (activeTab === 'priority') {
+    html = renderPriority();
+  } else {
+    html = renderBank();
   }
 
-  container.innerHTML = html;
-
-  // Progress
-  var pct = total > 0 ? Math.round(done / total * 100) : 0;
-  document.getElementById('progress-bar').style.width = pct + '%';
-  document.getElementById('progress-text').textContent = done + ' of ' + total + ' done (' + pct + '%)';
+  content.innerHTML = html;
 }
 
-function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function taskCard(t, opts) {
+  opts = opts || {};
+  var ci = getCatInfo(t.cat);
+  var isPriority = priority.indexOf(t.id) !== -1;
+  var cls = 'task' + (t.done?' done':'') + (isPriority&&!opts.inPriority?' priority':'');
+
+  var actions = '';
+  if (!opts.inPriority) {
+    if (isPriority) {
+      actions += '<button class="task-action-btn" title="Remove from Priority" onclick="event.stopPropagation();unprioritize(\''+t.id+'\')">⭐</button>';
+    } else {
+      actions += '<button class="task-action-btn" title="Add to Priority" onclick="event.stopPropagation();prioritize(\''+t.id+'\')">☆</button>';
+    }
+  }
+  if (opts.inPriority) {
+    actions += '<button class="task-action-btn" title="Remove from Priority" onclick="event.stopPropagation();unprioritize(\''+t.id+'\')">✕</button>';
+  }
+  if (opts.inBank) {
+    actions += '<button class="task-action-btn move-btn" title="Move to Today" onclick="event.stopPropagation();moveToToday(\''+t.id+'\')">→ Today</button>';
+  }
+  if (opts.inToday && t.cat !== 'recurr') {
+    actions += '<button class="task-action-btn" title="Move back to Bank" onclick="event.stopPropagation();moveToBank(\''+t.id+'\')">⬅</button>';
+  }
+  actions += '<button class="task-action-btn" title="Delete" onclick="event.stopPropagation();deleteTask(\''+t.id+'\')">×</button>';
+
+  return '<div class="'+cls+'">' +
+    '<div class="task-check" onclick="toggleTask(\''+t.id+'\')">'+
+      (t.done?'✓':'')+'</div>'+
+    '<div class="task-body">'+
+      (isPriority&&!opts.inPriority?'<span class="priority-star">⭐</span>':'')+
+      '<div class="task-text">'+esc(t.text)+'</div>'+
+      '<div class="task-meta">'+ci.emoji+' '+ci.label+'</div>'+
+    '</div>'+
+    '<div class="task-actions">'+actions+'</div>'+
+  '</div>';
 }
 
-// ── ACTIONS ──────────────────────────────────────────────────────
+function renderToday() {
+  var list = todayTasks();
+  if (!list.length) {
+    return '<div class="empty"><div class="empty-icon">☀️</div>Nothing on today\'s list yet.<br>Move tasks from the Bank or add new ones above.</div>';
+  }
+  // Group by category
+  var bySection = SECTIONS.map(function(sec) {
+    var items = list.filter(function(t){ return t.cat===sec.id; });
+    return {sec:sec, items:items};
+  }).filter(function(g){ return g.items.length>0; });
+
+  return bySection.map(function(g) {
+    var sec = g.sec;
+    var isCollapsed = collapsed['today_'+sec.id];
+    var done = g.items.filter(function(t){ return t.done; }).length;
+    var hdr = '<div class="section-hdr" onclick="toggleSection(\'today_\'+\''+sec.id+'\')">' +
+      '<span class="section-emoji">'+sec.emoji+'</span>' +
+      '<span class="section-label" style="color:'+sec.color+'">'+sec.label+'</span>' +
+      '<span class="section-count">'+done+'/'+g.items.length+'</span>' +
+      '<span class="section-arrow'+(isCollapsed?' collapsed':'')+'">▾</span>' +
+      '</div>';
+    var body = '<div class="section-tasks'+(isCollapsed?' hidden':'')+'">'+
+      g.items.map(function(t){ return taskCard(t,{inToday:true}); }).join('')+
+    '</div>';
+    return '<div class="section">'+hdr+body+'</div>';
+  }).join('');
+}
+
+function renderPriority() {
+  var list = priorityTasks();
+  if (!list.length) {
+    return '<div class="empty"><div class="empty-icon">⭐</div>No priorities set yet.<br>Tap ☆ on any task to pin it here.</div>';
+  }
+  var html = '<div class="section">';
+  html += '<div class="section-hdr"><span class="section-emoji">⭐</span>' +
+    '<span class="section-label" style="color:var(--gold)">Top Priority</span>' +
+    '<span class="section-count">'+list.filter(t=>t.done).length+'/'+list.length+'</span></div>';
+  html += '<div class="section-tasks">'+
+    list.map(function(t){ return taskCard(t,{inPriority:true}); }).join('')+
+  '</div></div>';
+  html += '<div style="font-size:10px;color:var(--muted);text-align:center;margin-top:12px">Tap ✕ to remove from Priority · Tap ⬅ to move task back to Bank</div>';
+  return html;
+}
+
+function renderBank() {
+  var list = bankTasks();
+  if (!list.length) {
+    return '<div class="empty"><div class="empty-icon">🗂</div>Task bank is empty.</div>';
+  }
+  var bySection = SECTIONS.map(function(sec) {
+    var items = list.filter(function(t){ return t.cat===sec.id; });
+    return {sec:sec, items:items};
+  }).filter(function(g){ return g.items.length>0; });
+
+  return bySection.map(function(g) {
+    var sec = g.sec;
+    var isCollapsed = collapsed['bank_'+sec.id];
+    var done = g.items.filter(function(t){ return t.done; }).length;
+    var hdr = '<div class="section-hdr" onclick="toggleSection(\'bank_\'+\''+sec.id+'\')">' +
+      '<span class="section-emoji">'+sec.emoji+'</span>' +
+      '<span class="section-label" style="color:'+sec.color+'">'+sec.label+'</span>' +
+      '<span class="section-count">'+done+'/'+g.items.length+'</span>' +
+      '<span class="section-arrow'+(isCollapsed?' collapsed':'')+'">▾</span>' +
+      '</div>';
+    var body = '<div class="section-tasks'+(isCollapsed?' hidden':'')+'">'+
+      g.items.map(function(t){ return taskCard(t,{inBank:true}); }).join('')+
+    '</div>';
+    return '<div class="section">'+hdr+body+'</div>';
+  }).join('');
+}
+
+// ── ACTIONS ──────────────────────────────────────────────────
 function toggleTask(id) {
-  var t = tasks.find(t=>t.id===id);
+  var t = tasks.find(function(x){ return x.id===id; });
   if (t) { t.done = !t.done; saveTasks(); render(); }
 }
 
 function deleteTask(id) {
-  tasks = tasks.filter(t=>t.id!==id);
-  saveTasks(); render();
+  tasks = tasks.filter(function(t){ return t.id!==id; });
+  priority = priority.filter(function(x){ return x!==id; });
+  saveTasks(); savePriority(); render();
 }
 
-function toggleSection(id) {
-  collapsed[id] = !collapsed[id];
+function toggleSection(key) {
+  collapsed[key] = !collapsed[key];
   saveCollapsed(); render();
 }
 
+function moveToToday(id) {
+  var t = tasks.find(function(x){ return x.id===id; });
+  if (t) { t.today = true; saveTasks(); render(); }
+}
+
+function moveToBank(id) {
+  var t = tasks.find(function(x){ return x.id===id; });
+  if (t) { t.today = false; saveTasks(); render(); }
+}
+
+function prioritize(id) {
+  if (priority.indexOf(id)===-1) {
+    priority.unshift(id); // add to top
+    savePriority(); render();
+  }
+}
+
+function unprioritize(id) {
+  priority = priority.filter(function(x){ return x!==id; });
+  savePriority(); render();
+}
+
 function clearDone() {
-  if (tasks.filter(t=>t.done).length === 0) return;
+  var doneCount = tasks.filter(function(t){ return t.done; }).length;
+  if (!doneCount) return;
   if (!confirm('Remove all completed tasks?')) return;
-  tasks = tasks.filter(t=>!t.done);
+  var doneIds = tasks.filter(function(t){ return t.done; }).map(function(t){ return t.id; });
+  tasks = tasks.filter(function(t){ return !t.done; });
+  priority = priority.filter(function(id){ return doneIds.indexOf(id)===-1; });
+  saveTasks(); savePriority(); render();
+}
+
+function clearToday() {
+  if (!confirm('Move all Today tasks back to Bank?')) return;
+  tasks.forEach(function(t){ if(t.today) t.today=false; });
   saveTasks(); render();
 }
 
@@ -242,16 +416,10 @@ function addTask() {
   var text  = input.value.trim();
   if (!text) return;
   var id = 'u' + Date.now();
-  tasks.push({ id:id, cat:cat, text:text, done:false });
+  var addToToday = (activeTab === 'today');
+  tasks.push({ id:id, cat:cat, text:text, done:false, today:addToToday });
   input.value = '';
   saveTasks(); render();
-  // Expand section
-  if (collapsed[cat]) { collapsed[cat] = false; saveCollapsed(); render(); }
-  // Scroll to bottom of that section after render
-  setTimeout(function() {
-    var cards = document.querySelectorAll('.task');
-    if (cards.length) cards[cards.length-1].scrollIntoView({behavior:'smooth',block:'nearest'});
-  }, 100);
 }
 
 render();
