@@ -9,8 +9,8 @@
 <title>Odyssey Performance Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0D1B2A;color:#fff;min-height:100vh}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0D1B2A;color:#fff;min-height:100vh}}
 .header{background:linear-gradient(180deg,#0a1520 0%,#0D1B2A 100%);padding:18px 24px 14px;border-bottom:2px solid #C9A228}
 .header-top{display:flex;align-items:center;gap:14px}
 .logo-img-wrap{flex-shrink:0;background:#fff;border-radius:10px;padding:4px 8px;display:flex;align-items:center;justify-content:center;height:52px}
@@ -315,8 +315,7 @@ select:focus{border-color:#C9A228}
 .pw-cancel{background:transparent;border:none;color:#6a8aa8;font-size:13px;cursor:pointer}
 .pw-cancel:hover{color:#fff}
 .pw-error{color:#e74c3c;font-size:13px;margin-top:-6px;margin-bottom:10px;display:none}
-
-/* PROGRAM BUILDER + TEAM PLAN + NEW ATHLETE + SUBMIT STATS + IMPORT SESSION — full screen override */
+*{margin:0;padding:0;box-sizing:border-box}/* PROGRAM BUILDER + TEAM PLAN + NEW ATHLETE + SUBMIT STATS + IMPORT SESSION — full screen override */
 #pb-overlay,#teamplan-overlay,#newath-overlay,#submitstats-overlay,#import-overlay,#core6-overlay{background:#0D1B2A!important;padding:0!important;align-items:stretch!important;justify-content:stretch!important}
 #pb-overlay.open,#teamplan-overlay.open,#newath-overlay.open,#submitstats-overlay.open,#import-overlay.open,#core6-overlay.open{display:block!important;overflow-y:auto!important}
 #pb-overlay>.pb-fullscreen,#teamplan-overlay>.pb-fullscreen,#newath-overlay>.pb-fullscreen,#submitstats-overlay>.pb-fullscreen,#import-overlay>.pb-fullscreen,#core6-overlay>.pb-fullscreen{min-height:100vh;display:flex;flex-direction:column}
@@ -7152,6 +7151,11 @@ function core6PrintCard() {
         '.no-print{display:none!important}' +
         'body{zoom:0.88;-webkit-print-color-adjust:exact;print-color-adjust:exact}' +
         '.page-wrap{padding:0!important}' +
+        /* Ink saving: dark navy boxes → light gray in print */
+        '[style*="background:#0D1B2A"]{background:#f2f4f7!important;border:1px solid #b8c8d8!important}' +
+        '[style*="background:#0D1B2A"] *{color:#1a2b3c!important}' +
+        '[style*="background:#0D1B2A"] [style*="color:#C9A228"],[style*="background:#0D1B2A"] [style*="color:#c9a228"]{color:#7a5800!important}' +
+        '[style*="background:rgba(255,255,255,.08)"]{background:#e8edf2!important}' +
       '}' +
       'table{border-collapse:collapse;width:100%}' +
       'th{background:#f0f0f0;color:#555;font-size:9px;text-transform:uppercase;letter-spacing:.5px;padding:5px 9px;text-align:left}' +
