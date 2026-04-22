@@ -592,6 +592,7 @@ select:focus{border-color:#C9A228}
   <button onclick="navSwitch('tools');toolsSub('teamreport')" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">📋 Team Report</button>
   <button onclick="openSubmitStats()" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">📊 Submit Stats</button>
   <button onclick="openCore6()" style="background:#1e3a5f;border:1px solid #C9A228;color:#C9A228;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">📋 CORE 6 Eval</button>
+  <button onclick="openProfileCard()" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">📄 Profile Card</button>
 </div>
 
 <!-- ATHLETE LOOKUP TAB -->
@@ -1540,6 +1541,109 @@ CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
     <div id="tp-output"><div style="color:#3a5a7a;font-size:12px;text-align:center;padding:20px">Select output level above and tap Generate Program.</div></div>
     </div><!-- /scrollable content -->
   </div><!-- /pb-fullscreen -->
+</div>
+
+
+<!-- PROFILE CARD OVERLAY -->
+<div class="pw-overlay" id="profilecard-overlay">
+  <div class="pb-fullscreen">
+    <!-- Sticky header -->
+    <div style="position:sticky;top:0;background:#0D1B2A;z-index:20;padding:13px 16px;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;justify-content:space-between">
+      <button onclick="closeProfileCard()" style="background:none;border:none;color:#6a8aa8;font-size:15px;font-weight:700;cursor:pointer;padding:4px 0;min-width:52px;text-align:left">‹ Back</button>
+      <div style="font-size:15px;font-weight:800;color:#fff;text-align:center">📄 Profile Card Generator</div>
+      <div style="min-width:52px"></div>
+    </div>
+    <!-- Content -->
+    <div style="flex:1;overflow-y:auto;padding:20px">
+      <div class="pc-container">
+        
+        <div class="header">
+            <div class="logo-text">ODYSSEY PERFORMANCE</div>
+            <h1 class="page-title">Profile Card Generator</h1>
+            <p class="page-subtitle">Upload ForceDecks & sprint CSVs to generate a printable athlete profile</p>
+        </div>
+
+        <form id="pc-uploadForm">
+            <!-- Athlete Info Section -->
+            <div class="form-section">
+                <div class="form-section-title">Athlete Information</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="athleteName">Athlete Name</label>
+                        <input type="text" id="pc-athleteName" placeholder="First and Last Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sport">Sport</label>
+                        <select id="pc-sport" required>
+                            <option value="">Select a sport</option>
+                            <option value="Football">Football</option>
+                            <option value="Basketball">Basketball</option>
+                            <option value="Baseball">Baseball</option>
+                            <option value="Softball">Softball</option>
+                            <option value="Soccer">Soccer</option>
+                            <option value="Track & Field">Track & Field</option>
+                            <option value="Volleyball">Volleyball</option>
+                            <option value="Lacrosse">Lacrosse</option>
+                            <option value="Wrestling">Wrestling</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="position">Position</label>
+                        <input type="text" id="pc-position" placeholder="e.g., Wide Receiver, Guard">
+                    </div>
+                    <div class="form-group">
+                        <label for="gradYear">Graduation Year</label>
+                        <input type="number" id="pc-gradYear" placeholder="2027" min="2020" max="2035">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Gender</label>
+                    <div class="toggle-group">
+                        <button type="button" class="toggle-btn active" data-gender="Male">Male</button>
+                        <button type="button" class="toggle-btn" data-gender="Female">Female</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CSV Upload Section -->
+            <div class="form-section">
+                <div class="form-section-title">Upload Test Data</div>
+                <div class="csv-upload-area" id="pc-csvUploadArea">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">Drop ForceDecks CSV files here, or click to browse</div>
+                    <div class="upload-subtext">Supports CMJ, CMRJ, DJ, ISOSQT, SLJ, and Sprint tests</div>
+                </div>
+                <input type="file" id="pc-csvFileInput" accept=".csv" multiple>
+                <div class="uploaded-files" id="pc-uploadedFilesContainer" style="display: none;">
+                    <div class="uploaded-files-title">Uploaded Files</div>
+                    <div id="pc-uploadedFilesList"></div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary" id="pc-generateBtn" disabled>
+                    Generate Profile Card →
+                </button>
+            </div>
+        </form>
+    
+        
+        <div class="card-toolbar">
+            <button class="toolbar-btn" id="pc-backBtn">← New Profile</button>
+            <button class="toolbar-btn" id="pc-printBtn">🖨️ Print / Save as PDF</button>
+        </div>
+
+        <div class="profile-card" id="pc-profileCard">
+            <!-- Card content will be generated here -->
+        </div>
+    
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- COACH LOGIN OVERLAY -->
@@ -7261,7 +7365,730 @@ function core6PrintCard() {
       '}' +
       'table{border-collapse:collapse;width:100%}' +
       'th{background:#f0f0f0;color:#555;font-size:9px;text-transform:uppercase;letter-spacing:.5px;padding:5px 9px;text-align:left}' +
-    '</style>' +
+    '
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0D1B2A 0%, #1A2F47 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .pc-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .pc-screen {
+            display: none;
+        }
+
+        .pc-screen.pc-active {
+            display: block;
+        }
+
+        /* ============ UPLOAD SCREEN ============ */
+        .pc-upload-screen {
+            background: linear-gradient(135deg, #0D1B2A 0%, #1A2F47 100%);
+            border-radius: 12px;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: #C9A228;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .page-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: #a0a8b8;
+            margin-bottom: 30px;
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+        }
+
+        .form-section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #C9A228;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-grid.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #c0c8d8;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px;
+            border: 1px solid #2a3f5a;
+            border-radius: 6px;
+            background: #0D1B2A;
+            color: #fff;
+            font-size: 14px;
+            font-family: 'Roboto', sans-serif;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #C9A228;
+            box-shadow: 0 0 0 3px rgba(201, 162, 40, 0.1);
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #2a3f5a;
+            border-radius: 6px;
+            background: #0D1B2A;
+            color: #a0a8b8;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .toggle-btn.pc-active {
+            background: #C9A228;
+            color: #0D1B2A;
+            border-color: #C9A228;
+        }
+
+        /* ============ CSV UPLOAD AREA ============ */
+        .csv-upload-area {
+            border: 2px dashed #C9A228;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(201, 162, 40, 0.05);
+        }
+
+        .csv-upload-area:hover {
+            background: rgba(201, 162, 40, 0.1);
+            border-color: #d4b840;
+        }
+
+        .csv-upload-area.drag-over {
+            background: rgba(201, 162, 40, 0.15);
+            border-color: #d4b840;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            font-size: 14px;
+            color: #c0c8d8;
+            margin-bottom: 5px;
+        }
+
+        .upload-subtext {
+            font-size: 12px;
+            color: #a0a8b8;
+        }
+
+        #csvFileInput {
+            display: none;
+        }
+
+        .uploaded-files {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #2a3f5a;
+        }
+
+        .uploaded-files-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #C9A228;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .file-item {
+            background: rgba(201, 162, 40, 0.08);
+            border-left: 3px solid #C9A228;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .file-name {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .file-tests {
+            color: #a0a8b8;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .file-remove {
+            cursor: pointer;
+            color: #a0a8b8;
+            font-size: 18px;
+            transition: color 0.2s;
+        }
+
+        .file-remove:hover {
+            color: #ff6b6b;
+        }
+
+        .test-badge {
+            display: inline-block;
+            background: #C9A228;
+            color: #0D1B2A;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-right: 6px;
+            margin-top: 4px;
+        }
+
+        .test-badge.warning {
+            background: #ff922b;
+        }
+
+        /* ============ BUTTONS ============ */
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #C9A228;
+            color: #0D1B2A;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #d4b840;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(201, 162, 40, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #2a3f5a;
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background: #3d5273;
+            transform: translateY(-2px);
+        }
+
+        /* ============ PROFILE CARD SCREEN ============ */
+        .pc-card-screen {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-toolbar {
+            background: #0D1B2A;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a3f5a;
+        }
+
+        .toolbar-btn {
+            background: none;
+            border: none;
+            color: #C9A228;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+            padding: 8px 12px;
+        }
+
+        .toolbar-btn:hover {
+            color: #d4b840;
+        }
+
+        .profile-card {
+            background: #fff;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid #C9A228;
+        }
+
+        .card-header-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            color: #C9A228;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .card-header-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .athlete-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 42px;
+            font-weight: 800;
+            color: #0D1B2A;
+            margin-bottom: 10px;
+        }
+
+        .athlete-meta {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: inline-block;
+        }
+
+        .meta-item:not(:last-child)::after {
+            content: '|';
+            margin-left: 8px;
+            color: #C9A228;
+        }
+
+        .athlete-bw {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* ============ KEY METRICS ============ */
+        .metrics-section {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #C9A228;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .metric {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .metric-value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #0D1B2A;
+        }
+
+        .metric-unit {
+            font-size: 14px;
+            color: #999;
+            margin-top: -3px;
+        }
+
+        /* ============ UNILATERAL ANALYSIS ============ */
+        .unilateral-section {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .unilateral-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #0D1B2A;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .bar-chart {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            align-items: flex-end;
+        }
+
+        .bar-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .bar {
+            width: 100%;
+            background: #0D1B2A;
+            border-radius: 4px 4px 0 0;
+            margin-bottom: 10px;
+            min-height: 20px;
+            position: relative;
+        }
+
+        .bar-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #0D1B2A;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .bar-value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #0D1B2A;
+            margin-top: 5px;
+        }
+
+        .asymmetry-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+        }
+
+        .badge-green {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-yellow {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-red {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .asymmetry-note {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #666;
+            margin-top: 15px;
+            padding: 12px;
+            background: #fff;
+            border-left: 3px solid #C9A228;
+            border-radius: 4px;
+        }
+
+        /* ============ STRENGTHS & WEAKNESSES ============ */
+        .sw-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .sw-box {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .sw-box-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            color: #0D1B2A;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .sw-item {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .sw-item::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #C9A228;
+            font-weight: 700;
+        }
+
+        /* ============ ATHLETE TIER ============ */
+        .tier-section {
+            background: linear-gradient(135deg, #0D1B2A 0%, #1A2F47 100%);
+            color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            margin-left: -40px;
+            margin-right: -40px;
+            padding-left: 40px;
+            padding-right: 40px;
+        }
+
+        .tier-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            color: #C9A228;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .tier-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #C9A228;
+            margin-bottom: 8px;
+        }
+
+        .tier-description {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #e0e8f0;
+        }
+
+        /* ============ FOOTER ============ */
+        .card-footer {
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            margin-top: 30px;
+            font-size: 11px;
+            color: #999;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        .signature-line {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #0D1B2A;
+            font-size: 11px;
+            color: #0D1B2A;
+        }
+
+        /* ============ PRINT STYLES ============ */
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+
+            .pc-container {
+                max-width: 100%;
+                margin: 0;
+            }
+
+            .pc-screen {
+                display: none !important;
+            }
+
+            .pc-card-screen.pc-active {
+                display: block !important;
+            }
+
+            .pc-card-screen {
+                box-shadow: none;
+                border-radius: 0;
+                max-width: 100%;
+            }
+
+            .card-toolbar {
+                display: none !important;
+            }
+
+            .profile-card {
+                padding: 40px;
+                max-width: 100%;
+                page-break-after: avoid;
+            }
+
+            .card-header {
+                page-break-after: avoid;
+            }
+
+            .metrics-section {
+                page-break-inside: avoid;
+            }
+
+            .unilateral-section {
+                page-break-inside: avoid;
+            }
+
+            .sw-grid {
+                page-break-inside: avoid;
+            }
+
+            .tier-section {
+                page-break-inside: avoid;
+            }
+
+            * {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        /* ============ EMPTY STATE ============ */
+        .empty-metrics {
+            padding: 30px;
+            text-align: center;
+            color: #999;
+            background: #f9f9f9;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+    
+
+/* ============ PROFILE CARD OVERLAY ============ */
+#profilecard-overlay{display:none}
+#profilecard-overlay.open{display:block!important;overflow-y:auto!important}
+#profilecard-overlay>.pb-fullscreen{min-height:100vh;display:flex;flex-direction:column}
+.pc-container{max-width:900px;margin:0 auto}
+
+</style>' +
     '</head><body>' +
 
     // Sticky toolbar (screen only)
@@ -7360,6 +8187,705 @@ function init() {
   render();
 }
 init();
+
+
+function openProfileCard() {
+  const overlay = document.getElementById('profilecard-overlay');
+  if(overlay) overlay.classList.add('open');
+}
+function closeProfileCard() {
+  const overlay = document.getElementById('profilecard-overlay');
+  if(overlay) overlay.classList.remove('open');
+  const uploadScreen = document.querySelector('#profilecard-overlay .pc-upload-screen');
+  const cardScreen = document.querySelector('#profilecard-overlay .pc-card-screen');
+  if(uploadScreen) uploadScreen.classList.add('pc-active');
+  if(cardScreen) cardScreen.classList.remove('pc-active');
+}
+
+
+        // ============ STATE MANAGEMENT ============
+        const state = {
+            athleteInfo: {},
+            csvData: [],
+            uploadedFiles: {},
+            selectedGender: 'Male'
+        };
+
+        // ============ DOM ELEMENTS ============
+        const uploadScreen = document.querySelector('.pc-upload-screen');
+        const cardScreen = document.querySelector('.pc-card-screen');
+        const uploadForm = document.getElementById('uploadForm');
+        const athleteNameInput = document.getElementById('athleteName');
+        const sportInput = document.getElementById('sport');
+        const positionInput = document.getElementById('position');
+        const gradYearInput = document.getElementById('gradYear');
+        const csvUploadArea = document.getElementById('csvUploadArea');
+        const csvFileInput = document.getElementById('csvFileInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const uploadedFilesContainer = document.getElementById('uploadedFilesContainer');
+        const uploadedFilesList = document.getElementById('uploadedFilesList');
+        const backBtn = document.getElementById('backBtn');
+        const printBtn = document.getElementById('printBtn');
+        const profileCard = document.getElementById('profileCard');
+        const genderToggles = document.querySelectorAll('[data-gender]');
+
+        // ============ EVENT LISTENERS ============
+        uploadForm.addEventListener('submit', pc_handleFormSubmit);
+        csvUploadArea.addEventListener('click', () => csvFileInput.click());
+        csvUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            csvUploadArea.classList.add('drag-over');
+        });
+        csvUploadArea.addEventListener('dragleave', () => {
+            csvUploadArea.classList.remove('drag-over');
+        });
+        csvUploadArea.addEventListener('drop', pc_handleFileDrop);
+        csvFileInput.addEventListener('change', pc_handleFileSelect);
+        backBtn.addEventListener('click', pc_goBackToUpload);
+        printBtn.addEventListener('click', () => window.print());
+        genderToggles.forEach(btn => {
+            btn.addEventListener('click', pc_handleGenderToggle);
+        });
+
+        // ============ FILE HANDLING ============
+        function pc_handleFileDrop(e) {
+            e.preventDefault();
+            csvUploadArea.classList.remove('drag-over');
+            const files = Array.from(e.dataTransfer.files);
+            pc_processFiles(files);
+        }
+
+        function pc_handleFileSelect(e) {
+            const files = Array.from(e.target.files);
+            pc_processFiles(files);
+        }
+
+        function pc_processFiles(files) {
+            files.forEach(file => {
+                if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const csv = e.target.result;
+                        const parsed = pc_parseCSV(csv);
+                        const testTypes = pc_detectTestTypes(parsed);
+                        state.uploadedFiles[file.name] = {
+                            data: parsed,
+                            testTypes: testTypes
+                        };
+                        pc_updateUploadedFilesList();
+                        pc_extractAthleteInfo(parsed);
+                        pc_updateGenerateButton();
+                    };
+                    reader.readAsText(file);
+                }
+            });
+        }
+
+        // ============ CSV PARSING ============
+        function pc_parseCSV(csv) {
+            const lines = csv.trim().split('\n');
+            if (lines.length < 2) return [];
+
+            const headers = pc_parseCSVLine(lines[0]);
+            const rows = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const values = pc_parseCSVLine(lines[i]);
+                if (values.length === 0) continue;
+
+                const row = {};
+                headers.forEach((header, idx) => {
+                    row[header] = values[idx] || '';
+                });
+                rows.push(row);
+            }
+
+            return rows;
+        }
+
+        function pc_parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let insideQuotes = false;
+
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                const nextChar = line[i + 1];
+
+                if (char === '"') {
+                    if (insideQuotes && nextChar === '"') {
+                        current += '"';
+                        i++;
+                    } else {
+                        insideQuotes = !insideQuotes;
+                    }
+                } else if (char === ',' && !insideQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+
+            result.push(current.trim());
+            return result;
+        }
+
+        // ============ TEST TYPE DETECTION ============
+        function pc_detectTestTypes(rows) {
+            const testTypes = new Set();
+            rows.forEach(row => {
+                if (row['Test Type']) {
+                    testTypes.add(row['Test Type']);
+                } else if (row['Exercise Name']) {
+                    testTypes.add('Sprint');
+                }
+            });
+            return Array.from(testTypes);
+        }
+
+        function pc_extractAthleteInfo(rows) {
+            rows.forEach(row => {
+                if (row['Name'] && !athleteNameInput.value) {
+                    athleteNameInput.value = row['Name'];
+                }
+                if (row['BW [KG]'] && !state.athleteInfo.bodyWeight) {
+                    state.athleteInfo.bodyWeight = Math.round(parseFloat(row['BW [KG]']) * 2.20462);
+                }
+            });
+        }
+
+        // ============ UI UPDATES ============
+        function pc_updateUploadedFilesList() {
+            const files = Object.keys(state.uploadedFiles);
+            uploadedFilesList.innerHTML = '';
+
+            files.forEach(fileName => {
+                const { testTypes } = state.uploadedFiles[fileName];
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div>
+                        <div class="file-name">✓ ${fileName}</div>
+                        <div class="file-tests">
+                            ${testTypes.map(t => `<span class="test-badge">${t}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="file-remove" onclick="pc_removeFile('${fileName}')">×</div>
+                `;
+                uploadedFilesList.appendChild(fileItem);
+            });
+
+            uploadedFilesContainer.style.display = files.length > 0 ? 'block' : 'none';
+        }
+
+        function pc_removeFile(fileName) {
+            delete state.uploadedFiles[fileName];
+            pc_updateUploadedFilesList();
+            pc_updateGenerateButton();
+        }
+
+        function pc_updateGenerateButton() {
+            const hasFiles = Object.keys(state.uploadedFiles).length > 0;
+            const hasAthlete = athleteNameInput.value.trim() !== '';
+            const hasSport = sportInput.value !== '';
+            generateBtn.disabled = !(hasFiles && hasAthlete && hasSport);
+        }
+
+        function pc_handleGenderToggle(e) {
+            e.preventDefault();
+            genderToggles.forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            state.selectedGender = e.target.dataset.gender;
+        }
+
+        // ============ FORM SUBMISSION ============
+        function pc_handleFormSubmit(e) {
+            e.preventDefault();
+
+            // Collect athlete info
+            state.athleteInfo = {
+                name: athleteNameInput.value,
+                sport: sportInput.value,
+                position: positionInput.value || 'N/A',
+                gradYear: gradYearInput.value || new Date().getFullYear() + 1,
+                gender: state.selectedGender,
+                bodyWeight: state.athleteInfo.bodyWeight || null
+            };
+
+            // Parse all test data
+            state.csvData = [];
+            Object.values(state.uploadedFiles).forEach(file => {
+                state.csvData = state.csvData.concat(file.data);
+            });
+
+            // Generate profile card
+            pc_generateProfileCard();
+
+            // Switch screens
+            uploadScreen.classList.remove('active');
+            cardScreen.classList.add('active');
+        }
+
+        // ============ DATA EXTRACTION ============
+        function pc_extractTestData() {
+            const testData = {
+                assessmentDate: null,
+                cmj: {},
+                cmrj: {},
+                dj: {},
+                isosqt: {},
+                slj: {},
+                sprint: {}
+            };
+
+            state.csvData.forEach(row => {
+                const testType = row['Test Type'] || '';
+                const date = row['Date'];
+
+                // Update assessment date
+                if (date && !testData.assessmentDate) {
+                    testData.assessmentDate = pc_formatDate(date);
+                }
+
+                // CMJ
+                if (testType === 'CMJ') {
+                    if (!testData.cmj.power_bm && row['Peak Power / BM [W/kg]']) {
+                        testData.cmj.power_bm = parseFloat(row['Peak Power / BM [W/kg]']).toFixed(1);
+                    }
+                    if (!testData.cmj.rsi && row['RSI-modified [m/s]']) {
+                        testData.cmj.rsi = parseFloat(row['RSI-modified [m/s]']).toFixed(2);
+                    }
+                    if (!testData.cmj.height && row['Jump Height (Flight Time) in Inches [in]']) {
+                        testData.cmj.height = parseFloat(row['Jump Height (Flight Time) in Inches [in]']).toFixed(1);
+                    }
+                }
+
+                // CMRJ
+                if (testType === 'CMRJ') {
+                    if (!testData.cmrj.landing_asym && row['Peak Drop Landing Force % (Asym) (%)']) {
+                        const asym = row['Peak Drop Landing Force % (Asym) (%)'];
+                        const match = asym.match(/(\d+\.?\d*)\s*([RL])/);
+                        if (match) {
+                            testData.cmrj.landing_asym = parseFloat(match[1]).toFixed(1);
+                            testData.cmrj.asym_side = match[2];
+                        }
+                    }
+                }
+
+                // DJ
+                if (testType === 'DJ') {
+                    if (!testData.dj.contact && row['Contact Time [s]']) {
+                        testData.dj.contact = parseFloat(row['Contact Time [s]']).toFixed(3);
+                    }
+                    if (!testData.dj.rsi && row['RSI (Flight Time/Contact Time)']) {
+                        testData.dj.rsi = parseFloat(row['RSI (Flight Time/Contact Time)']).toFixed(2);
+                    }
+                    if (!testData.dj.height && row['Jump Height (Imp-Mom) in Inches [in]']) {
+                        testData.dj.height = parseFloat(row['Jump Height (Imp-Mom) in Inches [in]']).toFixed(1);
+                    }
+                }
+
+                // ISOSQT
+                if (testType === 'ISOSQT') {
+                    if (!testData.isosqt.force_bm && row['Peak Vertical Force / BM [N/kg]']) {
+                        testData.isosqt.force_bm = parseFloat(row['Peak Vertical Force / BM [N/kg]']).toFixed(1);
+                    }
+                    if (!testData.isosqt.rfd && row['RFD - 200ms [N/s]']) {
+                        testData.isosqt.rfd = parseFloat(row['RFD - 200ms [N/s]']).toFixed(0);
+                    }
+                }
+
+                // SLJ
+                if (testType === 'SLJ') {
+                    if (!testData.slj.height_l && row['Jump Height (Imp-Mom) [cm] (L)']) {
+                        testData.slj.height_l = parseFloat(row['Jump Height (Imp-Mom) [cm] (L)']) * 0.3937;
+                        testData.slj.height_l = testData.slj.height_l.toFixed(1);
+                    }
+                    if (!testData.slj.height_r && row['Jump Height (Imp-Mom) [cm] (R)']) {
+                        testData.slj.height_r = parseFloat(row['Jump Height (Imp-Mom) [cm] (R)']) * 0.3937;
+                        testData.slj.height_r = testData.slj.height_r.toFixed(1);
+                    }
+                    if (!testData.slj.asym_pct && row['Jump Height (Imp-Mom) [cm] (Asym)(%)']) {
+                        const asym = row['Jump Height (Imp-Mom) [cm] (Asym)(%)'];
+                        const match = asym.match(/(\d+\.?\d*)\s*([RL])/);
+                        if (match) {
+                            testData.slj.asym_pct = parseFloat(match[1]).toFixed(1);
+                            testData.slj.dominant = match[2];
+                        }
+                    }
+                    if (!testData.slj.rsi_l && row['RSI-modified [m/s] (L)']) {
+                        testData.slj.rsi_l = parseFloat(row['RSI-modified [m/s] (L)']).toFixed(2);
+                    }
+                    if (!testData.slj.rsi_r && row['RSI-modified [m/s] (R)']) {
+                        testData.slj.rsi_r = parseFloat(row['RSI-modified [m/s] (R)']).toFixed(2);
+                    }
+                }
+
+                // Sprint
+                if (row['Exercise Name'] && row['Time (s)']) {
+                    const exerciseName = row['Exercise Name'];
+                    const time = parseFloat(row['Time (s)']);
+                    if (!testData.sprint.time || time < testData.sprint.time) {
+                        testData.sprint.time = time.toFixed(2);
+                        testData.sprint.exercise = exerciseName;
+                    }
+                }
+            });
+
+            return testData;
+        }
+
+        function pc_formatDate(dateStr) {
+            try {
+                const parts = dateStr.split('/');
+                if (parts.length === 3) {
+                    const date = new Date(parts[2], parts[0] - 1, parts[1]);
+                    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                }
+            } catch (e) {}
+            return dateStr;
+        }
+
+        // ============ PROFILE CARD GENERATION ============
+        function pc_generateProfileCard() {
+            const testData = pc_extractTestData();
+            const athleteInfo = state.athleteInfo;
+
+            let html = `
+                <div class="card-header">
+                    <div class="card-header-logo">ODYSSEY PERFORMANCE</div>
+                    <div class="card-header-title">Athlete Performance Profile</div>
+                    <div class="athlete-name">${athleteInfo.name}</div>
+                    <div class="athlete-meta">
+                        <span class="meta-item">${athleteInfo.sport}</span>
+                        <span class="meta-item">${athleteInfo.position}</span>
+                        <span class="meta-item">Class of ${athleteInfo.gradYear}</span>
+                        <span class="meta-item">${athleteInfo.gender}</span>
+                        <span class="meta-item">Assessed: ${testData.assessmentDate || 'Today'}</span>
+                    </div>
+                    ${athleteInfo.bodyWeight ? `<div class="athlete-bw">${athleteInfo.bodyWeight} lbs</div>` : ''}
+                </div>
+            `;
+
+            // Key Metrics Section
+            const metrics = pc_buildMetricsSection(testData);
+            if (metrics) {
+                html += `
+                    <div class="metrics-section">
+                        <div class="section-title">Key Metrics</div>
+                        <div class="metrics-grid">
+                            ${metrics}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Unilateral Analysis
+            if (testData.slj.height_l && testData.slj.height_r) {
+                html += pc_buildUnilateralSection(testData, athleteInfo);
+            }
+
+            // Strengths & Weaknesses
+            const strengths = pc_buildStrengthsWeaknesses(testData);
+            if (strengths) {
+                html += strengths;
+            }
+
+            // Athlete Tier
+            const tier = pc_buildAthleteeTier(testData);
+            if (tier) {
+                html += tier;
+            }
+
+            // Footer
+            html += `
+                <div class="card-footer">
+                    <div>Assessment conducted at Odyssey Performance · Suite N, 2055 Thibodo Rd · North County San Diego</div>
+                    <div>Date of assessment: ${testData.assessmentDate || 'Today'}</div>
+                    <div class="signature-line">Next Steps: _____________________________________________________________________</div>
+                </div>
+            `;
+
+            profileCard.innerHTML = html;
+        }
+
+        function pc_buildMetricsSection(testData) {
+            let html = '';
+
+            if (testData.cmj.height) {
+                html += `
+                    <div class="metric">
+                        <div class="metric-label">Explosive Jump Height</div>
+                        <div class="metric-value">${testData.cmj.height}<span class="metric-unit">"</span></div>
+                    </div>
+                `;
+            }
+
+            if (testData.cmj.rsi) {
+                html += `
+                    <div class="metric">
+                        <div class="metric-label">Reactive Strength Index</div>
+                        <div class="metric-value">${testData.cmj.rsi}</div>
+                    </div>
+                `;
+            }
+
+            if (testData.cmj.power_bm) {
+                html += `
+                    <div class="metric">
+                        <div class="metric-label">Jump Power Output</div>
+                        <div class="metric-value">${testData.cmj.power_bm}<span class="metric-unit">W/kg</span></div>
+                    </div>
+                `;
+            }
+
+            if (testData.dj.height) {
+                html += `
+                    <div class="metric">
+                        <div class="metric-label">Drop Jump Height</div>
+                        <div class="metric-value">${testData.dj.height}<span class="metric-unit">"</span></div>
+                    </div>
+                `;
+            }
+
+            if (testData.dj.contact) {
+                html += `
+                    <div class="metric">
+                        <div class="metric-label">Ground Contact Time</div>
+                        <div class="metric-value">${testData.dj.contact}<span class="metric-unit">s</span></div>
+                    </div>
+                `;
+            }
+
+            if (testData.dj.rsi) {
+                html += `
+                    <div class="metric">
+                        <div class="metric-label">Drop Jump Reactivity</div>
+                        <div class="metric-value">${testData.dj.rsi}</div>
+                    </div>
+                `;
+            }
+
+            if (testData.isosqt.force_bm) {
+                html += `
+                    <div class="metric">
+                        <div class="metric-label">Maximal Strength Output</div>
+                        <div class="metric-value">${testData.isosqt.force_bm}<span class="metric-unit">N/kg</span></div>
+                    </div>
+                `;
+            }
+
+            if (testData.isosqt.rfd) {
+                html += `
+                    <div class="metric">
+                        <div class="metric-label">Rate of Force Development</div>
+                        <div class="metric-value">${testData.isosqt.rfd}<span class="metric-unit">N/s</span></div>
+                    </div>
+                `;
+            }
+
+            if (testData.sprint.time) {
+                html += `
+                    <div class="metric">
+                        <div class="metric-label">${testData.sprint.exercise || 'Sprint Time'}</div>
+                        <div class="metric-value">${testData.sprint.time}<span class="metric-unit">s</span></div>
+                    </div>
+                `;
+            }
+
+            return html || '';
+        }
+
+        function pc_buildUnilateralSection(testData, athleteInfo) {
+            const leftHeight = parseFloat(testData.slj.height_l);
+            const rightHeight = parseFloat(testData.slj.height_r);
+            const maxHeight = Math.max(leftHeight, rightHeight);
+            const leftPercent = (leftHeight / maxHeight) * 100;
+            const rightPercent = (rightHeight / maxHeight) * 100;
+            const asymPct = parseFloat(testData.slj.asym_pct) || 0;
+
+            let badgeClass = 'badge-green';
+            let badgeText = '✓ Balanced';
+            if (asymPct > 20) {
+                badgeClass = 'badge-red';
+                badgeText = '⚠ Critical Imbalance';
+            } else if (asymPct > 10) {
+                badgeClass = 'badge-yellow';
+                badgeText = '⚠ Mild Imbalance';
+            }
+
+            const dominantLeg = testData.slj.dominant === 'R' ? 'right' : 'left';
+            const weakerPercent = (asymPct).toFixed(1);
+
+            return `
+                <div class="unilateral-section">
+                    <div class="unilateral-title">Left vs. Right Leg Comparison</div>
+                    <div class="asymmetry-badge ${badgeClass}">${badgeText} (${asymPct}%)</div>
+                    <div class="bar-chart">
+                        <div class="bar-column">
+                            <div class="bar" style="height: ${leftPercent}%"></div>
+                            <div class="bar-label">Left</div>
+                            <div class="bar-value">${testData.slj.height_l}"</div>
+                        </div>
+                        <div class="bar-column">
+                            <div class="bar" style="height: ${rightPercent}%"></div>
+                            <div class="bar-label">Right</div>
+                            <div class="bar-value">${testData.slj.height_r}"</div>
+                        </div>
+                    </div>
+                    <div class="asymmetry-note">
+                        ${athleteInfo.name}'s ${dominantLeg} leg produces ${weakerPercent}% more force than the other. This imbalance increases injury risk and limits athletic potential. Priority: unilateral correction work.
+                    </div>
+                </div>
+            `;
+        }
+
+        function pc_buildStrengthsWeaknesses(testData) {
+            const strengths = [];
+            const weaknesses = [];
+
+            // Strengths
+            if (testData.cmj.height && parseFloat(testData.cmj.height) > 18) {
+                strengths.push('High explosive jump output');
+            }
+            if (testData.cmj.rsi && parseFloat(testData.cmj.rsi) > 0.9) {
+                strengths.push('Excellent reactive strength');
+            }
+            if (testData.isosqt.force_bm && parseFloat(testData.isosqt.force_bm) > 40) {
+                strengths.push('High absolute strength capacity');
+            }
+            if (testData.sprint.time && parseFloat(testData.sprint.time) < 6.0) {
+                strengths.push('Above-average linear speed');
+            }
+
+            // Weaknesses
+            if (testData.cmj.rsi && parseFloat(testData.cmj.rsi) < 0.6) {
+                weaknesses.push('Reactive power development needed');
+            }
+            if (testData.dj.contact && parseFloat(testData.dj.contact) > 0.35) {
+                weaknesses.push('Ground contact time could be reduced');
+            }
+            if (testData.slj.asym_pct && parseFloat(testData.slj.asym_pct) > 15) {
+                weaknesses.push('Critical unilateral imbalance requiring correction');
+            }
+            if (!testData.isosqt.force_bm || parseFloat(testData.isosqt.force_bm) < 30) {
+                weaknesses.push('Building absolute strength foundation');
+            }
+
+            if (strengths.length === 0 && weaknesses.length === 0) {
+                return '';
+            }
+
+            let html = '<div class="sw-grid">';
+
+            if (strengths.length > 0) {
+                html += '<div class="sw-box"><div class="sw-box-title">Strengths</div>';
+                strengths.forEach(s => {
+                    html += `<div class="sw-item">${s}</div>`;
+                });
+                html += '</div>';
+            }
+
+            if (weaknesses.length > 0) {
+                html += '<div class="sw-box"><div class="sw-box-title">Development Areas</div>';
+                weaknesses.forEach(w => {
+                    html += `<div class="sw-item">${w}</div>`;
+                });
+                html += '</div>';
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        function pc_buildAthleteeTier(testData) {
+            // Calculate DSI (Displacement-Strength Index) if we have the data
+            let tier = null;
+            let tierName = null;
+            let tierDesc = null;
+
+            // Simple heuristic: compare power output to strength
+            if (testData.cmj.power_bm && testData.isosqt.force_bm) {
+                const power = parseFloat(testData.cmj.power_bm);
+                const strength = parseFloat(testData.isosqt.force_bm);
+                const ratio = power / strength;
+
+                if (ratio < 0.15) {
+                    tierName = 'Diesel';
+                    tierDesc = 'High strength, low ballistic output. Priority: closing the force-velocity gap through power development and Olympic lift variations.';
+                } else if (ratio > 0.60) {
+                    tierName = 'Rocket';
+                    tierDesc = 'High ballistic output relative to strength. Priority: building absolute force foundation to sustain and amplify power production.';
+                } else {
+                    tierName = 'Balanced';
+                    tierDesc = 'Well-balanced force-velocity profile. Priority: developing both qualities simultaneously with periodized training emphasis.';
+                }
+            } else if (testData.cmj.power_bm) {
+                tierName = 'Explosive Athlete';
+                tierDesc = 'Strong ballistic qualities. Continue developing power expression and rate of force development.';
+            } else if (testData.isosqt.force_bm) {
+                tierName = 'Strength Foundation';
+                tierDesc = 'Solid strength base established. Focus on converting strength into dynamic athletic power.';
+            }
+
+            if (!tierName) {
+                return '';
+            }
+
+            return `
+                <div class="tier-section">
+                    <div class="tier-label">Athlete Profile</div>
+                    <div class="tier-name">${tierName}</div>
+                    <div class="tier-description">${tierDesc}</div>
+                </div>
+            `;
+        }
+
+        // ============ NAVIGATION ============
+        function pc_goBackToUpload() {
+            cardScreen.classList.remove('active');
+            uploadScreen.classList.add('active');
+            csvFileInput.value = '';
+        }
+
+        // ============ INITIALIZATION ============
+        athleteNameInput.addEventListener('change', pc_updateGenerateButton);
+        sportInput.addEventListener('change', pc_updateGenerateButton);
+    
+
+
+// Initialize Profile Card Generator when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  const pcUploadForm = document.getElementById('pc-uploadForm');
+  if(pcUploadForm) {
+    pcUploadForm.addEventListener('submit', pc_handleFormSubmit);
+  }
+  const pcCsvUploadArea = document.getElementById('pc-csvUploadArea');
+  if(pcCsvUploadArea) {
+    pcCsvUploadArea.addEventListener('click', function() {
+      const input = document.getElementById('pc-csvFileInput');
+      if(input) input.click();
+    });
+    pcCsvUploadArea.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      this.classList.add('drag-over');
+    });
+    pcCsvUploadArea.addEventListener('dragleave', function() {
+      this.classList.remove('drag-over');
+    });
+    pcCsvUploadArea.addEventListener('drop', pc_handleFileDrop);
+  }
+  const pcCsvFileInput = document.getElementById('pc-csvFileInput');
+  if(pcCsvFileInput) {
+    pcCsvFileInput.addEventListener('change', pc_handleFileSelect);
+  }
+  const pcAthleteNameInput = document.getElementById('pc-athleteName');
+  const pcSportInput = document.getElementById('pc-sport');
+  if(pcAthleteNameInput) pcAthleteNameInput.addEventListener('change', pc_updateGenerateButton);
+  if(pcSportInput) pcSportInput.addEventListener('change', pc_updateGenerateButton);
+});
+
 </script>
 </body>
 </html>
