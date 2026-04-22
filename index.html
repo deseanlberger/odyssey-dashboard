@@ -8198,8 +8198,8 @@ function closeProfileCard() {
   if(overlay) overlay.classList.remove('open');
   const uploadScreen = document.querySelector('#profilecard-overlay .pc-upload-screen');
   const cardScreen = document.querySelector('#profilecard-overlay .pc-card-screen');
-  if(uploadScreen) uploadScreen.classList.add('pc-active');
-  if(cardScreen) cardScreen.classList.remove('pc-active');
+  if(uploadScreen) pcUploadScreen.classList.add('pc-active');
+  if(cardScreen) pcCardScreen.classList.remove('pc-active');
 }
 
 
@@ -8212,22 +8212,22 @@ function closeProfileCard() {
         };
 
         // ============ DOM ELEMENTS ============
-        const uploadScreen = document.querySelector('.pc-upload-screen');
-        const cardScreen = document.querySelector('.pc-card-screen');
-        const uploadForm = document.getElementById('uploadForm');
-        const athleteNameInput = document.getElementById('athleteName');
-        const sportInput = document.getElementById('sport');
-        const positionInput = document.getElementById('position');
-        const gradYearInput = document.getElementById('gradYear');
-        const csvUploadArea = document.getElementById('csvUploadArea');
-        const csvFileInput = document.getElementById('csvFileInput');
-        const generateBtn = document.getElementById('generateBtn');
-        const uploadedFilesContainer = document.getElementById('uploadedFilesContainer');
-        const uploadedFilesList = document.getElementById('uploadedFilesList');
-        const backBtn = document.getElementById('backBtn');
-        const printBtn = document.getElementById('printBtn');
-        const profileCard = document.getElementById('profileCard');
-        const genderToggles = document.querySelectorAll('[data-gender]');
+        const pcUploadScreen = document.querySelector('.pc-upload-screen');
+        const pcCardScreen = document.querySelector('.pc-card-screen');
+        const uploadForm = document.getElementById('pc-uploadForm');
+        const athleteNameInput = document.getElementById('pc-athleteName');
+        const sportInput = document.getElementById('pc-sport');
+        const positionInput = document.getElementById('pc-position');
+        const gradYearInput = document.getElementById('pc-gradYear');
+        const csvUploadArea = document.getElementById('pc-csvUploadArea');
+        const csvFileInput = document.getElementById('pc-csvFileInput');
+        const generateBtn = document.getElementById('pc-generateBtn');
+        const uploadedFilesContainer = document.getElementById('pc-uploadedFilesContainer');
+        const uploadedFilesList = document.getElementById('pc-uploadedFilesList');
+        const backBtn = document.getElementById('pc-backBtn');
+        const printBtn = document.getElementById('pc-printBtn');
+        const profileCard = document.getElementById('pc-profileCard');
+        const genderToggles = document.querySelectorAll('#profilecard-overlay [data-gender]');
 
         // ============ EVENT LISTENERS ============
         uploadForm.addEventListener('submit', pc_handleFormSubmit);
