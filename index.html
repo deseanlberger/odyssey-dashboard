@@ -8635,8 +8635,11 @@ function closeProfileCard() {
             // AI Insights section
             html += `
                 <div id="pc-aiInsightsContainer"></div>
-                <div style="text-align:center;margin:20px 0 10px;">
+                <div style="text-align:center;margin:20px 0 4px;">
                     <button id="pc-aiInsightsBtn" onclick="pc_generateAIInsights()" style="background:#0D1B2A;border:2px solid #C9A228;color:#C9A228;padding:12px 28px;border-radius:6px;font-size:13px;font-weight:700;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:1px;cursor:pointer;">✦ Generate AI Coaching Insights</button>
+                </div>
+                <div style="text-align:center;margin-bottom:16px;">
+                    <span onclick="pc_resetApiKey()" style="font-size:11px;color:#aaa;cursor:pointer;text-decoration:underline;">Reset API Key</span>
                 </div>
             `;
 
@@ -8885,6 +8888,11 @@ function pc_getStoredKey() {
 function pc_saveKey(k) {
     try { localStorage.setItem('op_coaching_key', k); } catch(e) {}
 }
+function pc_resetApiKey() {
+    pc_saveKey('');
+    const container = document.getElementById('pc-aiInsightsContainer');
+    if (container) container.innerHTML = `<div style="color:#C9A228;padding:12px;font-size:13px;">API key cleared. Click Generate to enter a new one.</div>`;
+}
 
 async function pc_generateAIInsights() {
     const btn = document.getElementById('pc-aiInsightsBtn');
@@ -8975,7 +8983,9 @@ Write only the coaching insight. No headers, no bullet points, no intro phrase l
             btn.textContent = '✦ Generate AI Coaching Insights';
         }
     } catch(err) {
-        container.innerHTML = `<div style="color:#e05050;padding:12px;font-size:13px;">Connection error. Check your internet and try again.</div>`;
+        // Clear stored key so they can re-enter on next attempt
+        pc_saveKey('');
+        container.innerHTML = `<div style="color:#e05050;padding:12px;font-size:13px;line-height:1.5;">Connection error — stored key cleared. Click the button again to re-enter your API key.<br><span style="color:#888;font-size:11px;">Error: ${err.message}</span></div>`;
         btn.textContent = '✦ Generate AI Coaching Insights';
     }
 
