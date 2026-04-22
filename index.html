@@ -8559,7 +8559,7 @@ function closeProfileCard() {
                 dj: {},
                 isosqt: {},
                 slj: {},
-                sprint: {}
+                sprint: { t010: null, t2030: null, time: null, exercise: null }
             };
 
             state.csvData.forEach(row => {
@@ -8645,13 +8645,26 @@ function closeProfileCard() {
                     }
                 }
 
-                // Sprint
+                // Sprint — Output Hub format (Exercise Name + Time (s))
                 if (row['Exercise Name'] && row['Time (s)']) {
                     const exerciseName = row['Exercise Name'];
                     const time = parseFloat(row['Time (s)']);
-                    if (!testData.sprint.time || time < testData.sprint.time) {
-                        testData.sprint.time = time.toFixed(2);
-                        testData.sprint.exercise = exerciseName;
+                    if (!isNaN(time) && time > 0) {
+                        const eName = exerciseName.toLowerCase();
+                        if (eName.includes('0-10') || eName.includes('acceleration')) {
+                            if (!testData.sprint.t010 || time < parseFloat(testData.sprint.t010)) {
+                                testData.sprint.t010 = time.toFixed(3);
+                            }
+                        } else if (eName.includes('20-30') || eName.includes('fly')) {
+                            if (!testData.sprint.t2030 || time < parseFloat(testData.sprint.t2030)) {
+                                testData.sprint.t2030 = time.toFixed(3);
+                            }
+                        } else {
+                            if (!testData.sprint.time || time < parseFloat(testData.sprint.time)) {
+                                testData.sprint.time = time.toFixed(2);
+                                testData.sprint.exercise = exerciseName;
+                            }
+                        }
                     }
                 }
             });
@@ -8755,63 +8768,64 @@ function closeProfileCard() {
         }
 
         function pc_buildMetricsSection(testData) {
-            let html = '';
-
+            const gender = state.athleteInfo.gender === 'Male' ? 'M' : 'F';
+            const pool = (typeof A !== 'undefined') ? A.filter(function(a){ return a.gender === gender && !a.beginner; }) : [];
+            function pcPct(val, key, higher) {
+                if (val == null || !pool.length) return null;
+                var vals = pool.map(function(a){ return a[key]; }).filter(function(v){ return v != null && !isNaN(v) && v > 0; });
+                if (vals.length < 3) return null;
+                var cnt = vals.filter(function(v){ return higher ? v < val : v > val; }).length;
+                return Math.round((cnt / vals.length) * 100);
+            }
+            function pctCol(p) {
+                if (p >= 80) return '#4CAF50'; if (p >= 60) return '#8BC34A';
+                if (p >= 40) return '#FFC107'; if (p >= 20) return '#FF5722'; return '#F44336';
+            }
+            function pctLbl(p) {
+                if (p >= 90) return 'Elite'; if (p >= 75) return 'Excellent'; if (p >= 60) return 'Above Avg';
+                if (p >= 40) return 'Average'; if (p >= 25) return 'Below Avg'; return 'Developing';
+            }
+            function mCard(label, value, unit, pct) {
+                var col = pct != null ? pctCol(pct) : '#6a8aa8';
+                var bar = pct != null
+                    ? '<div style="font-size:11px;color:'+col+';font-weight:700;margin-top:5px">'+pct+'th percentile &middot; <span style="font-weight:400;color:#a0bbd4">'+pctLbl(pct)+'</span></div><div style="height:4px;background:#1e3a5f;border-radius:2px;margin-top:4px"><div style="height:100%;width:'+pct+'%;background:'+col+';border-radius:2px"></div></div>'
+                    : '<div style="font-size:10px;color:#4a6a8a;margin-top:4px;font-style:italic">Value recorded</div>';
+                return '<div class="pc-metric"><div class="pc-metric-label">'+label+'</div><div class="pc-metric-value">'+value+'<span class="pc-metric-unit">'+unit+'</span></div>'+bar+'</div>';
+            }
+            var html = '';
             if (testData.cmj.height) {
-                html += `<div class="pc-metric">
-                    <div class="pc-metric-label">CMJ Jump Height</div>
-                    <div class="pc-metric-value">${testData.cmj.height}<span class="pc-metric-unit">"</span></div>
-                </div>`;
+                html += mCard('CMJ Jump Height', testData.cmj.height, '"', pcPct(parseFloat(testData.cmj.height), 'cmj_jh_in', true));
             }
             if (testData.cmj.rsi) {
-                html += `<div class="pc-metric">
-                    <div class="pc-metric-label">RSI-Modified</div>
-                    <div class="pc-metric-value">${testData.cmj.rsi}<span class="pc-metric-unit">m/s</span></div>
-                </div>`;
+                html += mCard('RSI-Modified', testData.cmj.rsi, '', pcPct(parseFloat(testData.cmj.rsi), 'best_rsi', true));
             }
             if (testData.cmj.power_bm) {
-                html += `<div class="pc-metric">
-                    <div class="pc-metric-label">Peak Power / BM</div>
-                    <div class="pc-metric-value">${testData.cmj.power_bm}<span class="pc-metric-unit">W/kg</span></div>
-                </div>`;
+                html += mCard('Peak Power / BM', testData.cmj.power_bm, 'W/kg', pcPct(parseFloat(testData.cmj.power_bm), 'cmj_power_bm', true));
             }
             if (testData.dj.height) {
-                html += `<div class="pc-metric">
-                    <div class="pc-metric-label">Drop Jump Height</div>
-                    <div class="pc-metric-value">${testData.dj.height}<span class="pc-metric-unit">"</span></div>
-                </div>`;
+                html += mCard('Drop Jump Height', testData.dj.height, '"', null);
             }
             if (testData.dj.contact) {
-                html += `<div class="pc-metric">
-                    <div class="pc-metric-label">Ground Contact Time</div>
-                    <div class="pc-metric-value">${testData.dj.contact}<span class="pc-metric-unit">s</span></div>
-                </div>`;
+                html += mCard('Ground Contact Time', testData.dj.contact, 's', null);
             }
             if (testData.dj.rsi) {
-                html += `<div class="pc-metric">
-                    <div class="pc-metric-label">DJ Reactivity (RSI)</div>
-                    <div class="pc-metric-value">${testData.dj.rsi}</div>
-                </div>`;
+                html += mCard('DJ Reactivity (RSI)', testData.dj.rsi, '', pcPct(parseFloat(testData.dj.rsi), 'best_rsi', true));
             }
             if (testData.isosqt.force_bm) {
-                html += `<div class="pc-metric">
-                    <div class="pc-metric-label">Peak Isometric Force / BM</div>
-                    <div class="pc-metric-value">${testData.isosqt.force_bm}<span class="pc-metric-unit">N/kg</span></div>
-                </div>`;
+                html += mCard('Peak Isometric Force / BM', testData.isosqt.force_bm, 'N/kg', pcPct(parseFloat(testData.isosqt.force_bm), 'iso_force_bm', true));
             }
             if (testData.isosqt.rfd) {
-                html += `<div class="pc-metric">
-                    <div class="pc-metric-label">Rate of Force Dev (200ms)</div>
-                    <div class="pc-metric-value">${testData.isosqt.rfd}<span class="pc-metric-unit">N/s</span></div>
-                </div>`;
+                html += mCard('Rate of Force Dev (200ms)', testData.isosqt.rfd, 'N/s', null);
             }
-            if (testData.sprint.time) {
-                html += `<div class="pc-metric">
-                    <div class="pc-metric-label">${testData.sprint.exercise || 'Sprint'}</div>
-                    <div class="pc-metric-value">${testData.sprint.time}<span class="pc-metric-unit">s</span></div>
-                </div>`;
+            if (testData.sprint.t010) {
+                html += mCard('0–10 Acceleration', testData.sprint.t010, 's', pcPct(parseFloat(testData.sprint.t010), 'best_010', false));
             }
-
+            if (testData.sprint.t2030) {
+                html += mCard('20–30 Fly', testData.sprint.t2030, 's', pcPct(parseFloat(testData.sprint.t2030), 'best_2030', false));
+            }
+            if (testData.sprint.time && !testData.sprint.t010 && !testData.sprint.t2030) {
+                html += mCard(testData.sprint.exercise || 'Sprint', testData.sprint.time, 's', null);
+            }
             return html || '';
         }
 
@@ -8860,35 +8874,39 @@ function closeProfileCard() {
         }
 
         function pc_buildStrengthsWeaknesses(testData) {
+            const gender = state.athleteInfo.gender === 'Male' ? 'M' : 'F';
+            const pool = (typeof A !== 'undefined') ? A.filter(function(a){ return a.gender === gender && !a.beginner; }) : [];
+            function swPct(val, key, higher) {
+                if (val == null || !pool.length) return null;
+                var vals = pool.map(function(a){ return a[key]; }).filter(function(v){ return v != null && !isNaN(v) && v > 0; });
+                if (vals.length < 3) return null;
+                var cnt = vals.filter(function(v){ return higher ? v < val : v > val; }).length;
+                return Math.round((cnt / vals.length) * 100);
+            }
             const strengths = [];
             const weaknesses = [];
-
-            // Strengths
-            if (testData.cmj.height && parseFloat(testData.cmj.height) > 18) {
-                strengths.push('High explosive jump output');
-            }
-            if (testData.cmj.rsi && parseFloat(testData.cmj.rsi) > 0.9) {
-                strengths.push('Excellent reactive strength');
-            }
-            if (testData.isosqt.force_bm && parseFloat(testData.isosqt.force_bm) > 40) {
-                strengths.push('High absolute strength capacity');
-            }
-            if (testData.sprint.time && parseFloat(testData.sprint.time) < 6.0) {
-                strengths.push('Above-average linear speed');
-            }
-
-            // Weaknesses
-            if (testData.cmj.rsi && parseFloat(testData.cmj.rsi) < 0.6) {
-                weaknesses.push('Reactive power development needed');
+            // Percentile-based strengths
+            var cmjP = testData.cmj.height ? swPct(parseFloat(testData.cmj.height), 'cmj_jh_in', true) : null;
+            if (cmjP != null && cmjP >= 70) strengths.push('CMJ height ' + cmjP + 'th percentile — strong explosive output');
+            else if (cmjP != null && cmjP < 40) weaknesses.push('CMJ height ' + cmjP + 'th percentile — reactive power development priority');
+            var rsiP = testData.cmj.rsi ? swPct(parseFloat(testData.cmj.rsi), 'best_rsi', true) : null;
+            if (rsiP != null && rsiP >= 70) strengths.push('RSI ' + rsiP + 'th percentile — excellent reactive strength');
+            else if (rsiP != null && rsiP < 40) weaknesses.push('RSI ' + rsiP + 'th percentile — elastic quality development needed');
+            var isoP = testData.isosqt.force_bm ? swPct(parseFloat(testData.isosqt.force_bm), 'iso_force_bm', true) : null;
+            if (isoP != null && isoP >= 70) strengths.push('Isometric force ' + isoP + 'th percentile — high strength base');
+            else if (isoP != null && isoP < 40) weaknesses.push('Isometric force ' + isoP + 'th percentile — strength floor needs development');
+            var t010P = testData.sprint.t010 ? swPct(parseFloat(testData.sprint.t010), 'best_010', false) : null;
+            if (t010P != null && t010P >= 70) strengths.push('0–10 at ' + t010P + 'th percentile — elite first-step quickness');
+            else if (t010P != null && t010P < 40) weaknesses.push('0–10 at ' + t010P + 'th percentile — drive phase mechanics priority');
+            var t2030P = testData.sprint.t2030 ? swPct(parseFloat(testData.sprint.t2030), 'best_2030', false) : null;
+            if (t2030P != null && t2030P >= 70) strengths.push('20–30 fly at ' + t2030P + 'th percentile — above-average top-end velocity');
+            else if (t2030P != null && t2030P < 40) weaknesses.push('20–30 fly at ' + t2030P + 'th percentile — max velocity development needed');
+            // Asymmetry always flagged if significant
+            if (testData.slj.asym_pct && parseFloat(testData.slj.asym_pct) > 15) {
+                weaknesses.push(testData.slj.asym_pct + '% unilateral imbalance — critical correction priority');
             }
             if (testData.dj.contact && parseFloat(testData.dj.contact) > 0.35) {
-                weaknesses.push('Ground contact time could be reduced');
-            }
-            if (testData.slj.asym_pct && parseFloat(testData.slj.asym_pct) > 15) {
-                weaknesses.push('Critical unilateral imbalance requiring correction');
-            }
-            if (!testData.isosqt.force_bm || parseFloat(testData.isosqt.force_bm) < 30) {
-                weaknesses.push('Building absolute strength foundation');
+                weaknesses.push('Ground contact time ' + testData.dj.contact + 's — stiffness work indicated');
             }
 
             if (strengths.length === 0 && weaknesses.length === 0) {
