@@ -8632,6 +8632,14 @@ function closeProfileCard() {
                 </div>`;
             }
 
+            // AI Insights section
+            html += `
+                <div id="pc-aiInsightsContainer"></div>
+                <div style="text-align:center;margin:20px 0 10px;">
+                    <button id="pc-aiInsightsBtn" onclick="pc_generateAIInsights()" style="background:#0D1B2A;border:2px solid #C9A228;color:#C9A228;padding:12px 28px;border-radius:6px;font-size:13px;font-weight:700;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:1px;cursor:pointer;">✦ Generate AI Coaching Insights</button>
+                </div>
+            `;
+
             // Footer
             html += `
                 <div class="pc-card-footer">
@@ -8642,6 +8650,8 @@ function closeProfileCard() {
             `;
 
             profileCard.innerHTML = html;
+            window._pcLastTestData = testData;
+            window._pcLastAthleteInfo = state.athleteInfo;
         }
 
         function pc_buildMetricsSection(testData) {
@@ -8864,6 +8874,113 @@ function closeProfileCard() {
 
 
 // Profile Card Generator initialized via global-scope event listeners above
+
+// ============ AI COACHING INSIGHTS ============
+// Key is stored in localStorage on your device — never in the code or on GitHub.
+// First time: you'll be prompted to enter it. It's saved for all future sessions.
+
+function pc_getStoredKey() {
+    try { return localStorage.getItem('op_coaching_key') || ''; } catch(e) { return ''; }
+}
+function pc_saveKey(k) {
+    try { localStorage.setItem('op_coaching_key', k); } catch(e) {}
+}
+
+async function pc_generateAIInsights() {
+    const btn = document.getElementById('pc-aiInsightsBtn');
+    const container = document.getElementById('pc-aiInsightsContainer');
+    if (!btn || !container) return;
+
+    // Check for stored key
+    let apiKey = pc_getStoredKey();
+    if (!apiKey) {
+        apiKey = prompt('Enter your Anthropic API key to enable AI insights.\nIt will be saved on this device only — never uploaded anywhere.', '');
+        if (!apiKey || !apiKey.startsWith('sk-')) {
+            container.innerHTML = `<div style="color:#e05050;padding:12px;font-size:13px;">No valid API key entered. Key must start with "sk-".</div>`;
+            return;
+        }
+        pc_saveKey(apiKey.trim());
+    }
+
+    const testData = window._pcLastTestData;
+    const athleteInfo = window._pcLastAthleteInfo;
+    if (!testData || !athleteInfo) return;
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Analyzing...';
+    container.innerHTML = `<div style="background:#f8f9fa;border-left:4px solid #C9A228;padding:18px 20px;margin:20px 0;border-radius:0 8px 8px 0;color:#888;font-style:italic;font-size:14px;">Claude is reading the data...</div>`;
+
+    let metricsText = `Athlete: ${athleteInfo.name}
+Sport: ${athleteInfo.sport}
+Position: ${athleteInfo.position || 'N/A'}
+Gender: ${athleteInfo.gender}
+Grad Year: ${athleteInfo.gradYear}
+
+Test Results:`;
+    if (testData.cmj.height)      metricsText += `\nCMJ Jump Height: ${testData.cmj.height}"`;
+    if (testData.cmj.rsi)         metricsText += `\nCMJ RSI-Modified: ${testData.cmj.rsi} m/s`;
+    if (testData.cmj.power_bm)    metricsText += `\nCMJ Peak Power/BM: ${testData.cmj.power_bm} W/kg`;
+    if (testData.dj.height)       metricsText += `\nDrop Jump Height: ${testData.dj.height}"`;
+    if (testData.dj.contact)      metricsText += `\nGround Contact Time: ${testData.dj.contact}s`;
+    if (testData.dj.rsi)          metricsText += `\nDJ RSI: ${testData.dj.rsi}`;
+    if (testData.isosqt.force_bm) metricsText += `\nIsometric Peak Force/BM: ${testData.isosqt.force_bm} N/kg`;
+    if (testData.isosqt.rfd)      metricsText += `\nRFD (200ms): ${testData.isosqt.rfd} N/s`;
+    if (testData.slj.height_l)    metricsText += `\nSingle Leg Jump (Left): ${testData.slj.height_l}"`;
+    if (testData.slj.height_r)    metricsText += `\nSingle Leg Jump (Right): ${testData.slj.height_r}"`;
+    if (testData.slj.asym_pct)    metricsText += `\nUnilateral Asymmetry: ${testData.slj.asym_pct}% (${testData.slj.dominant==='R'?'Right':'Left'} dominant)`;
+    if (testData.sprint.time)     metricsText += `\nSprint (${testData.sprint.exercise}): ${testData.sprint.time}s`;
+
+    try {
+        const resp = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': apiKey,
+                'anthropic-version': '2023-06-01',
+                'anthropic-dangerous-allow-browser': 'true'
+            },
+            body: JSON.stringify({
+                model: 'claude-haiku-4-5-20251001',
+                max_tokens: 350,
+                messages: [{
+                    role: 'user',
+                    content: `You are a high-performance S&C coach at Odyssey Performance, a private athletic development facility in North County San Diego. You use the Triphasic Training model and VBT to develop high school athletes.
+
+Write a 3–4 sentence coaching insight for this athlete's printed profile card based on their force plate and sprint data. Be specific to the numbers. Use precise coaching terminology (RSI, RFD, DSI, force-velocity gap, GCT, etc.). Close with one clear priority action item for their next training block. Tone: confident, direct, data-driven — like you're handing this to the athlete and their parents.
+
+${metricsText}
+
+Write only the coaching insight. No headers, no bullet points, no intro phrase like "Based on your data..."`
+                }]
+            })
+        });
+
+        const data = await resp.json();
+
+        if (data.content && data.content[0] && data.content[0].text) {
+            container.innerHTML = `
+                <div style="background:#f8f9fa;border-left:4px solid #C9A228;padding:20px;margin:20px 0;border-radius:0 8px 8px 0;">
+                    <div style="font-size:10px;font-weight:800;color:#C9A228;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;">✦ Coaching Insight — Odyssey Performance</div>
+                    <div style="font-size:13px;color:#1a1a2e;line-height:1.75;font-family:'Georgia',serif;">${data.content[0].text}</div>
+                </div>`;
+            btn.textContent = '✦ Regenerate';
+        } else if (data.error) {
+            // Invalid key — clear it so they can re-enter
+            if (data.error.type === 'authentication_error') {
+                pc_saveKey('');
+                container.innerHTML = `<div style="color:#e05050;padding:12px;font-size:13px;">Invalid API key. It has been cleared — click Generate again to re-enter it.</div>`;
+            } else {
+                container.innerHTML = `<div style="color:#e05050;padding:12px;font-size:13px;">API error: ${data.error.message}</div>`;
+            }
+            btn.textContent = '✦ Generate AI Coaching Insights';
+        }
+    } catch(err) {
+        container.innerHTML = `<div style="color:#e05050;padding:12px;font-size:13px;">Connection error. Check your internet and try again.</div>`;
+        btn.textContent = '✦ Generate AI Coaching Insights';
+    }
+
+    btn.disabled = false;
+}
 
 </script>
 </body>
