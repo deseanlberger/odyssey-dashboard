@@ -1483,6 +1483,7 @@ select:focus{border-color:#C9A228}
     <button onclick="toolsSub('forty')" id="tsub-forty" class="tsub-btn">🏃 40-Yard</button>
     <button onclick="toolsSub('1rm')" id="tsub-1rm" class="tsub-btn">🏋️ 1RM</button>
     <button onclick="toolsSub('vbt')" id="tsub-vbt" class="tsub-btn">📈 VBT Zones</button>
+    <button onclick="toolsSub('quickcard')" id="tsub-quickcard" class="tsub-btn">📋 Quick Card</button>
     <button onclick="toolsSub('staff')" id="tsub-staff" class="tsub-btn tools-coach-only" style="display:none">👨‍💼 Staff</button>
     <button onclick="toolsSub('teamreport')" id="tsub-teamreport" class="tsub-btn tools-coach-only" style="display:none">📋 Team Report</button>
     <button onclick="toolsSub('program')" id="tsub-program" class="tsub-btn tools-master-only" style="display:none">📋 Program</button>
@@ -1668,6 +1669,48 @@ select:focus{border-color:#C9A228}
       </div>
     </div>
   </div>
+  </div>
+
+  <!-- Quick Card panel -->
+  <div id="tpanel-quickcard" class="tools-panel" style="display:none">
+    <div style="max-width:520px;margin:0 auto;padding:16px 0">
+      <div style="margin-bottom:16px">
+        <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:4px">📋 Quick Assessment Card</div>
+        <div style="font-size:12px;color:#6a8aa8;line-height:1.5">Generate a printable profile card for any athlete — no system account needed. Percentiles calculated against the Odyssey database.</div>
+      </div>
+      <div class="na-card" style="margin-bottom:12px">
+        <div class="na-card-hdr">Athlete Info</div>
+        <div class="na-row">
+          <div class="na-field" style="flex:1"><label>First Name</label><input class="na-inp" id="qc-first" placeholder="First"></div>
+          <div class="na-field" style="flex:1"><label>Last Name</label><input class="na-inp" id="qc-last" placeholder="Last"></div>
+        </div>
+        <div class="na-row">
+          <div class="na-field" style="flex:1"><label>Gender</label><select class="na-inp" id="qc-gender"><option value="M">Male</option><option value="F">Female</option></select></div>
+          <div class="na-field" style="flex:1"><label>Grad Year</label><select class="na-inp" id="qc-year"><option value="">— Year —</option><option>2025</option><option>2026</option><option>2027</option><option>2028</option><option>2029</option><option>2030</option><option>2031</option><option>2032</option></select></div>
+        </div>
+        <div class="na-row">
+          <div class="na-field" style="flex:1"><label>Sport</label><select class="na-inp" id="qc-sport"><option value="">— Sport —</option><option>Baseball</option><option>Basketball</option><option>Cross Country</option><option>Football</option><option>Golf</option><option>Lacrosse</option><option>Soccer</option><option>Softball</option><option>Swimming</option><option>Tennis</option><option>Track &amp; Field</option><option>Volleyball</option><option>Wrestling</option><option>Other</option></select></div>
+          <div class="na-field" style="flex:1"><label>Position</label><input class="na-inp" id="qc-position" placeholder="e.g. QB, SS, PG"></div>
+        </div>
+      </div>
+      <div class="na-card" style="margin-bottom:12px">
+        <div class="na-card-hdr">Assessment Metrics</div>
+        <div class="na-row">
+          <div class="na-field" style="flex:1"><label>CMJ Height (in)</label><input class="na-inp" id="qc-cmj" type="number" step="0.1" placeholder="e.g. 22.5"></div>
+          <div class="na-field" style="flex:1"><label>RSI</label><input class="na-inp" id="qc-rsi" type="number" step="0.01" placeholder="e.g. 1.24"></div>
+        </div>
+        <div class="na-row">
+          <div class="na-field" style="flex:1"><label>0&#8211;10 Sprint (s)</label><input class="na-inp" id="qc-accel" type="number" step="0.01" placeholder="e.g. 1.65"></div>
+          <div class="na-field" style="flex:1"><label>20&#8211;30 Fly (s)</label><input class="na-inp" id="qc-fly" type="number" step="0.01" placeholder="e.g. 1.05"></div>
+        </div>
+        <div class="na-row">
+          <div class="na-field" style="flex:1"><label>Broad Jump (in)</label><input class="na-inp" id="qc-broad" type="number" step="0.5" placeholder="e.g. 98"></div>
+          <div class="na-field" style="flex:1"><label>Body Weight (lbs)</label><input class="na-inp" id="qc-bw" type="number" step="1" placeholder="e.g. 175"></div>
+        </div>
+      </div>
+      <button onclick="qcGenerateCard()" style="width:100%;background:#C9A228;border:none;color:#0D1B2A;border-radius:10px;padding:16px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:16px;letter-spacing:.5px">&#128203; Generate Profile Card</button>
+      <div id="qc-card-output" style="display:none;margin-top:4px"></div>
+    </div>
   </div>
 
   <!-- Dashboard panel (coach only) -->
@@ -4024,6 +4067,60 @@ function naGenerateCard() {
   out.innerHTML='<div style="display:flex;gap:10px;margin-bottom:12px" class="na-print-hide"><button onclick="window.print()" style="flex:1;background:#C9A228;border:none;color:#0D1B2A;border-radius:8px;padding:12px;font-size:13px;font-weight:800;cursor:pointer">🖨 Print Profile Card</button><button onclick="document.getElementById(\'na-card-output\').style.display=\'none\'" style="background:#0a1520;border:1px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:12px;font-size:13px;cursor:pointer">&#x2715; Close</button></div>'+cardHTML;
   out.style.display='block';
   document.getElementById('newath-overlay').scrollTop=99999;
+}
+function qcGenerateCard(){
+  var info={first:(document.getElementById('qc-first').value||'').trim(),last:(document.getElementById('qc-last').value||'').trim(),gender:document.getElementById('qc-gender').value,year:document.getElementById('qc-year').value,sport:document.getElementById('qc-sport').value,position:document.getElementById('qc-position').value,bw:parseFloat(document.getElementById('qc-bw').value)||null};
+  if(!info.first||!info.last){alert('Please enter athlete name.');return;}
+  var cmjV=parseFloat(document.getElementById('qc-cmj').value)||null;
+  var rsiV=parseFloat(document.getElementById('qc-rsi').value)||null;
+  var accelV=parseFloat(document.getElementById('qc-accel').value)||null;
+  var flyV=parseFloat(document.getElementById('qc-fly').value)||null;
+  var broadV=parseFloat(document.getElementById('qc-broad').value)||null;
+  var pool=(typeof A!=='undefined')?A.filter(function(a){return a.gender===info.gender&&!a.beginner;}):[];
+  function qcPct(val,key,lb){if(val==null||!pool.length)return null;var vals=pool.map(function(a){return a[key];}).filter(function(v){return v!=null&&!isNaN(v)&&v>0;});if(vals.length<3)return null;var cnt=vals.filter(function(v){return lb?v>=val:v<=val;}).length;return Math.round((cnt/vals.length)*100);}
+  function qcM(val,key,lb){return val!=null?{value:val,pct:qcPct(val,key,lb)}:null;}
+  var metrics={cmj:qcM(cmjV,'cmj_jh_in',false),rsi:qcM(rsiV,'best_rsi',false),accel:qcM(accelV,'best_010',true),fly:qcM(flyV,'best_2030',true),broad:broadV!=null?{value:broadV,pct:null}:null};
+  var quad=naGetQuadrant(rsiV,cmjV);
+  var recInput={};
+  if(metrics.rsi)recInput.rsi={value:metrics.rsi.value,allPct:metrics.rsi.pct};
+  if(metrics.cmj)recInput.cmj={value:metrics.cmj.value,allPct:metrics.cmj.pct};
+  if(metrics.accel)recInput.accel={value:metrics.accel.value,allPct:metrics.accel.pct};
+  if(metrics.fly)recInput.speed={value:metrics.fly.value,allPct:metrics.fly.pct};
+  if(metrics.broad)recInput.broad={value:metrics.broad.value,allPct:null};
+  var recs=naGetRecs(recInput);
+  var today=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  var name=(info.first+' '+info.last).toUpperCase();
+  function qcBlock(m,label,unit){if(!m)return '';var pct=m.pct;var col=pct!=null?naPctColor(pct):'#6a8aa8';var pctLine=pct!=null?'<div style="font-size:11px;color:'+col+';font-weight:700">'+pct+'th percentile &middot; <span style="font-weight:400">'+naPctLabel(pct)+'</span></div><div class="na-pct-bar-wrap"><div class="na-pct-bar-fill" style="width:'+pct+'%;background:'+col+'"></div></div>':'<div style="font-size:10px;color:#4a6a8a;font-style:italic">Value recorded</div>';return '<div class="na-card-metric"><div class="na-card-metric-lbl">'+label+'</div><div class="na-card-metric-val">'+m.value+(unit||'')+'</div>'+pctLine+'</div>';}
+  var quadHTML=quad?'<div style="margin-top:10px"><span class="na-quad-badge" style="background:'+quad.color+'20;color:'+quad.color+';border:1px solid '+quad.color+'40">'+quad.icon+' '+quad.name+'</span><div style="font-size:12px;color:#a0bbd4;margin:6px 0 0;line-height:1.5">'+quad.desc+'</div></div>':'';
+  var recsHTML=recs.length?recs.map(function(r){return '<div class="na-rec-item"><div style="font-size:10px;color:#C9A228;font-weight:700;text-transform:uppercase;letter-spacing:.5px">'+r.label+(r.pct!==undefined?' <span style="color:#6a8aa8;font-weight:400">('+r.pct+'th pct)</span>':'')+'</div><div style="color:#a0bbd4;margin-top:3px">'+r.action+'</div></div>';}).join(''):'<div style="color:#4CAF50;font-size:13px;padding:8px">No major deficiencies identified &mdash; maintain across all qualities.</div>';
+  var cardHTML='<div id="qc-profile-card" style="background:#0D1B2A;color:#fff;border-radius:12px;padding:20px;border:1px solid #1e3a5f">'
+    +'<div style="background:linear-gradient(135deg,#0a1520,#1e3a5f);border-radius:8px;padding:16px;margin-bottom:14px;border-bottom:3px solid #C9A228">'
+    +'<div style="font-size:9px;color:#C9A228;font-weight:700;letter-spacing:2px;margin-bottom:4px">ODYSSEY PERFORMANCE &middot; ATHLETE PROFILE</div>'
+    +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">'
+    +'<div><div style="font-size:22px;font-weight:900;color:#fff;margin-bottom:4px">'+name+'</div>'
+    +'<div style="font-size:13px;color:#a0bbd4">'+info.sport+(info.position?' &middot; '+info.position:'')+(info.year?' &middot; Class of '+info.year:'')+(info.gender?' &middot; '+(info.gender==='M'?'Male':'Female'):'')+'</div></div>'
+    +'<div style="text-align:right"><div style="font-size:9px;color:#6a8aa8">Assessment Date</div><div style="font-size:13px;color:#fff;font-weight:700">'+today+'</div>'+(info.bw?'<div style="font-size:11px;color:#a0bbd4">BW: '+info.bw+' lbs</div>':'')+'</div>'
+    +'</div>'+quadHTML+'</div>'
+    +'<div style="font-size:10px;color:#C9A228;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Performance Metrics</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">'
+    +qcBlock(metrics.cmj,'CMJ Height','"')+qcBlock(metrics.rsi,'RSI','')+qcBlock(metrics.accel,'0–10 Sprint','s')+qcBlock(metrics.fly,'20–30 Fly','s')+qcBlock(metrics.broad,'Broad Jump','"')
+    +'</div>'
+    +'<div style="font-size:10px;color:#C9A228;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Priority Development Areas</div>'
+    +recsHTML
+    +'<div style="margin-top:16px;padding-top:12px;border-top:1px solid #1e3a5f;display:flex;justify-content:space-between"><div style="font-size:9px;color:#4a6a8a">odysseyperformance.com</div><div style="font-size:9px;color:#4a6a8a;text-transform:uppercase;letter-spacing:1px">Confidential &mdash; Odyssey Performance</div></div>'
+    +'</div>';
+  var out=document.getElementById('qc-card-output');
+  out.innerHTML='<div style="display:flex;gap:10px;margin-bottom:12px"><button onclick="qcPrint()" style="flex:1;background:#C9A228;border:none;color:#0D1B2A;border-radius:8px;padding:12px;font-size:13px;font-weight:800;cursor:pointer">&#128424; Print Profile Card</button><button onclick="document.getElementById('qc-card-output').style.display='none'" style="background:#0a1520;border:1px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:12px;font-size:13px;cursor:pointer">&#10005; Close</button></div>'+cardHTML;
+  out.style.display='block';
+  out.scrollIntoView({behavior:'smooth'});
+}
+function qcPrint(){
+  var card=document.getElementById('qc-profile-card');
+  if(!card)return;
+  var w=window.open('','_blank','width=820,height=700');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Odyssey Performance Profile Card</title><style>*{box-sizing:border-box}body{background:#0D1B2A;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:24px;margin:0}.na-card-metric{background:#0a1520;border:1px solid #1e3a5f;border-radius:8px;padding:10px}.na-card-metric-lbl{font-size:10px;color:#6a8aa8;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}.na-card-metric-val{font-size:20px;font-weight:900;color:#fff;margin-bottom:4px}.na-pct-bar-wrap{height:4px;background:#1e3a5f;border-radius:2px;margin-top:4px}.na-pct-bar-fill{height:100%;border-radius:2px}.na-quad-badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}.na-rec-item{background:#0a1520;border:1px solid #1e3a5f;border-radius:8px;padding:10px;margin-bottom:8px}@media print{@page{size:letter portrait;margin:.5in}body{padding:0;background:#0D1B2A!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body>'+card.outerHTML+'</body></html>');
+  w.document.close();w.focus();
+  setTimeout(function(){w.print();},500);
 }
 function openNewAth() {
   ['newath-first','newath-last','ns-rsi','ns-cmjjh','ns-accel010','ns-fly1020','ns-fly2030','ns-standvert','ns-broad','ns-fourhop','ns-51050','ns-pushups','ns-bwlbs'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
