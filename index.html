@@ -8620,7 +8620,7 @@ function closeProfileCard() {
                 }
 
                 // SLJ
-                if (testType === 'SLJ') {
+                if (testType === 'Single Leg Jump') {
                     if (!testData.slj.height_l && row['Jump Height (Imp-Mom) [cm] (L)']) {
                         testData.slj.height_l = parseFloat(row['Jump Height (Imp-Mom) [cm] (L)']) * 0.3937;
                         testData.slj.height_l = testData.slj.height_l.toFixed(1);
@@ -8642,6 +8642,12 @@ function closeProfileCard() {
                     }
                     if (!testData.slj.rsi_r && row['RSI-modified [m/s] (R)']) {
                         testData.slj.rsi_r = parseFloat(row['RSI-modified [m/s] (R)']).toFixed(2);
+                    }
+                    if (!testData.slj.land_l && row['Peak Landing Force [N] (L)']) {
+                        testData.slj.land_l = parseFloat(row['Peak Landing Force [N] (L)']).toFixed(0);
+                    }
+                    if (!testData.slj.land_r && row['Peak Landing Force [N] (R)']) {
+                        testData.slj.land_r = parseFloat(row['Peak Landing Force [N] (R)']).toFixed(0);
                     }
                 }
 
@@ -8850,6 +8856,18 @@ function closeProfileCard() {
             const dominantLeg = testData.slj.dominant === 'R' ? 'right' : 'left';
             const weakerPercent = (asymPct).toFixed(1);
 
+            let landLine = '';
+            if (testData.slj.land_l && testData.slj.land_r) {
+                const lf = parseFloat(testData.slj.land_l);
+                const rf = parseFloat(testData.slj.land_r);
+                const maxLF = Math.max(lf, rf);
+                const minLF = Math.min(lf, rf);
+                const landAsym = ((maxLF - minLF) / maxLF * 100).toFixed(1);
+                const landSide = lf >= rf ? 'L' : 'R';
+                const lColor = parseFloat(landAsym) > 15 ? '#ef4444' : parseFloat(landAsym) > 10 ? '#f97316' : '#22c55e';
+                landLine = '<div style="margin-top:8px;font-size:11px;padding:5px 8px;background:#0a1a2f;border-radius:4px;border-left:3px solid ' + lColor + ';color:#b8c8d8"><strong style="color:#fff">Landing Force:</strong> ' + landAsym + '% imbalance (' + landSide + ' dominant)</div>';
+            }
+
             return `
                 <div class="pc-unilateral-section">
                     <div class="pc-unilateral-title">Left vs. Right Leg Comparison</div>
@@ -8869,6 +8887,7 @@ function closeProfileCard() {
                     <div class="pc-asymmetry-note">
                         ${athleteInfo.name}'s ${dominantLeg} leg produces ${weakerPercent}% more force than the other. This imbalance increases injury risk and limits athletic potential. Priority: unilateral correction work.
                     </div>
+                    ${landLine}
                 </div>
             `;
         }
@@ -9051,7 +9070,14 @@ Test Results:`;
     if (testData.slj.height_l)    metricsText += `\nSingle Leg Jump (Left): ${testData.slj.height_l}"`;
     if (testData.slj.height_r)    metricsText += `\nSingle Leg Jump (Right): ${testData.slj.height_r}"`;
     if (testData.slj.asym_pct)    metricsText += `\nUnilateral Asymmetry: ${testData.slj.asym_pct}% (${testData.slj.dominant==='R'?'Right':'Left'} dominant)`;
-    if (testData.sprint.time)     metricsText += `\nSprint (${testData.sprint.exercise}): ${testData.sprint.time}s`;
+    if (testData.slj.land_l && testData.slj.land_r) {
+        const _lf = parseFloat(testData.slj.land_l), _rf = parseFloat(testData.slj.land_r);
+        const _la = ((Math.max(_lf,_rf)-Math.min(_lf,_rf))/Math.max(_lf,_rf)*100).toFixed(1);
+        metricsText += `\nLanding Force — Left: ${testData.slj.land_l}N, Right: ${testData.slj.land_r}N, Asymmetry: ${_la}%`;
+    }
+    if (testData.sprint.t010)      metricsText += `\n0-10 Acceleration: ${testData.sprint.t010}s`;
+    if (testData.sprint.t2030)     metricsText += `\n20-30 Fly: ${testData.sprint.t2030}s`;
+    if (testData.sprint.time && !testData.sprint.t010 && !testData.sprint.t2030) metricsText += `\nSprint (${testData.sprint.exercise}): ${testData.sprint.time}s`;
 
     try {
         const resp = await fetch('https://api.anthropic.com/v1/messages', {
