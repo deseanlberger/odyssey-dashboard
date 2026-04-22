@@ -316,9 +316,9 @@ select:focus{border-color:#C9A228}
 .pw-cancel:hover{color:#fff}
 .pw-error{color:#e74c3c;font-size:13px;margin-top:-6px;margin-bottom:10px;display:none}
 *{margin:0;padding:0;box-sizing:border-box}/* PROGRAM BUILDER + TEAM PLAN + NEW ATHLETE + SUBMIT STATS + IMPORT SESSION — full screen override */
-#pb-overlay,#teamplan-overlay,#newath-overlay,#submitstats-overlay,#import-overlay,#core6-overlay{background:#0D1B2A!important;padding:0!important;align-items:stretch!important;justify-content:stretch!important}
-#pb-overlay.open,#teamplan-overlay.open,#newath-overlay.open,#submitstats-overlay.open,#import-overlay.open,#core6-overlay.open{display:block!important;overflow-y:auto!important}
-#pb-overlay>.pb-fullscreen,#teamplan-overlay>.pb-fullscreen,#newath-overlay>.pb-fullscreen,#submitstats-overlay>.pb-fullscreen,#import-overlay>.pb-fullscreen,#core6-overlay>.pb-fullscreen{min-height:100vh;display:flex;flex-direction:column}
+#pb-overlay,#teamplan-overlay,#newath-overlay,#submitstats-overlay,#import-overlay,#core6-overlay,#profilecard-overlay{background:#0D1B2A!important;padding:0!important;align-items:stretch!important;justify-content:stretch!important}
+#pb-overlay.open,#teamplan-overlay.open,#newath-overlay.open,#submitstats-overlay.open,#import-overlay.open,#core6-overlay.open,#profilecard-overlay.open{display:block!important;overflow-y:auto!important}
+#pb-overlay>.pb-fullscreen,#teamplan-overlay>.pb-fullscreen,#newath-overlay>.pb-fullscreen,#submitstats-overlay>.pb-fullscreen,#import-overlay>.pb-fullscreen,#core6-overlay>.pb-fullscreen,#profilecard-overlay>.pb-fullscreen{min-height:100vh;display:flex;flex-direction:column;background:#0D1B2A}
 /* CORE 6 EVAL */
 .c6-rating-btns{display:flex;gap:6px;margin:6px 0 8px}
 .c6-rating-btn{flex:1;padding:10px 4px;border-radius:8px;border:2px solid #2a4a6a;background:#112233;color:#6a8aa8;font-size:16px;font-weight:900;cursor:pointer;text-align:center;transition:all .15s;line-height:1}
@@ -747,7 +747,7 @@ select:focus{border-color:#C9A228}
             color: #a0a8b8;
         }
 
-        #csvFileInput {
+        #pc-csvFileInput {
             display: none;
         }
 
@@ -863,12 +863,47 @@ select:focus{border-color:#C9A228}
             transform: translateY(-2px);
         }
 
+        /* ============ SCREEN SWITCHING ============ */
+        .pc-upload-screen { display: none; }
+        .pc-upload-screen.pc-screen-active { display: block; }
+        .pc-card-screen { display: none; }
+        .pc-card-screen.pc-screen-active { display: block; }
+
+        /* Generate button */
+        .pc-btn-generate {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #C9A228;
+            color: #0D1B2A;
+        }
+        .pc-btn-generate:hover:not(:disabled) {
+            background: #d4b840;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(201,162,40,0.3);
+        }
+        .pc-btn-generate:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         /* ============ PROFILE CARD SCREEN ============ */
         .pc-card-screen {
             background: #fff;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        .pc-card-screen.pc-screen-active {
+            display: block !important;
         }
 
         .pc-card-toolbar {
@@ -2267,91 +2302,94 @@ CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
     <!-- Content -->
     <div style="flex:1;overflow-y:auto;padding:20px">
       <div class="pc-container">
-        
-        <div class="pc-header">
-            <div class="pc-logo-text">ODYSSEY PERFORMANCE</div>
-            <h1 class="pc-page-title">Profile Card Generator</h1>
-            <p class="pc-page-subtitle">Upload ForceDecks & sprint CSVs to generate a printable athlete profile</p>
-        </div>
 
-        <form id="pc-uploadForm">
-            <!-- Athlete Info Section -->
-            <div class="pc-form-section">
-                <div class="pc-form-section-title">Athlete Information</div>
-                <div class="pc-form-grid">
-                    <div class="pc-form-group">
-                        <label for="athleteName">Athlete Name</label>
-                        <input type="text" id="pc-athleteName" placeholder="First and Last Name" required>
-                    </div>
-                    <div class="pc-form-group">
-                        <label for="sport">Sport</label>
-                        <select id="pc-sport" required>
-                            <option value="">Select a sport</option>
-                            <option value="Football">Football</option>
-                            <option value="Basketball">Basketball</option>
-                            <option value="Baseball">Baseball</option>
-                            <option value="Softball">Softball</option>
-                            <option value="Soccer">Soccer</option>
-                            <option value="Track & Field">Track & Field</option>
-                            <option value="Volleyball">Volleyball</option>
-                            <option value="Lacrosse">Lacrosse</option>
-                            <option value="Wrestling">Wrestling</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="pc-form-grid">
-                    <div class="pc-form-group">
-                        <label for="position">Position</label>
-                        <input type="text" id="pc-position" placeholder="e.g., Wide Receiver, Guard">
-                    </div>
-                    <div class="pc-form-group">
-                        <label for="gradYear">Graduation Year</label>
-                        <input type="number" id="pc-gradYear" placeholder="2027" min="2020" max="2035">
-                    </div>
-                </div>
-                <div class="pc-form-group">
-                    <label>Gender</label>
-                    <div class="toggle-group">
-                        <button type="button" class="toggle-btn pc-active" data-gender="Male">Male</button>
-                        <button type="button" class="toggle-btn" data-gender="Female">Female</button>
-                    </div>
-                </div>
-            </div>
+        <!-- UPLOAD SCREEN -->
+        <div class="pc-upload-screen pc-screen-active">
+          <div class="pc-header">
+              <div class="pc-logo-text">ODYSSEY PERFORMANCE</div>
+              <p class="pc-page-subtitle">Upload ForceDecks &amp; sprint CSVs to generate a printable athlete profile</p>
+          </div>
 
-            <!-- CSV Upload Section -->
-            <div class="pc-form-section">
-                <div class="pc-form-section-title">Upload Test Data</div>
-                <div class="csv-upload-area" id="pc-csvUploadArea">
-                    <div class="pc-upload-icon">📁</div>
-                    <div class="pc-upload-text">Drop ForceDecks CSV files here, or click to browse</div>
-                    <div class="pc-upload-subtext">Supports CMJ, CMRJ, DJ, ISOSQT, SLJ, and Sprint tests</div>
-                </div>
-                <input type="file" id="pc-csvFileInput" accept=".csv" multiple>
-                <div class="pc-uploaded-files" id="pc-uploadedFilesContainer" style="display: none;">
-                    <div class="uploaded-files-title">Uploaded Files</div>
-                    <div id="pc-uploadedFilesList"></div>
-                </div>
-            </div>
+          <form id="pc-uploadForm">
+              <!-- Athlete Info Section -->
+              <div class="pc-form-section">
+                  <div class="pc-form-section-title">Athlete Information</div>
+                  <div class="pc-form-grid">
+                      <div class="pc-form-group">
+                          <label for="pc-athleteName">Athlete Name</label>
+                          <input type="text" id="pc-athleteName" placeholder="First and Last Name" required>
+                      </div>
+                      <div class="pc-form-group">
+                          <label for="pc-sport">Sport</label>
+                          <select id="pc-sport" required>
+                              <option value="">Select a sport</option>
+                              <option value="Football">Football</option>
+                              <option value="Basketball">Basketball</option>
+                              <option value="Baseball">Baseball</option>
+                              <option value="Softball">Softball</option>
+                              <option value="Soccer">Soccer</option>
+                              <option value="Track &amp; Field">Track &amp; Field</option>
+                              <option value="Volleyball">Volleyball</option>
+                              <option value="Lacrosse">Lacrosse</option>
+                              <option value="Wrestling">Wrestling</option>
+                              <option value="Other">Other</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div class="pc-form-grid">
+                      <div class="pc-form-group">
+                          <label for="pc-position">Position</label>
+                          <input type="text" id="pc-position" placeholder="e.g., Wide Receiver, Guard">
+                      </div>
+                      <div class="pc-form-group">
+                          <label for="pc-gradYear">Graduation Year</label>
+                          <input type="number" id="pc-gradYear" placeholder="2027" min="2020" max="2035">
+                      </div>
+                  </div>
+                  <div class="pc-form-group">
+                      <label>Gender</label>
+                      <div class="pc-toggle-group">
+                          <button type="button" class="pc-toggle-btn pc-active" data-gender="Male">Male</button>
+                          <button type="button" class="pc-toggle-btn" data-gender="Female">Female</button>
+                      </div>
+                  </div>
+              </div>
 
-            <!-- Buttons -->
-            <div class="button-group">
-                <button type="submit" class="btn btn-primary" id="pc-generateBtn" disabled>
-                    Generate Profile Card →
-                </button>
-            </div>
-        </form>
-    
-        
-        <div class="card-toolbar">
-            <button class="pc-toolbar-btn" id="pc-backBtn">← New Profile</button>
-            <button class="pc-toolbar-btn" id="pc-printBtn">🖨️ Print / Save as PDF</button>
-        </div>
+              <!-- CSV Upload Section -->
+              <div class="pc-form-section">
+                  <div class="pc-form-section-title">Upload Test Data</div>
+                  <div class="pc-csv-upload-area" id="pc-csvUploadArea">
+                      <div class="pc-upload-icon">📁</div>
+                      <div class="pc-upload-text">Drop ForceDecks CSV files here, or click to browse</div>
+                      <div class="pc-upload-subtext">Supports CMJ, CMRJ, DJ, ISOSQT, SLJ, and Sprint tests</div>
+                  </div>
+                  <input type="file" id="pc-csvFileInput" accept=".csv" multiple>
+                  <div class="pc-uploaded-files" id="pc-uploadedFilesContainer" style="display:none;">
+                      <div class="pc-uploaded-files-title">Uploaded Files</div>
+                      <div id="pc-uploadedFilesList"></div>
+                  </div>
+              </div>
 
-        <div class="profile-card" id="pc-profileCard">
-            <!-- Card content will be generated here -->
-        </div>
-    
+              <!-- Buttons -->
+              <div class="pc-button-group">
+                  <button type="submit" class="pc-btn-generate" id="pc-generateBtn" disabled>
+                      Generate Profile Card →
+                  </button>
+              </div>
+          </form>
+        </div><!-- /pc-upload-screen -->
+
+        <!-- CARD SCREEN -->
+        <div class="pc-card-screen">
+          <div class="pc-card-toolbar">
+              <button class="pc-toolbar-btn" id="pc-backBtn">← New Profile</button>
+              <button class="pc-toolbar-btn" id="pc-printBtn">🖨️ Print / Save as PDF</button>
+          </div>
+          <div class="pc-profile-card" id="pc-profileCard">
+              <!-- Card content will be generated here -->
+          </div>
+        </div><!-- /pc-card-screen -->
+
       </div>
     </div>
   </div>
@@ -8186,8 +8224,8 @@ function closeProfileCard() {
   if(overlay) overlay.classList.remove('open');
   const uploadScreen = document.querySelector('#profilecard-overlay .pc-upload-screen');
   const cardScreen = document.querySelector('#profilecard-overlay .pc-card-screen');
-  if(uploadScreen) pcUploadScreen.classList.add('pc-active');
-  if(cardScreen) pcCardScreen.classList.remove('pc-active');
+  if(uploadScreen) uploadScreen.classList.add('pc-screen-active');
+  if(cardScreen) cardScreen.classList.remove('pc-screen-active');
 }
 
 
@@ -8222,10 +8260,10 @@ function closeProfileCard() {
         csvUploadArea.addEventListener('click', () => csvFileInput.click());
         csvUploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
-            csvUploadArea.classList.add('drag-over');
+            csvUploadArea.classList.add('pc-drag-over');
         });
         csvUploadArea.addEventListener('dragleave', () => {
-            csvUploadArea.classList.remove('drag-over');
+            csvUploadArea.classList.remove('pc-drag-over');
         });
         csvUploadArea.addEventListener('drop', pc_handleFileDrop);
         csvFileInput.addEventListener('change', pc_handleFileSelect);
@@ -8238,7 +8276,7 @@ function closeProfileCard() {
         // ============ FILE HANDLING ============
         function pc_handleFileDrop(e) {
             e.preventDefault();
-            csvUploadArea.classList.remove('drag-over');
+            csvUploadArea.classList.remove('pc-drag-over');
             const files = Array.from(e.dataTransfer.files);
             pc_processFiles(files);
         }
@@ -8351,15 +8389,15 @@ function closeProfileCard() {
             files.forEach(fileName => {
                 const { testTypes } = state.uploadedFiles[fileName];
                 const fileItem = document.createElement('div');
-                fileItem.className = 'file-item';
+                fileItem.className = 'pc-file-item';
                 fileItem.innerHTML = `
                     <div>
-                        <div class="file-name">✓ ${fileName}</div>
-                        <div class="file-tests">
-                            ${testTypes.map(t => `<span class="test-badge">${t}</span>`).join('')}
+                        <div class="pc-file-name">✓ ${fileName}</div>
+                        <div class="pc-file-tests">
+                            ${testTypes.map(t => `<span class="pc-test-badge">${t}</span>`).join('')}
                         </div>
                     </div>
-                    <div class="file-remove" onclick="pc_removeFile('${fileName}')">×</div>
+                    <div class="pc-file-remove" onclick="pc_removeFile('${fileName}')">×</div>
                 `;
                 uploadedFilesList.appendChild(fileItem);
             });
@@ -8382,8 +8420,8 @@ function closeProfileCard() {
 
         function pc_handleGenderToggle(e) {
             e.preventDefault();
-            genderToggles.forEach(btn => btn.classList.remove('active'));
-            e.target.classList.add('active');
+            genderToggles.forEach(btn => btn.classList.remove('pc-active'));
+            e.target.classList.add('pc-active');
             state.selectedGender = e.target.dataset.gender;
         }
 
@@ -8411,8 +8449,8 @@ function closeProfileCard() {
             pc_generateProfileCard();
 
             // Switch screens
-            uploadScreen.classList.remove('active');
-            cardScreen.classList.add('active');
+            pcUploadScreen.classList.remove('pc-screen-active');
+            pcCardScreen.classList.add('pc-screen-active');
         }
 
         // ============ DATA EXTRACTION ============
@@ -8832,8 +8870,8 @@ function closeProfileCard() {
 
         // ============ NAVIGATION ============
         function pc_goBackToUpload() {
-            cardScreen.classList.remove('active');
-            uploadScreen.classList.add('active');
+            pcCardScreen.classList.remove('pc-screen-active');
+            pcUploadScreen.classList.add('pc-screen-active');
             csvFileInput.value = '';
         }
 
@@ -8843,36 +8881,7 @@ function closeProfileCard() {
     
 
 
-// Initialize Profile Card Generator when page loads
-document.addEventListener('DOMContentLoaded', function() {
-  const pcUploadForm = document.getElementById('pc-uploadForm');
-  if(pcUploadForm) {
-    pcUploadForm.addEventListener('submit', pc_handleFormSubmit);
-  }
-  const pcCsvUploadArea = document.getElementById('pc-csvUploadArea');
-  if(pcCsvUploadArea) {
-    pcCsvUploadArea.addEventListener('click', function() {
-      const input = document.getElementById('pc-csvFileInput');
-      if(input) input.click();
-    });
-    pcCsvUploadArea.addEventListener('dragover', function(e) {
-      e.preventDefault();
-      this.classList.add('drag-over');
-    });
-    pcCsvUploadArea.addEventListener('dragleave', function() {
-      this.classList.remove('drag-over');
-    });
-    pcCsvUploadArea.addEventListener('drop', pc_handleFileDrop);
-  }
-  const pcCsvFileInput = document.getElementById('pc-csvFileInput');
-  if(pcCsvFileInput) {
-    pcCsvFileInput.addEventListener('change', pc_handleFileSelect);
-  }
-  const pcAthleteNameInput = document.getElementById('pc-athleteName');
-  const pcSportInput = document.getElementById('pc-sport');
-  if(pcAthleteNameInput) pcAthleteNameInput.addEventListener('change', pc_updateGenerateButton);
-  if(pcSportInput) pcSportInput.addEventListener('change', pc_updateGenerateButton);
-});
+// Profile Card Generator initialized via global-scope event listeners above
 
 </script>
 </body>
