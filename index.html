@@ -3168,7 +3168,7 @@ function naGenerateCard() {
     +'<div style="font-size:9px;color:#4a6a8a;text-transform:uppercase;letter-spacing:1px">Confidential &mdash; Odyssey Performance</div>'
     +'</div></div>';
   var out=document.getElementById('na-card-output');
-  out.innerHTML='<div style="display:flex;gap:10px;margin-bottom:12px" class="na-print-hide"><button onclick="window.print()" style="flex:1;background:#C9A228;border:none;color:#0D1B2A;border-radius:8px;padding:12px;font-size:13px;font-weight:800;cursor:pointer">🖨 Print Profile Card</button><button onclick="document.getElementById('na-card-output').style.display='none'" style="background:#0a1520;border:1px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:12px;font-size:13px;cursor:pointer">&#x2715; Close</button></div>'+cardHTML;
+  out.innerHTML='<div style="display:flex;gap:10px;margin-bottom:12px" class="na-print-hide"><button onclick="window.print()" style="flex:1;background:#C9A228;border:none;color:#0D1B2A;border-radius:8px;padding:12px;font-size:13px;font-weight:800;cursor:pointer">🖨 Print Profile Card</button><button onclick="document.getElementById(\'na-card-output\').style.display=\'none\'" style="background:#0a1520;border:1px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:12px;font-size:13px;cursor:pointer">&#x2715; Close</button></div>'+cardHTML;
   out.style.display='block';
   document.getElementById('newath-overlay').scrollTop=99999;
 }
