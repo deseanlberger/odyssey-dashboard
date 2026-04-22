@@ -8579,18 +8579,18 @@ function closeProfileCard() {
             const athleteInfo = state.athleteInfo;
 
             let html = `
-                <div class="card-header">
-                    <div class="card-header-logo">ODYSSEY PERFORMANCE</div>
-                    <div class="card-header-title">Athlete Performance Profile</div>
-                    <div class="athlete-name">${athleteInfo.name}</div>
-                    <div class="athlete-meta">
-                        <span class="meta-item">${athleteInfo.sport}</span>
-                        <span class="meta-item">${athleteInfo.position}</span>
-                        <span class="meta-item">Class of ${athleteInfo.gradYear}</span>
-                        <span class="meta-item">${athleteInfo.gender}</span>
-                        <span class="meta-item">Assessed: ${testData.assessmentDate || 'Today'}</span>
+                <div class="pc-card-header">
+                    <div class="pc-card-header-logo">ODYSSEY PERFORMANCE</div>
+                    <div class="pc-card-header-title">Athlete Performance Profile</div>
+                    <div class="pc-athlete-name">${athleteInfo.name}</div>
+                    <div class="pc-athlete-meta">
+                        <span class="pc-meta-item">${athleteInfo.sport}</span>
+                        ${athleteInfo.position && athleteInfo.position !== 'N/A' ? `<span class="pc-meta-item">${athleteInfo.position}</span>` : ''}
+                        <span class="pc-meta-item">Class of ${athleteInfo.gradYear}</span>
+                        <span class="pc-meta-item">${athleteInfo.gender}</span>
+                        <span class="pc-meta-item">Assessed: ${testData.assessmentDate || new Date().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})}</span>
                     </div>
-                    ${athleteInfo.bodyWeight ? `<div class="athlete-bw">${athleteInfo.bodyWeight} lbs</div>` : ''}
+                    ${athleteInfo.bodyWeight ? `<div class="pc-athlete-bw">${athleteInfo.bodyWeight} lbs</div>` : ''}
                 </div>
             `;
 
@@ -8598,9 +8598,9 @@ function closeProfileCard() {
             const metrics = pc_buildMetricsSection(testData);
             if (metrics) {
                 html += `
-                    <div class="metrics-section">
-                        <div class="section-title">Key Metrics</div>
-                        <div class="metrics-grid">
+                    <div class="pc-metrics-section">
+                        <div class="pc-section-title">Key Performance Metrics</div>
+                        <div class="pc-metrics-grid">
                             ${metrics}
                         </div>
                     </div>
@@ -8624,12 +8624,20 @@ function closeProfileCard() {
                 html += tier;
             }
 
+            // No data fallback
+            if (!metrics && !testData.slj.height_l && !testData.sprint.time) {
+                html += `<div style="padding:30px;text-align:center;color:#888;font-size:14px;">
+                    No performance metrics found in the uploaded CSV.<br>
+                    Make sure your ForceDecks export includes a "Test Type" column, or your sprint CSV includes "Exercise Name" and "Time (s)" columns.
+                </div>`;
+            }
+
             // Footer
             html += `
-                <div class="card-footer">
+                <div class="pc-card-footer">
                     <div>Assessment conducted at Odyssey Performance · Suite N, 2055 Thibodo Rd · North County San Diego</div>
-                    <div>Date of assessment: ${testData.assessmentDate || 'Today'}</div>
-                    <div class="signature-line">Next Steps: _____________________________________________________________________</div>
+                    <div>Date of assessment: ${testData.assessmentDate || new Date().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})}</div>
+                    <div class="pc-signature-line">Next Steps: _____________________________________________________________________</div>
                 </div>
             `;
 
@@ -8640,84 +8648,58 @@ function closeProfileCard() {
             let html = '';
 
             if (testData.cmj.height) {
-                html += `
-                    <div class="metric">
-                        <div class="metric-label">Explosive Jump Height</div>
-                        <div class="metric-value">${testData.cmj.height}<span class="metric-unit">"</span></div>
-                    </div>
-                `;
+                html += `<div class="pc-metric">
+                    <div class="pc-metric-label">CMJ Jump Height</div>
+                    <div class="pc-metric-value">${testData.cmj.height}<span class="pc-metric-unit">"</span></div>
+                </div>`;
             }
-
             if (testData.cmj.rsi) {
-                html += `
-                    <div class="metric">
-                        <div class="metric-label">Reactive Strength Index</div>
-                        <div class="metric-value">${testData.cmj.rsi}</div>
-                    </div>
-                `;
+                html += `<div class="pc-metric">
+                    <div class="pc-metric-label">RSI-Modified</div>
+                    <div class="pc-metric-value">${testData.cmj.rsi}<span class="pc-metric-unit">m/s</span></div>
+                </div>`;
             }
-
             if (testData.cmj.power_bm) {
-                html += `
-                    <div class="metric">
-                        <div class="metric-label">Jump Power Output</div>
-                        <div class="metric-value">${testData.cmj.power_bm}<span class="metric-unit">W/kg</span></div>
-                    </div>
-                `;
+                html += `<div class="pc-metric">
+                    <div class="pc-metric-label">Peak Power / BM</div>
+                    <div class="pc-metric-value">${testData.cmj.power_bm}<span class="pc-metric-unit">W/kg</span></div>
+                </div>`;
             }
-
             if (testData.dj.height) {
-                html += `
-                    <div class="metric">
-                        <div class="metric-label">Drop Jump Height</div>
-                        <div class="metric-value">${testData.dj.height}<span class="metric-unit">"</span></div>
-                    </div>
-                `;
+                html += `<div class="pc-metric">
+                    <div class="pc-metric-label">Drop Jump Height</div>
+                    <div class="pc-metric-value">${testData.dj.height}<span class="pc-metric-unit">"</span></div>
+                </div>`;
             }
-
             if (testData.dj.contact) {
-                html += `
-                    <div class="metric">
-                        <div class="metric-label">Ground Contact Time</div>
-                        <div class="metric-value">${testData.dj.contact}<span class="metric-unit">s</span></div>
-                    </div>
-                `;
+                html += `<div class="pc-metric">
+                    <div class="pc-metric-label">Ground Contact Time</div>
+                    <div class="pc-metric-value">${testData.dj.contact}<span class="pc-metric-unit">s</span></div>
+                </div>`;
             }
-
             if (testData.dj.rsi) {
-                html += `
-                    <div class="metric">
-                        <div class="metric-label">Drop Jump Reactivity</div>
-                        <div class="metric-value">${testData.dj.rsi}</div>
-                    </div>
-                `;
+                html += `<div class="pc-metric">
+                    <div class="pc-metric-label">DJ Reactivity (RSI)</div>
+                    <div class="pc-metric-value">${testData.dj.rsi}</div>
+                </div>`;
             }
-
             if (testData.isosqt.force_bm) {
-                html += `
-                    <div class="metric">
-                        <div class="metric-label">Maximal Strength Output</div>
-                        <div class="metric-value">${testData.isosqt.force_bm}<span class="metric-unit">N/kg</span></div>
-                    </div>
-                `;
+                html += `<div class="pc-metric">
+                    <div class="pc-metric-label">Peak Isometric Force / BM</div>
+                    <div class="pc-metric-value">${testData.isosqt.force_bm}<span class="pc-metric-unit">N/kg</span></div>
+                </div>`;
             }
-
             if (testData.isosqt.rfd) {
-                html += `
-                    <div class="metric">
-                        <div class="metric-label">Rate of Force Development</div>
-                        <div class="metric-value">${testData.isosqt.rfd}<span class="metric-unit">N/s</span></div>
-                    </div>
-                `;
+                html += `<div class="pc-metric">
+                    <div class="pc-metric-label">Rate of Force Dev (200ms)</div>
+                    <div class="pc-metric-value">${testData.isosqt.rfd}<span class="pc-metric-unit">N/s</span></div>
+                </div>`;
             }
-
             if (testData.sprint.time) {
-                html += `
-                    <div class="metric">
-                        <div class="metric-label">${testData.sprint.exercise || 'Sprint Time'}</div>
-                        <div class="metric-value">${testData.sprint.time}<span class="metric-unit">s</span></div>
-                    </div>
-                `;
+                html += `<div class="pc-metric">
+                    <div class="pc-metric-label">${testData.sprint.exercise || 'Sprint'}</div>
+                    <div class="pc-metric-value">${testData.sprint.time}<span class="pc-metric-unit">s</span></div>
+                </div>`;
             }
 
             return html || '';
@@ -8745,22 +8727,22 @@ function closeProfileCard() {
             const weakerPercent = (asymPct).toFixed(1);
 
             return `
-                <div class="unilateral-section">
-                    <div class="unilateral-title">Left vs. Right Leg Comparison</div>
-                    <div class="asymmetry-badge ${badgeClass}">${badgeText} (${asymPct}%)</div>
-                    <div class="bar-chart">
-                        <div class="bar-column">
-                            <div class="bar" style="height: ${leftPercent}%"></div>
-                            <div class="bar-label">Left</div>
-                            <div class="bar-value">${testData.slj.height_l}"</div>
+                <div class="pc-unilateral-section">
+                    <div class="pc-unilateral-title">Left vs. Right Leg Comparison</div>
+                    <div class="pc-asymmetry-badge pc-${badgeClass}">${badgeText} (${asymPct}%)</div>
+                    <div class="pc-bar-chart">
+                        <div class="pc-bar-column">
+                            <div class="pc-bar" style="height: ${leftPercent}%"></div>
+                            <div class="pc-bar-label">Left</div>
+                            <div class="pc-bar-value">${testData.slj.height_l}"</div>
                         </div>
-                        <div class="bar-column">
-                            <div class="bar" style="height: ${rightPercent}%"></div>
-                            <div class="bar-label">Right</div>
-                            <div class="bar-value">${testData.slj.height_r}"</div>
+                        <div class="pc-bar-column">
+                            <div class="pc-bar" style="height: ${rightPercent}%"></div>
+                            <div class="pc-bar-label">Right</div>
+                            <div class="pc-bar-value">${testData.slj.height_r}"</div>
                         </div>
                     </div>
-                    <div class="asymmetry-note">
+                    <div class="pc-asymmetry-note">
                         ${athleteInfo.name}'s ${dominantLeg} leg produces ${weakerPercent}% more force than the other. This imbalance increases injury risk and limits athletic potential. Priority: unilateral correction work.
                     </div>
                 </div>
@@ -8803,20 +8785,20 @@ function closeProfileCard() {
                 return '';
             }
 
-            let html = '<div class="sw-grid">';
+            let html = '<div class="pc-sw-grid">';
 
             if (strengths.length > 0) {
-                html += '<div class="sw-box"><div class="sw-box-title">Strengths</div>';
+                html += '<div class="pc-sw-box"><div class="pc-sw-box-title">Strengths</div>';
                 strengths.forEach(s => {
-                    html += `<div class="sw-item">${s}</div>`;
+                    html += `<div class="pc-sw-item">${s}</div>`;
                 });
                 html += '</div>';
             }
 
             if (weaknesses.length > 0) {
-                html += '<div class="sw-box"><div class="sw-box-title">Development Areas</div>';
+                html += '<div class="pc-sw-box"><div class="pc-sw-box-title">Development Areas</div>';
                 weaknesses.forEach(w => {
-                    html += `<div class="sw-item">${w}</div>`;
+                    html += `<div class="pc-sw-item">${w}</div>`;
                 });
                 html += '</div>';
             }
@@ -8860,10 +8842,10 @@ function closeProfileCard() {
             }
 
             return `
-                <div class="tier-section">
-                    <div class="tier-label">Athlete Profile</div>
-                    <div class="tier-name">${tierName}</div>
-                    <div class="tier-description">${tierDesc}</div>
+                <div class="pc-tier-section">
+                    <div class="pc-tier-label">Athlete Profile</div>
+                    <div class="pc-tier-name">${tierName}</div>
+                    <div class="pc-tier-description">${tierDesc}</div>
                 </div>
             `;
         }
