@@ -2086,15 +2086,12 @@ select:focus{border-color:#C9A228}
 
         <!-- CSV Upload -->
         <div id="im-area-csv" style="display:block">
-          <label style="background:#112233;border:2px dashed #2a4a6a;border-radius:12px;padding:28px 16px;text-align:center;cursor:pointer;display:block;margin-bottom:10px">
-            <div style="font-size:28px;margin-bottom:8px">📄</div>
-            <div id="im-csv-label" style="font-size:13px;color:#fff;font-weight:600;margin-bottom:4px">Tap to upload CSV</div>
-            <div style="font-size:11px;color:#6a8aa8">Output Sports / VALD / any CSV — file emails to coach</div>
-            <input type="file" id="import-file-input" accept=".csv" onchange="importHandleFile(this)" style="display:none">
-          </label>
+          <div style="background:#112233;border-left:3px solid #C9A228;border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:11px;color:#8a9bb0;line-height:1.6">
+            Tap "Open Mail" below — your Mail app launches with a pre-filled email to Coach Desean. <strong style="color:#C9A228">Attach the CSV file there</strong>, then send.
+          </div>
           <input id="csv-coach-name" type="text" placeholder="Your name (optional)" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:12px;box-sizing:border-box;margin-bottom:8px">
           <textarea id="csv-note" placeholder="Optional note (e.g. 'Friday's session — 6 athletes')" style="width:100%;min-height:60px;background:#0f0f0f;color:#e0eaf4;border:1px solid #2a4a6a;border-radius:8px;padding:10px;font-size:12px;box-sizing:border-box;margin-bottom:10px;font-family:inherit;resize:vertical"></textarea>
-          <button onclick="importSubmitCSV()" style="width:100%;background:#C9A228;border:none;color:#000000;border-radius:12px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;box-sizing:border-box">📧 Send for Review →</button>
+          <button onclick="importSubmitCSV()" style="width:100%;background:#C9A228;border:none;color:#000000;border-radius:12px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;box-sizing:border-box">📧 Open Mail to Send →</button>
         </div>
 
         <!-- Manual Entry (free-text) -->
@@ -2116,17 +2113,12 @@ CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
 
         <!-- Photo Upload -->
         <div id="im-area-photo" style="display:none">
-          <label style="background:#112233;border:2px dashed #2a4a6a;border-radius:12px;padding:32px 16px;text-align:center;cursor:pointer;display:block;margin-bottom:12px">
-            <div style="font-size:28px;margin-bottom:8px">📷</div>
-            <div style="font-size:13px;color:#fff;font-weight:600;margin-bottom:4px">Tap to upload photo or screenshot</div>
-            <div style="font-size:11px;color:#6a8aa8">Whiteboard, written sheet, printed results</div>
-            <input type="file" id="import-photo-input" accept="image/*" onchange="importHandlePhoto(this)" style="display:none">
-          </label>
-          <div id="im-photo-preview" style="display:none;margin-bottom:12px;border-radius:10px;overflow:hidden;border:1px solid #2a4a6a"></div>
-          <div id="im-photo-hint" style="display:none;background:#112233;border:1px solid #1e3a5f;border-left:3px solid #C9A228;border-radius:8px;padding:10px 12px;font-size:11px;color:#8a9bb0;margin-bottom:10px">
-            Photo uploaded. Review the image above and enter the stats manually below, then continue.
+          <div style="background:#112233;border-left:3px solid #C9A228;border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:11px;color:#8a9bb0;line-height:1.6">
+            Tap "Open Mail" below — your Mail app launches with a pre-filled email. Tap <strong style="color:#C9A228">Add Photo</strong> in Mail to take or attach the photo, then send.
           </div>
-          <div id="im-photo-manual" style="display:none"></div>
+          <input id="photo-coach-name" type="text" placeholder="Your name (optional)" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:12px;box-sizing:border-box;margin-bottom:8px">
+          <textarea id="photo-note" placeholder="Optional note (e.g. 'Whiteboard from Friday's session')" style="width:100%;min-height:60px;background:#0f0f0f;color:#e0eaf4;border:1px solid #2a4a6a;border-radius:8px;padding:10px;font-size:12px;box-sizing:border-box;margin-bottom:10px;font-family:inherit;resize:vertical"></textarea>
+          <button onclick="importSubmitPhotoSimple()" style="width:100%;background:#C9A228;border:none;color:#000000;border-radius:12px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;box-sizing:border-box">📧 Open Mail to Send →</button>
         </div>
 
         <div id="import-csv-status" style="display:none;margin-top:8px;font-size:11px;color:#4caf50;background:#0a2010;border:1px solid #2d7a4a;border-radius:8px;padding:8px 10px"></div>
@@ -3426,31 +3418,12 @@ function launchTool() {
 const PENDING = {};
 var _importMethod = 'csv';
 
-// === Phase 1: Upload Session simplified (Web3Forms transport) ===
-const WEB3FORMS_ACCESS_KEY = 'bcdd57a0-ae78-4eba-a84e-6ed689ca0ae6'; // Web3Forms access key (origin-locked in their dashboard)
-
-async function web3formsSend(payload) {
-  if (!WEB3FORMS_ACCESS_KEY) {
-    alert('Email service not yet configured.\n\nCoach Desean needs to paste his Web3Forms access key into index.html (search for WEB3FORMS_ACCESS_KEY).');
-    return false;
-  }
-  var fd = new FormData();
-  fd.append('access_key', WEB3FORMS_ACCESS_KEY);
-  fd.append('subject', payload.subject);
-  fd.append('from_name', payload.coachName || 'Odyssey Dashboard');
-  fd.append('Coach', payload.coachName || '(not provided)');
-  fd.append('Submission Method', payload.method);
-  fd.append('Notes', payload.body);
-  fd.append('Submitted', new Date().toLocaleString());
-  if (payload.attachment) fd.append('attachment', payload.attachment);
-  try {
-    var res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
-    var json = await res.json();
-    return !!json.success;
-  } catch (err) {
-    console.error('Web3Forms submit failed', err);
-    return false;
-  }
+// === Phase 1: Upload Session — pure mailto: (opens device's default Mail app) ===
+function mailtoCompose(subject, body) {
+  var url = 'mailto:deseanlberger@gmail.com'
+    + '?subject=' + encodeURIComponent(subject)
+    + '&body=' + encodeURIComponent(body);
+  window.location.href = url;
 }
 
 function openImportSession() {
@@ -3501,52 +3474,40 @@ function importSetMethod(method) {
 
 function mnSetGender(g) { /* no-op: gender now entered as free text */ }
 
-async function importSubmitFreetext() {
+function importSubmitFreetext() {
   var text = (document.getElementById('mn-freetext').value || '').trim();
   if (!text) { alert('Please enter athlete stats before sending.'); return; }
   var coach = (document.getElementById('mn-coach-name').value || '').trim();
-  var ok = await web3formsSend({
-    subject: 'Odyssey Session Upload — Manual Entry' + (coach ? ' from ' + coach : ''),
-    coachName: coach,
-    method: 'Manual Entry',
-    body: text
-  });
-  if (ok) showImportStep3Msg(1);
-  else alert('Send failed. Check your connection and try again.');
+  var subject = 'Odyssey Session Upload — Manual Entry' + (coach ? ' from ' + coach : '');
+  var body = (coach ? 'Coach: ' + coach + '\n\n' : '')
+    + 'Stats:\n' + text
+    + '\n\n— Sent from Odyssey Dashboard';
+  mailtoCompose(subject, body);
+  showImportStep3Msg(1);
 }
 
 function importSubmitManual() { importSubmitFreetext(); }
 
-async function importSubmitCSV() {
-  var file = window._importCSVFile;
-  if (!file) { alert('Please choose a CSV file first.'); return; }
+function importSubmitCSV() {
   var coach = (document.getElementById('csv-coach-name').value || '').trim();
   var note = (document.getElementById('csv-note').value || '').trim();
-  var ok = await web3formsSend({
-    subject: 'Odyssey Session Upload — CSV' + (coach ? ' from ' + coach : ''),
-    coachName: coach,
-    method: 'CSV File (' + file.name + ')',
-    body: note || '(no note)',
-    attachment: file
-  });
-  if (ok) showImportStep3Msg(1);
-  else alert('Send failed. Check your connection and try again.');
+  var subject = 'Odyssey Session Upload — CSV' + (coach ? ' from ' + coach : '');
+  var body = (coach ? 'Coach: ' + coach + '\n\n' : '')
+    + (note ? 'Note: ' + note + '\n\n' : '')
+    + '** Attach the CSV file in Mail before sending. **\n\n— Sent from Odyssey Dashboard';
+  mailtoCompose(subject, body);
+  showImportStep3Msg(1);
 }
 
-async function importSubmitPhotoSimple() {
-  var file = window._importPhotoFile;
-  if (!file) { alert('Please take or upload a photo first.'); return; }
+function importSubmitPhotoSimple() {
   var coach = (document.getElementById('photo-coach-name').value || '').trim();
   var note = (document.getElementById('photo-note').value || '').trim();
-  var ok = await web3formsSend({
-    subject: 'Odyssey Session Upload — Photo' + (coach ? ' from ' + coach : ''),
-    coachName: coach,
-    method: 'Photo / Screenshot',
-    body: note || '(no note)',
-    attachment: file
-  });
-  if (ok) showImportStep3Msg(1);
-  else alert('Send failed. Check your connection and try again.');
+  var subject = 'Odyssey Session Upload — Photo' + (coach ? ' from ' + coach : '');
+  var body = (coach ? 'Coach: ' + coach + '\n\n' : '')
+    + (note ? 'Note: ' + note + '\n\n' : '')
+    + '** Attach the photo (use Add Photo / paperclip in Mail) before sending. **\n\n— Sent from Odyssey Dashboard';
+  mailtoCompose(subject, body);
+  showImportStep3Msg(1);
 }
 
 function importHandlePhoto(input) {
