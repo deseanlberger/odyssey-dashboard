@@ -2086,12 +2086,15 @@ select:focus{border-color:#C9A228}
 
         <!-- CSV Upload -->
         <div id="im-area-csv" style="display:block">
-          <label style="background:#112233;border:2px dashed #2a4a6a;border-radius:12px;padding:32px 16px;text-align:center;cursor:pointer;display:block;margin-bottom:12px">
+          <label style="background:#112233;border:2px dashed #2a4a6a;border-radius:12px;padding:28px 16px;text-align:center;cursor:pointer;display:block;margin-bottom:10px">
             <div style="font-size:28px;margin-bottom:8px">📄</div>
-            <div style="font-size:13px;color:#fff;font-weight:600;margin-bottom:4px">Tap to upload CSV</div>
-            <div style="font-size:11px;color:#6a8aa8">Output Sports, VALD / ForceDecks formats</div>
+            <div id="im-csv-label" style="font-size:13px;color:#fff;font-weight:600;margin-bottom:4px">Tap to upload CSV</div>
+            <div style="font-size:11px;color:#6a8aa8">Output Sports / VALD / any CSV — file emails to coach</div>
             <input type="file" id="import-file-input" accept=".csv" onchange="importHandleFile(this)" style="display:none">
           </label>
+          <input id="csv-coach-name" type="text" placeholder="Your name (optional)" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:12px;box-sizing:border-box;margin-bottom:8px">
+          <textarea id="csv-note" placeholder="Optional note (e.g. 'Friday's session — 6 athletes')" style="width:100%;min-height:60px;background:#0f0f0f;color:#e0eaf4;border:1px solid #2a4a6a;border-radius:8px;padding:10px;font-size:12px;box-sizing:border-box;margin-bottom:10px;font-family:inherit;resize:vertical"></textarea>
+          <button onclick="importSubmitCSV()" style="width:100%;background:#C9A228;border:none;color:#000000;border-radius:12px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;box-sizing:border-box">📧 Send for Review →</button>
         </div>
 
         <!-- Manual Entry (free-text) -->
@@ -3423,21 +3426,57 @@ function launchTool() {
 const PENDING = {};
 var _importMethod = 'csv';
 
+// === Phase 1: Upload Session simplified (Web3Forms transport) ===
+const WEB3FORMS_ACCESS_KEY = 'bcdd57a0-ae78-4eba-a84e-6ed689ca0ae6'; // Web3Forms access key (origin-locked in their dashboard)
+
+async function web3formsSend(payload) {
+  if (!WEB3FORMS_ACCESS_KEY) {
+    alert('Email service not yet configured.\n\nCoach Desean needs to paste his Web3Forms access key into index.html (search for WEB3FORMS_ACCESS_KEY).');
+    return false;
+  }
+  var fd = new FormData();
+  fd.append('access_key', WEB3FORMS_ACCESS_KEY);
+  fd.append('subject', payload.subject);
+  fd.append('from_name', payload.coachName || 'Odyssey Dashboard');
+  fd.append('Coach', payload.coachName || '(not provided)');
+  fd.append('Submission Method', payload.method);
+  fd.append('Notes', payload.body);
+  fd.append('Submitted', new Date().toLocaleString());
+  if (payload.attachment) fd.append('attachment', payload.attachment);
+  try {
+    var res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
+    var json = await res.json();
+    return !!json.success;
+  } catch (err) {
+    console.error('Web3Forms submit failed', err);
+    return false;
+  }
+}
+
 function openImportSession() {
   if (!coachMode) return;
   var fi = document.getElementById('import-file-input');
   if (fi) fi.value = '';
+  var pi = document.getElementById('import-photo-input');
+  if (pi) pi.value = '';
+  window._importCSVFile = null;
+  window._importPhotoFile = null;
   document.getElementById('import-step-1').style.display = 'flex';
   document.getElementById('import-step-2').style.display = 'none';
   document.getElementById('import-step-3').style.display = 'none';
   document.getElementById('import-step-4').style.display = 'none';
   document.getElementById('import-csv-status').style.display = 'none';
   importSetMethod('csv');
-  // Clear the free-text area on open
-  var ft = document.getElementById('mn-freetext');
-  if (ft) ft.value = '';
-  var cn = document.getElementById('mn-coach-name');
-  if (cn) cn.value = '';
+  // Clear all form fields on open
+  ['mn-freetext','mn-coach-name','csv-coach-name','csv-note','photo-coach-name','photo-note'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  var preview = document.getElementById('im-photo-preview');
+  if (preview) { preview.innerHTML = ''; preview.style.display = 'none'; }
+  var csvLbl = document.getElementById('im-csv-label');
+  if (csvLbl) csvLbl.textContent = 'Tap to upload CSV';
+  var photoLbl = document.getElementById('im-photo-label');
+  if (photoLbl) photoLbl.textContent = 'Tap to take photo or upload screenshot';
 
   document.getElementById('import-overlay').scrollTop = 0;
   document.getElementById('import-overlay').classList.add('open');
@@ -3462,42 +3501,65 @@ function importSetMethod(method) {
 
 function mnSetGender(g) { /* no-op: gender now entered as free text */ }
 
-function importSubmitFreetext() {
+async function importSubmitFreetext() {
   var text = (document.getElementById('mn-freetext').value || '').trim();
   if (!text) { alert('Please enter athlete stats before sending.'); return; }
   var coach = (document.getElementById('mn-coach-name').value || '').trim();
-  var d = new Date();
-  var dateStr = (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear();
-  var subject = 'Odyssey Session Upload — Manual Entry' + (coach ? ' from ' + coach : '') + ' — Pending Review';
-  var body = '=== ODYSSEY SESSION DATA ===\n'
-    + 'Submitted: ' + dateStr + (coach ? '\nCoach: ' + coach : '') + '\n'
-    + '============================\n\n'
-    + text
-    + '\n\n============================\n'
-    + 'Sent via Odyssey Dashboard';
-  window.location.href = 'mailto:deseanlberger@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-  setTimeout(function(){ showImportStep3Msg(1); }, 500);
+  var ok = await web3formsSend({
+    subject: 'Odyssey Session Upload — Manual Entry' + (coach ? ' from ' + coach : ''),
+    coachName: coach,
+    method: 'Manual Entry',
+    body: text
+  });
+  if (ok) showImportStep3Msg(1);
+  else alert('Send failed. Check your connection and try again.');
 }
 
 function importSubmitManual() { importSubmitFreetext(); }
 
+async function importSubmitCSV() {
+  var file = window._importCSVFile;
+  if (!file) { alert('Please choose a CSV file first.'); return; }
+  var coach = (document.getElementById('csv-coach-name').value || '').trim();
+  var note = (document.getElementById('csv-note').value || '').trim();
+  var ok = await web3formsSend({
+    subject: 'Odyssey Session Upload — CSV' + (coach ? ' from ' + coach : ''),
+    coachName: coach,
+    method: 'CSV File (' + file.name + ')',
+    body: note || '(no note)',
+    attachment: file
+  });
+  if (ok) showImportStep3Msg(1);
+  else alert('Send failed. Check your connection and try again.');
+}
+
+async function importSubmitPhotoSimple() {
+  var file = window._importPhotoFile;
+  if (!file) { alert('Please take or upload a photo first.'); return; }
+  var coach = (document.getElementById('photo-coach-name').value || '').trim();
+  var note = (document.getElementById('photo-note').value || '').trim();
+  var ok = await web3formsSend({
+    subject: 'Odyssey Session Upload — Photo' + (coach ? ' from ' + coach : ''),
+    coachName: coach,
+    method: 'Photo / Screenshot',
+    body: note || '(no note)',
+    attachment: file
+  });
+  if (ok) showImportStep3Msg(1);
+  else alert('Send failed. Check your connection and try again.');
+}
+
 function importHandlePhoto(input) {
   var file = input.files[0];
   if (!file) return;
+  window._importPhotoFile = file;
   var reader = new FileReader();
   reader.onload = function(e) {
     var preview = document.getElementById('im-photo-preview');
     preview.innerHTML = '<img src="' + e.target.result + '" style="width:100%;display:block">';
     preview.style.display = 'block';
-    document.getElementById('im-photo-hint').style.display = 'block';
-    // Show same manual form inline for photo workflow
-    var manualDiv = document.getElementById('im-photo-manual');
-    manualDiv.style.display = 'block';
-    manualDiv.innerHTML = buildPhotoManualForm();
-    var dt = manualDiv.querySelector('#pmn-date');
-    if (dt) dt.value = new Date().toISOString().slice(0,10);
-    var ys = manualDiv.querySelector('#pmn-year');
-    if (ys) { for (var y=2026;y<=2032;y++) { var o=document.createElement('option'); o.value=y; o.text=y; if(y===2026) o.selected=true; ys.appendChild(o); } }
+    var label = document.getElementById('im-photo-label');
+    if (label) label.textContent = '✓ Photo selected — tap to retake';
   };
   reader.readAsDataURL(file);
 }
