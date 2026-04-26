@@ -9080,7 +9080,12 @@ Test Results:`;
     if (testData.sprint.time && !testData.sprint.t010 && !testData.sprint.t2030) metricsText += `\nSprint (${testData.sprint.exercise}): ${testData.sprint.time}s`;
 
     try {
-        const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        // Route through Cloudflare Worker proxy so Safari doesn't block direct
+        // calls to api.anthropic.com (CORS). The Worker forwards the request
+        // and attaches Access-Control-Allow-Origin: * headers.
+        // → After deploying the Worker, replace the URL below with your Worker URL.
+        const PROXY_URL = 'https://odyssey-ai-proxy.deseanberger.workers.dev';
+        const resp = await fetch(PROXY_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
