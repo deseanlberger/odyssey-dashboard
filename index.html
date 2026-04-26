@@ -1959,10 +1959,8 @@ select:focus{border-color:#C9A228}
 <div class="na-card-hdr">&#128193; Upload Test Data</div>
 <div style="display:flex;gap:8px;margin-bottom:8px">
 <label class="na-upload-btn">&#128202; VALD / Output Sports CSV<input type="file" id="newath-csv" accept=".csv" onchange="newathHandleFile(this,'csv')" style="display:none"></label>
-<label class="na-upload-btn" style="background:#1a2535;color:#6a8aa8;border:1px solid #2a4a6a">&#128247; Photo<input type="file" id="newath-photo" accept="image/*" onchange="newathHandleFile(this,'photo')" style="display:none"></label>
 </div>
 <div id="newath-csv-status" style="display:none;padding:8px 10px;background:#0f0f0f;border-radius:6px;font-size:12px;color:#4CAF50;border:1px solid #1e3a5f;margin-top:6px"></div>
-<div id="newath-photo-preview" style="display:none;margin-top:8px"><img id="newath-photo-img" style="max-width:120px;border-radius:6px;border:2px solid #1e3a5f"></div>
 </div>
 <div class="na-card">
 <div class="na-card-hdr">&#128100; Athlete Information</div>
@@ -1974,7 +1972,7 @@ select:focus{border-color:#C9A228}
 <div class="na-card-hdr">&#128202; Performance Metrics</div>
 <div class="na-row"><div class="na-field"><label class="na-lbl">RSI</label><input id="ns-rsi" class="na-inp" type="number" placeholder="e.g. 1.45" step="0.01"></div><div class="na-field"><label class="na-lbl">CMJ Height (in)</label><input id="ns-cmjjh" class="na-inp" type="number" placeholder="e.g. 22.4" step="0.1"></div></div>
 <div class="na-row"><div class="na-field"><label class="na-lbl">0&#8211;10 Sprint (s)</label><input id="ns-accel010" class="na-inp" type="number" placeholder="1.62" step="0.001"></div><div class="na-field"><label class="na-lbl">10&#8211;20 Split (s)</label><input id="ns-fly1020" class="na-inp" type="number" placeholder="0.99" step="0.001"></div><div class="na-field"><label class="na-lbl">20&#8211;30 Split (s)</label><input id="ns-fly2030" class="na-inp" type="number" placeholder="0.92" step="0.001"></div></div>
-<div class="na-row"><div class="na-field"><label class="na-lbl">Stand Vert (in)</label><input id="ns-standvert" class="na-inp" type="number" placeholder="28" step="0.5"></div><div class="na-field"><label class="na-lbl">Broad Jump (in)</label><input id="ns-broad" class="na-inp" type="number" placeholder="84" step="0.5"></div><div class="na-field"><label class="na-lbl">4-Hop (ft)</label><input id="ns-fourhop" class="na-inp" type="number" placeholder="32" step="0.1"></div></div>
+<div class="na-row"><div class="na-field"><label class="na-lbl">Stand Vert (in)</label><input id="ns-standvert" class="na-inp" type="number" placeholder="28" step="0.5"></div><div class="na-field"><label class="na-lbl">Broad Jump (in)</label><input id="ns-broad" class="na-inp" type="number" placeholder="84" step="0.5"></div></div>
 <div class="na-row"><div class="na-field"><label class="na-lbl">5-10-5 Shuttle (s)</label><input id="ns-51050" class="na-inp" type="number" placeholder="4.45" step="0.01"></div><div class="na-field"><label class="na-lbl">Push-Ups (#)</label><input id="ns-pushups" class="na-inp" type="number" placeholder="count"></div></div>
 <div class="na-row"><div class="na-field" style="flex:1"><label class="na-lbl">Notes</label><textarea id="ns-notes" class="na-inp" rows="2" placeholder="Additional notes..." style="resize:vertical"></textarea></div></div>
 </div>
