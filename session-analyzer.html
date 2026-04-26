@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Odyssey VALD Session Analyzer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:       #000000;
+      --panel:    #0A0A0A;
+      --card:     #0F0F0F;
+      --border:   #1a1a1a;
+      --gold:     #C9A228;
+      --gold-dim: rgba(201,162,40,0.12);
+      --text:     #FFFFFF;
+      --sub:      #6a8aa8;
+      --green:    #27ae60;
+      --yellow:   #f39c12;
+      --red:      #e74c3c;
+      --blue:     #2980b9;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* âââ TOP BAR âââââââââââââââââââââââââââââââââââââââ */
+    .topbar {
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .topbar-brand {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--gold);
+      letter-spacing: 2px;
+    }
+    .topbar-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--sub);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .topbar-actions { display: flex; gap: 10px; }
+    .btn-sm {
+      padding: 7px 16px;
+      border-radius: 5px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--sub);
+      transition: all 0.2s;
+    }
+    .btn-sm:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-sm.gold { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+    .btn-sm.gold:hover { background: #d4b840; }
+    .btn-sm:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    /* âââ MAIN LAYOUT âââââââââââââââââââââââââââââââââââ */
+    .main { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
+
+    /* âââ UPLOAD SECTION ââââââââââââââââââââââââââââââââ */
+    .upload-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .upload-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+    }
+    .upload-card-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .upload-card-title .badge {
+      background: var(--gold-dim);
+      color: var(--gold);
+      padding: 2px 7px;
+      border-radius: 3px;
+      font-size: 9px;
+    }
+
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s;
+      background: rgba(255,255,255,0.02);
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: var(--gold);
+      background: var(--gold-dim);
+    }
+    .drop-zone.loaded {
+      border-color: var(--green);
+      background: rgba(39,174,96,0.07);
+    }
+    .drop-icon { font-size: 28px; margin-bottom: 10px; }
+    .drop-label { font-size: 13px; color: var(--sub); margin-bottom: 4px; }
+    .drop-sub { font-size: 11px; color: #3a5a7a; }
+
+    .file-status {
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: rgba(39,174,96,0.1);
+      border-left: 3px solid var(--green);
+      border-radius: 4px;
+      font-size: 12px;
+      color: #7fcc7f;
+      display: none;
+    }
+    .file-status.show { display: block; }
+
+    /* âââ STATUS BAR ââââââââââââââââââââââââââââââââââââ */
+    .status-bar {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      min-height: 52px;
+    }
+    .status-left { display: flex; align-items: center; gap: 12px; }
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+    .status-dot.ready { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .status-dot.partial { background: var(--yellow); }
+    .status-msg { font-size: 13px; color: var(--sub); }
+    .status-msg strong { color: var(--text); }
+
+    /* âââ RESULTS âââââââââââââââââââââââââââââââââââââââ */
+    #resultsSection { display: none; }
+    #resultsSection.show { display: block; }
+
+    .section-hdr {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* âââ RANKINGS TABLE ââââââââââââââââââââââââââââââââ */
+    .rankings-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+    .rankings-hdr {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .rankings-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .rankings-table th {
+      padding: 10px 16px;
+      text-align: left;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--sub);
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+    }
+    .rankings-table th:hover { color: var(--gold); }
+    .rankings-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid rgba(30,58,95,0.5);
+      vertical-align: middle;
+    }
+    .rankings-table tr:last-child td { border-bottom: none; }
+    .rankings-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .rank-num {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      color: var(--sub);
+      font-size: 12px;
+      width: 36px;
+    }
+    .rank-num.top1 { color: var(--gold); }
+    .rank-num.top2 { color: #aaa; }
+    .rank-num.top3 { color: #cd7f32; }
+
+    .athlete-name-cell {
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .star { color: var(--gold); font-size: 12px; }
+
+    .dsi-val {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .bucket-pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .bucket-elite      { background: rgba(201,162,40,0.2);  color: #f0c040; border: 1px solid rgba(201,162,40,0.4); }
+    .bucket-diesel     { background: rgba(41,128,185,0.2);  color: #5dade2; border: 1px solid rgba(41,128,185,0.4); }
+    .bucket-rabbit     { background: rgba(39,174,96,0.2);   color: #58d68d; border: 1px solid rgba(39,174,96,0.4); }
+    .bucket-foundation { background: rgba(149,165,166,0.15);color: #aab7b8; border: 1px solid rgba(149,165,166,0.3); }
+    .bucket-modified   { background: rgba(231,76,60,0.15);  color: #f1948a; border: 1px solid rgba(231,76,60,0.3); }
+
+    .flag-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .flag-red    { background: rgba(231,76,60,0.2);  color: #f1948a; }
+    .flag-yellow { background: rgba(243,156,18,0.2); color: #f9ca24; }
+    .flag-green  { background: rgba(39,174,96,0.2);  color: #58d68d; }
+
+    /* âââ ATHLETE CARDS âââââââââââââââââââââââââââââââââ */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 18px;
+      margin-bottom: 40px;
+    }
+
+    .athlete-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .athlete-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .athlete-card.bucket-elite-card   { border-top: 3px solid var(--gold); }
+    .athlete-card.bucket-diesel-card  { border-top: 3px solid var(--blue); }
+    .athlete-card.bucket-rabbit-card  { border-top: 3px solid var(--green); }
+    .athlete-card.bucket-foundation-card { border-top: 3px solid #566573; }
+
+    .ac-header {
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .ac-name {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ac-meta { font-size: 11px; color: var(--sub); }
+    .ac-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+
+    .ac-body { padding: 16px 18px; }
+
+    .ac-dsi-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .ac-dsi-block { flex: 1; }
+    .ac-dsi-label {
+      font-size: 10px;
+      color: var(--sub);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 2px;
+    }
+    .ac-dsi-value {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+    }
+    .ac-dsi-value.dsi-elite     { color: var(--gold); }
+    .ac-dsi-value.dsi-diesel    { color: #5dade2; }
+    .ac-dsi-value.dsi-rabbit    { color: #58d68d; }
+    .ac-dsi-value.dsi-foundation{ color: #aab7b8; }
+
+    .ac-profile-type {
+      font-size: 10px;
+      color: var(--sub);
+      margin-top: 2px;
+    }
+
+    .ac-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .ac-metric {
+      background: rgba(255,255,255,0.03);
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+    .ac-metric-label {
+      font-size: 9px;
+      color: var(--sub);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+    }
+    .ac-metric-value {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .ac-metric-unit { font-size: 9px; color: var(--sub); margin-top: 1px; }
+
+    .ac-summary {
+      font-size: 12px;
+      color: #8aa8c8;
+      line-height: 1.7;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 6px;
+      border-left: 3px solid var(--border);
+      margin-bottom: 12px;
+    }
+    .ac-summary.elite-summary   { border-left-color: var(--gold); }
+    .ac-summary.diesel-summary  { border-left-color: var(--blue); }
+    .ac-summary.rabbit-summary  { border-left-color: var(--green); }
+
+    .ac-vbt-row {
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.02);
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    .ac-vbt-label {
+      font-size: 10px;
+      color: var(--sub);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+    .ac-vbt-metrics {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .ac-vbt-item { font-size: 12px; }
+    .ac-vbt-item span { color: var(--gold); font-weight: 600; }
+
+    .ac-unilateral {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      margin-top: 8px;
+    }
+    .ac-unilateral.flag-r { background: rgba(231,76,60,0.1); }
+    .ac-unilateral.flag-y { background: rgba(243,156,18,0.1); }
+    .ac-unilateral.flag-g { background: rgba(39,174,96,0.1); }
+
+    /* âââ EMPTY / LOADING âââââââââââââââââââââââââââââââ */
+    .empty-state {
+      padding: 40px;
+      text-align: center;
+      color: var(--sub);
+    }
+    .empty-icon { font-size: 36px; margin-bottom: 12px; }
+    .empty-title { font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .empty-sub { font-size: 13px; }
+
+    /* âââ PRINT âââââââââââââââââââââââââââââââââââââââââ */
+    @media print {
+      .topbar, .upload-grid, .status-bar { display: none !important; }
+      body { background: #fff; color: #000; }
+      .rankings-wrap, .athlete-card { break-inside: avoid; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
+    @media (max-width: 700px) {
+      .upload-grid { grid-template-columns: 1fr; }
+      .cards-grid  { grid-template-columns: 1fr; }
+      .ac-metrics  { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- âââ TOP BAR ââââââââââââââââââââââââââââââââââââââââ -->
+<div class="topbar">
+  <div class="topbar-brand">ODYSSEY PERFORMANCE</div>
+  <div class="topbar-title">VALD Session Analyzer</div>
+  <div class="topbar-actions">
+    <button class="btn-sm" id="clearBtn" onclick="clearAll()">Clear Session</button>
+    <button class="btn-sm gold" id="printBtn" onclick="window.print()" disabled>Print Report</button>
+  </div>
+</div>
+
+<!-- âââ MAIN ââââââââââââââââââââââââââââââââââââââââââââ -->
+<div class="main">
+
+  <!-- Upload Zones -->
+  <div class="upload-grid">
+    <!-- VALD Force Plate -->
+    <div class="upload-card">
+      <div class="upload-card-title">
+        ð VALD Force Plate Data
+        <span class="badge">CSV</span>
+      </div>
+      <div class="drop-zone" id="valdDrop" onclick="document.getElementById('valdInput').click()">
+        <div class="drop-icon">ð</div>
+        <div class="drop-label">Drop VALD CSV here, or click to browse</div>
+        <div class="drop-sub">Supports CMJ Â· ISOSQT Â· SLJ Â· CMRJ Â· DJ Â· SQJ batch exports</div>
+      </div>
+      <input type="file" id="valdInput" accept=".csv" style="display:none" onchange="handleValdFile(this.files)">
+      <div class="file-status" id="valdStatus"></div>
+    </div>
+
+    <!-- Output / VBT -->
+    <div class="upload-card">
+      <div class="upload-card-title">
+        â¡ Output / VBT Data
+        <span class="badge">CSV</span>
+        <span class="badge" style="background:rgba(255,255,255,0.05);color:var(--sub);">Optional</span>
+      </div>
+      <div class="drop-zone" id="outputDrop" onclick="document.getElementById('outputInput').click()">
+        <div class="drop-icon">ð</div>
+        <div class="drop-label">Drop Output/VBT CSV here, or click to browse</div>
+        <div class="drop-sub">GymAware Â· PUSH Â· Beast Â· Custom Output exports</div>
+      </div>
+      <input type="file" id="outputInput" accept=".csv" style="display:none" onchange="handleOutputFile(this.files)">
+      <div class="file-status" id="outputStatus"></div>
+    </div>
+  </div>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <div class="status-left">
+      <div class="status-dot" id="statusDot"></div>
+      <div class="status-msg" id="statusMsg">Upload a VALD CSV to begin analysis</div>
+    </div>
+    <div id="sessionMeta" style="font-size:12px;color:var(--sub);"></div>
+  </div>
+
+  <!-- Results Section -->
+  <div id="resultsSection">
+
+    <!-- Rankings Table -->
+    <div class="section-hdr">Session Rankings â Sorted by DSI</div>
+    <div class="rankings-wrap" id="rankingsWrap">
+      <div class="empty-state">
+        <div class="empty-icon">ð</div>
+        <div class="empty-title">No Data Yet</div>
+        <div class="empty-sub">Upload a VALD CSV to see rankings</div>
+      </div>
+    </div>
+
+    <!-- Individual Cards -->
+    <div class="section-hdr" style="margin-top:30px;">Individual Athlete Summaries</div>
+    <div class="cards-grid" id="cardsGrid"></div>
+
+  </div>
+
+</div>
+<script>// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+//  STATE
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+const S = {
+  valdRows: [],
+  outputRows: [],
+  athletes: {},  // keyed by normalized name
+  sessionDate: null
+};
+
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+//  CSV PARSER
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+  const headers = splitCSVLine(lines[0]);
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    if (!lines[i].trim()) continue;
+    const vals = splitCSVLine(lines[i]);
+    const row = {};
+    headers.forEach((h, idx) => { row[h.trim()] = (vals[idx] || '').trim(); });
+    rows.push(row);
+  }
+  return rows;
+}
+
+function splitCSVLine(line) {
+  const res = []; let cur = ''; let inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') { inQ = !inQ; continue; }
+    if (c === ',' && !inQ) { res.push(cur); cur = ''; continue; }
+    cur += c;
+  }
+  res.push(cur);
+  return res;
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+//  COLUMN FINDER  (tries multiple aliases)
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function col(row, ...aliases) {
+  for (const a of aliases) {
+    const v = row[a];
+    if (v !== undefined && v !== '') return v;
+  }
+  // fuzzy: check if any key includes the alias text
+  for (const a of aliases) {
+    const al = a.toLowerCase();
+    for (const k of Object.keys(row)) {
+      if (k.toLowerCase().includes(al) && row[k] !== '') return row[k];
+    }
+  }
+  return null;
+}
+
+function num(row, ...aliases) {
+  const v = col(row, ...aliases);
+  if (v === null || v === '') return null;
+  const n = parseFloat(v);
+  return isNaN(n) ? null : n;
+}
+
+function normName(s) {
+  return (s || '').trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+//  VALD PARSING
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function processVALD(rows) {
+  S.athletes = {};
+  S.valdRows = rows;
+
+  rows.forEach(row => {
+    const name = col(row, 'Name', 'Athlete Name', 'Athlete', 'athlete_name');
+    if (!name) return;
+    const key = normName(name);
+    if (!S.athletes[key]) {
+      S.athletes[key] = {
+        name: name.trim(),
+        key,
+        bw_kg: null,
+        date: null,
+        cmj: {}, isosqt: {}, sqj: {}, slj: {}, cmrj: {}, dj: {},
+        vbt: null,
+        dsi: null,
+        dsiType: null,
+        bucket: null
+      };
+    }
+    const a = S.athletes[key];
+
+    // Body weight & date
+    const bw = num(row, 'BW [KG]', 'Body Weight [kg]', 'BW (lbs)', 'Weight [kg]');
+    if (bw && !a.bw_kg) a.bw_kg = bw;
+    const d = col(row, 'Date', 'Test Date', 'date');
+    if (d && !a.date) { a.date = d; S.sessionDate = d; }
+
+    const tt = (col(row, 'Test Type', 'Test', 'test_type') || '').toUpperCase().trim();
+
+    if (tt === 'CMJ') {
+      if (!a.cmj.height_in) a.cmj.height_in = num(row,
+        'Jump Height (Flight Time) in Inches [in]',
+        'Jump Height [in]', 'Jump Height (Imp-Mom) in Inches [in]');
+      if (!a.cmj.height_cm) a.cmj.height_cm = num(row,
+        'Jump Height (Flight Time) [cm]', 'Jump Height (Imp-Mom) [cm]', 'Jump Height [cm]');
+      if (!a.cmj.rsi) a.cmj.rsi = num(row, 'RSI-modified [m/s]', 'RSI Modified [m/s]', 'RSI [m/s]');
+      if (!a.cmj.power_bm) a.cmj.power_bm = num(row, 'Peak Power / BM [W/kg]', 'Peak Power/BM [W/kg]');
+      if (!a.cmj.force_bm) a.cmj.force_bm = num(row,
+        'Peak Vertical Force / BM [N/kg]', 'Peak Force / BM [N/kg]');
+      if (!a.cmj.force_n) a.cmj.force_n = num(row,
+        'Peak Vertical Force [N]', 'Peak Force [N]', 'Peak Vertical Force(N)');
+    }
+
+    if (tt === 'ISOSQT' || tt === 'ISO SQT' || tt === 'ISOMETRIASQUAT   {
+      if (!a.isosqt.force_bm) a.isosqt.force_bm = num(row,
+        'Peak Vertical Force / BM [N/kg]', 'Peak Force / BM [N/kg]', 'Peak Vertical Force/BM [N/kg]');
+      if (!a.isosqt.force_n) a.isosqt.force_n = num(row,
+        'Peak Vertical Force [N]', 'Peak Force [N]');
+      if (!a.isosqt.rfd) a.isosqt.rfd = num(row,
+        'RFD - 200ms [N/s]', 'RFD 200ms [N/s]', 'RFD [N/s]', 'Rate of Force Development [N/s]');
+    }
+
+    if (tt === 'SQJ' || tt === 'SQUAT JUMP') {
+      if (!a.sqj.force_bm) a.sqj.force_bm = num(row,
+        'Peak Vertical Force / BM [N/kg]', 'Peak Force / BM [N/kg]');
+      if (!a.sqj.force_n)  a.sqj.force_n  = num(row, 'Peak Vertical Force [N]', 'Peak Force [N]');
+      if (!a.sqj.height_in) a.sqj.height_in = num(row,
+        'Jump Height (Imp-Mom) in Inches [in]', 'Jump Height [in]');
+    }
+
+    if (tt === 'SLJ' || tt === 'SINGLE LEG' || tt === 'SINGLELEG CMJ' || tt.includes('SL CMJ')) {
+      if (!a.slj.height_l_cm) a.slj.height_l_cm = num(row,
+        'Jump Height (Imp-Mom) [cm] (L)', 'Jump Height [cm] (L)', 'Jump Height (L) [cm]');
+      if (!a.slj.height_r_cm) a.slj.height_r_cm = num(row,
+        'Jump Height (Imp-Mom) [cm] (R)', 'Jump Height [cm] (R)', 'Jump Height (R) [cm]');
+      const asymRaw = col(row,
+        'Jump Height (Imp-Mom) [cm] (Asym)(%)', 'Asymmetry (%)', 'Asym (%)');
+      if (asymRaw && !a.slj.asym_pct) {
+        const m = String(asymRaw).match(/([\d.]+)/);
+        if (m) a.slj.asym_pct = parseFloat(m[1]);
+        const s = String(asymRaw).match(/([LR])/);
+        if (s) a.slj.dom_side = s[1];
+      }
+    }
+
+    if (tt === 'CMRJ') {
+      if (!a.cmrj.rsi) a.cmrj.rsi = num(row, 'RSI-modified [m/s]', 'RSI [m/s]');
+      if (!a.cmrj.height_in) a.cmrj.height_in = num(row,
+        'Jump Height (Flight Time) in Inches [in]', 'Jump Height [in]');
+    }
+
+    if (tt === 'DJ' || tt === 'DROP JUMP') {
+      if (!a.dj.rsi) a.dj.rsi = num(row, RSI (Flight Time/Contact Time)', 'RSI [m/s]', 'RSI');
+      if (!a.dj.contact) a.dj.contact = num(row, 'Contact Time [s]', 'Ground Contact Time [s]');
+      if (!a.dj.height_in) a.dj.height_in = num(row,
+        'Jump Height (Imp-Mom) in Inches [in]', 'Jump Height [in]');
+    }
+  });
+
+  // Calculate DSI for each athlete
+  Object.values(S.athletes).forEach(calcDSI);
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+//  DSI CALCULATION  (Standard â Modified fallback)
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function calcDSI(a) {
+  // Strength baseline: prefer ISOSQT (Standard), fallback to SQJ (Modified)
+  let strengthVal = null;
+  let dsiType = null;
+
+  if (a.isosqt.force_bm) {
+    strengthVal = a.isosqt.force_bm;
+    dsiType = 'Standard';
+  } else if (a.isosqt.force_n && a.bw_kg) {
+    strengthVal = a.isosqt.force_n / (a.bw_kg * 9.81); // convert to N/kg
+    dsiType = 'Standard';
+  } else if (a.sqj.force_bm) {
+    strengthVal = a.sqj.force_bm;
+    dsiType = 'Modified';
+  } else if (a.sqj.force_n && a.bw_kg) {
+    strengthVal = a.sqj.force_n / (a.bw_kg * 9.81);
+    dsiType = 'Modified';
+  }
+
+  const cmjVal = a.cmj.force_bm ||
+    (a.cmj.force_n && a.bw_kg ? a.cmj.force_n / (a.bw_kg * 9.81) : null);
+
+  if (cmjVal && strengthVal && strengthVal > 0) {
+    a.dsi = +(cmjVal / strengthVal).toFixed(3);
+    a.dsiType = dsiType;
+  } else {
+    a.dsi = null;
+    a.dsiType = null;
+  }
+
+  a.bucket = assignBucket(a);
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+//  BUCKET ASSIGNMENT
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function assignBucket(a) {
+  const dsi = a.dsi;
+  const hasStrength = !!(a.isosqt.force_bm || a.sqj.force_bm);
+  const hasCMJ = !!(a.cmj.force_bm || a.cmj.height_in);
+
+  if (dsi === null) {
+    // No DSI â rank by CMJ height if available
+    const h = a.cmj.height_in;
+    if (!h) return 'Foundation';
+    if (h >= 24) return 'Elite';
+    if (h >= 18) return 'Rabbit';
+    return 'Foundation';
+  }
+
+  const cmjH = a.cmj.height_in;
+  const strVal = a.isosqt.force_bm || a.sqj.force_bm;
+
+  if (dsi >= 0.8 && dsi <= 1.2) {
+    if ((cmjH && cmjH >= 18) || (strVal && strVal >= 28)) return 'Elite';
+    return a.dsiType === 'Modified' ? 'Foundation' : 'Rabbit';
+  }
+  if (dsi < 0.8) return 'Diesel';
+  if (dsi > 1.2) return 'Rabbit';
+  return 'Foundation';
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+//  OUTPUT / VBT PARSING
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function processOutput(rows) {
+  S.outputRows = rows;
+  const byAthlete = {};
+  rows.forEach(row => {
+    const name = col(row, 'Athlete', 'Name', 'Athlete Name', 'athlete', 'name');
+    if (!name) return;
+    const key = normName(name);
+    if (!byAthlete[key]) byAthlete[key] = [];
+    byAthlete[key].push(row);
+  });
+  Object.entries(byAthlete).forEach(([key, athleteRows]) => {
+    let target = S.athletes[key];
+    if (!target) {
+      const keys = Object.keys(S.athletes);
+      target = keys.map(k => ({ k, score: similarity(k, key) })).sort((a,b) => b.score - a.score)[0];
+      if (target && target.score > 0.6) target = S.athletes[target.k];
+      else target = null;
+    }
+    const vbt = buildVBTSummary(athleteRows);
+    if (target) { target.vbt = vbt; }
+    else {
+      const displayName = col(athleteRows[0], 'Athlete', 'Name', 'Athlete Name') || key;
+      S.athletes[key] = { name: displayName, key, bw_kg: null, date: null,
+        cmj: {}, isosqt: {}, sqj: {}, slj: {}, cmrj: {}, dj: {},
+        vbt, dsi: null, dsiType: null, bucket: 'Foundation' };
+    }
+  });
+}
+
+function buildVBTSummary(rows) {
+  const summary = {};
+  rows.forEach(row => {
+    const ex = col(row, 'Exercise', 'Exercise Name', 'exercise') || 'Unknown';
+    if (!summary[ex]) summary[ex] = { loads: [], meanVel: [], peakVel: [], powers: [] };
+    const load = num(row, 'Load (kg)', 'Load [kg]', 'Weight (lbs)', 'Load');
+    const mv   = num(row, 'Mean Velocity (m/s)', 'Mean Velocity [m/s]', 'Mean Vel');
+    const pv   = num(row, 'Peak Velocity (m/s)', 'Peak Velocity [m/s]', 'Peak Vel');
+    const pw   = num(row, 'Power (W)', 'Mean Power (W)', 'power');
+    if (load) summary[ex].loads.push(load);
+    if (mv)   summary[ex].meanVel.push(mv);
+    if (pv)   summary[ex].peakVel.push(pv);
+    if (pw)   summary[ex].powers.push(pw);
+  });
+  return summary;
+}
+
+function similarity(a, b) {
+  const setA = new Set(a.split(''));
+  const setB = new Set(b.split(''));
+  const inter = [...setA].filter(c => setB.has(c)).length;
+  return inter / Math.max(setA.sizeKÙ]Ú^JNÂBËÈ8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥dËÈSTËÈ8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d[Ý[Û[\
+HÂÛÛÝ]]\ÈHØXÝ[Y\ÊË]]\ÊNÂY
+]]\Ë[ÝOOH
+H]\Â]]\ËÛÜ
+
+KHOÂY
+KÚHOOH[	ÚHOOH[
+HÂÛÛÝØÛÜPHHXÚÙ]ØÛÜJJNÂÛÛÝØÛÜPHXÚÙ]ØÛÜJNÂY
+ØÛÜPHOOHØÛÜPH]\ØÛÜPHØÛÜPNÂ]\
+ÛZZYÚÚ[
+HH
+KÛZZYÚÚ[
+NÂBY
+KÚHOOH[
+H]\LNÂY
+ÚHOOH[
+H]\NÂ]\
+ÛZZYÚÚ[
+HH
+KÛZZYÚÚ[
+NÂJNÂ[\[Ú[ÜÊ]]\ÊNÂ[\Ø\Ê]]\ÊNÂØÝ[Y[Ù][[Y[RY
+	Ü\Ý[ÔÙXÝ[ÛÊKÛ\ÜÓ\ÝY
+	ÜÚÝÉÊNÂØÝ[Y[Ù][[Y[RY
+	Ü[ÊK\ØXYH[ÙNÂÛÛÝ\ÑÒHH]]\Ë[\HOKÚHOOH[
+K[ÝÂÙ]Ý]\Ê	ÜXYIËÝÛÏØ]]\Ë[ÝOÜÝÛÏ]]\È[[^Y0­ÈÝÛÏÚ\ÑÒ_OÜÝÛÏÚ]ÒHØ[Ý[]Y
+Â
+ËÙ\ÜÚ[Û]HÈ0­ÈÙ\ÜÚ[Û	ÙÜX]]JËÙ\ÜÚ[Û]J_X	ÉÊK	Ø]]\Ë[\OOKXÚÙ]OOIÑ[]IÊK[ÝH[]H0­È	Ø]]\Ë[\OOKXÚÙ]OOIÑY\Ù[	ÊK[ÝHY\Ù[0­È	Ø]]\Ë[\OOKXÚÙ]OOIÔX]	ÊK[ÝHX]0­È	Ø]]\Ë[\OOKXÚÙ]OOIÑÝ[][ÛÊK[ÝHÝ[][Û
+NÂB[Ý[ÛXÚÙ]ØÛÜJJHÂÛÛÝÚHHKÚHÂÛÛÝ[[ÙHHHHX]XÊÚHHK
+NÂÛÛÝÛZÛ\ÈH
+KÛZZYÚÚ[
+HÈ
+Â]\[[ÙH
+ÈÛZÛ\ÎÂB[Ý[Û[\[Ú[ÜÊ]]\ÊHÂÛÛÝÜ\HØÝ[Y[Ù][[Y[RY
+	Ü[Ú[ÜÕÜ\	ÊNÂY
+]]\Ë[ÝOOH
+HÂÜ\[\SH	Ï]Û\ÜÏH[\K\Ý]H]Û\ÜÏH[\KZXÛÛ¼'äâÏÙ]]Û\ÜÏH[\K]]HÈ]]\ÏÙ]Ù]ÎÂ]\ÂBÛÛÝÝÜÈH]]\ËX\
+
+KJHOÂÛÛÝ[ÈHH
+ÈNÂÛÛÝ[ÐÛ\ÜÈH[ÈOOHHÈ	ÝÜIÈ[ÈOOHÈ	ÝÜÈ[ÈOOHÈÈ	ÝÜÉÈ	ÉÎÂÛÛÝÚQ\Ü^HHKÚHOOH[ÈÜ[Û\ÜÏHÚK][Ý[OHÛÛÜÙÚPÛÛÜKÚJ_HØKÚKÑ^Y
+Ê_OÜÜ[
+Â
+KÚU\HOOH	Ó[ÙYYY	ÈÈ	ÈÜ[Ý[OHÛ\Ú^NLØÛÛÜ\K\ÝXHÓSÑOÜÜ[È	ÉÊB	ÏÜ[Ý[OHÛÛÜ\K\ÝXH¸ %ÜÜ[ÎÂÛÛÝÛZHKÛZZYÚÚ[È	ØKÛZZYÚÚ[Ñ^Y
+J_H	ø %	ÎÂÛÛÝ\ÛÑHK\ÛÜÜ]ÜÙWØHÈ	ØK\ÛÜÜ]ÜÙWØKÑ^Y
+J_HÚÙØKÜZÜÙWØHÈ	ØKÜZÜÙWØKÑ^Y
+J_HÚÙØ	ø %	ÎÂÛÛÝÚHHKÛZÚHÈKÛZÚKÑ^Y
+HKÚHÈKÚKÑ^Y
+H	ø %	ÎÂÛÛÝYÈH[QYÊJNÂ]\]Û\ÜÏH[Ë[[H	Ü[ÐÛ\ÜßHÜ[ßOÙ]Ý]Û\ÜÏH]]K[[YKXÙ[ØK[Y_OÙ]ÝÙÚQ\Ü^_OÝÜ[Û\ÜÏHXÚÙ]\[XÚÙ]IØKXÚÙ]ÓÝÙ\Ø\ÙJ
+_HØKXÚÙ]OÜÜ[	ØKÚU\HOOH	Ó[ÙYYY	ÈÈ	ÏÜ[Û\ÜÏHXÚÙ]\[XÚÙ][[ÙYYYÝ[OHX\Ú[[YSÑÜÜ[È	ÉßOÝØÛZOÝÚ\ÛÑOÝÜÚ_OÝÙYË[OÝÝÂJKÚ[	ÉÊNÂÜ\[\SH]Û\ÜÏH[Ú[ÜËZ]Û\ÜÏHÙXÝ[ÛZÝ[OHX\Ú[ØÜ\ÛNÜY[ÎÙ\ÜÚ[Û[Ú[ÜÏÙ]]Ý[OHÛ\Ú^NL\ØÛÛÜ\K\ÝXHØ]]\Ë[ÝH]]\È0­È	ÔËÙ\ÜÚ[Û]HÈÜX]]JËÙ\ÜÚ[Û]JH	ÕÙ^IßOÙ]Ù]XHÛ\ÜÏH[Ú[ÜË]XHXYÏÝ]]OÝÒOÝXÚÙ]ÝÓRZYÚÝÝ[ÝÝÒOÝÔYÏÝÝÝXYÙOÜÝÜßOÝÙOÝXOÂB[Ý[Û[\Ø\Ê]]\ÊHÂÛÛÝÜYHØÝ[Y[Ù][[Y[RY
+	ØØ\ÑÜY	ÊNÂÜY[\SH]]\ËX\
+HOZ[Ø\
+JJKÚ[	ÉÊNÂB[Ý[ÛZ[Ø\
+JHÂÛÛÝXÚÙ]HKXÚÙ]ÂÛÛÝÚQ\Ü^HHKÚHOOH[ÈKÚKÑ^Y
+ÊH	ø %	ÎÂÛÛÝÚPÛ\ÜÈH	ÙÚKIÈ
+ÈXÚÙ]ÓÝÙ\Ø\ÙJ
+NÂÛÛÝY]XÜÈH×NÂY
+KÛZZYÚÚ[HY]XÜË\Ú
+ÈX[	ÐÓRZYÚ	Ë[KÛZZYÚÚ[Ñ^Y
+JK[]	Ú[ÈJNÂY
+KÛZÚJHY]XÜË\Ú
+ÈX[	ÔÒKS[Ù	Ë[KÛZÚKÑ^Y
+K[]	ÛKÜÉÈJNÂY
+K\ÛÜÜ]ÜÙWØJHY]XÜË\Ú
+ÈX[	ÒTÓÈÜ]X]	Ë[K\ÛÜÜ]ÜÙWØKÑ^Y
+JK[]	ÓÚÙÉÈJNÂ[ÙHY
+KÜZÜÙWØJHY]XÜË\Ú
+ÈX[	ÔÔRÜÙIË[KÜZÜÙWØKÑ^Y
+JK[]	ÓÚÙÉÈJNÂY
+K\ÛÜÜ]
+HY]XÜË\Ú
+ÈX[	Ô	Ë[X]Ý[
+K\ÛÜÜ]
+K[]	ÓÜÉÈJNÂY
+KÚJHY]XÜË\Ú
+ÈX[	ÑÒIË[KÚKÑ^Y
+K[]	ÉÈJNÂY
+KÛÛXÝ
+HY]XÜË\Ú
+ÈX[	ÐÛÛXÝ	Ë[KÛÛXÝÑ^Y
+ÊK[]	ÜÉÈJNÂY
+KÛZÝÙ\ØJHY]XÜË\Ú
+ÈX[	ÔÝÙ\Ë[KÛZÝÙ\ØKÑ^Y
+JK[]	ÕËÚÙÉÈJNÂÛÛÝY]XÜÒSHY]XÜËÛXÙJ
+KX\
+HO]Û\ÜÏHXË[Y]XÈ]Û\ÜÏHXË[Y]XË[X[ÛKX[OÙ]]Û\ÜÏHXË[Y]XË][YHÛK[OÙ]]Û\ÜÏHXË[Y]XË][]ÛK[]OÙ]Ù]
+KÚ[	ÉÊNÂ]SH	ÉÎÂY
+K	ØXÝÙ^\ÊK
+K[Ý
+HÂÛÛÝ][\ÈHØXÝ[Y\ÊK
+KÛXÙJÊKX\
+
+Ù^JHOÂÛÛÝ]HYX[[[ÝÈX]X^
+YX[[
+KÑ^Y
+H[ÂÛÛÝX^ØYHØYË[ÝÈX]X^
+ØYÊH[Â]\]Û\ÜÏHXË]Z][HÙ^N	ÛX^ØYÈÜ[ÛX^ØYZÙÏÜÜ[	ÉßIÛ]ÈÜ[Û]HKÜÏÜÜ[	ÉßOÙ]ÂJKÚ[	ÉÊNÂSH]Û\ÜÏHXË]\ÝÈ]Û\ÜÏHXË][X[¸¦¨HÝ]]ÈÙ]]Û\ÜÏHXË][Y]XÜÈÚ][\ßOÙ]Ù]ÂBÛÛÝYÈH[QYÊJNÂÛÛÝ[RSHYËÚÝÈÈ]Û\ÜÏHXË][[]\[YËIÙYË][HÜ[ÙYËX[OÜÜ[Ü[Û\ÜÏHYËXYÙHYËIÙYË][HÙYËÝIH\Þ[OÜÜ[Ù]	ÉÎÂÛÛÝÝ[[X\HHÛØXÚÝ[[X\JJNÂÛÛÝÙ[PYÙHHKÚU\HOOH	Ó[ÙYYY	ÈÈÜ[Û\ÜÏHXÚÙ]\[XÚÙ][[ÙYYYSÑQQQÜÜ[	ÉÎÂ]\]Û\ÜÏH]]KXØ\XÚÙ]IØXÚÙ]ÓÝÙ\Ø\ÙJ
+_KXØ\]Û\ÜÏHXËZXY\]]Û\ÜÏHXË[[YHØK[Y_OÙ]]Û\ÜÏHXË[Y]HØK]HÈÜX]]JK]JH	ÔÙ\ÜÚ[ÛßH0­È	ØK×ÚÙÈÈ
+K×ÚÙÊ
+JKÑ^Y
+
+JÉÈÉÈ	ÉßOÙ]Ù]]Û\ÜÏHXËXYÙ\ÈÜ[Û\ÜÏHXÚÙ]\[XÚÙ]IØXÚÙ]ÓÝÙ\Ø\ÙJ
+_HØXÚÙ]OÜÜ[ÜÙ[PYÙ_OÙ]Ù]]Û\ÜÏHXËXÙH]Û\ÜÏHXËYÚK\ÝÈ]Û\ÜÏHXËYÚKXØÚÈ]Û\ÜÏHXËYÚK[X[ÒHÝÜOÙ]]Û\ÜÏHXËYÚK][YH	ÙÚPÛ\ÜßHÙÚQ\Ü^_OÙ]]Û\ÜÏHXË\Ù[K]\HÙÚTÙ[SX[
+J_OÙ]Ù]]Ý[OH^ÛY]XÜÒSÈ]Û\ÜÏHXË[Y]XÜÈÛY]XÜÒSOÙ]	ÉßOÙ]Ù]	ÝSB]Û\ÜÏHXË\Ý[[X\H	ØXÚÙ]ÓÝÙ\Ø\ÙJ
+_K\Ý[[X\HÜÝ[[X\_OÙ]	Ý[RSBÙ]Ù]ÂB items = Object.entries(a.vbt).slice(0, 3).map(([ex, d]) => {
+      const mv = d.meanVel.length ? Math.max(...d.meanVel).toFixed(2) : null;
+      const maxLoad = d.loads.length ? Math.max(...d.loads) : null;
+      return `<div class="ac-vbt-item">${ex}: ${maxLoad ? `<span>${maxLoad}kg</span>` : ''}${mv ? ` @ <span>${mv} m/s</span>` : ''}</div>`;
+    }).join('');
+    vbtHTML = `<div class="ac-vbt-row">
+      <div class="ac-vbt-label">â¡ Output / VBT</div>
+      <div class="ac-vbt-metrics">${items}</div>
+    </div>`;
+  }
+
+  // Unilateral flag
+  const flag = uniFlag(a);
+  const uniHTML = flag.show ? `
+    <div class="ac-unilateral flag-${flag.level}">
+      <span>${flag.label}</span>
+      <span class="flag-badge flag-${flag.level}">${flag.pct}% asym</span>
+    </div>` : '';
+
+  // Coaching summary
+  const summary = coachSummary(a);
+
+  // Profile type badge
+  const profileBadge = a.dsiType === 'Modified'
+    ? `<span class="bucket-pill bucket-modified">MODIFIED</span>` : '';
+
+  return `
+  <div class="athlete-card bucket-${bucket.toLowerCase()}-card">
+    <div class="ac-header">
+      <div>
+        <div class="ac-name">${a.name}</div>
+        <div class="ac-meta">${a.date ? formatDate(a.date) : 'Session'} Â· ${a.bw_kg ? (a.bw_kg*2.205).toFixed(0)+' lbs' : ''}</div>
+      </div>
+      <div class="ac-badges">
+        <span class="bucket-pill bucket-${bucket.toLowerCase()}">${bucket}</span>
+        ${profileBadge}
+      </div>
+    </div>
+    <div class="ac-body">
+      <div class="ac-dsi-row">
+        <div class="ac-dsi-block">
+          <div class="ac-dsi-label">DSI Score</div>
+          <div class="ac-dsi-value ${dsiClass}">${dsiDisplay}</div>
+          <div class="ac-profile-type">${dsiProfileLabel(a)}</div>
+        </div>
+        <div style="flex:2">${metricsHTML ? `<div class="ac-metrics">${metricsHTML}</div>` : ''}</div>
+      </div>
+      ${vbtHTML}
+      <div class="ac-summary ${bucket.toLowerCase()}-summary">${summary}</div>
+      ${uniHTML}
+    </div>
+  </div>`;
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+//  COACHING INTELLIGENCE
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function coachSummary(a) {
+  const name  = a.name.split(' ')[0];
+  const dsi   = a.dsi;
+  const cmjH  = a.cmj.height_in;
+  const rsi   = a.cmj.rsi;
+  const isoF  = a.isosqt.force_bm;
+  const sqjF  = a.sqj.force_bm;
+  const strF  = isoF || sqjF;
+  if (a.bucket === 'Diesel') {
+    const quality = strF ? (strF >= 35 ? 'exceptional' : 'solid') : 'above-average';
+    const cmjNote = cmjH ? ` CMJ height is ${cmjH.toFixed(1)}"` : '';
+    const rsiNote = rsi ? ` with RSI-mod of ${rsi.toFixed(2)}` : '';
+    return `${name} is <strong>strength dominant</strong> â isometric output is ${quality} but ballistic transfer is lagging (DSI ${dsi ? dsi.toFixed(3) : 'N/A'}).${cmjNote}${rsiNote}. Program priority: <strong>plyometric progressions, med-ball throws, and Olympic lift variations</strong> to close the force-velocity gap.`;
+  }
+  if (a.bucket === 'Rabbit') {
+    const cmjNote = cmjH ? ` Jumping ${cmjH.toFixed(1)}"` : '';
+    const rsiNote = rsi ? ` with excellent reactive output (RSI ${rsi.toFixed(2)})` : '';
+    return `${name} is <strong>power dominant</strong> â ballistic expression is strong${rsiNote}${cmjNote}, but lacks a corresponding strength foundation (DSI ${dsi ? dsi.toFixed(3) : 'N/A'}). Program priority: <strong>compound strength loading, isometric holds, and heavy eccentric work</strong> to build the base.`;
+  }
+  if (a.bucket === 'Elite') {
+    const cmjNote = cmjH ? ` CMJ at ${cmjH.toFixed(1)}"` : '';
+    const rsiNote = rsi ? `, RSI ${rsi.toFixed(2)}` : '';
+    return `${name} has a <strong>well-balanced force-velocity profile</strong>${cmjNote}${rsiNote} (DSI ${dsi ? dsi.toFixed(3) : 'N/A'}). Both strength and power qualities are developed. Program priority: <strong>maintain balance, sharpen rate of force development, and introduce competition-specific loading</strong>.`;
+  }
+  if (dsi === null) {
+    const cmjNote = cmjH ? `CMJ at ${cmjH.toFixed(1)}" ` : '';
+    return `${name} needs <strong>complete profile data</strong> for full DSI analysis. ${cmjNote}Program priority: <strong>establish strength baseline via isometric testing and build fundamental force-production patterns</strong>.`;
+  }
+  return `${name} is <strong>building across both qualities</strong>. Program priority: <strong>foundation strength work combined with basic plyometric exposure</strong> to develop a base profile.`;
+}
+
+function dsiProfileLabel(a) {
+  if (!a.dsi) return 'Insufficient data for DSI';
+  if (a.dsi < 0.8) return 'Strength dominant Â· needs power';
+  if (a.dsi > 1.2) return 'Power dominant Â· needs strength';
+  return 'Balanced force-velocity profile';
+}
+
+function uniFlag(a) {
+  const pct = a.slj.asym_pct;
+  if (!pct) return { show: false, html: '' };
+  const side = a.slj.dom_side === 'R' ? 'R dominant' : a.slj.dom_side === 'L' ? 'L dominant' : 'dominant side unknown';
+  if (pct >= 15) return { show: true, level: 'red',    label: `â¢ Critical asymmetry â  ${side}`, pct: pct.toFixed(1), html: `<span class="flag-badge flag-red">â  ${pct.toFixed(1)}% L/R</span>` };
+  if (pct >= 10) return { show: true, level: 'yellow', label: `â¡ Mild asymmetry â ${side}`,     pct: pct.toFixed(1), html: `<span class="flag-badge flag-yellow">â¡ ${pct.toFixed(1)}% L/R</span>` };
+  return { show: true, level: 'green', label: `â Balanced â  ${side}`, pct: pct.toFixed(1), html: `<span class="flag-badge flag-green">â ${pct.toFixed(1)}%</span>` };
+}
+
+function dsiColor(dsi) {
+  if (!dsi) return 'var(--sub)';
+  if (dsi >= 0.8 && dsi <= 1.2) return 'var(--gold)';
+  if (dsi < 0.8) return '#5dade2';
+  return '#58d68d';
+}
+
+function formatDate(d) {
+  try {
+    const p = d.split(/[\/\-]/);
+    if (p.length === 3) {
+      const dt = new Date(p[2].length === 4 ? `${p[2]}-${p[0].padStart(2,'0')}-${p[1].padStart(2,'0')}` : d);
+      if (!isNaN(dt)) return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+  } catch(e) {}
+  return d;
+}
+
+function handleValdFile(files) {
+  if (!files || !files[0]) return;
+  const file = files[0];
+  setStatus('partial', `Reading <strong>${file.name}</strong>â¦`);
+  const reader = new FileReader();
+  reader.onload = e => {
+    const rows = parseCSV(e.target.result);
+    processVALD(rows);
+    const count = Object.keys(S.athletes).length;
+    const dateStr = S.sessionDate ? ` Â· ${formatDate(S.sessionDate)}` : '';
+    document.getElementById('valdDrop').classList.add('loaded');
+    showFileStatus('valdStatus', `â ${file.name} â  ${count} athlete${count!==1?'s':''} detected${dateStr}`);
+    render();
+  };
+  reader.readAsText(file);
+}
+
+function handleOutputFile(files) {
+  if (!files || !files[0]) return;
+  const file = files[0];
+  const reader = new FileReader();
+  reader.onload = e => {
+    const rows = parseCSV(e.target.result);
+    processOutput(rows);
+    document.getElementById('outputDrop').classList.add('loaded');
+    showFileStatus('outputStatus', `â ${file.name} â VBT data merged`);
+    render();
+  };
+  reader.readAsText(file);
+}
+
+['valdDrop','outputDrop'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('drag-over'); });
+  el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
+  el.addEventListener('drop', e => {
+    e.preventDefault(); el.classList.remove('drag-over');
+    const files = e.dataTransfer.files;
+    if (id === 'valdDrop') handleValdFile(files);
+    else handleOutputFile(files);
+  });
+});
+
+function showFileStatus(id, msg) {
+  const el = document.getElementById(id);
+  el.innerHTML = msg;
+  el.classList.add('show');
+}
+
+function setStatus(state, msg, meta) {
+  const dot = document.getElementById('statusDot');
+  const msgEl = document.getElementById('statusMsg');
+  const metaEl = document.getElementById('sessionMeta');
+  dot.className = 'status-dot ' + state;
+  msgEl.innerHTML = msg;
+  if (meta) metaEl.textContent = meta;
+}
+
+function clearAll() {
+  S.valdRows = []; S.outputRows = []; S.athletes = {}; S.sessionDate = null;
+  document.getElementById('valdDrop').classList.remove('loaded');
+  document.getElementById('outputDrop').classList.remove('loaded');
+  document.getElementById('valdStatus').classList.remove('show');
+  document.getElementById('outputStatus').classList.remove('show');
+  document.getElementById('valdInput').value = '';
+  document.getElementById('outputInput').value = '';
+  document.getElementById('resultsSection').classList.remove('show');
+  document.getElementById('printBtn').disabled = true;
+  document.getElementById('sessionMeta').textContent = '';
+  setStatus('', 'Upload a VALD CSV to begin analysis');
+}
+</script>
+</body>
+</html>
