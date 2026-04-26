@@ -1334,6 +1334,7 @@ select:focus{border-color:#C9A228}
 <div id="coach-quickbar" style="display:none;background:#0a1a2e;border-bottom:2px solid #1e3a5f;padding:8px 12px;gap:8px;flex-wrap:wrap;align-items:center">
   <span style="font-size:9px;color:#6a8aa8;font-weight:700;letter-spacing:1px;text-transform:uppercase;flex-shrink:0">Coach Actions:</span>
   <button onclick="openImportSession()" style="background:#C9A228;border:none;color:#000000;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px">📥 Upload Session</button>
+  <button onclick="openOnb()" style="background:#C9A228;border:none;color:#000000;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px">🎯 Onboarding Session</button>
   <button onclick="openNewAth()" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#C9A228;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">➕ Add Athlete</button>
   <button onclick="navSwitch('tools');toolsSub('teamreport')" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">📋 Team Report</button>
   <button onclick="openSubmitStats()" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">📊 Submit Stats</button>
@@ -1984,6 +1985,84 @@ select:focus{border-color:#C9A228}
 </div>
 <div id="na-card-output" style="display:none;margin-top:8px"></div>
 </div></div></div>
+
+<!-- ONBOARDING SESSION OVERLAY -->
+<div class="pw-overlay" id="onb-overlay"><div class="pb-fullscreen">
+<div style="background:linear-gradient(135deg,#0f0f0f 0%,#000000 100%);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #C9A228;position:sticky;top:0;z-index:10" class="pb-hdr-sticky">
+<div><div style="font-size:9px;color:#C9A228;font-weight:700;letter-spacing:2px;text-transform:uppercase">Odyssey Performance</div><h2 style="margin:2px 0 0;font-size:18px;color:#fff;font-weight:800">🎯 Onboarding Session</h2></div>
+<button onclick="closeOnb()" style="background:transparent;border:none;color:#6a8aa8;font-size:24px;cursor:pointer;padding:4px 8px">&#x2715;</button>
+</div>
+<div style="padding:16px 18px 30px">
+
+<!-- Athlete Identity -->
+<div class="na-card">
+<div class="na-card-hdr">👤 Athlete Information</div>
+<div class="na-row">
+  <div class="na-field"><label class="na-lbl">First Name</label><input id="onb-first" class="na-inp" placeholder="First"></div>
+  <div class="na-field"><label class="na-lbl">Last Name</label><input id="onb-last" class="na-inp" placeholder="Last"></div>
+</div>
+<div class="na-row">
+  <div class="na-field"><label class="na-lbl">Gender</label><select id="onb-gender" class="na-inp"><option value="M">Male</option><option value="F">Female</option></select></div>
+  <div class="na-field"><label class="na-lbl">Date of Birth</label><input id="onb-dob" class="na-inp" type="date"></div>
+  <div class="na-field"><label class="na-lbl">Grad Year</label><select id="onb-year" class="na-inp"><option value="">Year</option><option>2025</option><option>2026</option><option>2027</option><option>2028</option><option>2029</option><option>2030</option><option>2031</option><option>2032</option></select></div>
+</div>
+<div class="na-row">
+  <div class="na-field"><label class="na-lbl">Height (in)</label><input id="onb-height" class="na-inp" type="number" placeholder="e.g. 70" step="0.5"></div>
+  <div class="na-field"><label class="na-lbl">Body Weight (lbs)</label><input id="onb-bw" class="na-inp" type="number" placeholder="e.g. 165" step="0.1"></div>
+</div>
+<div class="na-row">
+  <div class="na-field" style="flex:2"><label class="na-lbl">Sport</label><select id="onb-sport" class="na-inp" onchange="onbUpdatePositions()"><option value="">— Select Sport —</option><option>Football</option><option>Basketball</option><option>Baseball</option><option>Softball</option><option>Soccer</option><option>Volleyball</option><option>Track &amp; Field</option><option>Cross Country</option><option>Lacrosse</option><option>Wrestling</option><option>Tennis</option><option>Swimming</option><option>Golf</option><option>Dance</option><option>Cheerleading</option><option>Other</option></select></div>
+  <div class="na-field" style="flex:2"><label class="na-lbl">Primary Position</label><select id="onb-pos1" class="na-inp"><option value="">— Select Sport First —</option></select></div>
+  <div class="na-field" style="flex:2"><label class="na-lbl">Secondary (optional)</label><select id="onb-pos2" class="na-inp"><option value="">— None —</option></select></div>
+</div>
+</div>
+
+<!-- Test Battery -->
+<div class="na-card">
+<div class="na-card-hdr">📊 Onboarding Test Battery</div>
+
+<div style="font-size:10px;color:#C9A228;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">⚡ Power</div>
+<div class="na-row">
+  <div class="na-field"><label class="na-lbl">CMJ Height (in)</label><input id="onb-cmj" class="na-inp" type="number" placeholder="e.g. 18.5" step="0.1"></div>
+  <div class="na-field"><label class="na-lbl">Drop Jump RSI</label><input id="onb-rsi" class="na-inp" type="number" placeholder="e.g. 1.4" step="0.01"></div>
+  <div class="na-field"><label class="na-lbl">Broad Jump (in)</label><input id="onb-broad" class="na-inp" type="number" placeholder="e.g. 96" step="0.5"></div>
+</div>
+
+<div style="font-size:10px;color:#C9A228;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin:12px 0 6px">🚀 Velocity</div>
+<div class="na-row">
+  <div class="na-field"><label class="na-lbl">0–10 Sprint (s)</label><input id="onb-010" class="na-inp" type="number" placeholder="e.g. 1.68" step="0.01"></div>
+  <div class="na-field"><label class="na-lbl">20–30 Fly (s)</label><input id="onb-2030" class="na-inp" type="number" placeholder="e.g. 1.05" step="0.01"></div>
+</div>
+
+<div style="font-size:10px;color:#C9A228;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin:12px 0 6px">💪 Strength</div>
+<div class="na-row">
+  <div class="na-field"><label class="na-lbl">Iso Squat Peak Force (lbs)</label><input id="onb-iso" class="na-inp" type="number" placeholder="e.g. 380" step="1"></div>
+</div>
+
+<div style="font-size:10px;color:#C9A228;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin:12px 0 6px">⚖️ Asymmetry — Single-Leg Jump</div>
+<div class="na-row">
+  <div class="na-field"><label class="na-lbl">Left Leg (in)</label><input id="onb-sl-l" class="na-inp" type="number" placeholder="e.g. 13.5" step="0.1"></div>
+  <div class="na-field"><label class="na-lbl">Right Leg (in)</label><input id="onb-sl-r" class="na-inp" type="number" placeholder="e.g. 14.0" step="0.1"></div>
+</div>
+</div>
+
+<!-- Notes -->
+<div class="na-card">
+<div class="na-card-hdr">📝 Coach Notes (optional)</div>
+<div class="na-row"><div class="na-field" style="flex:1"><textarea id="onb-notes" class="na-inp" rows="2" placeholder="Anything else worth flagging..." style="resize:vertical"></textarea></div></div>
+</div>
+
+<div id="onb-status" style="display:none;margin:8px 0;padding:10px 14px;border-radius:8px;font-size:13px"></div>
+
+<div style="display:flex;gap:10px;padding-bottom:8px">
+<button onclick="onbAnalyze()" style="flex:2;background:#C9A228;border:none;color:#000000;border-radius:10px;padding:14px 10px;font-size:14px;font-weight:800;cursor:pointer">🎯 Analyze &amp; Build Profile Card</button>
+<button onclick="closeOnb()" style="background:#0f0f0f;border:1px solid #2a4a6a;color:#6a8aa8;border-radius:10px;padding:14px 10px;font-size:13px;cursor:pointer">Cancel</button>
+</div>
+
+<div id="onb-card-output" style="display:none;margin-top:8px"></div>
+
+</div></div></div>
+
 <div class="pw-overlay" id="submitstats-overlay">
   <div class="pb-fullscreen">
     <div style="position:sticky;top:0;background:#000000;z-index:20;padding:13px 16px;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;justify-content:space-between">
@@ -3973,6 +4052,105 @@ function naUpdatePositions() {
   var positions = NA_SPORT_POSITIONS[sport] || ['Athlete'];
   sel.innerHTML = '<option value="">&#8212; Position &#8212;</option>';
   positions.forEach(function(p) { var o = document.createElement('option'); o.value = p; o.text = p; sel.appendChild(o); });
+}
+
+// === Onboarding Session (Phase 3) ===
+function openOnb() {
+  if (!coachMode) return;
+  ['onb-first','onb-last','onb-dob','onb-year','onb-height','onb-bw','onb-sport','onb-pos1','onb-pos2',
+   'onb-cmj','onb-rsi','onb-broad','onb-010','onb-2030','onb-iso','onb-sl-l','onb-sl-r','onb-notes'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  var g = document.getElementById('onb-gender'); if (g) g.value = 'M';
+  document.getElementById('onb-status').style.display = 'none';
+  var out = document.getElementById('onb-card-output');
+  out.style.display = 'none'; out.innerHTML = '';
+  onbUpdatePositions();
+  var ov = document.getElementById('onb-overlay');
+  ov.scrollTop = 0;
+  ov.classList.add('open');
+}
+
+function closeOnb() {
+  document.getElementById('onb-overlay').classList.remove('open');
+}
+
+function onbUpdatePositions() {
+  var sport = document.getElementById('onb-sport').value;
+  var positions = NA_SPORT_POSITIONS[sport] || ['Athlete'];
+  [['onb-pos1','— Position —'], ['onb-pos2','— None —']].forEach(function(pair){
+    var sel = document.getElementById(pair[0]);
+    if (!sel) return;
+    sel.innerHTML = '<option value="">' + pair[1] + '</option>';
+    positions.forEach(function(p) { var o = document.createElement('option'); o.value = p; o.text = p; sel.appendChild(o); });
+  });
+}
+
+function onbCollectData() {
+  function v(id) { var el = document.getElementById(id); return el ? (el.value || '').trim() : ''; }
+  function n(id) { var x = parseFloat(v(id)); return isNaN(x) ? null : x; }
+  return {
+    identity: {
+      first: v('onb-first'),
+      last: v('onb-last'),
+      gender: v('onb-gender'),
+      dob: v('onb-dob'),
+      gradYear: v('onb-year'),
+      heightIn: n('onb-height'),
+      bwLbs: n('onb-bw'),
+      sport: v('onb-sport'),
+      position1: v('onb-pos1'),
+      position2: v('onb-pos2')
+    },
+    metrics: {
+      cmj_in: n('onb-cmj'),
+      drop_rsi: n('onb-rsi'),
+      broad_in: n('onb-broad'),
+      sprint_010: n('onb-010'),
+      fly_2030: n('onb-2030'),
+      iso_peak_lbs: n('onb-iso'),
+      sl_jump_l: n('onb-sl-l'),
+      sl_jump_r: n('onb-sl-r')
+    },
+    notes: v('onb-notes'),
+    sessionDate: new Date().toISOString().slice(0,10)
+  };
+}
+
+function onbValidate(d) {
+  var missing = [];
+  if (!d.identity.first || !d.identity.last) missing.push('Name');
+  if (!d.identity.sport) missing.push('Sport');
+  if (!d.identity.gradYear) missing.push('Grad Year');
+  if (!d.identity.bwLbs) missing.push('Body Weight');
+  return missing;
+}
+
+function onbShowStatus(msg, kind) {
+  var el = document.getElementById('onb-status');
+  el.style.display = 'block';
+  el.textContent = msg;
+  if (kind === 'error') {
+    el.style.background = '#3a1a1a'; el.style.color = '#ff8a8a'; el.style.border = '1px solid #5a2a2a';
+  } else {
+    el.style.background = '#0a2010'; el.style.color = '#4caf50'; el.style.border = '1px solid #2d7a4a';
+  }
+}
+
+function onbAnalyze() {
+  var data = onbCollectData();
+  var missing = onbValidate(data);
+  if (missing.length > 0) {
+    onbShowStatus('⚠️ Missing required fields: ' + missing.join(', '), 'error');
+    return;
+  }
+  onbShowStatus('✓ Form complete. (Phase 4 will add Power/Velocity/Strength scoring + NCAA peer comparison.)', 'ok');
+  var out = document.getElementById('onb-card-output');
+  out.style.display = 'block';
+  out.innerHTML = '<div style="background:#0a1a2e;border:1px solid #1e3a5f;border-radius:10px;padding:14px;margin-top:10px">'
+    + '<div style="font-size:10px;color:#C9A228;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Captured Onboarding Data</div>'
+    + '<pre style="color:#a0bbd4;font-size:11px;white-space:pre-wrap;word-break:break-word;margin:0;font-family:monospace;line-height:1.5">' + JSON.stringify(data, null, 2) + '</pre>'
+    + '</div>';
 }
 function naPercentile(val, arr, lowerBetter) {
   if (!val || isNaN(val)) return null;
