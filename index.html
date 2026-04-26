@@ -10,8 +10,8 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0D1B2A;color:#fff;min-height:100vh}}
-.header{background:linear-gradient(180deg,#0a1520 0%,#0D1B2A 100%);padding:18px 24px 14px;border-bottom:2px solid #C9A228}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#000000;color:#fff;min-height:100vh}}
+.header{background:linear-gradient(180deg,#0f0f0f 0%,#000000 100%);padding:18px 24px 14px;border-bottom:2px solid #C9A228}
 .header-top{display:flex;align-items:center;gap:14px}
 .logo-img-wrap{flex-shrink:0;background:#fff;border-radius:10px;padding:4px 8px;display:flex;align-items:center;justify-content:center;height:52px}
 .header-logo{height:44px;width:auto;display:block}
@@ -23,16 +23,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .coach-btn.active{background:#C9A228;border-color:#C9A228;color:#fff}
 .coach-badge{background:#C9A228;color:#fff;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
 
-.nav-strip{display:flex;background:#0a1520;border-bottom:1px solid #1e3a5f;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;align-items:stretch}
+.nav-strip{display:flex;background:#0f0f0f;border-bottom:1px solid #1e3a5f;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;align-items:stretch}
 .nav-tab{padding:12px 16px;font-size:12px;font-weight:600;cursor:pointer;color:#6a8aa8;border-bottom:2px solid transparent;border-top:none;border-left:none;border-right:none;transition:all .15s;flex-shrink:0;background:transparent}
 .nav-tab.active{color:#C9A228;border-bottom-color:#C9A228}
 .nav-tab:hover:not(.active){color:#ccc}
-.nav-tools-btn{margin-left:auto;padding:10px 18px;font-size:12px;font-weight:700;cursor:pointer;color:#8a9bb0;background:#0a1520;border:none;border-left:1px solid #1e3a5f;transition:all .15s;flex-shrink:0;white-space:nowrap}
+.nav-tools-btn{margin-left:auto;padding:10px 18px;font-size:12px;font-weight:700;cursor:pointer;color:#8a9bb0;background:#0f0f0f;border:none;border-left:1px solid #1e3a5f;transition:all .15s;flex-shrink:0;white-space:nowrap}
 .nav-tools-btn:hover{background:#1e3a5f;color:#C9A228}
 .tab-panel{display:none}
 .tab-panel.active{display:block}
 /* Tools overlay */
-.tools-box{background:#0a1520;border-radius:16px;padding:20px;width:300px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.6);border:1px solid #2a4a6a}
+.tools-box{background:#0f0f0f;border-radius:16px;padding:20px;width:300px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.6);border:1px solid #2a4a6a}
 .tools-drum{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
 .tools-drum-item{padding:14px 16px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;color:#a0bbd4;background:#112233;border:1px solid #1e3a5f;transition:all .15s;display:flex;align-items:center;gap:8px}
 .tools-drum-item:hover,.tools-drum-item.selected{background:#C9A228;color:#fff;border-color:#C9A228}
@@ -45,7 +45,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .tsub-btn.tsub-active{color:#C9A228;border-bottom-color:#C9A228}
 .tools-panel{display:block}
 
-.pb-stars-block{background:#0a1520;border:1px solid #1e3a5f;border-radius:10px;padding:10px 14px;margin-bottom:8px}
+.pb-stars-block{background:#0f0f0f;border:1px solid #1e3a5f;border-radius:10px;padding:10px 14px;margin-bottom:8px}
 .pb-stars-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px}
 .pb-stars-items{font-size:12px;color:#c0d4e8;line-height:1.7}
 
@@ -86,7 +86,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
 @media(max-width:500px){.calc-grid{grid-template-columns:1fr}}
 .calc-field label{display:block;font-size:11px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;font-weight:600}
-.calc-field input,.calc-field select{width:100%;background:#0d1b2a;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 12px;font-size:14px;outline:none;transition:border-color .15s}
+.calc-field input,.calc-field select{width:100%;background:#000000;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 12px;font-size:14px;outline:none;transition:border-color .15s}
 .calc-field input:focus,.calc-field select:focus{border-color:#C9A228}
 .calc-btn{background:#C9A228;color:#fff;border:none;border-radius:8px;padding:11px 24px;font-size:14px;font-weight:700;cursor:pointer;transition:background .15s;width:100%}
 .calc-btn:hover{background:#b8911f}
@@ -102,12 +102,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .zone-spd{background:#2e1a0a;color:#C9A228;border:1px solid #C9A228}
 .zone-ball{background:#2a0a0a;color:#ef5350;border:1px solid #ef5350}
 .pct-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
-.pct-table th{background:#0d1b2a;color:#6a8aa8;padding:7px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+.pct-table th{background:#000000;color:#6a8aa8;padding:7px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px}
 .pct-table td{padding:7px 10px;border-bottom:1px solid #21262d;color:#e6edf3}
 .pct-table tr.highlight-row td{background:#2a1e0a;color:#C9A228;font-weight:700}
 .pct-table tr:last-child td{border-bottom:none}
 .rec-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-.rec-card{background:#0d1b2a;border-radius:8px;padding:12px;border:1px solid #21262d}
+.rec-card{background:#000000;border-radius:8px;padding:12px;border:1px solid #21262d}
 .rec-card-title{font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
 .rec-card-val{font-size:18px;font-weight:900;color:#C9A228}
 .rec-card-sub{font-size:11px;color:#6a8aa8;margin-top:2px}
@@ -169,7 +169,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .cp-asym-ok .cp-asym-label{color:#4caf50}
 .cp-asym-detail{font-size:11px;color:#8a9bb0;margin-top:2px}
 .cp-rx-grid{display:grid;gap:8px}
-.cp-rx-card{background:#0d1b2a;border-radius:8px;padding:10px 12px;border:1px solid #1e3a5f}
+.cp-rx-card{background:#000000;border-radius:8px;padding:10px 12px;border:1px solid #1e3a5f}
 .cp-rx-cat{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px}
 .cp-rx-speed{color:#6e8efb}
 .cp-rx-jump{color:#4caf50}
@@ -183,14 +183,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .cp-dsi-row:last-child{border-bottom:none}
 .cp-dsi-label{color:#8a9bb0}
 .cp-dsi-val{color:#e6edf3;font-weight:700}
-.cp-sprint-est{background:#0d1b2a;border-radius:8px;padding:10px;border:1px solid #1e3a5f;display:grid;grid-template-columns:1fr 1fr;gap:6px;text-align:center}
+.cp-sprint-est{background:#000000;border-radius:8px;padding:10px;border:1px solid #1e3a5f;display:grid;grid-template-columns:1fr 1fr;gap:6px;text-align:center}
 .cp-sprint-cell-big{grid-column:1/-1;padding:8px;background:#C9A228;border-radius:6px}
 .cp-sprint-cell{padding:8px;background:#161b22;border-radius:6px;border:1px solid #21262d}
 .cp-sprint-time{font-size:18px;font-weight:900;color:#fff}
 .cp-sprint-cell .cp-sprint-time{color:#C9A228}
 .cp-sprint-label{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.7);margin-top:2px}
 .cp-sprint-cell .cp-sprint-label{color:#6a8aa8}
-.acc-guide{background:#0d1b2a;border:1px solid #1e3a5f;border-radius:10px;padding:12px 14px;margin-bottom:16px}
+.acc-guide{background:#000000;border:1px solid #1e3a5f;border-radius:10px;padding:12px 14px;margin-bottom:16px}
 .acc-guide-title{font-size:9px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.7px;font-weight:700;margin-bottom:8px}
 .acc-guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
 .acc-guide-row{display:flex;align-items:center;gap:6px;padding:3px 0}
@@ -205,9 +205,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .filters{position:sticky;top:0;z-index:100;background:#112233;padding:12px 20px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid #1e3a5f}
 .filter-group{display:flex;align-items:center;gap:5px}
 .filter-label{font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
-select{background:#0D1B2A;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px 8px;font-size:12px;cursor:pointer;outline:none}
+select{background:#000000;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px 8px;font-size:12px;cursor:pointer;outline:none}
 select:focus{border-color:#C9A228}
-.sort-toggle{margin-left:auto;display:flex;background:#0D1B2A;border-radius:8px;padding:3px;border:1px solid #2a4a6a}
+.sort-toggle{margin-left:auto;display:flex;background:#000000;border-radius:8px;padding:3px;border:1px solid #2a4a6a}
 .sort-btn{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;color:#6a8aa8;background:transparent;transition:all .15s}
 .sort-btn.active{background:#C9A228;color:#fff}
 .reset-btn{background:transparent;border:1px solid #2a4a6a;color:#6a8aa8;border-radius:6px;padding:6px 10px;font-size:11px;cursor:pointer;transition:all .15s}
@@ -218,11 +218,11 @@ select:focus{border-color:#C9A228}
 
 .content{padding:14px 20px;max-width:860px;margin:0 auto}
 
-.athlete-card{background:#fff;color:#0D1B2A;border-radius:12px;padding:13px 15px;margin-bottom:9px;display:grid;grid-template-columns:42px 1fr auto;gap:11px;align-items:center;cursor:pointer;transition:transform .1s,box-shadow .1s;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.athlete-card{background:#fff;color:#000000;border-radius:12px;padding:13px 15px;margin-bottom:9px;display:grid;grid-template-columns:42px 1fr auto;gap:11px;align-items:center;cursor:pointer;transition:transform .1s,box-shadow .1s;box-shadow:0 2px 8px rgba(0,0,0,.2)}
 .athlete-card:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(0,0,0,.25)}
 .athlete-card.elite{border-left:4px solid #C9A228}
 .athlete-card.asym-risk-high{border-left:4px solid #b71c1c;background:#fef5f5}
-.rank{width:38px;height:38px;border-radius:50%;background:#0D1B2A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.rank{width:38px;height:38px;border-radius:50%;background:#000000;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
 .rank.gold{background:#C9A228}
 .rank.silver{background:#536878}
 .rank.bronze{background:#8B6914}
@@ -231,12 +231,12 @@ select:focus{border-color:#C9A228}
 
 .prospect-tag{background:#1a6e3c;color:#fff;border-radius:4px;padding:1px 7px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0}
 .elite-tag{background:#C9A228;color:#fff;border-radius:4px;padding:1px 7px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0}
-.class-chip{background:#0D1B2A;color:#C9A228;border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;white-space:nowrap}
+.class-chip{background:#000000;color:#C9A228;border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;white-space:nowrap}
 .metrics-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
 .metric-pill{background:#f2f5f8;border-radius:4px;padding:2px 7px;font-size:10px;color:#3a5568;font-weight:500}
 .metric-pill.hot{background:#fff0e6;color:#c94a00;font-weight:700}
 .score-col{text-align:right;flex-shrink:0}
-.score-main{font-size:26px;font-weight:900;color:#0D1B2A;line-height:1}
+.score-main{font-size:26px;font-weight:900;color:#000000;line-height:1}
 .score-label{font-size:9px;color:#8899aa;text-transform:uppercase;letter-spacing:.5px}
 .score-sub{font-size:10px;color:#aaa;margin-top:1px}
 .no-score{font-size:11px;color:#bbb;text-align:right;line-height:1.4}
@@ -259,8 +259,8 @@ select:focus{border-color:#C9A228}
 /* MODAL */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .overlay.open{display:flex;align-items:flex-start;justify-content:center;padding:20px}
-.modal{background:#fff;color:#0D1B2A;border-radius:16px;padding:24px;max-width:540px;width:100%;margin:auto;position:relative}
-.modal-close{position:absolute;top:12px;right:12px;background:#C9A228;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;color:#0D1B2A;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.4);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.modal{background:#fff;color:#000000;border-radius:16px;padding:24px;max-width:540px;width:100%;margin:auto;position:relative}
+.modal-close{position:absolute;top:12px;right:12px;background:#C9A228;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;color:#000000;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.4);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .modal-close:active{transform:scale(.92);background:#b8911f}
 .modal-name{font-size:22px;font-weight:800;margin-bottom:4px}
 .modal-meta{font-size:12px;color:#667788;margin-bottom:16px;line-height:1.5}
@@ -272,7 +272,7 @@ select:focus{border-color:#C9A228}
 .score-box .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
 .score-box-orange .big{color:#C9A228}
 .score-box-orange .lbl{color:#c94a00}
-.score-box-navy .big{color:#0D1B2A}
+.score-box-navy .big{color:#000000}
 .score-box-navy .lbl{color:#8899aa}
 .msect{margin-bottom:16px}
 .msect-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#8899aa;margin-bottom:8px}
@@ -296,9 +296,9 @@ select:focus{border-color:#C9A228}
 /* PASSWORD MODAL */
 .pw-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:2000;align-items:center;justify-content:center;padding:20px}
 .pw-overlay.open{display:flex}
-.pin-digit{width:52px;height:60px;font-size:28px;font-weight:800;text-align:center;background:#0a1520;color:#C9A228;border:2px solid #2a4a6a;border-radius:12px;outline:none;transition:border-color .15s}
+.pin-digit{width:52px;height:60px;font-size:28px;font-weight:800;text-align:center;background:#0f0f0f;color:#C9A228;border:2px solid #2a4a6a;border-radius:12px;outline:none;transition:border-color .15s}
 .pin-digit:focus{border-color:#C9A228}
-.pb-day{background:#0a1520;border:1px solid #1e3a5f;border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.pb-day{background:#0f0f0f;border:1px solid #1e3a5f;border-radius:10px;padding:12px 14px;margin-bottom:8px}
 .pb-day-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#C9A228;margin-bottom:8px}
 .pb-block{margin-bottom:6px;padding:6px 8px;background:#112233;border-radius:6px}
 .pb-block-cat{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#6a8aa8;margin-bottom:3px}
@@ -308,7 +308,7 @@ select:focus{border-color:#C9A228}
 .pw-modal{background:#112233;border:1px solid #2a4a6a;border-radius:16px;padding:28px;max-width:380px;width:100%;text-align:center}
 .pw-modal h2{font-size:20px;font-weight:800;margin-bottom:8px}
 .pw-modal p{font-size:13px;color:#6a8aa8;margin-bottom:20px}
-.pw-input{width:100%;background:#0D1B2A;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:12px 14px;font-size:16px;outline:none;text-align:center;letter-spacing:2px;margin-bottom:12px}
+.pw-input{width:100%;background:#000000;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:12px 14px;font-size:16px;outline:none;text-align:center;letter-spacing:2px;margin-bottom:12px}
 .pw-input:focus{border-color:#C9A228}
 .pw-btn{width:100%;background:#C9A228;color:#fff;border:none;border-radius:8px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;transition:background .15s;margin-bottom:10px}
 .pw-btn:hover{background:#e56618}
@@ -316,14 +316,14 @@ select:focus{border-color:#C9A228}
 .pw-cancel:hover{color:#fff}
 .pw-error{color:#e74c3c;font-size:13px;margin-top:-6px;margin-bottom:10px;display:none}
 *{margin:0;padding:0;box-sizing:border-box}/* PROGRAM BUILDER + TEAM PLAN + NEW ATHLETE + SUBMIT STATS + IMPORT SESSION — full screen override */
-#pb-overlay,#teamplan-overlay,#newath-overlay,#submitstats-overlay,#import-overlay,#core6-overlay,#profilecard-overlay{background:#0D1B2A!important;padding:0!important;align-items:stretch!important;justify-content:stretch!important}
+#pb-overlay,#teamplan-overlay,#newath-overlay,#submitstats-overlay,#import-overlay,#core6-overlay,#profilecard-overlay{background:#000000!important;padding:0!important;align-items:stretch!important;justify-content:stretch!important}
 #pb-overlay.open,#teamplan-overlay.open,#newath-overlay.open,#submitstats-overlay.open,#import-overlay.open,#core6-overlay.open,#profilecard-overlay.open{display:block!important;overflow-y:auto!important}
-#pb-overlay>.pb-fullscreen,#teamplan-overlay>.pb-fullscreen,#newath-overlay>.pb-fullscreen,#submitstats-overlay>.pb-fullscreen,#import-overlay>.pb-fullscreen,#core6-overlay>.pb-fullscreen,#profilecard-overlay>.pb-fullscreen{min-height:100vh;display:flex;flex-direction:column;background:#0D1B2A}
+#pb-overlay>.pb-fullscreen,#teamplan-overlay>.pb-fullscreen,#newath-overlay>.pb-fullscreen,#submitstats-overlay>.pb-fullscreen,#import-overlay>.pb-fullscreen,#core6-overlay>.pb-fullscreen,#profilecard-overlay>.pb-fullscreen{min-height:100vh;display:flex;flex-direction:column;background:#000000}
 /* CORE 6 EVAL */
 .c6-rating-btns{display:flex;gap:6px;margin:6px 0 8px}
 .c6-rating-btn{flex:1;padding:10px 4px;border-radius:8px;border:2px solid #2a4a6a;background:#112233;color:#6a8aa8;font-size:16px;font-weight:900;cursor:pointer;text-align:center;transition:all .15s;line-height:1}
 .c6-rating-btn:hover{border-color:#C9A228;color:#C9A228}
-.c6-rating-btn.selected{background:#C9A228;border-color:#C9A228;color:#0D1B2A}
+.c6-rating-btn.selected{background:#C9A228;border-color:#C9A228;color:#000000}
 .c6-reasons{display:none;flex-direction:column;gap:5px;margin-bottom:10px}
 .c6-reasons.show{display:flex}
 .c6-reason-pill{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#112233;border:1px solid #1e3a5f;border-radius:8px;cursor:pointer;font-size:11px;color:#a0bbd4;transition:all .15s;user-select:none}
@@ -349,7 +349,7 @@ select:focus{border-color:#C9A228}
 .compare-subtitle{font-size:13px;color:#6a8aa8;margin-bottom:20px}
 .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
 .compare-field label{display:block;font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
-.compare-field input,.compare-field select{width:100%;background:#0D1B2A;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:10px 12px;font-size:14px;outline:none}
+.compare-field input,.compare-field select{width:100%;background:#000000;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:10px 12px;font-size:14px;outline:none}
 .compare-field input:focus,.compare-field select:focus{border-color:#C9A228}
 .compare-field input::placeholder{color:#4a6a8a}
 .compare-btn{width:100%;background:#C9A228;color:#fff;border:none;border-radius:10px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;transition:background .15s}
@@ -357,7 +357,7 @@ select:focus{border-color:#C9A228}
 .compare-results{margin-top:24px;display:none}
 .compare-results.show{display:block}
 .compare-result-header{font-size:18px;font-weight:800;margin-bottom:16px;text-align:center}
-.cr-stat{background:#0D1B2A;border-radius:10px;padding:14px;margin-bottom:10px}
+.cr-stat{background:#000000;border-radius:10px;padding:14px;margin-bottom:10px}
 .cr-stat-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .cr-stat-name{font-size:13px;color:#6a8aa8}
 .cr-stat-val{font-size:16px;font-weight:800;color:#C9A228}
@@ -369,7 +369,7 @@ select:focus{border-color:#C9A228}
 .cr-overall-lbl{font-size:13px;opacity:.85;margin-top:4px}
 .cr-athletes-near{margin-top:16px}
 .cr-near-title{font-size:11px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
-.cr-near-card{background:#0D1B2A;border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.cr-near-card{background:#000000;border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .cr-near-name{font-size:13px;font-weight:600}
 .cr-near-score{font-size:13px;color:#C9A228;font-weight:700}
 .cr-grade-note{background:#1e3a5f;border-radius:8px;padding:10px 14px;font-size:12px;color:#8ab0cc;text-align:center;margin-top:12px;line-height:1.5}
@@ -378,9 +378,9 @@ select:focus{border-color:#C9A228}
 .empty h3{font-size:18px;margin-bottom:8px}
 
 /* RECRUITING CARD */
-.recruit-card-container{background:#fff;color:#0d1b2a;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px}
+.recruit-card-container{background:#fff;color:#000000;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px}
 .recruit-card{background:#fff;max-width:500px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.2);border-radius:16px;overflow:hidden}
-.recruit-header{background:linear-gradient(135deg,#0d1b2a,#1e2d4a);padding:30px 20px;text-align:center}
+.recruit-header{background:linear-gradient(135deg,#000000,#1e2d4a);padding:30px 20px;text-align:center}
 .recruit-logo{height:50px;margin:0 auto 15px;background:#fff;border-radius:8px;padding:5px;display:flex;align-items:center;justify-content:center}
 .recruit-logo img{height:40px;width:auto}
 .recruit-title{font-size:28px;font-weight:900;color:#fff;margin-bottom:4px}
@@ -391,14 +391,14 @@ select:focus{border-color:#C9A228}
 .recruit-metrics{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:20px}
 .recruit-metric-card{background:#f5f7fa;border-left:4px solid #C9A228;border-radius:8px;padding:12px 14px}
 .recruit-metric-name{font-size:11px;color:#667788;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
-.recruit-metric-val{font-size:20px;font-weight:900;color:#0d1b2a}
+.recruit-metric-val{font-size:20px;font-weight:900;color:#000000}
 .recruit-metric-pct{font-size:10px;color:#aaa;margin-top:3px}
 .recruit-badge-box{background:#fff3e6;border:2px solid #C9A228;border-radius:10px;padding:20px;text-align:center;margin-bottom:20px}
 .recruit-tested-badge{font-size:12px;color:#c94a00;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.recruit-tested{font-size:14px;font-weight:800;color:#0d1b2a}
+.recruit-tested{font-size:14px;font-weight:800;color:#000000}
 .recruit-qrcode{text-align:center;padding:20px;background:#f5f7fa;border-radius:8px;margin-bottom:20px}
 .recruit-qrcode-label{font-size:10px;color:#667788;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
-.recruit-footer{background:#0d1b2a;color:#fff;padding:15px;text-align:center;font-size:10px}
+.recruit-footer{background:#000000;color:#fff;padding:15px;text-align:center;font-size:10px}
 
 @media(max-width:600px){
   .content{padding:10px 14px}
@@ -421,7 +421,7 @@ select:focus{border-color:#C9A228}
   align-items: center;
   margin-bottom: 16px;
   padding-bottom: 12px;
-  border-bottom: 2px solid #0D1B2A;
+  border-bottom: 2px solid #000000;
   gap: 16px;
 }
 #team-report-header img {
@@ -434,7 +434,7 @@ select:focus{border-color:#C9A228}
 #team-report-header-title {
   font-size: 18px;
   font-weight: 800;
-  color: #0D1B2A;
+  color: #000000;
   margin-bottom: 2px;
 }
 #team-report-header-date {
@@ -457,7 +457,7 @@ select:focus{border-color:#C9A228}
 .summary-stat-value {
   font-size: 18px;
   font-weight: 800;
-  color: #0D1B2A;
+  color: #000000;
 }
 .summary-stat-label {
   font-size: 10px;
@@ -473,7 +473,7 @@ select:focus{border-color:#C9A228}
   font-size: 11px;
 }
 #team-report-table thead {
-  background: #0D1B2A;
+  background: #000000;
   color: #fff;
   font-size: 10px;
   text-transform: uppercase;
@@ -483,12 +483,12 @@ select:focus{border-color:#C9A228}
   padding: 10px 8px;
   text-align: left;
   font-weight: 800;
-  border: 1px solid #0D1B2A;
+  border: 1px solid #000000;
 }
 #team-report-table td {
   padding: 8px;
   border: 1px solid #e5e7eb;
-  color: #0D1B2A;
+  color: #000000;
 }
 #team-report-table tbody tr:nth-child(odd) {
   background: #fff;
@@ -535,7 +535,7 @@ select:focus{border-color:#C9A228}
 @media print {
   body > *:not(#print-card-overlay):not(#team-report-print-wrapper):not(#core6-print-wrap) { display: none !important; }
   #print-card-overlay { position: static !important; background: white !important; display: flex !important; }
-  #print-card-content { width: 100% !important; color: #0D1B2A !important; }
+  #print-card-content { width: 100% !important; color: #000000 !important; }
   @page { size: landscape; margin: 0.4in; }
   #team-report-print-wrapper { display: block !important; }
   #core6-print-wrap { display: block !important; }
@@ -546,18 +546,18 @@ select:focus{border-color:#C9A228}
 .na-row{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap}
 .na-field{display:flex;flex-direction:column;flex:1;min-width:110px}
 .na-lbl{font-size:10px;color:#6a8aa8;font-weight:600;letter-spacing:.5px;margin-bottom:4px;text-transform:uppercase}
-.na-inp{background:#05101f;border:1px solid #1e3a5f;color:#fff;border-radius:6px;padding:8px 10px;font-size:13px;width:100%;box-sizing:border-box;font-family:inherit}
+.na-inp{background:#000000;border:1px solid #1e3a5f;color:#fff;border-radius:6px;padding:8px 10px;font-size:13px;width:100%;box-sizing:border-box;font-family:inherit}
 .na-inp:focus{outline:none;border-color:#C9A228}
-.na-upload-btn{display:flex;align-items:center;justify-content:center;background:#C9A228;color:#0D1B2A;border-radius:8px;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer;flex:1;gap:5px}
-.na-pct-bar-wrap{background:#0a1520;border-radius:4px;height:8px;margin-top:4px;overflow:hidden}
+.na-upload-btn{display:flex;align-items:center;justify-content:center;background:#C9A228;color:#000000;border-radius:8px;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer;flex:1;gap:5px}
+.na-pct-bar-wrap{background:#0f0f0f;border-radius:4px;height:8px;margin-top:4px;overflow:hidden}
 .na-pct-bar-fill{height:100%;border-radius:4px}
-#na-profile-card{background:#0D1B2A;color:#fff;border-radius:12px;padding:20px;border:1px solid #1e3a5f}
-.na-card-metric{background:#0a1520;border-radius:8px;padding:10px 12px;border:1px solid #1e3a5f;break-inside:avoid}
+#na-profile-card{background:#000000;color:#fff;border-radius:12px;padding:20px;border:1px solid #1e3a5f}
+.na-card-metric{background:#0f0f0f;border-radius:8px;padding:10px 12px;border:1px solid #1e3a5f;break-inside:avoid}
 .na-card-metric-val{font-size:20px;font-weight:800;color:#C9A228;margin:2px 0}
 .na-card-metric-lbl{font-size:9px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px}
 .na-quad-badge{display:inline-block;padding:5px 14px;border-radius:20px;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
-.na-rec-item{padding:8px 12px;background:#0a1520;border-radius:6px;margin-bottom:6px;border-left:3px solid #C9A228;font-size:12px;line-height:1.4}
-@media print{body>*:not(#newath-overlay){display:none!important}#newath-overlay{display:block!important;background:#0D1B2A!important;position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;z-index:9999!important;overflow:auto!important}.pb-hdr-sticky,.na-print-hide{display:none!important}#na-card-output{display:block!important}@page{size:letter portrait;margin:.5in}}
+.na-rec-item{padding:8px 12px;background:#0f0f0f;border-radius:6px;margin-bottom:6px;border-left:3px solid #C9A228;font-size:12px;line-height:1.4}
+@media print{body>*:not(#newath-overlay){display:none!important}#newath-overlay{display:block!important;background:#000000!important;position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;z-index:9999!important;overflow:auto!important}.pb-hdr-sticky,.na-print-hide{display:none!important}#na-card-output{display:block!important}@page{size:letter portrait;margin:.5in}}
 
 /* ===== PROFILE CARD GENERATOR STYLES ===== */
         }
@@ -592,7 +592,7 @@ select:focus{border-color:#C9A228}
 
         /* ============ UPLOAD SCREEN ============ */
         .pc-upload-screen {
-            background: linear-gradient(135deg, #0D1B2A 0%, #1A2F47 100%);
+            background: linear-gradient(135deg, #000000 0%, #1A2F47 100%);
             border-radius: 12px;
             padding: 40px;
         }
@@ -669,7 +669,7 @@ select:focus{border-color:#C9A228}
             padding: 12px;
             border: 1px solid #2a3f5a;
             border-radius: 6px;
-            background: #0D1B2A;
+            background: #000000;
             color: #fff;
             font-size: 14px;
             font-family: 'Roboto', sans-serif;
@@ -693,7 +693,7 @@ select:focus{border-color:#C9A228}
             padding: 12px;
             border: 1px solid #2a3f5a;
             border-radius: 6px;
-            background: #0D1B2A;
+            background: #000000;
             color: #a0a8b8;
             cursor: pointer;
             font-size: 14px;
@@ -705,7 +705,7 @@ select:focus{border-color:#C9A228}
 
         .pc-toggle-btn.pc-active {
             background: #C9A228;
-            color: #0D1B2A;
+            color: #000000;
             border-color: #C9A228;
         }
 
@@ -803,7 +803,7 @@ select:focus{border-color:#C9A228}
         .pc-test-badge {
             display: inline-block;
             background: #C9A228;
-            color: #0D1B2A;
+            color: #000000;
             padding: 2px 8px;
             border-radius: 3px;
             font-size: 10px;
@@ -839,7 +839,7 @@ select:focus{border-color:#C9A228}
 
         .pc-btn-primary {
             background: #C9A228;
-            color: #0D1B2A;
+            color: #000000;
         }
 
         .pc-btn-primary:hover:not(:disabled) {
@@ -883,7 +883,7 @@ select:focus{border-color:#C9A228}
             cursor: pointer;
             transition: all 0.3s;
             background: #C9A228;
-            color: #0D1B2A;
+            color: #000000;
         }
         .pc-btn-generate:hover:not(:disabled) {
             background: #d4b840;
@@ -907,7 +907,7 @@ select:focus{border-color:#C9A228}
         }
 
         .pc-card-toolbar {
-            background: #0D1B2A;
+            background: #000000;
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
@@ -969,7 +969,7 @@ select:focus{border-color:#C9A228}
             font-family: 'Montserrat', sans-serif;
             font-size: 42px;
             font-weight: 800;
-            color: #0D1B2A;
+            color: #000000;
             margin-bottom: 10px;
         }
 
@@ -1040,7 +1040,7 @@ select:focus{border-color:#C9A228}
             font-family: 'Montserrat', sans-serif;
             font-size: 28px;
             font-weight: 700;
-            color: #0D1B2A;
+            color: #000000;
         }
 
         .pc-metric-unit {
@@ -1061,7 +1061,7 @@ select:focus{border-color:#C9A228}
             font-family: 'Montserrat', sans-serif;
             font-size: 14px;
             font-weight: 700;
-            color: #0D1B2A;
+            color: #000000;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 20px;
@@ -1083,7 +1083,7 @@ select:focus{border-color:#C9A228}
 
         .pc-bar {
             width: 100%;
-            background: #0D1B2A;
+            background: #000000;
             border-radius: 4px 4px 0 0;
             margin-bottom: 10px;
             min-height: 20px;
@@ -1093,7 +1093,7 @@ select:focus{border-color:#C9A228}
         .pc-bar-label {
             font-size: 12px;
             font-weight: 700;
-            color: #0D1B2A;
+            color: #000000;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -1102,7 +1102,7 @@ select:focus{border-color:#C9A228}
             font-family: 'Montserrat', sans-serif;
             font-size: 16px;
             font-weight: 700;
-            color: #0D1B2A;
+            color: #000000;
             margin-top: 5px;
         }
 
@@ -1162,7 +1162,7 @@ select:focus{border-color:#C9A228}
             font-family: 'Montserrat', sans-serif;
             font-size: 12px;
             font-weight: 700;
-            color: #0D1B2A;
+            color: #000000;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 15px;
@@ -1187,7 +1187,7 @@ select:focus{border-color:#C9A228}
 
         /* ============ ATHLETE TIER ============ */
         .pc-tier-section {
-            background: linear-gradient(135deg, #0D1B2A 0%, #1A2F47 100%);
+            background: linear-gradient(135deg, #000000 0%, #1A2F47 100%);
             color: #fff;
             padding: 25px;
             border-radius: 8px;
@@ -1235,9 +1235,9 @@ select:focus{border-color:#C9A228}
         .pc-signature-line {
             margin-top: 20px;
             padding-top: 10px;
-            border-top: 1px solid #0D1B2A;
+            border-top: 1px solid #000000;
             font-size: 11px;
-            color: #0D1B2A;
+            color: #000000;
         }
 
         /* ============ PRINT STYLES ============ */
@@ -1333,7 +1333,7 @@ select:focus{border-color:#C9A228}
 <!-- COACH QUICK-ACCESS BAR (visible only in coach mode) -->
 <div id="coach-quickbar" style="display:none;background:#0a1a2e;border-bottom:2px solid #1e3a5f;padding:8px 12px;gap:8px;flex-wrap:wrap;align-items:center">
   <span style="font-size:9px;color:#6a8aa8;font-weight:700;letter-spacing:1px;text-transform:uppercase;flex-shrink:0">Coach Actions:</span>
-  <button onclick="openImportSession()" style="background:#C9A228;border:none;color:#0D1B2A;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px">📥 Upload Session</button>
+  <button onclick="openImportSession()" style="background:#C9A228;border:none;color:#000000;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px">📥 Upload Session</button>
   <button onclick="openNewAth()" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#C9A228;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">➕ Add Athlete</button>
   <button onclick="navSwitch('tools');toolsSub('teamreport')" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">📋 Team Report</button>
   <button onclick="openSubmitStats()" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">📊 Submit Stats</button>
@@ -1349,13 +1349,13 @@ select:focus{border-color:#C9A228}
   <div style="margin-bottom:18px;display:flex;flex-direction:column;align-items:center;gap:6px">
     <div class="logo-img-wrap" style="height:72px;padding:6px 14px;border-radius:14px;background:#fff;margin-bottom:2px">
       <img class="header-logo" src="data:image/png;base64,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" alt="Odyssey Performance" style="height:60px;width:auto;display:block" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-      <div style="display:none;font-size:22px;font-weight:900;color:#0d1b2a;letter-spacing:-1px;line-height:1">ODYSSEY</div>
+      <div style="display:none;font-size:22px;font-weight:900;color:#000000;letter-spacing:-1px;line-height:1">ODYSSEY</div>
     </div>
     <div style="font-size:11px;color:#6a8aa8;letter-spacing:3px;text-transform:uppercase;margin-top:2px">Performance Dashboard</div>
   </div>
   <div style="font-size:15px;font-weight:700;color:#e6edf3;margin-bottom:12px">Find an Athlete Profile</div>
   <div style="max-width:400px;margin:0 auto 16px">
-    <input type="text" id="pub-search" placeholder="Type athlete name…" oninput="renderPublicSearch()" style="background:#0d1b2a;color:#fff;border:2px solid #2a4a6a;border-radius:10px;padding:10px 14px;font-size:14px;outline:none;width:100%;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='#C9A228'" onblur="this.style.borderColor='#2a4a6a'">
+    <input type="text" id="pub-search" placeholder="Type athlete name…" oninput="renderPublicSearch()" style="background:#000000;color:#fff;border:2px solid #2a4a6a;border-radius:10px;padding:10px 14px;font-size:14px;outline:none;width:100%;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='#C9A228'" onblur="this.style.borderColor='#2a4a6a'">
   </div>
   <div id="pub-results" style="max-width:500px;margin:0 auto;text-align:left"></div>
 
@@ -1364,7 +1364,7 @@ select:focus{border-color:#C9A228}
 <div id="coach-filters" class="filters">
   <div class="filter-group" style="flex:1;min-width:140px">
     <span class="filter-label">Search</span>
-    <input type="text" id="f-search" placeholder="First or last name…" oninput="render()" style="background:#0d1b2a;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:6px 10px;font-size:13px;outline:none;width:100%;transition:border-color .15s" onfocus="this.style.borderColor='#C9A228'" onblur="this.style.borderColor='#2a4a6a'">
+    <input type="text" id="f-search" placeholder="First or last name…" oninput="render()" style="background:#000000;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:6px 10px;font-size:13px;outline:none;width:100%;transition:border-color .15s" onfocus="this.style.borderColor='#C9A228'" onblur="this.style.borderColor='#2a4a6a'">
   </div>
   <div class="filter-group">
     <span class="filter-label">Sport</span>
@@ -1498,9 +1498,9 @@ select:focus{border-color:#C9A228}
   <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
     <div style="display:flex;gap:4px">
       <button id="lb-male-btn" onclick="lbSetGender('M')" style="background:#1e3a5f;border:2px solid #C9A228;color:#C9A228;border-radius:8px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer">♂ Male</button>
-      <button id="lb-female-btn" onclick="lbSetGender('F')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer">♀ Female</button>
+      <button id="lb-female-btn" onclick="lbSetGender('F')" style="background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer">♀ Female</button>
     </div>
-    <select id="lb-sport-filter" onchange="renderLeaderboards()" style="background:#0a1520;color:#e6edf3;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:11px;cursor:pointer">
+    <select id="lb-sport-filter" onchange="renderLeaderboards()" style="background:#0f0f0f;color:#e6edf3;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:11px;cursor:pointer">
       <option value="">All Sports</option>
     </select>
 
@@ -1708,7 +1708,7 @@ select:focus{border-color:#C9A228}
           <div class="na-field" style="flex:1"><label>Body Weight (lbs)</label><input class="na-inp" id="qc-bw" type="number" step="1" placeholder="e.g. 175"></div>
         </div>
       </div>
-      <button onclick="qcGenerateCard()" style="width:100%;background:#C9A228;border:none;color:#0D1B2A;border-radius:10px;padding:16px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:16px;letter-spacing:.5px">&#128203; Generate Profile Card</button>
+      <button onclick="qcGenerateCard()" style="width:100%;background:#C9A228;border:none;color:#000000;border-radius:10px;padding:16px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:16px;letter-spacing:.5px">&#128203; Generate Profile Card</button>
       <div id="qc-card-output" style="display:none;margin-top:4px"></div>
     </div>
   </div>
@@ -1725,7 +1725,7 @@ select:focus{border-color:#C9A228}
       <select id="team-report-sport" style="width:100%;background:#112233;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 12px;font-size:13px;outline:none;margin-bottom:14px">
         <option value="">— Choose Sport —</option>
       </select>
-      <button onclick="generateTeamReport()" style="width:100%;background:#C9A228;color:#0D1B2A;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:14px">Generate Report</button>
+      <button onclick="generateTeamReport()" style="width:100%;background:#C9A228;color:#000000;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:14px">Generate Report</button>
       <div id="team-report-output" style="font-size:13px;color:#c0d4e8;max-height:500px;overflow-y:auto"></div>
       <button id="team-report-print-btn" onclick="window.print()" style="width:100%;background:#2a4a6a;color:#C9A228;border:1px solid #2a4a6a;border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;margin-top:14px;display:none">🖨️ Print Report</button>
     </div>
@@ -1739,7 +1739,7 @@ select:focus{border-color:#C9A228}
 <div class="pw-overlay" id="pb-overlay">
   <div class="pb-fullscreen">
     <!-- Sticky Header -->
-    <div style="position:sticky;top:0;background:#0D1B2A;z-index:20;padding:13px 16px;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;justify-content:space-between">
+    <div style="position:sticky;top:0;background:#000000;z-index:20;padding:13px 16px;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;justify-content:space-between">
       <button onclick="closePB()" style="background:none;border:none;color:#6a8aa8;font-size:15px;font-weight:700;cursor:pointer;padding:4px 0;min-width:52px;text-align:left">‹ Back</button>
       <div style="font-size:15px;font-weight:800;color:#fff;text-align:center">📋 Blueprint Builder</div>
       <div style="min-width:52px;text-align:right">
@@ -1762,8 +1762,8 @@ select:focus{border-color:#C9A228}
         <div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Day Type</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
           <button onclick="pbSetDayType('T',this)" id="pb-dt-T" style="background:#1a1208;border:2px solid #C9A228;color:#C9A228;border-radius:14px;padding:18px 4px;font-size:15px;font-weight:800;cursor:pointer;text-align:center;line-height:1.3">⚡<br><span style="font-size:12px">T</span><br><span style="font-size:9px;font-weight:500;opacity:.7">Total</span></button>
-          <button onclick="pbSetDayType('L',this)" id="pb-dt-L" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:14px;padding:18px 4px;font-size:15px;font-weight:800;cursor:pointer;text-align:center;line-height:1.3">🦵<br><span style="font-size:12px">L</span><br><span style="font-size:9px;font-weight:500;opacity:.7">Lower</span></button>
-          <button onclick="pbSetDayType('U',this)" id="pb-dt-U" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:14px;padding:18px 4px;font-size:15px;font-weight:800;cursor:pointer;text-align:center;line-height:1.3">💪<br><span style="font-size:12px">U</span><br><span style="font-size:9px;font-weight:500;opacity:.7">Upper</span></button>
+          <button onclick="pbSetDayType('L',this)" id="pb-dt-L" style="background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:14px;padding:18px 4px;font-size:15px;font-weight:800;cursor:pointer;text-align:center;line-height:1.3">🦵<br><span style="font-size:12px">L</span><br><span style="font-size:9px;font-weight:500;opacity:.7">Lower</span></button>
+          <button onclick="pbSetDayType('U',this)" id="pb-dt-U" style="background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:14px;padding:18px 4px;font-size:15px;font-weight:800;cursor:pointer;text-align:center;line-height:1.3">💪<br><span style="font-size:12px">U</span><br><span style="font-size:9px;font-weight:500;opacity:.7">Upper</span></button>
         </div>
         <input type="hidden" id="pb-day-type" value="T">
       </div>
@@ -1773,9 +1773,9 @@ select:focus{border-color:#C9A228}
         <div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Week</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px">
           <button id="pb-wk-1" onclick="pbSetWeek(1,this)" style="background:#1e3a5f;border:2px solid #C9A228;color:#C9A228;border-radius:10px;padding:11px 4px;font-size:14px;font-weight:700;cursor:pointer">1</button>
-          <button id="pb-wk-2" onclick="pbSetWeek(2,this)" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:10px;padding:11px 4px;font-size:14px;font-weight:700;cursor:pointer">2</button>
-          <button id="pb-wk-3" onclick="pbSetWeek(3,this)" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:10px;padding:11px 4px;font-size:14px;font-weight:700;cursor:pointer">3</button>
-          <button id="pb-wk-4" onclick="pbSetWeek(4,this)" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:10px;padding:9px 4px;font-size:12px;font-weight:700;cursor:pointer;line-height:1.3">4<br><span style="font-size:8px;opacity:.65">CNS</span></button>
+          <button id="pb-wk-2" onclick="pbSetWeek(2,this)" style="background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:10px;padding:11px 4px;font-size:14px;font-weight:700;cursor:pointer">2</button>
+          <button id="pb-wk-3" onclick="pbSetWeek(3,this)" style="background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:10px;padding:11px 4px;font-size:14px;font-weight:700;cursor:pointer">3</button>
+          <button id="pb-wk-4" onclick="pbSetWeek(4,this)" style="background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:10px;padding:9px 4px;font-size:12px;font-weight:700;cursor:pointer;line-height:1.3">4<br><span style="font-size:8px;opacity:.65">CNS</span></button>
         </div>
       </div>
       <input type="hidden" id="pb-week" value="1">
@@ -1785,9 +1785,9 @@ select:focus{border-color:#C9A228}
         <div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Athlete Level</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px">
           <button id="pb-ar-auto" onclick="pbSetArch('auto',this)" style="background:#1e3a5f;border:2px solid #C9A228;color:#C9A228;border-radius:10px;padding:9px 4px;font-size:11px;font-weight:700;cursor:pointer">Auto</button>
-          <button id="pb-ar-advanced" onclick="pbSetArch('advanced',this)" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:10px;padding:9px 4px;font-size:11px;font-weight:700;cursor:pointer">Elite</button>
-          <button id="pb-ar-intermediate" onclick="pbSetArch('intermediate',this)" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:10px;padding:9px 4px;font-size:11px;font-weight:700;cursor:pointer">Mid</button>
-          <button id="pb-ar-beginner" onclick="pbSetArch('beginner',this)" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:10px;padding:9px 4px;font-size:11px;font-weight:700;cursor:pointer">Youth</button>
+          <button id="pb-ar-advanced" onclick="pbSetArch('advanced',this)" style="background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:10px;padding:9px 4px;font-size:11px;font-weight:700;cursor:pointer">Elite</button>
+          <button id="pb-ar-intermediate" onclick="pbSetArch('intermediate',this)" style="background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:10px;padding:9px 4px;font-size:11px;font-weight:700;cursor:pointer">Mid</button>
+          <button id="pb-ar-beginner" onclick="pbSetArch('beginner',this)" style="background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:10px;padding:9px 4px;font-size:11px;font-weight:700;cursor:pointer">Youth</button>
         </div>
       </div>
       <input type="hidden" id="pb-arch" value="auto">
@@ -1798,7 +1798,7 @@ select:focus{border-color:#C9A228}
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
           <div>
             <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Session Type</label>
-            <select id="pb-session-type" onchange="pbUpdateSubFocus()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:12px;box-sizing:border-box">
+            <select id="pb-session-type" onchange="pbUpdateSubFocus()" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:12px;box-sizing:border-box">
               <option value="all">All-Around</option>
               <option value="speed">Speed Only</option>
               <option value="strength">Strength Only</option>
@@ -1806,13 +1806,13 @@ select:focus{border-color:#C9A228}
           </div>
           <div>
             <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Sub-Focus</label>
-            <select id="pb-sub-focus" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:12px;box-sizing:border-box">
+            <select id="pb-sub-focus" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:12px;box-sizing:border-box">
               <option value="auto">Auto (Coach's Choice)</option>
             </select>
           </div>
           <div>
             <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Phase</label>
-            <select id="pb-macro" onchange="pbUpdateBlocks()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:12px;box-sizing:border-box">
+            <select id="pb-macro" onchange="pbUpdateBlocks()" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:12px;box-sizing:border-box">
               <option value="tri1">Phase 1 — Triphasic</option>
               <option value="pow1">Phase 2 — Power</option>
               <option value="tri3">Phase 3 — Triphasic</option>
@@ -1821,7 +1821,7 @@ select:focus{border-color:#C9A228}
           </div>
           <div>
             <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Block</label>
-            <select id="pb-block" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:12px;box-sizing:border-box">
+            <select id="pb-block" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:12px;box-sizing:border-box">
               <option value="ecc">Block 1 — Eccentric</option>
               <option value="iso">Block 2 — Isometric</option>
               <option value="con">Block 3 — Concentric</option>
@@ -1829,7 +1829,7 @@ select:focus{border-color:#C9A228}
           </div>
           <div style="grid-column:1/-1">
             <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Day</label>
-            <select id="pb-day" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:12px;box-sizing:border-box">
+            <select id="pb-day" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:12px;box-sizing:border-box">
               <option value="day1">Day 1</option>
               <option value="day2">Day 2</option>
               <option value="day3">Day 3</option>
@@ -1841,7 +1841,7 @@ select:focus{border-color:#C9A228}
         <div id="pb-custom-section" style="display:none;border-top:1px solid #1e3a5f;padding-top:12px;margin-top:4px">
           <div style="font-size:11px;font-weight:800;color:#C9A228;margin-bottom:8px">⚙️ Custom Exercise Library</div>
           <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:8px;align-items:end">
-            <select id="clib-tier" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:7px 8px;font-size:11px;box-sizing:border-box">
+            <select id="clib-tier" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:7px 8px;font-size:11px;box-sizing:border-box">
               <option value="T1_total">T1 Total Body — Olympic Primary</option>
               <option value="T2_total">T2 Total Body — Hang Variations</option>
               <option value="T3_total">T3 Total Body — Mid-Thigh / DB Power</option>
@@ -1868,14 +1868,14 @@ select:focus{border-color:#C9A228}
             </select>
             <button onclick="addCustomEx()" style="background:#4caf50;border:none;color:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">+ Add</button>
           </div>
-          <input id="clib-ex" type="text" placeholder="Exercise name…" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:12px;outline:none;box-sizing:border-box;margin-bottom:6px">
+          <input id="clib-ex" type="text" placeholder="Exercise name…" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:12px;outline:none;box-sizing:border-box;margin-bottom:6px">
           <div id="clib-status" style="font-size:10px;color:#4caf50;display:none;margin-bottom:6px"></div>
           <div id="clib-list" style="font-size:11px;color:#6a8aa8"></div>
         </div>
       </div>
 
       <!-- Generate Button -->
-      <button onclick="pbGen()" style="width:100%;background:#C9A228;border:none;color:#0D1B2A;border-radius:14px;padding:17px;font-size:17px;font-weight:800;cursor:pointer;margin-bottom:22px;letter-spacing:.2px;box-sizing:border-box">⚡ Generate Blueprint</button>
+      <button onclick="pbGen()" style="width:100%;background:#C9A228;border:none;color:#000000;border-radius:14px;padding:17px;font-size:17px;font-weight:800;cursor:pointer;margin-bottom:22px;letter-spacing:.2px;box-sizing:border-box">⚡ Generate Blueprint</button>
 
       <!-- Output (scrolls below button) -->
       <div id="pb-output" style="font-size:12px;color:#c0d4e8;margin-bottom:24px">
@@ -1891,8 +1891,8 @@ select:focus{border-color:#C9A228}
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
             <div style="font-size:11px;color:#6a8aa8;white-space:nowrap">Count:</div>
             <button id="pb-cnt-20" onclick="pbSetAccCount(20,this)" style="background:#1e3a5f;border:2px solid #C9A228;color:#C9A228;border-radius:8px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer">20</button>
-            <button id="pb-cnt-25" onclick="pbSetAccCount(25,this)" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer">25</button>
-            <button id="pb-cnt-30" onclick="pbSetAccCount(30,this)" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer">30</button>
+            <button id="pb-cnt-25" onclick="pbSetAccCount(25,this)" style="background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer">25</button>
+            <button id="pb-cnt-30" onclick="pbSetAccCount(30,this)" style="background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer">30</button>
           </div>
           <button onclick="pbGenAccessories()" style="width:100%;background:#1e3a5f;border:none;color:#C9A228;border-radius:12px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:14px;box-sizing:border-box">🎯 Generate Accessory List</button>
           <div id="pb-acc-output" style="font-size:12px;color:#c0d4e8"></div>
@@ -1913,11 +1913,11 @@ select:focus{border-color:#C9A228}
     <div style="font-size:12px;color:#8a9bb0;margin-bottom:12px">Upload a VALD ForceDecks CMJ export CSV and your profile stats will auto-update for this session.</div>
     <div style="margin-bottom:10px">
       <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">ForceDecks CMJ Export (.csv)</label>
-      <input type="file" id="upload-csv" accept=".csv" onchange="parseCoachCSV()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px;font-size:12px">
+      <input type="file" id="upload-csv" accept=".csv" onchange="parseCoachCSV()" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px;font-size:12px">
     </div>
     <div style="margin-bottom:14px">
       <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Profile Photo (optional)</label>
-      <input type="file" id="upload-photo" accept="image/*" onchange="handleCoachPhoto()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px;font-size:12px">
+      <input type="file" id="upload-photo" accept="image/*" onchange="handleCoachPhoto()" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px;font-size:12px">
     </div>
     <div id="upload-status" style="font-size:11px;color:#4caf50;margin-bottom:10px;display:none"></div>
     <div id="upload-error" style="font-size:11px;color:#ef5350;margin-bottom:10px;display:none"></div>
@@ -1950,7 +1950,7 @@ select:focus{border-color:#C9A228}
 <!-- ADD NEW ATHLETE MODAL -->
 <!-- ADD NEW ATHLETE — Full Screen -->
 <div class="pw-overlay" id="newath-overlay"><div class="pb-fullscreen">
-<div style="background:linear-gradient(135deg,#0a1520 0%,#0D1B2A 100%);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #C9A228;position:sticky;top:0;z-index:10" class="pb-hdr-sticky">
+<div style="background:linear-gradient(135deg,#0f0f0f 0%,#000000 100%);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #C9A228;position:sticky;top:0;z-index:10" class="pb-hdr-sticky">
 <div><div style="font-size:9px;color:#C9A228;font-weight:700;letter-spacing:2px;text-transform:uppercase">Odyssey Performance</div><h2 style="margin:2px 0 0;font-size:18px;color:#fff;font-weight:800">New Athlete Profile</h2></div>
 <button onclick="closeNewAth()" style="background:transparent;border:none;color:#6a8aa8;font-size:24px;cursor:pointer;padding:4px 8px">&#x2715;</button>
 </div>
@@ -1961,7 +1961,7 @@ select:focus{border-color:#C9A228}
 <label class="na-upload-btn">&#128202; VALD / Output Sports CSV<input type="file" id="newath-csv" accept=".csv" onchange="newathHandleFile(this,'csv')" style="display:none"></label>
 <label class="na-upload-btn" style="background:#1a2535;color:#6a8aa8;border:1px solid #2a4a6a">&#128247; Photo<input type="file" id="newath-photo" accept="image/*" onchange="newathHandleFile(this,'photo')" style="display:none"></label>
 </div>
-<div id="newath-csv-status" style="display:none;padding:8px 10px;background:#0a1520;border-radius:6px;font-size:12px;color:#4CAF50;border:1px solid #1e3a5f;margin-top:6px"></div>
+<div id="newath-csv-status" style="display:none;padding:8px 10px;background:#0f0f0f;border-radius:6px;font-size:12px;color:#4CAF50;border:1px solid #1e3a5f;margin-top:6px"></div>
 <div id="newath-photo-preview" style="display:none;margin-top:8px"><img id="newath-photo-img" style="max-width:120px;border-radius:6px;border:2px solid #1e3a5f"></div>
 </div>
 <div class="na-card">
@@ -1980,15 +1980,15 @@ select:focus{border-color:#C9A228}
 </div>
 <div id="newath-status" style="display:none;margin:8px 0;padding:10px 14px;border-radius:8px;font-size:13px"></div>
 <div style="display:flex;gap:10px;padding-bottom:8px">
-<button onclick="naGenerateCard()" style="flex:2;background:#C9A228;border:none;color:#0D1B2A;border-radius:10px;padding:14px 10px;font-size:14px;font-weight:800;cursor:pointer">&#128203; Generate Profile Card</button>
+<button onclick="naGenerateCard()" style="flex:2;background:#C9A228;border:none;color:#000000;border-radius:10px;padding:14px 10px;font-size:14px;font-weight:800;cursor:pointer">&#128203; Generate Profile Card</button>
 <button onclick="saveNewAth()" style="flex:1;background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:10px;padding:14px 10px;font-size:13px;font-weight:700;cursor:pointer">&#9993;&#65039; Send for Review</button>
-<button onclick="closeNewAth()" style="background:#0a1520;border:1px solid #2a4a6a;color:#6a8aa8;border-radius:10px;padding:14px 10px;font-size:13px;cursor:pointer">Cancel</button>
+<button onclick="closeNewAth()" style="background:#0f0f0f;border:1px solid #2a4a6a;color:#6a8aa8;border-radius:10px;padding:14px 10px;font-size:13px;cursor:pointer">Cancel</button>
 </div>
 <div id="na-card-output" style="display:none;margin-top:8px"></div>
 </div></div></div>
 <div class="pw-overlay" id="submitstats-overlay">
   <div class="pb-fullscreen">
-    <div style="position:sticky;top:0;background:#0D1B2A;z-index:20;padding:13px 16px;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;justify-content:space-between">
+    <div style="position:sticky;top:0;background:#000000;z-index:20;padding:13px 16px;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;justify-content:space-between">
       <button onclick="closeSubmitStats()" style="background:none;border:none;color:#6a8aa8;font-size:15px;font-weight:700;cursor:pointer;padding:4px 0;min-width:52px;text-align:left">‹ Back</button>
       <div style="font-size:15px;font-weight:800;color:#fff;text-align:center">📊 Submit Stats</div>
       <div style="min-width:52px"></div>
@@ -2059,7 +2059,7 @@ select:focus{border-color:#C9A228}
         <textarea id="ss-notes" placeholder="Progress notes, injury flags, observations…" style="width:100%;background:#112233;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:10px;font-size:12px;outline:none;box-sizing:border-box;min-height:72px;resize:vertical;line-height:1.5"></textarea>
       </div>
       <div id="ss-status" style="font-size:11px;color:#4caf50;margin-bottom:12px;display:none;background:#0a2010;border:1px solid #2d7a4a;border-radius:8px;padding:8px 12px"></div>
-      <button onclick="saveSubmitStats()" style="width:100%;background:#C9A228;border:none;color:#0D1B2A;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:12px;box-sizing:border-box">📊 Submit Stats + Email Desean</button>
+      <button onclick="saveSubmitStats()" style="width:100%;background:#C9A228;border:none;color:#000000;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:12px;box-sizing:border-box">📊 Submit Stats + Email Desean</button>
     </div>
   </div>
 </div>
@@ -2067,7 +2067,7 @@ select:focus{border-color:#C9A228}
 <!-- CSV IMPORT SESSION MODAL -->
 <div class="pw-overlay" id="import-overlay">
   <div class="pb-fullscreen">
-    <div style="position:sticky;top:0;background:#0D1B2A;z-index:20;padding:13px 16px;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;justify-content:space-between">
+    <div style="position:sticky;top:0;background:#000000;z-index:20;padding:13px 16px;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;justify-content:space-between">
       <button onclick="closeImportSession()" style="background:none;border:none;color:#6a8aa8;font-size:15px;font-weight:700;cursor:pointer;padding:4px 0;min-width:52px;text-align:left">‹ Back</button>
       <div style="font-size:15px;font-weight:800;color:#fff;text-align:center">📥 Import Session</div>
       <div style="min-width:52px"></div>
@@ -2108,9 +2108,9 @@ CMJ: 18.5in | RSI: 0.42 | Power: 49 W/kg | 0-10: 1.68s
 Jane Doe | Soccer | 2027 | F
 CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
 
-(one athlete or ten — any format you have)" style="width:100%;min-height:220px;background:#0a1520;color:#e0eaf4;border:1px solid #2a4a6a;border-radius:10px;padding:12px;font-size:12px;font-family:-apple-system,BlinkMacSystemFont,monospace;resize:vertical;box-sizing:border-box;line-height:1.65;margin-bottom:10px"></textarea>
-          <input id="mn-coach-name" type="text" placeholder="Your name (optional — e.g. Coach Mike)" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:12px;box-sizing:border-box;margin-bottom:10px">
-          <button onclick="importSubmitFreetext()" style="width:100%;background:#C9A228;border:none;color:#0D1B2A;border-radius:12px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;box-sizing:border-box">📧 Send for Review →</button>
+(one athlete or ten — any format you have)" style="width:100%;min-height:220px;background:#0f0f0f;color:#e0eaf4;border:1px solid #2a4a6a;border-radius:10px;padding:12px;font-size:12px;font-family:-apple-system,BlinkMacSystemFont,monospace;resize:vertical;box-sizing:border-box;line-height:1.65;margin-bottom:10px"></textarea>
+          <input id="mn-coach-name" type="text" placeholder="Your name (optional — e.g. Coach Mike)" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:12px;box-sizing:border-box;margin-bottom:10px">
+          <button onclick="importSubmitFreetext()" style="width:100%;background:#C9A228;border:none;color:#000000;border-radius:12px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;box-sizing:border-box">📧 Send for Review →</button>
         </div>
 
         <!-- Photo Upload -->
@@ -2135,7 +2135,7 @@ CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
       <div id="import-step-2" style="display:none;flex-direction:column">
         <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:8px">Step 2: Confirm Athlete Info</label>
         <div id="import-athletes-list" style="margin-bottom:16px"></div>
-        <button onclick="importConfirmAthletes()" style="width:100%;background:#C9A228;border:none;color:#0D1B2A;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:12px;box-sizing:border-box">✓ Confirm & Continue</button>
+        <button onclick="importConfirmAthletes()" style="width:100%;background:#C9A228;border:none;color:#000000;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:12px;box-sizing:border-box">✓ Confirm & Continue</button>
       </div>
 
       <!-- STEP 3: Pending -->
@@ -2150,7 +2150,7 @@ CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
       <div id="import-step-4" style="display:none;flex-direction:column">
         <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:8px">Step 4: Performance Card</label>
         <div id="print-card-overlay" style="background:#fff;border:1px solid #2a4a6a;border-radius:10px;overflow:auto;max-height:600px;margin-bottom:16px"></div>
-        <button onclick="window.print()" style="width:100%;background:#C9A228;border:none;color:#0D1B2A;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:12px;box-sizing:border-box">🖨️ Print Card</button>
+        <button onclick="window.print()" style="width:100%;background:#C9A228;border:none;color:#000000;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:12px;box-sizing:border-box">🖨️ Print Card</button>
         <button onclick="closeImportSession()" style="width:100%;background:#1e3a5f;border:1px solid #2a4a6a;color:#fff;border-radius:8px;padding:12px;font-size:13px;font-weight:600;cursor:pointer">Done</button>
       </div>
     </div>
@@ -2161,10 +2161,10 @@ CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
 <div class="pw-overlay" id="core6-overlay">
   <div class="pb-fullscreen">
     <!-- Sticky Header -->
-    <div style="position:sticky;top:0;background:#0D1B2A;z-index:20;padding:13px 16px;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;justify-content:space-between">
+    <div style="position:sticky;top:0;background:#000000;z-index:20;padding:13px 16px;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;justify-content:space-between">
       <button onclick="closeCore6()" style="background:none;border:none;color:#6a8aa8;font-size:15px;font-weight:700;cursor:pointer;padding:4px 0;min-width:52px;text-align:left">‹ Back</button>
       <div style="font-size:15px;font-weight:800;color:#fff;text-align:center">📋 CORE 6 Eval</div>
-      <button onclick="core6PrintCard()" style="background:#C9A228;border:none;color:#0D1B2A;border-radius:10px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer">📄 Export PDF</button>
+      <button onclick="core6PrintCard()" style="background:#C9A228;border:none;color:#000000;border-radius:10px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer">📄 Export PDF</button>
     </div>
     <div style="padding:14px 14px 60px">
 
@@ -2174,17 +2174,17 @@ CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
           <div>
             <label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px">Athlete Name</label>
-            <input id="c6-name" type="text" placeholder="Full name" style="width:100%;background:#0D1B2A;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;box-sizing:border-box">
+            <input id="c6-name" type="text" placeholder="Full name" style="width:100%;background:#000000;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;box-sizing:border-box">
           </div>
           <div>
             <label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px">Grad Year</label>
-            <input id="c6-year" type="number" placeholder="2027" style="width:100%;background:#0D1B2A;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;box-sizing:border-box">
+            <input id="c6-year" type="number" placeholder="2027" style="width:100%;background:#000000;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;box-sizing:border-box">
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
           <div>
             <label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px">Sport</label>
-            <select id="c6-sport" onchange="c6UpdatePositions()" style="width:100%;background:#0D1B2A;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;box-sizing:border-box">
+            <select id="c6-sport" onchange="c6UpdatePositions()" style="width:100%;background:#000000;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;box-sizing:border-box">
               <option value="">Select Sport</option>
               <option>Football</option><option>Basketball</option><option>Baseball</option><option>Softball</option>
               <option>Soccer</option><option>Track &amp; Field</option><option>Volleyball</option><option>Lacrosse</option>
@@ -2193,14 +2193,14 @@ CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
           </div>
           <div>
             <label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px">Position</label>
-            <select id="c6-position" style="width:100%;background:#0D1B2A;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;box-sizing:border-box">
+            <select id="c6-position" style="width:100%;background:#000000;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;box-sizing:border-box">
               <option value="">Select Sport First</option>
             </select>
           </div>
         </div>
         <div>
           <label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px">Training Level</label>
-          <select id="c6-level" style="width:100%;background:#0D1B2A;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;box-sizing:border-box">
+          <select id="c6-level" style="width:100%;background:#000000;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;box-sizing:border-box">
             <option value="">Select Level</option>
             <option>Beginner – First time in a real program</option>
             <option>Intermediate – Has some training background</option>
@@ -2214,16 +2214,16 @@ CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
       <div id="c6-qualities"></div>
 
       <!-- Generate Button -->
-      <button onclick="core6GenerateAll()" style="width:100%;background:#C9A228;border:none;color:#0D1B2A;border-radius:14px;padding:15px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:14px;box-sizing:border-box">⚡ Generate Coaching Summary</button>
+      <button onclick="core6GenerateAll()" style="width:100%;background:#C9A228;border:none;color:#000000;border-radius:14px;padding:15px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:14px;box-sizing:border-box">⚡ Generate Coaching Summary</button>
 
       <!-- Coaching Summary Output -->
-      <div id="c6-summary" style="display:none;background:#0a1520;border:1px solid #2a4a6a;border-radius:12px;padding:14px;margin-bottom:14px">
+      <div id="c6-summary" style="display:none;background:#0f0f0f;border:1px solid #2a4a6a;border-radius:12px;padding:14px;margin-bottom:14px">
         <div style="font-size:11px;font-weight:800;color:#C9A228;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">📣 Coaching Summary</div>
         <div id="c6-summary-text" style="font-size:13px;color:#c8dff0;line-height:1.7"></div>
       </div>
 
       <!-- Sport Translation -->
-      <div id="c6-sport-trans" style="display:none;background:#0a1520;border:1px solid #2a4a6a;border-radius:12px;padding:14px;margin-bottom:14px">
+      <div id="c6-sport-trans" style="display:none;background:#0f0f0f;border:1px solid #2a4a6a;border-radius:12px;padding:14px;margin-bottom:14px">
         <div style="font-size:11px;font-weight:800;color:#C9A228;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">🏆 Sport Translation</div>
         <div id="c6-trans-text" style="font-size:12px;color:#a0bbd4;line-height:1.8"></div>
       </div>
@@ -2238,7 +2238,7 @@ CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
 <div class="pw-overlay" id="teamplan-overlay">
   <div class="pb-fullscreen">
     <!-- Sticky Header -->
-    <div style="position:sticky;top:0;background:#0D1B2A;z-index:20;padding:13px 16px;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;justify-content:space-between">
+    <div style="position:sticky;top:0;background:#000000;z-index:20;padding:13px 16px;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;justify-content:space-between">
       <button onclick="closeTeamPlan()" style="background:none;border:none;color:#6a8aa8;font-size:15px;font-weight:700;cursor:pointer;padding:4px 0;min-width:52px;text-align:left">‹ Back</button>
       <div style="font-size:15px;font-weight:800;color:#fff;text-align:center">🗂️ Team Builder</div>
       <div style="min-width:52px;text-align:right">
@@ -2253,7 +2253,7 @@ CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
       </div>
       <div>
         <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Sport</label>
-        <select id="tp-sport-sel" onchange="tpUpdateSportInfo()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
+        <select id="tp-sport-sel" onchange="tpUpdateSportInfo()" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
           <option value="multi">Multi-Sport / General</option>
           <option value="advanced">Advanced Group</option>
           <option value="intermediate">Intermediate Group</option>
@@ -2277,15 +2277,15 @@ CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
           <option value="golf">Golf</option>
           <option value="other">Other (Custom)…</option>
         </select>
-        <input id="tp-sport-custom" type="text" placeholder="Enter sport…" style="display:none;width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none;box-sizing:border-box;margin-top:5px">
+        <input id="tp-sport-custom" type="text" placeholder="Enter sport…" style="display:none;width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none;box-sizing:border-box;margin-top:5px">
       </div>
       <div>
         <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Start Date</label>
-        <input id="tp-start" type="date" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none;box-sizing:border-box">
+        <input id="tp-start" type="date" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none;box-sizing:border-box">
       </div>
       <div>
         <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Archetype</label>
-        <select id="tp-arch" onchange="tpUpdateSportInfo()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
+        <select id="tp-arch" onchange="tpUpdateSportInfo()" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
           <option value="Advanced">Advanced — VBT + Density</option>
           <option value="Intermediate" selected>Intermediate — Running Clock</option>
           <option value="Beginner">Beginner — EMOM</option>
@@ -2295,10 +2295,10 @@ CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
         <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Output Level</label>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:5px">
           <button id="tp-lvl-macro" onclick="tpSetLevel('macro')" style="background:#1e3a5f;border:2px solid #C9A228;color:#C9A228;border-radius:8px;padding:8px 3px;font-size:10px;font-weight:700;cursor:pointer">Macro</button>
-          <button id="tp-lvl-meso" onclick="tpSetLevel('meso')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 3px;font-size:10px;font-weight:700;cursor:pointer">Meso</button>
-          <button id="tp-lvl-micro" onclick="tpSetLevel('micro')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 3px;font-size:10px;font-weight:700;cursor:pointer">Micro</button>
-          <button id="tp-lvl-week" onclick="tpSetLevel('week')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 3px;font-size:10px;font-weight:700;cursor:pointer">Week</button>
-          <button id="tp-lvl-session" onclick="tpSetLevel('session')" style="background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 3px;font-size:10px;font-weight:700;cursor:pointer">Session</button>
+          <button id="tp-lvl-meso" onclick="tpSetLevel('meso')" style="background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 3px;font-size:10px;font-weight:700;cursor:pointer">Meso</button>
+          <button id="tp-lvl-micro" onclick="tpSetLevel('micro')" style="background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 3px;font-size:10px;font-weight:700;cursor:pointer">Micro</button>
+          <button id="tp-lvl-week" onclick="tpSetLevel('week')" style="background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 3px;font-size:10px;font-weight:700;cursor:pointer">Week</button>
+          <button id="tp-lvl-session" onclick="tpSetLevel('session')" style="background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 3px;font-size:10px;font-weight:700;cursor:pointer">Session</button>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-top:4px">
           <div style="font-size:9px;color:#4a6a8a;text-align:center">4 phases × 12 wks</div>
@@ -2311,7 +2311,7 @@ CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
     <div id="tp-sport-info" style="display:none;margin-bottom:12px"></div>
     <div id="tp-phase-row" style="display:none;margin-bottom:10px">
       <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Phase</label>
-      <select id="tp-phase" onchange="tpUpdateBlockOptions()" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
+      <select id="tp-phase" onchange="tpUpdateBlockOptions()" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
         <option value="0">Phase 1 — Power Production (Wks 1–12)</option>
         <option value="1">Phase 2 — Triphasic (Wks 13–24)</option>
         <option value="2">Phase 3 — Power Production (Wks 25–36)</option>
@@ -2320,13 +2320,13 @@ CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
     </div>
     <div id="tp-block-row" style="display:none;margin-bottom:10px">
       <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Block</label>
-      <select id="tp-block" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
+      <select id="tp-block" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:13px;outline:none">
         <option value="0">Block 1 — High Force (85–92%)</option>
         <option value="1">Block 2 — Power (75–85%)</option>
         <option value="2">Block 3 — Velocity (60–75%)</option>
       </select>
     </div>
-    <button onclick="tpGen()" style="width:100%;background:#C9A228;border:none;color:#0D1B2A;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:20px;box-sizing:border-box">⚡ Generate Program</button>
+    <button onclick="tpGen()" style="width:100%;background:#C9A228;border:none;color:#000000;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:20px;box-sizing:border-box">⚡ Generate Program</button>
     <div id="tp-output"><div style="color:#3a5a7a;font-size:12px;text-align:center;padding:20px">Select output level above and tap Generate Program.</div></div>
     </div><!-- /scrollable content -->
   </div><!-- /pb-fullscreen -->
@@ -2337,7 +2337,7 @@ CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
 <div class="pw-overlay" id="profilecard-overlay">
   <div class="pb-fullscreen">
     <!-- Sticky header -->
-    <div style="position:sticky;top:0;background:#0D1B2A;z-index:20;padding:13px 16px;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;justify-content:space-between">
+    <div style="position:sticky;top:0;background:#000000;z-index:20;padding:13px 16px;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;justify-content:space-between">
       <button onclick="closeProfileCard()" style="background:none;border:none;color:#6a8aa8;font-size:15px;font-weight:700;cursor:pointer;padding:4px 0;min-width:52px;text-align:left">‹ Back</button>
       <div style="font-size:15px;font-weight:800;color:#fff;text-align:center">📄 Profile Card Generator</div>
       <div style="min-width:52px"></div>
@@ -2444,13 +2444,13 @@ CMJ: 14.2in | Power: 42 W/kg | Asym: 12%
     <h2>Coach Login</h2>
     <p>Enter your 4-digit PIN to access coach features</p>
     <div style="display:flex;gap:8px;justify-content:center;margin-bottom:16px">
-      <input class="pin-box" id="pin0" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]*" oninput="pinNext(this,1)" onkeydown="pinBack(event,this,null)" style="width:44px;height:52px;font-size:22px;font-weight:800;text-align:center;background:#0a1520;color:#C9A228;border:2px solid #2a4a6a;border-radius:10px;outline:none">
-      <input class="pin-box" id="pin1" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]*" oninput="pinNext(this,2)" onkeydown="pinBack(event,this,0)" style="width:44px;height:52px;font-size:22px;font-weight:800;text-align:center;background:#0a1520;color:#C9A228;border:2px solid #2a4a6a;border-radius:10px;outline:none">
-      <input class="pin-box" id="pin2" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]*" oninput="pinNext(this,3)" onkeydown="pinBack(event,this,1)" style="width:44px;height:52px;font-size:22px;font-weight:800;text-align:center;background:#0a1520;color:#C9A228;border:2px solid #2a4a6a;border-radius:10px;outline:none">
-      <input class="pin-box" id="pin3" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]*" oninput="if(this.value.length===1)pinSubmit()" onkeydown="pinBack(event,this,2)" style="width:44px;height:52px;font-size:22px;font-weight:800;text-align:center;background:#0a1520;color:#C9A228;border:2px solid #2a4a6a;border-radius:10px;outline:none">
+      <input class="pin-box" id="pin0" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]*" oninput="pinNext(this,1)" onkeydown="pinBack(event,this,null)" style="width:44px;height:52px;font-size:22px;font-weight:800;text-align:center;background:#0f0f0f;color:#C9A228;border:2px solid #2a4a6a;border-radius:10px;outline:none">
+      <input class="pin-box" id="pin1" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]*" oninput="pinNext(this,2)" onkeydown="pinBack(event,this,0)" style="width:44px;height:52px;font-size:22px;font-weight:800;text-align:center;background:#0f0f0f;color:#C9A228;border:2px solid #2a4a6a;border-radius:10px;outline:none">
+      <input class="pin-box" id="pin2" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]*" oninput="pinNext(this,3)" onkeydown="pinBack(event,this,1)" style="width:44px;height:52px;font-size:22px;font-weight:800;text-align:center;background:#0f0f0f;color:#C9A228;border:2px solid #2a4a6a;border-radius:10px;outline:none">
+      <input class="pin-box" id="pin3" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]*" oninput="if(this.value.length===1)pinSubmit()" onkeydown="pinBack(event,this,2)" style="width:44px;height:52px;font-size:22px;font-weight:800;text-align:center;background:#0f0f0f;color:#C9A228;border:2px solid #2a4a6a;border-radius:10px;outline:none">
     </div>
     <div id="pw-error" style="display:none;color:#e05050;font-size:12px;margin-bottom:10px">Incorrect PIN — try again</div>
-    <button onclick="pinSubmit()" style="width:100%;background:#C9A228;border:none;color:#0D1B2A;border-radius:10px;padding:12px;font-size:14px;font-weight:800;cursor:pointer">Unlock →</button>
+    <button onclick="pinSubmit()" style="width:100%;background:#C9A228;border:none;color:#000000;border-radius:10px;padding:12px;font-size:14px;font-weight:800;cursor:pointer">Unlock →</button>
   </div>
 </div>
 
@@ -2661,7 +2661,7 @@ function renderPublicSearch() {
     if (hasCmj) pills.push('<span style="background:#1a1208;border:1px solid #3a2a00;color:#C9A228;font-size:9px;padding:2px 7px;border-radius:8px">CMJ ' + a.cmj_jh_in + '"</span>');
     if (a.best_rsi != null) pills.push('<span style="background:#08122a;border:1px solid #1e3a7a;color:#4a8af0;font-size:9px;padding:2px 7px;border-radius:8px">RSI ' + a.best_rsi + '</span>');
     if (hasPwr) pills.push('<span style="background:#081a12;border:1px solid #1e5a3a;color:#4af08a;font-size:9px;padding:2px 7px;border-radius:8px">' + a.cmj_power_bm + ' W/kg</span>');
-    return '<div onclick="openModal(' + idx + ')" style="background:#0d1b2a;border:1px solid #1e3a5f;border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer" onmouseover=\"this.style.borderColor=\'#C9A228\'\" onmouseout=\"this.style.borderColor=\'#1e3a5f\'\">' +
+    return '<div onclick="openModal(' + idx + ')" style="background:#000000;border:1px solid #1e3a5f;border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer" onmouseover=\"this.style.borderColor=\'#C9A228\'\" onmouseout=\"this.style.borderColor=\'#1e3a5f\'\">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">' +
       '<div style="font-size:14px;font-weight:700;color:#e6edf3">' + a.name + '</div>' +
       '<span style="font-size:12px;color:#C9A228">›</span></div>' +
@@ -2679,7 +2679,7 @@ function lbSetGender(g) {
   ['M','F'].forEach(function(x){
     var btn = document.getElementById('lb-' + (x==='M'?'male':'female') + '-btn');
     if(!btn) return;
-    btn.style.background = (x===g) ? '#1e3a5f' : '#0a1520';
+    btn.style.background = (x===g) ? '#1e3a5f' : '#0f0f0f';
     btn.style.borderColor = (x===g) ? '#C9A228' : '#2a4a6a';
     btn.style.color = (x===g) ? '#C9A228' : '#6a8aa8';
   });
@@ -2696,7 +2696,7 @@ function lbRow(rank, a, key, unit, fmt, lowerIsBetter) {
   if (val == null) return '';
   var display = fmt ? fmt(val) : (val + (unit||''));
   var medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':('<span style="font-size:12px;font-weight:700;color:#6a8aa8">'+rank+'</span>');
-  var bg = rank===1?'#1a1208':rank===2?'#131820':rank===3?'#130d0a':'#0d1b2a';
+  var bg = rank===1?'#1a1208':rank===2?'#131820':rank===3?'#130d0a':'#000000';
   var border = rank===1?'#C9A228':rank===2?'#8a9bb0':rank===3?'#b87333':'#1e3a5f';
   var nameColor = rank<=3 ? '#e6edf3' : '#aab8c8';
 
@@ -2803,7 +2803,7 @@ function pubLbSetGender(g) {
   ['M','F'].forEach(function(x){
     var btn = document.getElementById('pub-lb-' + (x==='M'?'male':'female') + '-btn');
     if(!btn) return;
-    btn.style.background = (x===g) ? '#1e3a5f' : '#0a1520';
+    btn.style.background = (x===g) ? '#1e3a5f' : '#0f0f0f';
     btn.style.borderColor = (x===g) ? '#C9A228' : '#2a4a6a';
     btn.style.color = (x===g) ? '#C9A228' : '#6a8aa8';
   });
@@ -3180,7 +3180,7 @@ function generateTeamReport() {
   const today = '2026-04-20';
   const dateStr = new Date(today).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
-  let html = `<div id="team-report-print-wrapper" style="background: white; color: #0D1B2A; padding: 20px; font-family: Arial, sans-serif">`;
+  let html = `<div id="team-report-print-wrapper" style="background: white; color: #000000; padding: 20px; font-family: Arial, sans-serif">`;
 
   html += `<div id="team-report-header">
     <img src="logo.png" alt="Odyssey Logo" style="height: 48px; width: auto" onerror="this.style.display='none'">
@@ -3508,31 +3508,31 @@ function buildPhotoManualForm() {
   return '<div style="background:#112233;border:1px solid #1e3a5f;border-radius:10px;padding:14px;margin-bottom:10px">' +
     '<div style="font-size:10px;color:#C9A228;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Enter Stats from Photo</div>' +
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">' +
-    '<div style="grid-column:1/-1"><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Athlete Name</label><input id="pmn-name" type="text" placeholder="First Last" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:13px;box-sizing:border-box"></div>' +
-    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Sport</label><input id="pmn-sport" type="text" placeholder="e.g. Softball" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>' +
-    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Grad Year</label><select id="pmn-year" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px"></select></div>' +
-    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Position</label><input id="pmn-pos" type="text" placeholder="e.g. Pitcher" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>' +
-    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Test Date</label><input id="pmn-date" type="date" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>' +
-    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Gender</label><div style="display:flex;gap:6px"><button id="pmn-gm" onclick="pmnSetGender(\'M\')" style="flex:1;background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:6px;padding:7px;font-size:12px;font-weight:700;cursor:pointer">M</button><button id="pmn-gf" onclick="pmnSetGender(\'F\')" style="flex:1;background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:6px;padding:7px;font-size:12px;font-weight:700;cursor:pointer">F</button><input type="hidden" id="pmn-gender" value=""></div></div>' +
+    '<div style="grid-column:1/-1"><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Athlete Name</label><input id="pmn-name" type="text" placeholder="First Last" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:13px;box-sizing:border-box"></div>' +
+    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Sport</label><input id="pmn-sport" type="text" placeholder="e.g. Softball" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>' +
+    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Grad Year</label><select id="pmn-year" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px"></select></div>' +
+    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Position</label><input id="pmn-pos" type="text" placeholder="e.g. Pitcher" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>' +
+    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Test Date</label><input id="pmn-date" type="date" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>' +
+    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Gender</label><div style="display:flex;gap:6px"><button id="pmn-gm" onclick="pmnSetGender(\'M\')" style="flex:1;background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:6px;padding:7px;font-size:12px;font-weight:700;cursor:pointer">M</button><button id="pmn-gf" onclick="pmnSetGender(\'F\')" style="flex:1;background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:6px;padding:7px;font-size:12px;font-weight:700;cursor:pointer">F</button><input type="hidden" id="pmn-gender" value=""></div></div>' +
     '</div>' +
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">' +
-    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">CMJ Height (in)</label><input id="pmn-cmj" type="number" step="0.1" placeholder="e.g. 18.5" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>' +
-    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">RSI Score</label><input id="pmn-rsi" type="number" step="0.01" placeholder="e.g. 0.38" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>' +
-    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Peak Power/BM (W/kg)</label><input id="pmn-pp" type="number" step="0.1" placeholder="e.g. 44.2" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>' +
-    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Asymmetry %</label><input id="pmn-asym" type="number" step="0.1" placeholder="e.g. 14.5" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>' +
-    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">0–10 Sprint (s)</label><input id="pmn-010" type="number" step="0.01" placeholder="e.g. 1.68" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>' +
-    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Body Weight (lbs)</label><input id="pmn-bw" type="number" step="0.1" placeholder="e.g. 165" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>' +
+    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">CMJ Height (in)</label><input id="pmn-cmj" type="number" step="0.1" placeholder="e.g. 18.5" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>' +
+    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">RSI Score</label><input id="pmn-rsi" type="number" step="0.01" placeholder="e.g. 0.38" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>' +
+    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Peak Power/BM (W/kg)</label><input id="pmn-pp" type="number" step="0.1" placeholder="e.g. 44.2" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>' +
+    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Asymmetry %</label><input id="pmn-asym" type="number" step="0.1" placeholder="e.g. 14.5" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>' +
+    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">0–10 Sprint (s)</label><input id="pmn-010" type="number" step="0.01" placeholder="e.g. 1.68" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>' +
+    '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Body Weight (lbs)</label><input id="pmn-bw" type="number" step="0.1" placeholder="e.g. 165" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px;box-sizing:border-box"></div>' +
     '</div>' +
     '</div>' +
-    '<button onclick="importSubmitPhoto()" style="width:100%;background:#C9A228;border:none;color:#0D1B2A;border-radius:12px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;box-sizing:border-box">Send for Review →</button>';
+    '<button onclick="importSubmitPhoto()" style="width:100%;background:#C9A228;border:none;color:#000000;border-radius:12px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;box-sizing:border-box">Send for Review →</button>';
 }
 
 function pmnSetGender(g) {
   document.getElementById('pmn-gender').value = g;
-  document.getElementById('pmn-gm').style.background = g==='M' ? '#1e3a5f' : '#0a1520';
+  document.getElementById('pmn-gm').style.background = g==='M' ? '#1e3a5f' : '#0f0f0f';
   document.getElementById('pmn-gm').style.borderColor = g==='M' ? '#C9A228' : '#2a4a6a';
   document.getElementById('pmn-gm').style.color = g==='M' ? '#C9A228' : '#6a8aa8';
-  document.getElementById('pmn-gf').style.background = g==='F' ? '#1e3a5f' : '#0a1520';
+  document.getElementById('pmn-gf').style.background = g==='F' ? '#1e3a5f' : '#0f0f0f';
   document.getElementById('pmn-gf').style.borderColor = g==='F' ? '#C9A228' : '#2a4a6a';
   document.getElementById('pmn-gf').style.color = g==='F' ? '#C9A228' : '#6a8aa8';
 }
@@ -3730,30 +3730,30 @@ function showImportStep2(athletes) {
     html += '<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px">' + (i+1) + '. ' + ath.name + '</div>';
 
     html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">';
-    html += '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Graduation Year</label><select id="import-grad-' + i + '" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px;font-size:12px">';
+    html += '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Graduation Year</label><select id="import-grad-' + i + '" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px;font-size:12px">';
 
     for (var y = 2026; y <= 2032; y++) {
       html += '<option value="' + y + '"' + (y === 2026 ? ' selected' : '') + '>' + y + '</option>';
     }
     html += '</select></div>';
 
-    html += '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Sport</label><input id="import-sport-' + i + '" type="text" value="" placeholder="e.g., Softball" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px;font-size:12px;box-sizing:border-box"></div>';
+    html += '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Sport</label><input id="import-sport-' + i + '" type="text" value="" placeholder="e.g., Softball" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px;font-size:12px;box-sizing:border-box"></div>';
 
-    html += '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Position</label><input id="import-pos-' + i + '" type="text" value="" placeholder="e.g., Pitcher" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px;font-size:12px;box-sizing:border-box"></div>';
+    html += '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Position</label><input id="import-pos-' + i + '" type="text" value="" placeholder="e.g., Pitcher" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px;font-size:12px;box-sizing:border-box"></div>';
 
     html += '<div><label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Gender</label><div style="display:flex;gap:6px">';
-    html += '<button onclick="document.getElementById(\'import-gender-' + i + '\').value=\'M\'" id="import-gm-' + i + '" style="flex:1;background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:6px;padding:6px;font-size:12px;font-weight:600;cursor:pointer">M</button>';
-    html += '<button onclick="document.getElementById(\'import-gender-' + i + '\').value=\'F\'" id="import-gf-' + i + '" style="flex:1;background:#0a1520;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:6px;padding:6px;font-size:12px;font-weight:600;cursor:pointer">F</button>';
+    html += '<button onclick="document.getElementById(\'import-gender-' + i + '\').value=\'M\'" id="import-gm-' + i + '" style="flex:1;background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:6px;padding:6px;font-size:12px;font-weight:600;cursor:pointer">M</button>';
+    html += '<button onclick="document.getElementById(\'import-gender-' + i + '\').value=\'F\'" id="import-gf-' + i + '" style="flex:1;background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:6px;padding:6px;font-size:12px;font-weight:600;cursor:pointer">F</button>';
     html += '<input type="hidden" id="import-gender-' + i + '" value="">';
     html += '</div></div>';
     html += '</div>';
 
     html += '<label style="font-size:9px;color:#6a8aa8;display:block;margin-bottom:3px">Session Date</label>';
     var today = new Date().toISOString().slice(0, 10);
-    html += '<input id="import-date-' + i + '" type="date" value="' + today + '" style="width:100%;background:#0a1520;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px;font-size:12px;box-sizing:border-box">';
+    html += '<input id="import-date-' + i + '" type="date" value="' + today + '" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px;font-size:12px;box-sizing:border-box">';
 
     if (Object.keys(ath.metrics).length > 0) {
-      html += '<div style="margin-top:8px;padding:8px;background:#0a1520;border:1px solid #1e3a5f;border-radius:6px">';
+      html += '<div style="margin-top:8px;padding:8px;background:#0f0f0f;border:1px solid #1e3a5f;border-radius:6px">';
       html += '<div style="font-size:10px;color:#6a8aa8;font-weight:600;margin-bottom:4px">Extracted Metrics:</div>';
       Object.keys(ath.metrics).forEach(function(k) {
         var val = ath.metrics[k];
@@ -3896,7 +3896,7 @@ function generatePerformanceCard(athData) {
   var dateObj = new Date(testDate + 'T00:00:00');
   var dateStr = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
-  var html = '<div id="print-card-content" style="background:white;color:#0D1B2A;padding:40px;max-width:800px;width:100%;box-sizing:border-box;font-family:Arial,sans-serif">';
+  var html = '<div id="print-card-content" style="background:white;color:#000000;padding:40px;max-width:800px;width:100%;box-sizing:border-box;font-family:Arial,sans-serif">';
   html += '<div style="text-align:center;margin-bottom:30px">';
   html += '<img src="logo.png" alt="Odyssey Performance" style="max-width:200px;height:auto;margin-bottom:10px">';
   html += '<div style="font-size:24px;font-weight:800;color:#060f18;margin-bottom:4px">' + athData.name + '</div>';
@@ -4040,7 +4040,7 @@ function naGenerateCard() {
   var quadHTML=quad?'<div style="margin-top:10px"><span class="na-quad-badge" style="background:'+quad.color+'20;color:'+quad.color+';border:1px solid '+quad.color+'40">'+quad.icon+' '+quad.name+'</span><div style="font-size:12px;color:#a0bbd4;margin:6px 0 0;line-height:1.5">'+quad.desc+'</div></div>':'';
   var recsHTML=recs.length?recs.map(function(r){return '<div class="na-rec-item"><div style="font-size:10px;color:#C9A228;font-weight:700;text-transform:uppercase;letter-spacing:.5px">'+r.label+' <span style="color:#6a8aa8;font-weight:400">('+r.pct+'th pct)</span></div><div style="color:#a0bbd4;margin-top:3px">'+r.action+'</div></div>';}).join(''):'<div style="color:#4CAF50;font-size:13px;padding:8px">No major deficiencies identified. Maintain across all qualities.</div>';
   var cardHTML='<div id="na-profile-card">'
-    +'<div style="background:linear-gradient(135deg,#0a1520,#1e3a5f);border-radius:8px;padding:16px;margin-bottom:14px;border-bottom:3px solid #C9A228">'
+    +'<div style="background:linear-gradient(135deg,#0f0f0f,#1e3a5f);border-radius:8px;padding:16px;margin-bottom:14px;border-bottom:3px solid #C9A228">'
     +'<div style="font-size:9px;color:#C9A228;font-weight:700;letter-spacing:2px;margin-bottom:4px">ODYSSEY PERFORMANCE &middot; ATHLETE PROFILE</div>'
     +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">'
     +'<div><div style="font-size:22px;font-weight:900;color:#fff;margin-bottom:4px">'+name+'</div>'
@@ -4064,7 +4064,7 @@ function naGenerateCard() {
     +'<div style="font-size:9px;color:#4a6a8a;text-transform:uppercase;letter-spacing:1px">Confidential &mdash; Odyssey Performance</div>'
     +'</div></div>';
   var out=document.getElementById('na-card-output');
-  out.innerHTML='<div style="display:flex;gap:10px;margin-bottom:12px" class="na-print-hide"><button onclick="window.print()" style="flex:1;background:#C9A228;border:none;color:#0D1B2A;border-radius:8px;padding:12px;font-size:13px;font-weight:800;cursor:pointer">🖨 Print Profile Card</button><button onclick="document.getElementById(\'na-card-output\').style.display=\'none\'" style="background:#0a1520;border:1px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:12px;font-size:13px;cursor:pointer">&#x2715; Close</button></div>'+cardHTML;
+  out.innerHTML='<div style="display:flex;gap:10px;margin-bottom:12px" class="na-print-hide"><button onclick="window.print()" style="flex:1;background:#C9A228;border:none;color:#000000;border-radius:8px;padding:12px;font-size:13px;font-weight:800;cursor:pointer">🖨 Print Profile Card</button><button onclick="document.getElementById(\'na-card-output\').style.display=\'none\'" style="background:#0f0f0f;border:1px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:12px;font-size:13px;cursor:pointer">&#x2715; Close</button></div>'+cardHTML;
   out.style.display='block';
   document.getElementById('newath-overlay').scrollTop=99999;
 }
@@ -4093,8 +4093,8 @@ function qcGenerateCard(){
   function qcBlock(m,label,unit){if(!m)return '';var pct=m.pct;var col=pct!=null?naPctColor(pct):'#6a8aa8';var pctLine=pct!=null?'<div style="font-size:11px;color:'+col+';font-weight:700">'+pct+'th percentile &middot; <span style="font-weight:400">'+naPctLabel(pct)+'</span></div><div class="na-pct-bar-wrap"><div class="na-pct-bar-fill" style="width:'+pct+'%;background:'+col+'"></div></div>':'<div style="font-size:10px;color:#4a6a8a;font-style:italic">Value recorded</div>';return '<div class="na-card-metric"><div class="na-card-metric-lbl">'+label+'</div><div class="na-card-metric-val">'+m.value+(unit||'')+'</div>'+pctLine+'</div>';}
   var quadHTML=quad?'<div style="margin-top:10px"><span class="na-quad-badge" style="background:'+quad.color+'20;color:'+quad.color+';border:1px solid '+quad.color+'40">'+quad.icon+' '+quad.name+'</span><div style="font-size:12px;color:#a0bbd4;margin:6px 0 0;line-height:1.5">'+quad.desc+'</div></div>':'';
   var recsHTML=recs.length?recs.map(function(r){return '<div class="na-rec-item"><div style="font-size:10px;color:#C9A228;font-weight:700;text-transform:uppercase;letter-spacing:.5px">'+r.label+(r.pct!==undefined?' <span style="color:#6a8aa8;font-weight:400">('+r.pct+'th pct)</span>':'')+'</div><div style="color:#a0bbd4;margin-top:3px">'+r.action+'</div></div>';}).join(''):'<div style="color:#4CAF50;font-size:13px;padding:8px">No major deficiencies identified &mdash; maintain across all qualities.</div>';
-  var cardHTML='<div id="qc-profile-card" style="background:#0D1B2A;color:#fff;border-radius:12px;padding:20px;border:1px solid #1e3a5f">'
-    +'<div style="background:linear-gradient(135deg,#0a1520,#1e3a5f);border-radius:8px;padding:16px;margin-bottom:14px;border-bottom:3px solid #C9A228">'
+  var cardHTML='<div id="qc-profile-card" style="background:#000000;color:#fff;border-radius:12px;padding:20px;border:1px solid #1e3a5f">'
+    +'<div style="background:linear-gradient(135deg,#0f0f0f,#1e3a5f);border-radius:8px;padding:16px;margin-bottom:14px;border-bottom:3px solid #C9A228">'
     +'<div style="font-size:9px;color:#C9A228;font-weight:700;letter-spacing:2px;margin-bottom:4px">ODYSSEY PERFORMANCE &middot; ATHLETE PROFILE</div>'
     +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">'
     +'<div><div style="font-size:22px;font-weight:900;color:#fff;margin-bottom:4px">'+name+'</div>'
@@ -4110,7 +4110,7 @@ function qcGenerateCard(){
     +'<div style="margin-top:16px;padding-top:12px;border-top:1px solid #1e3a5f;display:flex;justify-content:space-between"><div style="font-size:9px;color:#4a6a8a">odysseyperformance.com</div><div style="font-size:9px;color:#4a6a8a;text-transform:uppercase;letter-spacing:1px">Confidential &mdash; Odyssey Performance</div></div>'
     +'</div>';
   var out=document.getElementById('qc-card-output');
-  out.innerHTML='<div style="display:flex;gap:10px;margin-bottom:12px"><button onclick="qcPrint()" style="flex:1;background:#C9A228;border:none;color:#0D1B2A;border-radius:8px;padding:12px;font-size:13px;font-weight:800;cursor:pointer">&#128424; Print Profile Card</button><button onclick="document.getElementById(\'qc-card-output\').style.display=\'none\'" style="background:#0a1520;border:1px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:12px;font-size:13px;cursor:pointer">&#10005; Close</button></div>'+cardHTML;
+  out.innerHTML='<div style="display:flex;gap:10px;margin-bottom:12px"><button onclick="qcPrint()" style="flex:1;background:#C9A228;border:none;color:#000000;border-radius:8px;padding:12px;font-size:13px;font-weight:800;cursor:pointer">&#128424; Print Profile Card</button><button onclick="document.getElementById(\'qc-card-output\').style.display=\'none\'" style="background:#0f0f0f;border:1px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:12px;font-size:13px;cursor:pointer">&#10005; Close</button></div>'+cardHTML;
   out.style.display='block';
   out.scrollIntoView({behavior:'smooth'});
 }
@@ -4118,7 +4118,7 @@ function qcPrint(){
   var card=document.getElementById('qc-profile-card');
   if(!card)return;
   var w=window.open('','_blank','width=820,height=700');
-  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Odyssey Performance Profile Card</title><style>*{box-sizing:border-box}body{background:#0D1B2A;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:24px;margin:0}.na-card-metric{background:#0a1520;border:1px solid #1e3a5f;border-radius:8px;padding:10px}.na-card-metric-lbl{font-size:10px;color:#6a8aa8;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}.na-card-metric-val{font-size:20px;font-weight:900;color:#fff;margin-bottom:4px}.na-pct-bar-wrap{height:4px;background:#1e3a5f;border-radius:2px;margin-top:4px}.na-pct-bar-fill{height:100%;border-radius:2px}.na-quad-badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}.na-rec-item{background:#0a1520;border:1px solid #1e3a5f;border-radius:8px;padding:10px;margin-bottom:8px}@media print{@page{size:letter portrait;margin:.5in}body{padding:0;background:#0D1B2A!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body>'+card.outerHTML+'</body></html>');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Odyssey Performance Profile Card</title><style>*{box-sizing:border-box}body{background:#000000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:24px;margin:0}.na-card-metric{background:#0f0f0f;border:1px solid #1e3a5f;border-radius:8px;padding:10px}.na-card-metric-lbl{font-size:10px;color:#6a8aa8;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}.na-card-metric-val{font-size:20px;font-weight:900;color:#fff;margin-bottom:4px}.na-pct-bar-wrap{height:4px;background:#1e3a5f;border-radius:2px;margin-top:4px}.na-pct-bar-fill{height:100%;border-radius:2px}.na-quad-badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}.na-rec-item{background:#0f0f0f;border:1px solid #1e3a5f;border-radius:8px;padding:10px;margin-bottom:8px}@media print{@page{size:letter portrait;margin:.5in}body{padding:0;background:#000000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body>'+card.outerHTML+'</body></html>');
   w.document.close();w.focus();
   setTimeout(function(){w.print();},500);
 }
@@ -4437,7 +4437,7 @@ function pbSetWeek(n, el) {
       btn.style.borderColor = '#C9A228';
       btn.style.color = '#C9A228';
     } else {
-      btn.style.background = '#0a1520';
+      btn.style.background = '#0f0f0f';
       btn.style.borderColor = '#2a4a6a';
       btn.style.color = '#6a8aa8';
     }
@@ -4454,7 +4454,7 @@ function pbSetArch(v, el) {
       btn.style.borderColor = '#C9A228';
       btn.style.color = '#C9A228';
     } else {
-      btn.style.background = '#0a1520';
+      btn.style.background = '#0f0f0f';
       btn.style.borderColor = '#2a4a6a';
       btn.style.color = '#6a8aa8';
     }
@@ -4525,7 +4525,7 @@ function pbSetAccCount(n, el) {
       btn.style.borderColor = '#C9A228';
       btn.style.color = '#C9A228';
     } else {
-      btn.style.background = '#0a1520';
+      btn.style.background = '#0f0f0f';
       btn.style.borderColor = '#2a4a6a';
       btn.style.color = '#6a8aa8';
     }
@@ -4651,7 +4651,7 @@ function starsBlock(label, items) {
   var icon = icons[label] || '•';
   var color = colors[label] || '#6a8aa8';
   var itemsHtml = Array.isArray(items) ? items.map(function(i) { return '• ' + i; }).join('<br>') : items;
-  return '<div style="background:#0a1520;border:1px solid #1e3a5f;border-left:3px solid ' + color + ';border-radius:10px;padding:10px 14px;margin-bottom:8px">' +
+  return '<div style="background:#0f0f0f;border:1px solid #1e3a5f;border-left:3px solid ' + color + ';border-radius:10px;padding:10px 14px;margin-bottom:8px">' +
     '<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:' + color + ';margin-bottom:7px">' + icon + ' ' + label + '</div>' +
     '<div style="font-size:12px;color:#c0d4e8;line-height:1.7">' + itemsHtml + '</div>' +
     '</div>';
@@ -4662,7 +4662,7 @@ function buildPBHeader(ath, macro, block, week, day, arch) {
   var blockNames = {ecc:'Block 1 — Eccentric',iso:'Block 2 — Isometric',con:'Block 3 — Concentric'};
   var dayNames = {day1:'Day 1',day2:'Day 2',day3:'Day 3',day4:'Day 4'};
   var athBadge = ath ? '<span style="font-size:10px;background:#C9A228;border-radius:5px;padding:2px 8px;color:#fff">' + (ath.bucket||'N/A') + '</span>' : '';
-  return '<div style="background:#0a1520;border-radius:8px;padding:10px 14px;margin-bottom:10px">' +
+  return '<div style="background:#0f0f0f;border-radius:8px;padding:10px 14px;margin-bottom:10px">' +
     '<div style="font-size:13px;font-weight:800">' + (ath ? ath.name + ' · ' + (ath.sport||'—') : 'General Session') + '</div>' +
     '<div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">' +
     '<span style="font-size:10px;background:#1e3a5f;border-radius:5px;padding:2px 8px;color:#a0bbd4">' + (phaseNames[macro]||macro) + '</span>' +
@@ -4702,7 +4702,7 @@ function pbSetDayType(t, el) {
       btn.style.borderColor = (t==='T') ? '#C9A228' : (t==='L') ? '#4af08a' : '#6a8af0';
       btn.style.color = (t==='T') ? '#C9A228' : (t==='L') ? '#4af08a' : '#6a8af0';
     } else {
-      btn.style.background = '#0a1520';
+      btn.style.background = '#0f0f0f';
       btn.style.borderColor = '#2a4a6a';
       btn.style.color = '#6a8aa8';
     }
@@ -5006,7 +5006,7 @@ function pbGen() {
   } else {
     clockNote = '🎯 Advanced — VBT tracking required | Density Sets for accessories (45s on/15s off) | ' + dayTypeLbl;
   }
-  out += '<div style="background:#0a1520;border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:11px;color:#a0bbd4;border:1px solid #1e3a5f">' + clockNote + '</div>';
+  out += '<div style="background:#0f0f0f;border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:11px;color:#a0bbd4;border:1px solid #1e3a5f">' + clockNote + '</div>';
 
   if (isoNote) {
     out += '<div style="background:#1a0a2a;border:1px solid #5a2a8a;border-radius:8px;padding:7px 12px;margin-bottom:8px;font-size:10px;color:#c09ad4">📌 ISO NOTE: ' + isoNote + '</div>';
@@ -5066,7 +5066,7 @@ function pbPrint() {
 <title>Odyssey Performance — ${name}</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;color:#0D1B2A;padding:28px 32px;max-width:720px;margin:0 auto;font-size:13px;line-height:1.6}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;color:#000000;padding:28px 32px;max-width:720px;margin:0 auto;font-size:13px;line-height:1.6}
   .op-header{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #C9A228;padding-bottom:14px;margin-bottom:18px}
   .op-title{font-size:22px;font-weight:900;color:#C9A228;letter-spacing:-.5px}
   .op-sub{font-size:11px;color:#5a7a9a;margin-top:2px}
@@ -5075,12 +5075,12 @@ function pbPrint() {
   a{color:#1565C0!important;font-weight:700;text-decoration:underline!important}
   a:visited{color:#0D47A1!important}
   /* keep dark blocks legible on white */
-  [style*="background:#060f18"],[style*="background:#0a1520"],[style*="background:#0d1b2a"],[style*="background:#0D1B2A"]{background:#f0f4f8!important;color:#0D1B2A!important}
+  [style*="background:#060f18"],[style*="background:#0f0f0f"],[style*="background:#000000"],[style*="background:#000000"]{background:#f0f4f8!important;color:#000000!important}
   [style*="background:#1a1f2b"],[style*="background:#161b22"]{background:#f5f5f5!important}
   [style*="color:#c0d4e8"],[style*="color:#a0bbd4"],[style*="color:#8a9bb0"]{color:#334155!important}
   [style*="color:#C9A228"]{color:#b8860b!important}
   [style*="color:#4a8aa8"],[style*="color:#6a8aa8"],[style*="color:#3a8af0"]{color:#1565C0!important}
-  [style*="color:#fff"],[style*="color:white"]{color:#0D1B2A!important}
+  [style*="color:#fff"],[style*="color:white"]{color:#000000!important}
   [style*="border-top:1px dashed #1e3a5f"]{border-top:2px dashed #cbd5e1!important}
   [style*="border:1px solid #1e3a5f"],[style*="border-left:3px solid"]{border-color:#cbd5e1!important}
   [style*="border-left:3px solid #4a8aa8"]{border-left:3px solid #1565C0!important}
@@ -5296,8 +5296,8 @@ function tpUpdateSportInfo() {
   }
   html+='</div>';
   html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:9px;margin-bottom:6px">';
-  html+='<div style="background:#0a1520;border-radius:5px;padding:5px"><div style="color:#6a8aa8;font-size:7px;margin-bottom:1px">SPEED EMPHASIS</div>'+(speedLabels[sd.speedFocus]||sd.speedFocus)+'</div>';
-  html+='<div style="background:#0a1520;border-radius:5px;padding:5px"><div style="color:#6a8aa8;font-size:7px;margin-bottom:1px">JUMP EMPHASIS</div>'+(jumpLabels[sd.jumpFocus]||sd.jumpFocus)+'</div>';
+  html+='<div style="background:#0f0f0f;border-radius:5px;padding:5px"><div style="color:#6a8aa8;font-size:7px;margin-bottom:1px">SPEED EMPHASIS</div>'+(speedLabels[sd.speedFocus]||sd.speedFocus)+'</div>';
+  html+='<div style="background:#0f0f0f;border-radius:5px;padding:5px"><div style="color:#6a8aa8;font-size:7px;margin-bottom:1px">JUMP EMPHASIS</div>'+(jumpLabels[sd.jumpFocus]||sd.jumpFocus)+'</div>';
   html+='</div>';
   html+='<div style="font-size:9px;color:#6a8aa8;border-top:1px solid #1e3a5f;padding-top:5px">'+(cxNote[level]||'')+'</div>';
   html+='</div>';
@@ -5342,17 +5342,17 @@ function tpSelOpts(options,current){
   return options.map(function(o){return '<option value="'+o+'"'+(o===current?' selected':'')+'>'+o+'</option>';}).join('');
 }
 function tpSel(id,options,current){
-  return '<select id="'+id+'" style="background:#0a1520;color:#e6edf3;border:1px solid #2a4a6a;border-radius:6px;padding:5px 6px;font-size:11px;width:100%;box-sizing:border-box">'+tpSelOpts(options,current)+'</select>';
+  return '<select id="'+id+'" style="background:#0f0f0f;color:#e6edf3;border:1px solid #2a4a6a;border-radius:6px;padding:5px 6px;font-size:11px;width:100%;box-sizing:border-box">'+tpSelOpts(options,current)+'</select>';
 }
 function tpInp(id,val,ph){
   var esc=(val||'').replace(/"/g,'&quot;');
-  return '<input id="'+id+'" type="text" value="'+esc+'" placeholder="'+(ph||'')+'" style="background:#0a1520;color:#e6edf3;border:1px solid #2a4a6a;border-radius:6px;padding:5px 8px;font-size:11px;width:100%;box-sizing:border-box">';
+  return '<input id="'+id+'" type="text" value="'+esc+'" placeholder="'+(ph||'')+'" style="background:#0f0f0f;color:#e6edf3;border:1px solid #2a4a6a;border-radius:6px;padding:5px 8px;font-size:11px;width:100%;box-sizing:border-box">';
 }
 function tpFld(lbl,html){
   return '<div><div style="font-size:9px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">'+lbl+'</div>'+html+'</div>';
 }
 function tpEditPanelHTML(title,fields,saveFn,cancelFn){
-  var h='<div style="background:#0d1b2a;border:1px solid #C9A228;border-radius:10px;padding:14px;margin-top:10px">';
+  var h='<div style="background:#000000;border:1px solid #C9A228;border-radius:10px;padding:14px;margin-top:10px">';
   h+='<div style="font-size:12px;font-weight:800;color:#C9A228;margin-bottom:10px">\u270f\ufe0f '+title+'</div>';
   h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'+fields+'</div>';
   h+='<div style="display:flex;gap:8px">';
@@ -5367,7 +5367,7 @@ function tpSetLevel(level){
   ['macro','meso','micro','week','session'].forEach(function(b){
     var el=document.getElementById('tp-lvl-'+b);
     if(!el)return;
-    el.style.background=(b===level)?'#1e3a5f':'#0a1520';
+    el.style.background=(b===level)?'#1e3a5f':'#0f0f0f';
     el.style.borderColor=(b===level)?'#C9A228':'#2a4a6a';
     el.style.color=(b===level)?'#C9A228':'#6a8aa8';
   });
@@ -5542,7 +5542,7 @@ function tpMacroOutput(team,sport,arch,startDate){
   html+='</div></div>';
   for(var pi=0;pi<TP_PHASES.length;pi++){
     var ph=tpGetPhase(pi);
-    html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+ph.color+';border-radius:10px;padding:12px;margin-bottom:10px" onmouseover="this.style.borderColor=\''+ph.color+'\'" onmouseout="this.style.borderColor=\'#1e3a5f\'">';
+    html+='<div style="background:#000000;border:1px solid #1e3a5f;border-left:3px solid '+ph.color+';border-radius:10px;padding:12px;margin-bottom:10px" onmouseover="this.style.borderColor=\''+ph.color+'\'" onmouseout="this.style.borderColor=\'#1e3a5f\'">';
     html+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">';
     html+='<div onclick="tpDrillPhase('+pi+')" style="cursor:pointer;flex:1">';
     html+='<div style="font-size:14px;font-weight:800;color:'+ph.color+'">Phase '+(pi+1)+' \u2014 '+ph.label+'</div>';
@@ -5566,7 +5566,7 @@ function tpMacroOutput(team,sport,arch,startDate){
   var sd=TP_SPORT_DATA[tpGetSportKey()]||TP_SPORT_DATA.multi;
   var qLabels=['Speed-Strength','Strength','Power','Endurance','Agility'];
   var qColors2=['#C9A228','#4a8af0','#f04a8a','#4af08a','#4af0f0'];
-  html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-radius:10px;padding:10px;margin-top:4px">';
+  html+='<div style="background:#000000;border:1px solid #1e3a5f;border-radius:10px;padding:10px;margin-top:4px">';
   html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">'+sport.toUpperCase()+' \u2014 QUALITY PRIORITIES</div>';
   html+='<div style="display:flex;gap:6px;flex-wrap:wrap">';
   for(var q=0;q<sd.quality.length;q++){
@@ -5590,7 +5590,7 @@ function tpMesoOutput(team,sport,arch,startDate,phaseIdx){
   for(var bi=0;bi<ph.blocks.length;bi++){
     var blk=tpGetBlock(phaseIdx,bi);
     var wc=TP_WORKLOAD_COLORS[blk.workload]||'#1e3a5f';
-    html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+ph.color+';border-radius:8px;padding:10px" onmouseover="this.style.borderColor=\''+ph.color+'\'" onmouseout="this.style.borderColor=\'#1e3a5f\'">';
+    html+='<div style="background:#000000;border:1px solid #1e3a5f;border-left:3px solid '+ph.color+';border-radius:8px;padding:10px" onmouseover="this.style.borderColor=\''+ph.color+'\'" onmouseout="this.style.borderColor=\'#1e3a5f\'">';
     html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">';
     html+='<div onclick="tpDrillBlock('+bi+')" style="font-size:11px;font-weight:700;flex:1;cursor:pointer">B'+(bi+1)+' \u2014 '+blk.label+'</div>';
     html+='<div style="display:flex;gap:4px">';
@@ -5613,7 +5613,7 @@ function tpMesoOutput(team,sport,arch,startDate,phaseIdx){
       var wkLabel=TP_WEEK_LABELS[wi];
       var isCNS=(wi===3);
       var wcW=TP_WORKLOAD_COLORS[isCNS?'CNS Reset':blk.workload]||'#1e3a5f';
-      html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-radius:7px;padding:9px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center">';
+      html+='<div style="background:#000000;border:1px solid #1e3a5f;border-radius:7px;padding:9px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center">';
       html+='<div><div style="font-size:12px;font-weight:700">Week '+wkAbs+' <span style="font-size:9px;color:#6a8aa8;font-weight:400">('+wkLabel+')</span> <span style="font-size:9px;color:#4a6a8a">'+tpDateLabel(startDate,wkAbs-1)+'</span></div>';
       if(isCNS){
         html+='<div style="font-size:10px;color:#4af08a;margin-top:2px">\u2699\ufe0f CNS Reset \u2014 5\xd75 @ 70\u201375% \xb7 No Tempo \xb7 16-Min Clock</div>';
@@ -5642,12 +5642,12 @@ function tpMicroOutput(team,sport,arch,startDate,phaseIdx,blockIdx){
   html+='</div>';
   html+='<div style="font-size:11px;color:#6a8aa8;margin-bottom:4px">'+team+' \xb7 Phase '+(phaseIdx+1)+': '+ph.label+' \xb7 Weeks '+blockStartWk+'\u2013'+(blockStartWk+3)+' \xb7 '+arch+'</div>';
   html+='<div style="font-size:9px;color:#4a6a8a;margin-bottom:12px">\u25bc Click any week card to see Day 1\u20133</div>';
-  html+='<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-left:3px solid '+ph.color+';border-radius:10px;padding:12px;margin-bottom:14px">';
+  html+='<div style="background:#000000;border:1px solid #1e3a5f;border-left:3px solid '+ph.color+';border-radius:10px;padding:12px;margin-bottom:14px">';
   html+='<div style="display:flex;justify-content:space-between;margin-bottom:6px"><div style="font-size:12px;font-weight:700;flex:1">'+blk.desc+'</div><span style="background:'+wc+';color:#fff;font-size:9px;padding:3px 8px;border-radius:10px">'+blk.workload+'</span></div>';
   html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:10px">';
-  html+='<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#6a8aa8;font-size:8px;margin-bottom:2px">INTENSITY</div>'+blk.intensity+'</div>';
-  html+='<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#6a8aa8;font-size:8px;margin-bottom:2px">TEMPO</div>'+blk.tempo+'</div>';
-  html+='<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#6a8aa8;font-size:8px;margin-bottom:2px">SCHEME</div>'+blk.scheme+'</div>';
+  html+='<div style="background:#0f0f0f;border-radius:6px;padding:6px"><div style="color:#6a8aa8;font-size:8px;margin-bottom:2px">INTENSITY</div>'+blk.intensity+'</div>';
+  html+='<div style="background:#0f0f0f;border-radius:6px;padding:6px"><div style="color:#6a8aa8;font-size:8px;margin-bottom:2px">TEMPO</div>'+blk.tempo+'</div>';
+  html+='<div style="background:#0f0f0f;border-radius:6px;padding:6px"><div style="color:#6a8aa8;font-size:8px;margin-bottom:2px">SCHEME</div>'+blk.scheme+'</div>';
   html+='</div></div>';
   html+='<div style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">4-WEEK PROGRESSION \u2014 CLICK TO SEE WEEK</div>';
   for(var wi=0;wi<4;wi++){
@@ -5655,7 +5655,7 @@ function tpMicroOutput(team,sport,arch,startDate,phaseIdx,blockIdx){
     var wkLabel=TP_WEEK_LABELS[wi];
     var isCNS=(wi===3);
     var wcW=TP_WORKLOAD_COLORS[isCNS?'CNS Reset':blk.workload]||'#1e3a5f';
-    html+='<div onclick="tpDrillWeek('+wi+')" style="cursor:pointer;background:#0d1b2a;border:1px solid #1e3a5f;border-radius:10px;padding:12px;margin-bottom:8px" onmouseover="this.style.borderColor=\''+ph.color+'\'" onmouseout="this.style.borderColor=\'#1e3a5f\'">';
+    html+='<div onclick="tpDrillWeek('+wi+')" style="cursor:pointer;background:#000000;border:1px solid #1e3a5f;border-radius:10px;padding:12px;margin-bottom:8px" onmouseover="this.style.borderColor=\''+ph.color+'\'" onmouseout="this.style.borderColor=\'#1e3a5f\'">';
     html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">';
     html+='<div style="font-size:13px;font-weight:800">Week '+wkAbs+' \u2014 '+wkLabel+' <span style="font-size:10px;color:#6a8aa8;font-weight:400">'+tpDateLabel(startDate,wkAbs-1)+'</span></div>';
     html+='<div style="display:flex;align-items:center;gap:6px"><span style="background:'+wcW+';color:#fff;font-size:9px;padding:3px 8px;border-radius:10px">'+(isCNS?'CNS Reset':wkLabel)+'</span><span style="font-size:11px;color:'+ph.color+';">\u203a</span></div></div>';
@@ -5666,8 +5666,8 @@ function tpMicroOutput(team,sport,arch,startDate,phaseIdx,blockIdx){
       html+='</div>';
     } else {
       html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px">';
-      html+='<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#C9A228;font-size:8px;margin-bottom:1px">T1</div>'+blk.t1rep+'</div>';
-      html+='<div style="background:#0a1520;border-radius:6px;padding:6px"><div style="color:#4a8af0;font-size:8px;margin-bottom:1px">T2</div>'+blk.t2rep+'</div>';
+      html+='<div style="background:#0f0f0f;border-radius:6px;padding:6px"><div style="color:#C9A228;font-size:8px;margin-bottom:1px">T1</div>'+blk.t1rep+'</div>';
+      html+='<div style="background:#0f0f0f;border-radius:6px;padding:6px"><div style="color:#4a8af0;font-size:8px;margin-bottom:1px">T2</div>'+blk.t2rep+'</div>';
       html+='</div>';
     }
     html+='</div>';
@@ -5714,14 +5714,14 @@ function tpWeekOutput(team,sport,arch,startDate,phaseIdx,blockIdx,sportKey){
     html+='<span style="font-size:18px;color:'+dd.color+'">\u203a</span></div>';
     html+='<div style="font-size:10px;color:#6a8aa8;margin-bottom:8px">'+dd.desc+'</div>';
     html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:9px">';
-    html+='<div style="background:#0a1520;border-radius:5px;padding:5px;color:#4af08a">S \u2014 Stability / Activation</div>';
-    html+='<div style="background:#0a1520;border-radius:5px;padding:5px;color:#4a8af0">T \u2014 Speed Track</div>';
+    html+='<div style="background:#0f0f0f;border-radius:5px;padding:5px;color:#4af08a">S \u2014 Stability / Activation</div>';
+    html+='<div style="background:#0f0f0f;border-radius:5px;padding:5px;color:#4a8af0">T \u2014 Speed Track</div>';
     if(isCNS){
-      html+='<div style="background:#0a1520;border-radius:5px;padding:5px;color:#C9A228">A \u2014 5\xd75 @ 70\u201375%</div>';
+      html+='<div style="background:#0f0f0f;border-radius:5px;padding:5px;color:#C9A228">A \u2014 5\xd75 @ 70\u201375%</div>';
     } else {
-      html+='<div style="background:#0a1520;border-radius:5px;padding:5px;color:#C9A228">A \u2014 '+blk.t1rep+'</div>';
+      html+='<div style="background:#0f0f0f;border-radius:5px;padding:5px;color:#C9A228">A \u2014 '+blk.t1rep+'</div>';
     }
-    html+='<div style="background:#0a1520;border-radius:5px;padding:5px;color:#f04a8a">R \u2014 Accessory + Jumps</div>';
+    html+='<div style="background:#0f0f0f;border-radius:5px;padding:5px;color:#f04a8a">R \u2014 Accessory + Jumps</div>';
     html+='</div></div>';
   }
   document.getElementById('tp-output').innerHTML=html;
@@ -5835,7 +5835,7 @@ function tpPrint() {
   var team=document.getElementById('tp-team').value.trim()||'Team';
   var w=window.open('','_blank');
   w.document.write('<!DOCTYPE html><html><head><title>Team Program \u2014 '+team+'</title>'+
-    '<style>body{font-family:sans-serif;background:#0D1B2A;color:#fff;padding:24px;max-width:800px}'+
+    '<style>body{font-family:sans-serif;background:#000000;color:#fff;padding:24px;max-width:800px}'+
     '@media print{body{background:#fff;color:#000}}</style></head>'+
     '<body><h2 style="color:#C9A228;margin-bottom:4px">Odyssey Performance</h2>'+
     '<div style="font-size:12px;color:#6a8aa8;margin-bottom:16px">Generated: '+new Date().toLocaleDateString()+'</div>'+
@@ -5956,7 +5956,7 @@ function renderStaffTab() {
       {label:'SLJ Asymmetry', val: c.uni_asym_pct!=null ? c.uni_asym_pct+'%'       : '—'},
     ];
     return `
-    <div style="background:#0d1b2a;border:1px solid ${canUpload?'#C9A228':'#1e3a5f'};border-radius:14px;padding:18px">
+    <div style="background:#000000;border:1px solid ${canUpload?'#C9A228':'#1e3a5f'};border-radius:14px;padding:18px">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
         ${avatarHtml}
         <div style="flex:1">
@@ -5966,12 +5966,12 @@ function renderStaffTab() {
         <span class="bucket-badge ${bClass}" style="font-size:10px;padding:3px 8px">${c.bucket}</span>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
-        ${metrics.map(m=>`<div style="background:#0a1520;border-radius:8px;padding:7px 10px">
+        ${metrics.map(m=>`<div style="background:#0f0f0f;border-radius:8px;padding:7px 10px">
           <div style="font-size:9px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px">${m.label}</div>
           <div style="font-size:15px;font-weight:700;color:${m.val==='—'?'#3a5a7a':'#fff'}">${m.val}</div>
         </div>`).join('')}
       </div>
-      <div style="font-size:10px;color:#6a8aa8;background:#0a1520;border-radius:6px;padding:6px 10px;margin-bottom:8px">${c.notes}</div>
+      <div style="font-size:10px;color:#6a8aa8;background:#0f0f0f;border-radius:6px;padding:6px 10px;margin-bottom:8px">${c.notes}</div>
       ${c.injuries&&c.injuries.length?`<div style="background:#1a0a0a;border:1px solid #5a1a1a;border-radius:6px;padding:6px 10px;margin-bottom:8px">
         ${c.injuries.map(inj=>`<div style="font-size:9px;font-weight:800;color:#ef9090;text-transform:uppercase">${inj.condition}</div>
         <div style="font-size:10px;color:#f0c0c0;margin-top:2px">${inj.notes}</div>`).join('')}
@@ -6792,15 +6792,15 @@ function renderCoachProfile(a) {
   const goalsSection = `<div class="cp-section">
     <div class="cp-section-title">Performance Metrics & Goals</div>
     <div class="cp-metrics-grid">${metricsHtml}</div>
-    <div style="margin-top:12px;padding:12px 14px;background:#0a1520;border-radius:8px">
+    <div style="margin-top:12px;padding:12px 14px;background:#0f0f0f;border-radius:8px">
       <div style="font-size:10px;color:#8a9bb0;font-weight:700;margin-bottom:6px">Set New Goal</div>
-      <select id="goal-metric-${A.indexOf(a)}" style="width:100%;background:#0d1b2a;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px;font-size:11px;margin-bottom:6px">
+      <select id="goal-metric-${A.indexOf(a)}" style="width:100%;background:#000000;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px;font-size:11px;margin-bottom:6px">
         <option value="">Select metric...</option>
         ${metricDefs.filter(m => a[m.key] != null).map(m => `<option value="${m.key}">${m.label}</option>`).join('')}
       </select>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-        <input type="number" id="goal-target-new-${A.indexOf(a)}" placeholder="Target" style="background:#0d1b2a;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px;font-size:11px">
-        <input type="date" id="goal-deadline-new-${A.indexOf(a)}" style="background:#0d1b2a;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px;font-size:11px">
+        <input type="number" id="goal-target-new-${A.indexOf(a)}" placeholder="Target" style="background:#000000;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px;font-size:11px">
+        <input type="date" id="goal-deadline-new-${A.indexOf(a)}" style="background:#000000;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:6px;font-size:11px">
       </div>
       <button onclick="quickSaveGoal(${A.indexOf(a)})" style="width:100%;background:#C9A228;color:#fff;border:none;border-radius:6px;padding:6px;font-size:11px;font-weight:700;cursor:pointer;margin-top:6px">Save Goal</button>
     </div>
@@ -6812,7 +6812,7 @@ function renderCoachProfile(a) {
   const sctx = getSportContext(a);
   const sportContextHtml = `<div class="cp-section">
     <div class="cp-section-title">Sport Context${a.position ? ' · ' + a.position : ''}</div>
-    <div style="background:#0a1520;border-radius:10px;padding:12px 14px">
+    <div style="background:#0f0f0f;border-radius:10px;padding:12px 14px">
       <div style="font-size:11px;color:#8a9bb0;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Demands of the Position</div>
       <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px">
         ${sctx.demands.map(d=>`<span style="background:#1e3a5f;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:600;color:#a0bbd4">${d}</span>`).join('')}
@@ -6951,7 +6951,7 @@ function renderCoachProfile(a) {
   const recruitUrl = `${window.location.origin}${window.location.pathname}?recruit=${encodeURIComponent(a.name)}`;
   const qrHtml = `<div class="cp-section">
     <div class="cp-section-title">Share Profile</div>
-    <div style="background:#0a1520;border-radius:10px;padding:14px;text-align:center">
+    <div style="background:#0f0f0f;border-radius:10px;padding:14px;text-align:center">
       <div style="font-size:10px;color:#8a9bb0;margin-bottom:10px">Scan to view recruiting card</div>
       <div id="coach-qr-${A.indexOf(a)}" style="display:inline-block"></div>
       <div style="font-size:9px;color:#6a8aa8;margin-top:8px;word-break:break-all">${recruitUrl}</div>
@@ -6979,7 +6979,7 @@ function openModal(idx) {
   if (coachMode) {
     // ── COACH VIEW: full profile ──
     body = renderCoachProfile(a);
-    body += `<div style="margin-top:14px;padding:12px 14px;background:#0a1520;border-radius:10px;text-align:center">
+    body += `<div style="margin-top:14px;padding:12px 14px;background:#0f0f0f;border-radius:10px;text-align:center">
       <button onclick="suggestAthleteEdit(${idx})" style="background:#1e3a5f;border:1px solid #2a4a6a;color:#a0bbd4;border-radius:8px;padding:8px 16px;font-size:11px;font-weight:700;cursor:pointer;margin-right:4px">
         ✏️ Edit
       </button>
@@ -7042,7 +7042,7 @@ function openModal(idx) {
             width: 100,
             height: 100,
             colorDark: '#fff',
-            colorLight: '#0a1520',
+            colorLight: '#0f0f0f',
             correctLevel: QRCode.CorrectLevel.H
           });
         } catch(e) {
@@ -7263,7 +7263,7 @@ function calcVelocity() {
   var chartDiv = document.getElementById('vz-velocity-chart');
   var typeLabel = type === 'upper' ? 'Upper Body' : 'Lower Body';
   var chartHtml = '<div style="font-size:10px;font-weight:800;color:#C9A228;text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px">' + typeLabel + ' Zones — ' + prof.name + '</div>';
-  chartHtml += '<div style="background:#0d1b2a;border-radius:8px;overflow:hidden;font-size:11px">';
+  chartHtml += '<div style="background:#000000;border-radius:8px;overflow:hidden;font-size:11px">';
   chartHtml += '<div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 0.8fr;padding:5px 10px;font-size:9px;color:#6a8aa8;font-weight:700;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid #2a4a6a">' +
     '<span>Zone</span><span>Mean Vel</span><span>%1RM / Est lbs</span><span>Vel Drop</span></div>';
   zones.forEach(function(z) {
@@ -7484,7 +7484,7 @@ function displayRecruitingCard(athleteName) {
         text: recruitUrl,
         width: 120,
         height: 120,
-        colorDark: '#0d1b2a',
+        colorDark: '#000000',
         colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.H
       });
@@ -7541,11 +7541,11 @@ function deleteGoal(athleteName, metricKey) {
 }
 
 function renderGoalSetter(athleteName, metricKey, metricLabel, currentVal, higher) {
-  return `<div style="padding:14px;background:#0a1520;border-radius:8px;margin-bottom:10px">
+  return `<div style="padding:14px;background:#0f0f0f;border-radius:8px;margin-bottom:10px">
     <div style="font-size:11px;color:#6a8aa8;font-weight:700;margin-bottom:8px">Set Goal: ${metricLabel}</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
-      <input type="number" id="goal-target-${athleteName}-${metricKey}" placeholder="Target value" style="background:#0d1b2a;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px">
-      <input type="date" id="goal-deadline-${athleteName}-${metricKey}" style="background:#0d1b2a;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px">
+      <input type="number" id="goal-target-${athleteName}-${metricKey}" placeholder="Target value" style="background:#000000;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px">
+      <input type="date" id="goal-deadline-${athleteName}-${metricKey}" style="background:#000000;color:#fff;border:1px solid #2a4a6a;border-radius:6px;padding:8px;font-size:12px">
     </div>
     <button onclick="saveNewGoal('${athleteName}', '${metricKey}', '${metricLabel}', ${higher})" style="width:100%;background:#C9A228;color:#fff;border:none;border-radius:6px;padding:8px;font-size:11px;font-weight:700;cursor:pointer">Save Goal</button>
   </div>`;
@@ -7570,7 +7570,7 @@ function renderGoalProgress(athleteName, metricKey, currentVal, targetVal, deadl
   const isOnTrack = new Date() < new Date(deadline);
   const daysLeft = Math.ceil((new Date(deadline) - new Date()) / (1000*60*60*24));
 
-  return `<div style="margin-top:8px;padding:10px;background:#0d1b2a;border-radius:6px">
+  return `<div style="margin-top:8px;padding:10px;background:#000000;border-radius:6px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
       <span style="font-size:10px;color:#6a8aa8">Goal Progress</span>
       <span style="font-size:10px;color:${isOnTrack?'#4caf50':'#ef5350'};font-weight:700">${Math.round(progress)}% · Due ${deadline}</span>
@@ -7635,17 +7635,17 @@ function printAthleteReport(athleteIdx) {
 <style>
   body{font-family:Arial,sans-serif;background:#fff;color:#333;padding:40px;max-width:800px;margin:0 auto}
   .header{border-bottom:3px solid #C9A228;padding-bottom:20px;margin-bottom:30px}
-  .logo{font-size:28px;font-weight:900;color:#0d1b2a}
+  .logo{font-size:28px;font-weight:900;color:#000000}
   .subtitle{color:#666;font-size:13px;margin-top:4px}
   .meta{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:13px}
   .meta-item{display:flex;flex-direction:column}
   .meta-label{color:#666;font-size:11px;font-weight:700;text-transform:uppercase}
-  .meta-val{font-size:16px;font-weight:700;color:#0d1b2a;margin-top:4px}
+  .meta-val{font-size:16px;font-weight:700;color:#000000;margin-top:4px}
   .section{margin-bottom:30px}
   .section-title{font-size:16px;font-weight:800;color:#C9A228;border-bottom:2px solid #f0f0f0;padding-bottom:8px;margin-bottom:12px}
   table{width:100%;border-collapse:collapse;font-size:13px}
   tr{border-bottom:1px solid #f0f0f0}
-  th{text-align:left;padding:10px 0;font-weight:700;color:#0d1b2a;background:#f9f9f9}
+  th{text-align:left;padding:10px 0;font-weight:700;color:#000000;background:#f9f9f9}
   td{padding:10px 0}
   .footer{margin-top:40px;padding-top:20px;border-top:1px solid #ddd;font-size:11px;color:#666;text-align:center}
   @media print{body{padding:0}}
@@ -7984,7 +7984,7 @@ function c6SetRating(quality, rating) {
       btn.classList.add('selected');
       btn.style.background = ratingColors[rating];
       btn.style.borderColor = ratingColors[rating];
-      btn.style.color = rating === 4 ? '#fff' : (rating === 3 ? '#0D1B2A' : '#fff');
+      btn.style.color = rating === 4 ? '#fff' : (rating === 3 ? '#000000' : '#fff');
     }
   });
 
@@ -8136,7 +8136,7 @@ function core6PrintCard() {
     if (r) { totalRated++; ratingSum += r; }
     var bgColor = r ? ['','#fff0f0','#fff8f0','#fffcf0','#f0f6ff','#f0fff5'][r] : '#fafafa';
     rows += '<tr>' +
-      '<td style="padding:5px 9px;font-weight:700;font-size:11px;color:#0D1B2A;border-bottom:1px solid #eee;white-space:nowrap">' +
+      '<td style="padding:5px 9px;font-weight:700;font-size:11px;color:#000000;border-bottom:1px solid #eee;white-space:nowrap">' +
         q.icon + ' ' + q.label + '</td>' +
       '<td style="padding:5px 9px;text-align:center;border-bottom:1px solid #eee;background:' + bgColor + ';white-space:nowrap">' +
         '<span style="font-size:18px;font-weight:900;color:' + rColor + ';line-height:1">' + (r||'—') + '</span>' +
@@ -8173,7 +8173,7 @@ function core6PrintCard() {
   var rightContent = '';
   if (summaryText) {
     rightContent +=
-      '<div style="background:#0D1B2A;border-radius:7px;padding:10px 12px">' +
+      '<div style="background:#000000;border-radius:7px;padding:10px 12px">' +
         '<div style="font-size:8px;font-weight:800;color:#C9A228;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">📣 Coaching Summary</div>' +
         '<div style="font-size:10px;color:#d0e8f8;line-height:1.5;white-space:pre-line">' + summaryText + '</div>' +
       '</div>';
@@ -8204,9 +8204,9 @@ function core6PrintCard() {
         'body{zoom:0.88;-webkit-print-color-adjust:exact;print-color-adjust:exact}' +
         '.page-wrap{padding:0!important}' +
         /* Ink saving: dark navy boxes → light gray in print */
-        '[style*="background:#0D1B2A"]{background:#f2f4f7!important;border:1px solid #b8c8d8!important}' +
-        '[style*="background:#0D1B2A"] *{color:#1a2b3c!important}' +
-        '[style*="background:#0D1B2A"] [style*="color:#C9A228"],[style*="background:#0D1B2A"] [style*="color:#c9a228"]{color:#7a5800!important}' +
+        '[style*="background:#000000"]{background:#f2f4f7!important;border:1px solid #b8c8d8!important}' +
+        '[style*="background:#000000"] *{color:#1a2b3c!important}' +
+        '[style*="background:#000000"] [style*="color:#C9A228"],[style*="background:#000000"] [style*="color:#c9a228"]{color:#7a5800!important}' +
         '[style*="background:rgba(255,255,255,.08)"]{background:#e8edf2!important}' +
       '}' +
       'table{border-collapse:collapse;width:100%}' +
@@ -8215,9 +8215,9 @@ function core6PrintCard() {
     '</head><body>' +
 
     // Sticky toolbar (screen only)
-    '<div class="no-print" style="position:fixed;top:0;left:0;right:0;z-index:99;background:#0D1B2A;padding:8px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.3)">' +
+    '<div class="no-print" style="position:fixed;top:0;left:0;right:0;z-index:99;background:#000000;padding:8px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.3)">' +
       '<span style="color:#8a9bb0;font-size:12px">CORE 6 · Odyssey Performance · Landscape</span>' +
-      '<button onclick="window.print()" style="background:#C9A228;border:none;color:#0D1B2A;font-weight:800;font-size:13px;padding:7px 20px;border-radius:8px;cursor:pointer">⬇ Save as PDF / Print</button>' +
+      '<button onclick="window.print()" style="background:#C9A228;border:none;color:#000000;font-weight:800;font-size:13px;padding:7px 20px;border-radius:8px;cursor:pointer">⬇ Save as PDF / Print</button>' +
     '</div>' +
     '<div class="no-print" style="height:44px"></div>' +
 
@@ -8228,7 +8228,7 @@ function core6PrintCard() {
       '<div style="flex:0 0 60%;min-width:0">' +
 
         // Header block
-        '<div style="background:#0D1B2A;color:#fff;padding:11px 14px;border-radius:7px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">' +
+        '<div style="background:#000000;color:#fff;padding:11px 14px;border-radius:7px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">' +
           '<div>' +
             '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">' +
               '<div style="font-size:20px;font-weight:900;letter-spacing:1.5px;color:#C9A228">CORE 6</div>' +
@@ -8752,7 +8752,7 @@ function closeProfileCard() {
             html += `
                 <div id="pc-aiInsightsContainer"></div>
                 <div style="text-align:center;margin:20px 0 4px;">
-                    <button id="pc-aiInsightsBtn" onclick="pc_generateAIInsights()" style="background:#0D1B2A;border:2px solid #C9A228;color:#C9A228;padding:12px 28px;border-radius:6px;font-size:13px;font-weight:700;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:1px;cursor:pointer;">✦ Generate AI Coaching Insights</button>
+                    <button id="pc-aiInsightsBtn" onclick="pc_generateAIInsights()" style="background:#000000;border:2px solid #C9A228;color:#C9A228;padding:12px 28px;border-radius:6px;font-size:13px;font-weight:700;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:1px;cursor:pointer;">✦ Generate AI Coaching Insights</button>
                 </div>
                 <div style="text-align:center;margin-bottom:16px;">
                     <span onclick="pc_resetApiKey()" style="font-size:11px;color:#aaa;cursor:pointer;text-decoration:underline;">Reset API Key</span>
@@ -8865,7 +8865,7 @@ function closeProfileCard() {
                 const landAsym = ((maxLF - minLF) / maxLF * 100).toFixed(1);
                 const landSide = lf >= rf ? 'L' : 'R';
                 const lColor = parseFloat(landAsym) > 15 ? '#ef4444' : parseFloat(landAsym) > 10 ? '#f97316' : '#22c55e';
-                landLine = '<div style="margin-top:8px;font-size:11px;padding:5px 8px;background:#0a1a2f;border-radius:4px;border-left:3px solid ' + lColor + ';color:#b8c8d8"><strong style="color:#fff">Landing Force:</strong> ' + landAsym + '% imbalance (' + landSide + ' dominant)</div>';
+                landLine = '<div style="margin-top:8px;font-size:11px;padding:5px 8px;background:#0f0f0f;border-radius:4px;border-left:3px solid ' + lColor + ';color:#b8c8d8"><strong style="color:#fff">Landing Force:</strong> ' + landAsym + '% imbalance (' + landSide + ' dominant)</div>';
             }
 
             return `
