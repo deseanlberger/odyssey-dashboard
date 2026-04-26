@@ -8620,7 +8620,7 @@ function closeProfileCard() {
                 }
 
                 // SLJ
-                if (testType === 'Single Leg Jump') {
+                if (testType === 'SLJ') {
                     if (!testData.slj.height_l && row['Jump Height (Imp-Mom) [cm] (L)']) {
                         testData.slj.height_l = parseFloat(row['Jump Height (Imp-Mom) [cm] (L)']) * 0.3937;
                         testData.slj.height_l = testData.slj.height_l.toFixed(1);
