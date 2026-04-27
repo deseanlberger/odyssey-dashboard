@@ -4234,8 +4234,8 @@ function onbScoreLabel(s) {
 }
 
 function onbRenderCard(data, scores) {
-  function fmtScore(s) { return s == null ? '—' : Math.round(s); }
   function metricBlock(label, value, unit, score) {
+    if (value == null) return ''; // smart-empty: skip metrics with no data
     var pct = score == null ? null : Math.round(score);
     var col = pct != null ? onbScoreColor(score) : '#6a8aa8';
     var pctLine = pct != null
@@ -4244,12 +4244,18 @@ function onbRenderCard(data, scores) {
       : '<div style="font-size:10px;color:#4a6a8a;font-style:italic;margin-top:4px">No benchmark</div>';
     return '<div class="na-card-metric" style="background:#0f0f0f;border:1px solid #1e3a5f;border-radius:8px;padding:10px">'
       + '<div style="font-size:10px;color:#6a8aa8;font-weight:700;text-transform:uppercase;letter-spacing:.5px">' + label + '</div>'
-      + '<div style="font-size:20px;font-weight:900;color:#fff;line-height:1.2;margin-top:2px">' + (value != null ? value + (unit || '') : '—') + '</div>'
+      + '<div style="font-size:20px;font-weight:900;color:#fff;line-height:1.2;margin-top:2px">' + value + (unit || '') + '</div>'
       + pctLine
       + '</div>';
   }
-  function categoryBlock(name, score, accentColor) {
-    var pct = fmtScore(score);
+  function categoryBlock(name, score, accentColor, missingMsg) {
+    if (score == null) {
+      return '<div style="background:#0a0a0a;border:1px dashed #2a4a6a;border-radius:8px;padding:11px;display:flex;flex-direction:column;justify-content:center;min-height:88px">'
+        + '<div style="font-size:10px;color:#6a8aa8;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">' + name + '</div>'
+        + '<div style="font-size:10px;color:#6a8aa8;line-height:1.4;font-style:italic">' + missingMsg + '</div>'
+        + '</div>';
+    }
+    var pct = Math.round(score);
     return '<div style="background:#0f0f0f;border:1px solid ' + accentColor + '40;border-left:4px solid ' + accentColor + ';border-radius:8px;padding:11px">'
       + '<div style="font-size:10px;color:' + accentColor + ';font-weight:700;text-transform:uppercase;letter-spacing:.6px">' + name + '</div>'
       + '<div style="font-size:28px;font-weight:900;color:#fff;line-height:1;margin:4px 0">' + pct + '<span style="font-size:13px;color:#6a8aa8;font-weight:700"> /100</span></div>'
@@ -4302,10 +4308,10 @@ function onbRenderCard(data, scores) {
   // Category scores
   html += '<div style="font-size:10px;color:#C9A228;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Category Scores &middot; vs NCAA Freshman (' + scores.benchmarkSrc + ')</div>'
     + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:16px">'
-    + categoryBlock('Power', scores.power, pColor)
-    + categoryBlock('Velocity', scores.velocity, vColor)
-    + categoryBlock('Strength', scores.strength, sColor)
-    + categoryBlock('All-Around', scores.allAround, '#C9A228')
+    + categoryBlock('Power', scores.power, pColor, 'Not enough testing — CMJ, Drop Jump RSI, or Broad Jump required.')
+    + categoryBlock('Velocity', scores.velocity, vColor, 'Not enough testing — 0–10 Sprint or 20–30 Fly required.')
+    + categoryBlock('Strength', scores.strength, sColor, 'Not enough testing — Iso Squat Peak Force + Body Weight required.')
+    + categoryBlock('All-Around', scores.allAround, '#C9A228', 'Not enough testing — at least one category required.')
     + '</div>';
 
   // Asymmetry
