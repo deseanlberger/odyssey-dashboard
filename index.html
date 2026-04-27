@@ -316,9 +316,9 @@ select:focus{border-color:#C9A228}
 .pw-cancel:hover{color:#fff}
 .pw-error{color:#e74c3c;font-size:13px;margin-top:-6px;margin-bottom:10px;display:none}
 *{margin:0;padding:0;box-sizing:border-box}/* PROGRAM BUILDER + TEAM PLAN + NEW ATHLETE + SUBMIT STATS + IMPORT SESSION — full screen override */
-#pb-overlay,#teamplan-overlay,#newath-overlay,#submitstats-overlay,#import-overlay,#core6-overlay,#profilecard-overlay{background:#000000!important;padding:0!important;align-items:stretch!important;justify-content:stretch!important}
-#pb-overlay.open,#teamplan-overlay.open,#newath-overlay.open,#submitstats-overlay.open,#import-overlay.open,#core6-overlay.open,#profilecard-overlay.open{display:block!important;overflow-y:auto!important}
-#pb-overlay>.pb-fullscreen,#teamplan-overlay>.pb-fullscreen,#newath-overlay>.pb-fullscreen,#submitstats-overlay>.pb-fullscreen,#import-overlay>.pb-fullscreen,#core6-overlay>.pb-fullscreen,#profilecard-overlay>.pb-fullscreen{min-height:100vh;display:flex;flex-direction:column;background:#000000}
+#pb-overlay,#teamplan-overlay,#newath-overlay,#submitstats-overlay,#import-overlay,#core6-overlay,#profilecard-overlay,#onb-overlay{background:#000000!important;padding:0!important;align-items:stretch!important;justify-content:stretch!important}
+#pb-overlay.open,#teamplan-overlay.open,#newath-overlay.open,#submitstats-overlay.open,#import-overlay.open,#core6-overlay.open,#profilecard-overlay.open,#onb-overlay.open{display:block!important;overflow-y:auto!important}
+#pb-overlay>.pb-fullscreen,#teamplan-overlay>.pb-fullscreen,#newath-overlay>.pb-fullscreen,#submitstats-overlay>.pb-fullscreen,#import-overlay>.pb-fullscreen,#core6-overlay>.pb-fullscreen,#profilecard-overlay>.pb-fullscreen,#onb-overlay>.pb-fullscreen{min-height:100vh;display:flex;flex-direction:column;background:#000000}
 /* CORE 6 EVAL */
 .c6-rating-btns{display:flex;gap:6px;margin:6px 0 8px}
 .c6-rating-btn{flex:1;padding:10px 4px;border-radius:8px;border:2px solid #2a4a6a;background:#112233;color:#6a8aa8;font-size:16px;font-weight:900;cursor:pointer;text-align:center;transition:all .15s;line-height:1}
@@ -1938,6 +1938,7 @@ select:focus{border-color:#C9A228}
       <div class="tools-drum-item tools-master-only" data-tool="program" style="display:none" onclick="selectTool(this)">📋 Program Builder</div>
       <div class="tools-drum-item tools-master-only" data-tool="teamplan" style="display:none" onclick="selectTool(this)">🗂️ Team Program Builder</div>
 
+      <div class="tools-drum-item tools-coach-only" data-tool="submitstats" style="display:none" onclick="selectTool(this)">📊 Submit Athlete Stats</div>
       <div class="tools-drum-item tools-coach-only" data-tool="importsession" style="display:none" onclick="selectTool(this)">📥 Import Session</div>
       <div class="tools-drum-item tools-coach-only" data-tool="teamreport" style="display:none" onclick="selectTool(this)">📋 Team Report</div>
     </div>
