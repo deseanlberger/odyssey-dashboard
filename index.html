@@ -1798,6 +1798,16 @@ body.overlay-open{overflow:hidden!important;position:fixed!important;width:100%!
               <option value="day4">Day 4</option>
             </select>
           </div>
+          <div style="grid-column:1/-1">
+            <label style="font-size:10px;color:#6a8aa8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">⏱️ Time Budget</label>
+            <select id="pb-time-budget" style="width:100%;background:#0f0f0f;color:#fff;border:1px solid #2a4a6a;border-radius:8px;padding:8px 10px;font-size:12px;box-sizing:border-box">
+              <option value="0">Unlimited (full session)</option>
+              <option value="30">30 min — minimal (essentials only)</option>
+              <option value="45">45 min — short</option>
+              <option value="60">60 min — standard</option>
+              <option value="90">90 min — full battery + bonus</option>
+            </select>
+          </div>
         </div>
         <!-- Custom Exercise Library (masterMode only) -->
         <div id="pb-custom-section" style="display:none;border-top:1px solid #1e3a5f;padding-top:12px;margin-top:4px">
@@ -3414,9 +3424,19 @@ const OLIB = {
 };
 let CLIB = {};
 function gEx(t) { return [...(OLIB[t]||[]), ...(CLIB[t]||[])]; }
+
+// === BB Phase 1: Active exclusion list — exercises whose name contains any of these substrings (case-insensitive) get filtered out by rEx. Populated by pbGen() based on the selected athlete's injuries[] array, reset to [] when generation finishes. ===
+var _pbActiveExclusions = [];
+
 function rEx(t, n) {
   n = n || 1;
-  const pool = gEx(t);
+  let pool = gEx(t);
+  if (_pbActiveExclusions && _pbActiveExclusions.length > 0) {
+    pool = pool.filter(function(ex) {
+      var lex = (ex || '').toLowerCase();
+      return !_pbActiveExclusions.some(function(excl) { return lex.indexOf(excl.toLowerCase()) !== -1; });
+    });
+  }
   const result = [];
   const used = new Set();
   let attempts = 0;
@@ -5584,6 +5604,90 @@ function pbWarmUp(dayType, archLabel) {
   return html;
 }
 
+// === BB Phase 1: Smart prescriptions — auto-target weak categories + injury-aware filtering ===
+// INJURY_CONTRAINDICATIONS map: condition substring (case-insensitive) → list of exercise-name substrings to exclude + a coach-facing note.
+// Tune by adding more keys (e.g., 'wrist', 'hamstring', 'concussion') as you encounter them in athlete records.
+var INJURY_CONTRAINDICATIONS = {
+  'ankle': {
+    excludes: ['hop','bound','depth jump','drop jump','altitude landing','box jump','snap down','reactive','single-leg jump','sl jump'],
+    note: 'Excluded reactive plyometrics and high-impact landings. Substituting isometric / stability-focused work.'
+  },
+  'knee': {
+    excludes: ['depth jump','drop jump','altitude landing','box jump','snap down','pistol','shrimp squat','sled push','bulgarian'],
+    note: 'Excluded high-impact and deep-knee-flexion movements. Prioritize tempo eccentric and isometric work.'
+  },
+  'shoulder': {
+    excludes: ['snatch','clean & jerk','jerk','overhead press','push press','handstand','thruster','kipping','dip'],
+    note: 'Excluded overhead and snap-loaded shoulder movements. Substituting horizontal pressing and scapular control.'
+  },
+  'lower back': {
+    excludes: ['deadlift','good morning','bent row','romanian deadlift','rdl','clean','snatch','back extension','sit-up','gh raise'],
+    note: 'Excluded heavy axial load and hip-hinge under load. Substituting bracing and anti-extension/anti-rotation core.'
+  },
+  'low back': {
+    excludes: ['deadlift','good morning','bent row','romanian deadlift','rdl','clean','snatch','back extension','sit-up','gh raise'],
+    note: 'Excluded heavy axial load and hip-hinge under load. Substituting bracing and anti-extension/anti-rotation core.'
+  },
+  'wrist': {
+    excludes: ['front rack','clean','snatch','overhead','handstand','jerk'],
+    note: 'Excluded front-rack and overhead loading. Substituting neutral-grip alternatives.'
+  },
+  'hamstring': {
+    excludes: ['nordic','romanian deadlift','rdl','good morning','sprint','flying','kettlebell swing'],
+    note: 'Excluded high-eccentric hamstring work and max-effort sprinting. Substituting glute-dominant and tempo work.'
+  },
+  'hip': {
+    excludes: ['bulgarian','pistol','cossack','lateral lunge','sumo','wide stance'],
+    note: 'Excluded extreme hip ROM and asymmetric loading. Substituting symmetric, neutral positions.'
+  },
+  'concussion': {
+    excludes: ['olympic','snatch','clean','jerk','box jump','depth jump','drop jump','sprint','flying','reactive'],
+    note: 'Excluded explosive and high-CNS work. Substituting tempo strength and aerobic work only.'
+  }
+};
+
+// Compute Power / Velocity / Strength scores for a roster athlete using the same NCAA benchmark logic as onboarding.
+// Returns { power, velocity, strength, allAround, weakest } where weakest is the lowest-scoring category (or null if no data).
+function pbGetCategoryScores(ath) {
+  if (!ath || typeof onbScore !== 'function' || typeof onbGetBenchmark !== 'function') return null;
+  var bmInfo = onbGetBenchmark(ath.sport, ath.position, ath.gender);
+  if (!bmInfo || !bmInfo.bm) return null;
+  var bm = bmInfo.bm;
+  var pCmj = onbScore(ath.cmj_jh_in, bm.cmj, false);
+  var pRsi = onbScore(ath.dj_rsi || ath.cmj_rsi, bm.rsi, false);
+  var pBroad = onbScore(ath.broad_jump_in, bm.broad, false);
+  var v010 = onbScore(ath.best_010, bm.sprint_010, true);
+  var v2030 = onbScore(ath.best_2030, bm.fly_2030, true);
+  var sIso = onbScore(ath.iso_force_bm, bm.iso_per_bw, false);
+  function avg(arr) { var v = arr.filter(function(x){return x!=null;}); return v.length ? v.reduce(function(a,b){return a+b;},0)/v.length : null; }
+  var power = avg([pCmj, pRsi, pBroad]);
+  var velocity = avg([v010, v2030]);
+  var strength = sIso;
+  var allAround = avg([power, velocity, strength]);
+  var cats = [{name:'Power',score:power},{name:'Velocity',score:velocity},{name:'Strength',score:strength}].filter(function(c){return c.score!=null;});
+  cats.sort(function(a,b){return a.score-b.score;});
+  return { power:power, velocity:velocity, strength:strength, allAround:allAround, weakest: cats.length ? cats[0] : null };
+}
+
+// Read athlete.injuries[] and return { exclusions:[], notes:[], conditions:[] }.
+// exclusions feeds _pbActiveExclusions which rEx() filters against.
+function pbGetInjuryExclusions(ath) {
+  var result = { exclusions:[], notes:[], conditions:[] };
+  if (!ath || !Array.isArray(ath.injuries) || ath.injuries.length === 0) return result;
+  ath.injuries.forEach(function(inj) {
+    var cond = (inj.condition || '').toLowerCase();
+    Object.keys(INJURY_CONTRAINDICATIONS).forEach(function(key) {
+      if (cond.indexOf(key) !== -1) {
+        var c = INJURY_CONTRAINDICATIONS[key];
+        c.excludes.forEach(function(e) { if (result.exclusions.indexOf(e) === -1) result.exclusions.push(e); });
+        if (result.notes.indexOf(c.note) === -1) result.notes.push(c.note);
+        if (result.conditions.indexOf(inj.condition) === -1) result.conditions.push(inj.condition);
+      }
+    });
+  });
+  return result;
+}
+
 function pbGen() {
   var macro = document.getElementById('pb-macro').value;
   var block = document.getElementById('pb-block').value;
@@ -5593,11 +5697,50 @@ function pbGen() {
   var sessionType = document.getElementById('pb-session-type').value;
   var subFocus = document.getElementById('pb-sub-focus').value;
   var dayType = (document.getElementById('pb-day-type') ? document.getElementById('pb-day-type').value : 'T') || 'T';
+  var timeBudget = parseInt((document.getElementById('pb-time-budget') || {}).value || 0) || 0;
   var isPow = macro.startsWith('pow');
   var isP3 = (macro === 'tri3');
   var ath = (_pbAthIdx !== null) ? A[_pbAthIdx] : null;
   var bkt = ath ? (ath.bucket || 'N/A') : 'N/A';
   var sport = ath ? (ath.sport || '') : '';
+
+  // === BB Phase 1: read athlete scores + injuries; set the global exclusion list rEx will respect ===
+  var scores = ath ? pbGetCategoryScores(ath) : null;
+  var injInfo = ath ? pbGetInjuryExclusions(ath) : { exclusions:[], notes:[], conditions:[] };
+  _pbActiveExclusions = injInfo.exclusions;
+
+  // Compose the smart-prescription banner that goes right under the header on every generated session.
+  function pbSmartBanners() {
+    var html = '';
+    if (scores && scores.weakest) {
+      html += '<div style="background:#0a1a2e;border:1px solid #1e3a5f;border-left:3px solid #C9A228;border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:11px;color:#a0bbd4;line-height:1.5">'
+        + '<strong style="color:#C9A228">🎯 AUTO-TARGET:</strong> Weakest category is <strong>' + scores.weakest.name + '</strong> at ' + Math.round(scores.weakest.score) + '/100. Session biased toward this area.'
+        + ' <span style="color:#6a8aa8;font-size:10px">(P:' + (scores.power!=null?Math.round(scores.power):'—') + ' / V:' + (scores.velocity!=null?Math.round(scores.velocity):'—') + ' / S:' + (scores.strength!=null?Math.round(scores.strength):'—') + ')</span>'
+        + '</div>';
+    }
+    if (injInfo.conditions.length > 0) {
+      html += '<div style="background:#2a1a0a;border:1px solid #5a3a1a;border-left:3px solid #ff8a5a;border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:11px;color:#ffce6a;line-height:1.5">'
+        + '<strong style="color:#ff8a5a">⚠️ INJURY-AWARE:</strong> Active condition' + (injInfo.conditions.length>1?'s':'') + ': <strong>' + injInfo.conditions.join(', ') + '</strong>. ' + injInfo.notes.join(' ')
+        + '</div>';
+    }
+    if (timeBudget && timeBudget > 0 && timeBudget < 60) {
+      html += '<div style="background:#0a1a2e;border:1px solid #1e3a5f;border-radius:8px;padding:8px 12px;margin-bottom:8px;font-size:11px;color:#a0bbd4">'
+        + '<strong>⏱️ TIME-BUDGETED:</strong> ' + timeBudget + ' min. Some blocks trimmed to fit.'
+        + '</div>';
+    } else if (timeBudget >= 90) {
+      html += '<div style="background:#0a1a2e;border:1px solid #1e3a5f;border-radius:8px;padding:8px 12px;margin-bottom:8px;font-size:11px;color:#a0bbd4">'
+        + '<strong>⏱️ EXTENDED:</strong> 90 min. Bonus accessory pair appended at end.'
+        + '</div>';
+    }
+    return html;
+  }
+
+  // Time-budget gating flags (used below to skip / trim blocks)
+  var tbSkipAccel   = (timeBudget > 0 && timeBudget <= 30);
+  var tbSkipSupport = (timeBudget > 0 && timeBudget <= 30);
+  var tbReduceSupport = (timeBudget === 45);
+  var tbSkipAsym    = (timeBudget > 0 && timeBudget <= 45);
+  var tbBonusBlock  = (timeBudget >= 90);
 
   // Resolve archetype
   var archLabel = arch;
@@ -5617,6 +5760,7 @@ function pbGen() {
   // ── WEEK 4 CNS RESET ──────────────────────────────────────────
   if (week === 4) {
     var out4 = buildPBHeader(ath, macro, block, week, day, archLabel);
+    out4 += pbSmartBanners();
     out4 += '<div style="background:#1a2a1a;border:1px solid #2d7a4a;border-radius:10px;padding:12px 14px;margin-bottom:10px">';
     out4 += '<div style="font-size:11px;font-weight:800;color:#4caf50;margin-bottom:4px">🔄 WEEK 4 — CNS RESET</div>';
     if (isBeg) out4 += '<div style="font-size:11px;color:#8a9bb0">10-minute running clock. Move through exercises at your own pace — no EMOM pressure this week. Quality over everything.</div>';
@@ -5636,6 +5780,7 @@ function pbGen() {
     out4 += pbWarmUp(dayType, archLabel);
     document.getElementById('pb-output').innerHTML = out4;
     document.getElementById('pb-print-btn').style.display = 'inline-block';
+    _pbActiveExclusions = []; // reset so other code paths aren't accidentally filtered
     return;
   }
 
@@ -5692,6 +5837,7 @@ function pbGen() {
 
   // ── Build session ─────────────────────────────────────────────
   var out = buildPBHeader(ath, macro, block, week, day, archLabel);
+  out += pbSmartBanners();
 
   // Clock / format header note
   var dayTypeLbl = {T:'Total Body — Hinge Focus', L:'Lower Body — Squat Focus', U:'Upper Body — Push–Pull'}[dayType] || dayType;
@@ -5721,7 +5867,7 @@ function pbGen() {
   out += starsBlock('Technique', pbTechBlock(dayType, subFocus, bkt, sport, archLabel, isPow, block));
 
   // ── ACCELERATION ──────────────────────────────────────────────
-  if (sessionType !== 'strength') {
+  if (sessionType !== 'strength' && !tbSkipAccel) {
     out += starsBlock('Acceleration', pbAccBlock(subFocus, bkt, sport, archLabel, week, isBeg));
   }
 
@@ -5730,14 +5876,41 @@ function pbGen() {
     out += pbResBlock(dayType, archLabel, macro, block, week, fmtEx, ath, isPow, isBeg, isAdv, isInt);
   }
 
+  // ── BB Phase 1: AUTO-TARGET BONUS ─────────────────────────────
+  // If we know the athlete's weakest category, append one extra targeted exercise.
+  if (scores && scores.weakest && sessionType !== 'speed') {
+    var w = scores.weakest.name;
+    var bonusEx = null;
+    if (w === 'Power') {
+      bonusEx = rEx(dayType === 'U' ? 'jump_bilateral' : 'jump_unilateral', 1)[0];
+      if (bonusEx) out += starsBlock('🎯 Weak-link Bonus — Power', [bonusEx + ' — 3×3 max intent']);
+    } else if (w === 'Velocity') {
+      bonusEx = rEx('speed_accel', 1)[0];
+      if (bonusEx) out += starsBlock('🎯 Weak-link Bonus — Velocity', [bonusEx + ' — 3×20yd full effort, 90s rest']);
+    } else if (w === 'Strength') {
+      var pool = dayType === 'U' ? 'U2_upper' : (dayType === 'L' ? 'L2_lower' : 'T2_total');
+      bonusEx = rEx(pool, 1)[0];
+      if (bonusEx) out += starsBlock('🎯 Weak-link Bonus — Strength', [bonusEx + ' — 4×6 @ 75–80% (controlled tempo)']);
+    }
+  }
+
   // ── SUPPORT ───────────────────────────────────────────────────
-  var suppItems = rEx('support', isBeg ? 2 : 3).map(function(s) {
-    return s + (isBeg ? ' — 2 sets' : ' — 3 sets');
-  });
-  out += starsBlock('Support', suppItems);
+  if (!tbSkipSupport) {
+    var suppCount = tbReduceSupport ? 1 : (isBeg ? 2 : 3);
+    var suppItems = rEx('support', suppCount).map(function(s) {
+      return s + (isBeg ? ' — 2 sets' : ' — 3 sets');
+    });
+    out += starsBlock('Support', suppItems);
+  }
+
+  // ── BB Phase 1: BONUS BLOCK at 90+ min ─────────────────────────
+  if (tbBonusBlock) {
+    var bonusPair = rEx('support', 2).map(function(s) { return s + ' — 3 sets, density format (45s on / 15s off)'; });
+    out += starsBlock('🎁 Extended Block — Conditioning Pair', bonusPair);
+  }
 
   // ── ASYMMETRY ADDENDUM ────────────────────────────────────────
-  if (ath && (ath.uni_asym_pct || 0) >= 15) {
+  if (ath && (ath.uni_asym_pct || 0) >= 15 && !tbSkipAsym) {
     out += '<div style="background:#2a0a0a;border:1px solid #7a2020;border-radius:10px;padding:12px 14px;margin-top:8px">' +
       '<div style="font-size:10px;font-weight:800;color:#ef5350;margin-bottom:6px">⚠️ ASYMMETRY — Add to Every Session (' + ath.uni_asym_pct + '% imbalance)</div>' +
       '<div style="font-size:11px;color:#c9d1d9">' +
@@ -5751,6 +5924,7 @@ function pbGen() {
   out += pbWarmUp(dayType, archLabel);
 
   document.getElementById('pb-output').innerHTML = out;
+  _pbActiveExclusions = []; // reset so other code paths aren't accidentally filtered
   document.getElementById('pb-print-btn').style.display = 'inline-block';
 }
 
