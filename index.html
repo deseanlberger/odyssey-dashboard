@@ -2017,6 +2017,18 @@ select:focus{border-color:#C9A228}
 </div>
 </div>
 
+<!-- CSV Auto-Fill -->
+<div class="na-card">
+<div class="na-card-hdr">📁 Auto-Fill from CSV (optional)</div>
+<label style="background:#112233;border:2px dashed #2a4a6a;border-radius:10px;padding:18px 14px;text-align:center;cursor:pointer;display:block">
+  <div style="font-size:22px;margin-bottom:4px">📄</div>
+  <div id="onb-csv-label" style="font-size:12px;color:#fff;font-weight:600">Tap to upload a CSV — auto-fills the test battery</div>
+  <div style="font-size:10px;color:#6a8aa8;margin-top:4px">VALD ForceDecks / Output Sports — handles cm→in and kg→lbs automatically</div>
+  <input type="file" id="onb-csv-input" accept=".csv" onchange="onbHandleCSV(this)" style="display:none">
+</label>
+<div id="onb-csv-status" style="display:none;margin-top:8px;padding:8px 10px;border-radius:6px;font-size:11px"></div>
+</div>
+
 <!-- Test Battery -->
 <div class="na-card">
 <div class="na-card-hdr">📊 Onboarding Test Battery</div>
@@ -4152,6 +4164,101 @@ function onbAnalyze() {
     + '<pre style="color:#a0bbd4;font-size:11px;white-space:pre-wrap;word-break:break-word;margin:0;font-family:monospace;line-height:1.5">' + JSON.stringify(data, null, 2) + '</pre>'
     + '</div>';
 }
+
+// === Onboarding CSV auto-fill (VALD / Output Sports) ===
+function onbHandleCSV(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) { onbParseCSV(e.target.result, file.name); };
+  reader.readAsText(file);
+}
+
+function onbParseCSV(text, fname) {
+  text = (text || '').replace(/^\uFEFF/, '');
+  var lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) {
+    onbCsvStatus('CSV needs a header row plus at least 1 data row.', 'error'); return;
+  }
+  function splitLine(line) {
+    var out = [], cur = '', inQ = false;
+    for (var i = 0; i < line.length; i++) {
+      var c = line[i];
+      if (c === '"') inQ = !inQ;
+      else if (c === ',' && !inQ) { out.push(cur); cur = ''; }
+      else cur += c;
+    }
+    out.push(cur);
+    return out.map(function(s){ return s.trim().replace(/^"|"$/g, ''); });
+  }
+  var headers = splitLine(lines[0]).map(function(h){ return h.toLowerCase(); });
+  var row = splitLine(lines[1]);
+  var byCol = {};
+  headers.forEach(function(h, i) { byCol[h] = (row[i] || '').trim(); });
+
+  var mappings = [
+    { id:'onb-cmj',    syn:['cmj height (in)','cmj jump height (in)','jump height (in)','concentric mean height (in)','cmj height','jump height'], unit:'in' },
+    { id:'onb-rsi',    syn:['drop jump rsi','rsi modified','reactive strength index','rsi'], unit:null },
+    { id:'onb-broad',  syn:['broad jump (in)','broad jump','standing long jump'], unit:'in' },
+    { id:'onb-010',    syn:['0-10 (s)','split 0-10 (s)','0-10','0 to 10','10 yard','10y split'], unit:'s' },
+    { id:'onb-2030',   syn:['20-30 fly (s)','fly 20-30 (s)','split 20-30 (s)','20-30','20 to 30','fly 20-30'], unit:'s' },
+    { id:'onb-iso',    syn:['iso peak force (lbs)','isometric peak force (lbs)','peak force (lbs)','iso peak force','isometric peak force','peak force','iso force'], unit:'lbs' },
+    { id:'onb-sl-l',   syn:['sl jump l (in)','single-leg jump l (in)','single leg jump left','sl jump (l)','sl-l','left jump (in)','left'], unit:'in' },
+    { id:'onb-sl-r',   syn:['sl jump r (in)','single-leg jump r (in)','single leg jump right','sl jump (r)','sl-r','right jump (in)','right'], unit:'in' },
+    { id:'onb-bw',     syn:['body weight (lbs)','body mass (lbs)','bodyweight (lbs)','weight (lbs)','body mass','body weight'], unit:'lbs' },
+    { id:'onb-height', syn:['height (in)','athlete height (in)','height'], unit:'in' }
+  ];
+
+  function findMatch(synonyms) {
+    for (var i = 0; i < synonyms.length; i++) {
+      var needle = synonyms[i];
+      for (var k in byCol) {
+        if (k === needle || k.indexOf(needle) !== -1) {
+          if (byCol[k] && byCol[k] !== '') return { key:k, val:byCol[k] };
+        }
+      }
+    }
+    return null;
+  }
+
+  var filled = 0, overwritten = 0;
+  mappings.forEach(function(m) {
+    var match = findMatch(m.syn);
+    if (!match) return;
+    var raw = parseFloat(match.val);
+    if (isNaN(raw)) return;
+    var val = raw;
+    if (m.unit === 'in' && /\(cm\)|\bcm\b/i.test(match.key)) val = raw / 2.54;
+    if (m.unit === 'lbs' && /\(kg\)|\bkg\b/i.test(match.key)) val = raw * 2.2046;
+    if (m.unit === 's' && /\bms\b|\(ms\)/i.test(match.key)) val = raw / 1000;
+    var rounded = (m.unit === 'lbs' || m.unit === 'in') ? Math.round(val * 10) / 10 : Math.round(val * 1000) / 1000;
+    var el = document.getElementById(m.id);
+    if (!el) return;
+    if (el.value) overwritten++;
+    el.value = rounded;
+    filled++;
+  });
+
+  document.getElementById('onb-csv-label').textContent = '✓ ' + fname;
+  if (filled === 0) {
+    onbCsvStatus('CSV parsed but no recognized columns matched. Tell Coach Desean which CSV format you use so it can be added.', 'warn');
+  } else {
+    var msg = '✓ Auto-filled ' + filled + ' field' + (filled === 1 ? '' : 's') + ' from CSV.';
+    if (overwritten > 0) msg += ' (' + overwritten + ' replaced existing values.)';
+    msg += ' Fill in anything still blank, then tap Analyze.';
+    onbCsvStatus(msg, 'ok');
+  }
+}
+
+function onbCsvStatus(msg, kind) {
+  var el = document.getElementById('onb-csv-status');
+  el.style.display = 'block';
+  el.textContent = msg;
+  if (kind === 'error') { el.style.background = '#3a1a1a'; el.style.color = '#ff8a8a'; el.style.border = '1px solid #5a2a2a'; }
+  else if (kind === 'warn') { el.style.background = '#3a3010'; el.style.color = '#ffce6a'; el.style.border = '1px solid #5a4a1a'; }
+  else { el.style.background = '#0a2010'; el.style.color = '#4caf50'; el.style.border = '1px solid #2d7a4a'; }
+}
+
 function naPercentile(val, arr, lowerBetter) {
   if (!val || isNaN(val)) return null;
   var filtered = arr.filter(function(v) { return v != null && !isNaN(v) && v > 0; });
