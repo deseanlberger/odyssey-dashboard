@@ -4275,59 +4275,131 @@ function onbScoreLabel(s) {
 }
 
 function onbRenderCard(data, scores) {
-  function fmt(v) { return v == null ? '—' : Math.round(v); }
-  function row(label, val, unit) {
-    return '<tr><td style="padding:5px 0;color:#444">' + label + '</td><td style="padding:5px 0;text-align:right;font-weight:700">' + (val == null ? '—' : val + (unit || '')) + '</td></tr>';
+  function fmtScore(s) { return s == null ? '—' : Math.round(s); }
+  function metricBlock(label, value, unit, score) {
+    var pct = score == null ? null : Math.round(score);
+    var col = pct != null ? onbScoreColor(score) : '#6a8aa8';
+    var pctLine = pct != null
+      ? '<div style="font-size:11px;color:' + col + ';font-weight:700;margin-top:4px">' + pct + ' / 100 &middot; <span style="font-weight:400">' + onbScoreLabel(score) + '</span></div>'
+        + '<div class="na-pct-bar-wrap" style="height:5px;background:#1e3a5f;border-radius:2px;margin-top:5px;overflow:hidden"><div class="na-pct-bar-fill" style="width:' + pct + '%;background:' + col + ';height:100%"></div></div>'
+      : '<div style="font-size:10px;color:#4a6a8a;font-style:italic;margin-top:4px">No benchmark</div>';
+    return '<div class="na-card-metric" style="background:#0f0f0f;border:1px solid #1e3a5f;border-radius:8px;padding:10px">'
+      + '<div style="font-size:10px;color:#6a8aa8;font-weight:700;text-transform:uppercase;letter-spacing:.5px">' + label + '</div>'
+      + '<div style="font-size:20px;font-weight:900;color:#fff;line-height:1.2;margin-top:2px">' + (value != null ? value + (unit || '') : '—') + '</div>'
+      + pctLine
+      + '</div>';
   }
-  var html = '<div id="onb-print-card" style="background:#fff;color:#000;padding:24px;max-width:600px;margin:14px auto;font-family:Arial,sans-serif;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.4)">';
-  html += '<div style="text-align:center;border-bottom:3px solid #C9A228;padding-bottom:14px;margin-bottom:16px">';
-  html += '<div style="font-size:9px;color:#C9A228;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px">Odyssey Performance — Onboarding</div>';
-  html += '<div style="font-size:22px;font-weight:800">' + data.identity.first + ' ' + data.identity.last + '</div>';
-  html += '<div style="font-size:11px;color:#444;margin-top:4px">' + data.identity.sport + (data.identity.position1 ? ' · ' + data.identity.position1 : '') + ' · Class of ' + data.identity.gradYear + '</div>';
-  html += '</div>';
-  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px">';
-  ['power','velocity','strength'].forEach(function(k) {
-    var s = scores[k], cap = k.charAt(0).toUpperCase() + k.slice(1);
-    var color = onbScoreColor(s);
-    html += '<div style="background:#f5f5f5;border-radius:8px;padding:12px;border-left:5px solid ' + color + '">';
-    html += '<div style="font-size:10px;color:#666;font-weight:700;text-transform:uppercase">' + cap + '</div>';
-    html += '<div style="font-size:28px;font-weight:800;color:' + color + ';line-height:1">' + fmt(s) + '<span style="font-size:14px;color:#999"> /100</span></div>';
-    html += '<div style="font-size:10px;color:#666;margin-top:2px">' + onbScoreLabel(s) + '</div>';
-    html += '</div>';
-  });
-  var aColor = onbScoreColor(scores.allAround);
-  html += '<div style="background:#0D1B2A;color:#fff;border-radius:8px;padding:12px;border-left:5px solid #C9A228">';
-  html += '<div style="font-size:10px;color:#C9A228;font-weight:700;text-transform:uppercase">All-Around</div>';
-  html += '<div style="font-size:28px;font-weight:800;color:' + aColor + ';line-height:1">' + fmt(scores.allAround) + '<span style="font-size:14px;color:#999"> /100</span></div>';
-  html += '<div style="font-size:10px;color:#aaa;margin-top:2px">' + onbScoreLabel(scores.allAround) + '</div>';
-  html += '</div></div>';
+  function categoryBlock(name, score, accentColor) {
+    var pct = fmtScore(score);
+    return '<div style="background:#0f0f0f;border:1px solid ' + accentColor + '40;border-left:4px solid ' + accentColor + ';border-radius:8px;padding:11px">'
+      + '<div style="font-size:10px;color:' + accentColor + ';font-weight:700;text-transform:uppercase;letter-spacing:.6px">' + name + '</div>'
+      + '<div style="font-size:28px;font-weight:900;color:#fff;line-height:1;margin:4px 0">' + pct + '<span style="font-size:13px;color:#6a8aa8;font-weight:700"> /100</span></div>'
+      + '<div style="font-size:10px;color:' + accentColor + ';font-weight:600">' + onbScoreLabel(score) + '</div>'
+      + '</div>';
+  }
+
+  var name = (data.identity.first + ' ' + data.identity.last).toUpperCase();
+  var dateObj = new Date(data.sessionDate + 'T00:00:00');
+  var today = dateObj.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+  var sub = data.identity.sport
+    + (data.identity.position1 ? ' &middot; ' + data.identity.position1 : '')
+    + (data.identity.position2 ? ' / ' + data.identity.position2 : '')
+    + (data.identity.gradYear ? ' &middot; Class of ' + data.identity.gradYear : '')
+    + ' &middot; ' + (data.identity.gender === 'M' ? 'Male' : data.identity.gender === 'F' ? 'Female' : data.identity.gender);
+
+  var quad = (typeof naGetQuadrant === 'function') ? naGetQuadrant(data.metrics.drop_rsi, data.metrics.cmj_in) : null;
+  var quadHTML = quad ? '<div style="margin-top:10px"><span class="na-quad-badge" style="display:inline-block;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;background:' + quad.color + '20;color:' + quad.color + ';border:1px solid ' + quad.color + '40">' + (quad.icon || '') + ' ' + quad.name + '</span><div style="font-size:12px;color:#a0bbd4;margin:6px 0 0;line-height:1.5">' + (quad.desc || '') + '</div></div>' : '';
+
+  var pColor = onbScoreColor(scores.power);
+  var vColor = onbScoreColor(scores.velocity);
+  var sColor = onbScoreColor(scores.strength);
+
+  var asymBlock = '';
   if (scores.asymmetry != null) {
-    var aBg = scores.asymmetryFlag === 'RED' ? '#FFEBEE' : scores.asymmetryFlag === 'ORANGE' ? '#FFF3E0' : '#E8F5E9';
-    var aFg = scores.asymmetryFlag === 'RED' ? '#C62828' : scores.asymmetryFlag === 'ORANGE' ? '#E65100' : '#2E7D32';
-    var aMsg = scores.asymmetryFlag === 'RED' ? 'Significant asymmetry — flag for screening' : scores.asymmetryFlag === 'ORANGE' ? 'Moderate asymmetry — monitor' : 'Within normal range';
-    html += '<div style="background:' + aBg + ';color:' + aFg + ';padding:10px 14px;border-radius:8px;margin-bottom:16px;font-size:12px;font-weight:600">⚖️ Single-Leg Jump Asymmetry: <strong>' + scores.asymmetry.toFixed(1) + '%</strong> — ' + aMsg + '</div>';
+    var aBg = scores.asymmetryFlag === 'RED' ? '#3a1a1a' : scores.asymmetryFlag === 'ORANGE' ? '#3a3010' : '#0a2010';
+    var aFg = scores.asymmetryFlag === 'RED' ? '#ff8a8a' : scores.asymmetryFlag === 'ORANGE' ? '#ffce6a' : '#4caf50';
+    var aBorder = scores.asymmetryFlag === 'RED' ? '#5a2a2a' : scores.asymmetryFlag === 'ORANGE' ? '#5a4a1a' : '#2d7a4a';
+    var aMsg = scores.asymmetryFlag === 'RED' ? 'Significant asymmetry &mdash; flag for screening' : scores.asymmetryFlag === 'ORANGE' ? 'Moderate asymmetry &mdash; monitor' : 'Within normal range';
+    asymBlock = '<div style="background:' + aBg + ';color:' + aFg + ';border:1px solid ' + aBorder + ';border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;font-weight:600">&#x2696;&#xFE0F; Single-Leg Jump Asymmetry: <strong>' + scores.asymmetry.toFixed(1) + '%</strong> &middot; ' + aMsg + '</div>';
   }
-  html += '<div style="font-size:10px;color:#666;font-weight:700;text-transform:uppercase;margin-bottom:6px">Raw Metrics</div>';
-  html += '<table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px">';
-  html += row('CMJ Height', data.metrics.cmj_in, ' in');
-  html += row('Drop Jump RSI', data.metrics.drop_rsi, '');
-  html += row('Broad Jump', data.metrics.broad_in, ' in');
-  html += row('0–10 Sprint', data.metrics.sprint_010, ' s');
-  html += row('20–30 Fly', data.metrics.fly_2030, ' s');
-  html += row('Iso Squat Peak', data.metrics.iso_peak_lbs, ' lbs');
-  if (scores.isoPerBw != null) html += row('Iso Squat / BW', scores.isoPerBw, '× BW');
-  html += row('Single-Leg Jump (L)', data.metrics.sl_jump_l, ' in');
-  html += row('Single-Leg Jump (R)', data.metrics.sl_jump_r, ' in');
-  html += row('Body Weight', data.identity.bwLbs, ' lbs');
-  html += '</table>';
-  if (data.notes) html += '<div style="background:#fafafa;padding:10px 12px;border-left:3px solid #C9A228;border-radius:4px;font-size:11px;color:#555;margin-bottom:14px"><strong>Coach Notes:</strong> ' + data.notes + '</div>';
-  html += '<div style="font-size:9px;color:#999;text-align:center;border-top:1px solid #eee;padding-top:10px;margin-top:8px">Comparison: NCAA freshman benchmark (' + scores.benchmarkSrc + ') · Session ' + data.sessionDate + '</div>';
-  html += '</div>';
-  html += '<div style="display:flex;gap:10px;margin-top:14px;padding:0 14px">';
-  html += '<button onclick="onbEmailForApproval()" style="flex:2;background:#C9A228;border:none;color:#000;border-radius:10px;padding:14px;font-size:14px;font-weight:800;cursor:pointer">📧 Email for Coach Approval</button>';
-  html += '<button onclick="window.print()" style="flex:1;background:#1e3a5f;border:none;color:#fff;border-radius:10px;padding:14px;font-size:13px;font-weight:700;cursor:pointer">🖨️ Print</button>';
-  html += '</div>';
+
+  var html = '<div id="onb-print-card" style="background:#000000;color:#fff;border-radius:12px;padding:24px;border:1px solid #1e3a5f;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,sans-serif">';
+
+  // Header
+  html += '<div style="background:linear-gradient(135deg,#0f0f0f,#1e3a5f);border-radius:8px;padding:18px;margin-bottom:14px;border-bottom:3px solid #C9A228">'
+    + '<div style="font-size:9px;color:#C9A228;font-weight:700;letter-spacing:2px;margin-bottom:4px">ODYSSEY PERFORMANCE &middot; ONBOARDING SESSION</div>'
+    + '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">'
+    + '<div><div style="font-size:24px;font-weight:900;color:#fff;margin-bottom:4px">' + name + '</div>'
+    + '<div style="font-size:13px;color:#a0bbd4">' + sub + '</div></div>'
+    + '<div style="text-align:right">'
+    + '<div style="font-size:9px;color:#6a8aa8">Assessment Date</div>'
+    + '<div style="font-size:13px;color:#fff;font-weight:700">' + today + '</div>'
+    + (data.identity.bwLbs ? '<div style="font-size:11px;color:#a0bbd4;margin-top:2px">BW: ' + data.identity.bwLbs + ' lbs</div>' : '')
+    + (data.identity.heightIn ? '<div style="font-size:11px;color:#a0bbd4">H: ' + data.identity.heightIn + ' in</div>' : '')
+    + '</div></div>'
+    + quadHTML
+    + '</div>';
+
+  // Category scores
+  html += '<div style="font-size:10px;color:#C9A228;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Category Scores &middot; vs NCAA Freshman (' + scores.benchmarkSrc + ')</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:16px">'
+    + categoryBlock('Power', scores.power, pColor)
+    + categoryBlock('Velocity', scores.velocity, vColor)
+    + categoryBlock('Strength', scores.strength, sColor)
+    + categoryBlock('All-Around', scores.allAround, '#C9A228')
+    + '</div>';
+
+  // Asymmetry
+  html += asymBlock;
+
+  // Metric grid
+  html += '<div style="font-size:10px;color:#C9A228;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Performance Metrics</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">'
+    + metricBlock('CMJ Height', data.metrics.cmj_in, '"', scores.breakdown.power.cmj)
+    + metricBlock('Drop Jump RSI', data.metrics.drop_rsi, '', scores.breakdown.power.rsi)
+    + metricBlock('Broad Jump', data.metrics.broad_in, '"', scores.breakdown.power.broad)
+    + metricBlock('0&ndash;10 Sprint', data.metrics.sprint_010, 's', scores.breakdown.velocity.sprint_010)
+    + metricBlock('20&ndash;30 Fly', data.metrics.fly_2030, 's', scores.breakdown.velocity.fly_2030)
+    + metricBlock('Iso Squat / BW', scores.isoPerBw, '&times;BW', scores.breakdown.strength.iso_rel)
+    + metricBlock('Single-Leg Jump (L)', data.metrics.sl_jump_l, '"', null)
+    + metricBlock('Single-Leg Jump (R)', data.metrics.sl_jump_r, '"', null)
+    + '</div>';
+
+  // Coach notes
+  if (data.notes) {
+    html += '<div style="background:#0f0f0f;border:1px solid #1e3a5f;border-left:3px solid #C9A228;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#a0bbd4;line-height:1.5"><strong style="color:#C9A228">Coach Notes:</strong> ' + data.notes + '</div>';
+  }
+
+  // Footer
+  html += '<div style="margin-top:18px;padding-top:12px;border-top:1px solid #1e3a5f;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">'
+    + '<div style="font-size:9px;color:#4a6a8a">odysseyperformance.com</div>'
+    + '<div style="font-size:9px;color:#4a6a8a;text-transform:uppercase;letter-spacing:1px">Confidential &mdash; Odyssey Performance</div>'
+    + '</div>';
+
+  html += '</div>'; // end print card
+
+  // Action buttons (NOT inside print card)
+  html += '<div style="display:flex;gap:10px;margin-top:14px;padding:0 14px" class="na-print-hide">'
+    + '<button onclick="onbEmailForApproval()" style="flex:2;background:#C9A228;border:none;color:#000;border-radius:10px;padding:14px;font-size:14px;font-weight:800;cursor:pointer">&#128231; Email for Coach Approval</button>'
+    + '<button onclick="onbPrint()" style="flex:1;background:#1e3a5f;border:none;color:#fff;border-radius:10px;padding:14px;font-size:13px;font-weight:700;cursor:pointer">&#128424; Print</button>'
+    + '</div>';
+
   return html;
+}
+
+function onbPrint() {
+  var card = document.getElementById('onb-print-card');
+  if (!card) { alert('Run Analyze first.'); return; }
+  var w = window.open('', '_blank', 'width=820,height=1100');
+  if (!w) { alert('Pop-ups are blocked. Allow pop-ups for this site to print, or take a screenshot of the card.'); return; }
+  var styles = '*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact;color-adjust:exact}'
+    + 'body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:0;margin:0}'
+    + '#onb-print-card{margin:0!important;border:none!important;border-radius:0!important;padding:0.4in!important;width:100%!important;max-width:100%!important;min-height:100vh!important;box-shadow:none!important;background:#000!important;color:#fff!important}'
+    + '@media print{@page{size:letter portrait;margin:0}html,body{height:100%;background:#000!important}}';
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Odyssey Onboarding Profile</title><style>' + styles + '</style></head><body>' + card.outerHTML + '</body></html>');
+  w.document.close();
+  w.focus();
+  setTimeout(function() { try { w.print(); } catch(e){} }, 600);
 }
 
 function onbEmailForApproval() {
