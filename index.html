@@ -9006,6 +9006,8 @@ function init() {
   [...new Set(A.filter(a=>!a.beginner).map(a=>a.sport).filter(Boolean))].sort().forEach(s=>{
     const o=document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o);
   });
+  // Boards is now the home tab — populate it and sync the M/F button state on first load.
+  if (typeof lbSetGender === 'function') lbSetGender('M');
   render();
 }
 init();
