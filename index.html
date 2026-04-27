@@ -4156,13 +4156,235 @@ function onbAnalyze() {
     onbShowStatus('⚠️ Missing required fields: ' + missing.join(', '), 'error');
     return;
   }
-  onbShowStatus('✓ Form complete. (Phase 4 will add Power/Velocity/Strength scoring + NCAA peer comparison.)', 'ok');
+  var scores = onbComputeScores(data);
+  window._onbCurrentData = data;
+  window._onbCurrentScores = scores;
+  onbShowStatus('✓ Profile card generated. Review below, then tap "Email for Coach Approval" to send for permanent record.', 'ok');
   var out = document.getElementById('onb-card-output');
   out.style.display = 'block';
-  out.innerHTML = '<div style="background:#0a1a2e;border:1px solid #1e3a5f;border-radius:10px;padding:14px;margin-top:10px">'
-    + '<div style="font-size:10px;color:#C9A228;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Captured Onboarding Data</div>'
-    + '<pre style="color:#a0bbd4;font-size:11px;white-space:pre-wrap;word-break:break-word;margin:0;font-family:monospace;line-height:1.5">' + JSON.stringify(data, null, 2) + '</pre>'
-    + '</div>';
+  out.innerHTML = onbRenderCard(data, scores);
+  out.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// === NCAA freshman benchmarks (per sport × position × gender × metric → [p10, p50, p90]) ===
+// Research-backed estimates from NSCA standards, published D-I program data, and S&C literature.
+// Tune as your internal pool grows. For lower-is-better metrics (sprint times), [p10] = slowest acceptable, [p90] = fastest.
+var NCAA_BENCHMARKS = {
+  '_default': {
+    'M': { cmj:[16,22,28], rsi:[0.8,1.4,2.0], broad:[88,108,122], sprint_010:[1.85,1.65,1.50], fly_2030:[1.20,1.05,0.92], iso_per_bw:[1.5,2.2,3.0] },
+    'F': { cmj:[12,16,22], rsi:[0.6,1.0,1.5], broad:[70,86,100], sprint_010:[2.05,1.85,1.70], fly_2030:[1.40,1.20,1.05], iso_per_bw:[1.2,1.8,2.5] }
+  },
+  'Football': {
+    'QB':{ 'M':{ cmj:[22,28,33], rsi:[1.2,1.7,2.2], broad:[108,118,128], sprint_010:[1.72,1.60,1.50], fly_2030:[1.10,1.00,0.92], iso_per_bw:[1.7,2.3,2.9] } },
+    'WR':{ 'M':{ cmj:[26,32,38], rsi:[1.4,1.9,2.4], broad:[115,125,135], sprint_010:[1.65,1.52,1.42], fly_2030:[1.05,0.95,0.88], iso_per_bw:[1.7,2.3,3.0] } },
+    'CB':{ 'M':{ cmj:[26,32,38], rsi:[1.4,1.9,2.4], broad:[115,125,135], sprint_010:[1.65,1.52,1.42], fly_2030:[1.05,0.95,0.88], iso_per_bw:[1.7,2.3,3.0] } },
+    'S': { 'M':{ cmj:[25,31,37], rsi:[1.4,1.8,2.3], broad:[113,123,133], sprint_010:[1.65,1.55,1.45], fly_2030:[1.05,0.97,0.90], iso_per_bw:[1.7,2.3,3.0] } },
+    'RB':{ 'M':{ cmj:[24,30,36], rsi:[1.3,1.8,2.3], broad:[110,120,130], sprint_010:[1.68,1.58,1.48], fly_2030:[1.07,0.98,0.92], iso_per_bw:[1.8,2.5,3.2] } },
+    'LB':{ 'M':{ cmj:[22,28,34], rsi:[1.2,1.7,2.2], broad:[108,118,128], sprint_010:[1.72,1.62,1.52], fly_2030:[1.12,1.02,0.95], iso_per_bw:[1.8,2.5,3.2] } },
+    'TE':{ 'M':{ cmj:[22,28,34], rsi:[1.2,1.7,2.2], broad:[108,118,128], sprint_010:[1.74,1.64,1.55], fly_2030:[1.13,1.04,0.97], iso_per_bw:[1.8,2.5,3.2] } },
+    'DL':{ 'M':{ cmj:[18,24,30], rsi:[1.0,1.4,1.9], broad:[98,108,118],  sprint_010:[1.85,1.75,1.65], fly_2030:[1.25,1.15,1.07], iso_per_bw:[2.0,2.7,3.4] } },
+    'OL':{ 'M':{ cmj:[16,22,28], rsi:[0.9,1.3,1.8], broad:[95,105,115],  sprint_010:[1.92,1.82,1.72], fly_2030:[1.30,1.20,1.12], iso_per_bw:[2.0,2.7,3.4] } }
+  },
+  'Basketball': { 'M':{ cmj:[22,28,34], rsi:[1.2,1.7,2.2], broad:[108,118,128], sprint_010:[1.72,1.60,1.50], fly_2030:[1.08,0.98,0.90], iso_per_bw:[1.6,2.2,2.9] }, 'F':{ cmj:[16,22,27], rsi:[0.9,1.3,1.8], broad:[88,100,112], sprint_010:[1.92,1.78,1.65], fly_2030:[1.25,1.12,1.02], iso_per_bw:[1.4,1.9,2.5] } },
+  'Baseball':   { 'M':{ cmj:[18,23,28], rsi:[1.1,1.5,2.0], broad:[98,108,118], sprint_010:[1.75,1.62,1.50], fly_2030:[1.12,1.02,0.92], iso_per_bw:[1.7,2.3,3.0] } },
+  'Softball':   { 'F':{ cmj:[12,16,21], rsi:[0.7,1.1,1.5], broad:[78,90,102], sprint_010:[2.00,1.85,1.72], fly_2030:[1.35,1.22,1.10], iso_per_bw:[1.4,1.9,2.5] } },
+  'Soccer':     { 'M':{ cmj:[18,23,28], rsi:[1.1,1.5,2.0], broad:[98,108,118], sprint_010:[1.75,1.62,1.52], fly_2030:[1.10,1.00,0.92], iso_per_bw:[1.6,2.2,2.9] }, 'F':{ cmj:[13,17,22], rsi:[0.7,1.1,1.5], broad:[82,93,105], sprint_010:[1.95,1.82,1.70], fly_2030:[1.30,1.18,1.07], iso_per_bw:[1.4,1.9,2.5] } },
+  'Volleyball': { 'F':{ cmj:[16,21,26], rsi:[0.9,1.3,1.8], broad:[85,98,110], sprint_010:[1.95,1.82,1.70], fly_2030:[1.28,1.15,1.05], iso_per_bw:[1.4,1.9,2.5] } },
+  'Track & Field': { 'M':{ cmj:[22,27,32], rsi:[1.3,1.8,2.3], broad:[108,118,128], sprint_010:[1.62,1.50,1.40], fly_2030:[1.00,0.92,0.85], iso_per_bw:[1.7,2.3,3.0] }, 'F':{ cmj:[15,19,24], rsi:[0.8,1.2,1.7], broad:[85,98,108], sprint_010:[1.85,1.72,1.60], fly_2030:[1.20,1.08,0.98], iso_per_bw:[1.4,1.9,2.5] } },
+  'Lacrosse':   { 'M':{ cmj:[20,25,30], rsi:[1.1,1.5,2.0], broad:[105,115,125], sprint_010:[1.72,1.60,1.50], fly_2030:[1.08,0.98,0.90], iso_per_bw:[1.7,2.3,3.0] }, 'F':{ cmj:[14,18,23], rsi:[0.8,1.2,1.6], broad:[82,93,105], sprint_010:[1.95,1.82,1.70], fly_2030:[1.30,1.18,1.07], iso_per_bw:[1.4,1.9,2.5] } }
+};
+
+function onbGetBenchmark(sport, position, gender) {
+  var s = NCAA_BENCHMARKS[sport];
+  if (s) {
+    if (position && s[position] && s[position][gender]) return { bm:s[position][gender], src:'sport+position' };
+    if (s[gender]) return { bm:s[gender], src:'sport-level' };
+  }
+  return { bm:NCAA_BENCHMARKS['_default'][gender] || NCAA_BENCHMARKS['_default']['M'], src:'default' };
+}
+
+function onbScore(value, benchmark, lowerBetter) {
+  if (value == null || isNaN(value) || !benchmark) return null;
+  var p10 = benchmark[0], p50 = benchmark[1], p90 = benchmark[2];
+  if (lowerBetter) {
+    if (value <= p90) return Math.min(100, 90 + 10 * (p90 - value) / Math.max(0.01, p90 * 0.1));
+    if (value <= p50) return 50 + 40 * (p50 - value) / Math.max(0.01, p50 - p90);
+    if (value <= p10) return 10 + 40 * (p10 - value) / Math.max(0.01, p10 - p50);
+    return Math.max(0, 10 - 10 * (value - p10) / Math.max(0.01, p10 * 0.1));
+  } else {
+    if (value >= p90) return Math.min(100, 90 + 10 * (value - p90) / Math.max(0.01, p90 * 0.1));
+    if (value >= p50) return 50 + 40 * (value - p50) / Math.max(0.01, p90 - p50);
+    if (value >= p10) return 10 + 40 * (value - p10) / Math.max(0.01, p50 - p10);
+    return Math.max(0, 10 - 10 * (p10 - value) / Math.max(0.01, p10 * 0.1));
+  }
+}
+
+function onbAvgScore(scores) {
+  var valid = scores.filter(function(s){ return s != null; });
+  if (valid.length === 0) return null;
+  return valid.reduce(function(a,b){ return a+b; }, 0) / valid.length;
+}
+
+function onbAsymmetry(l, r) {
+  if (l == null || r == null || l <= 0 || r <= 0) return null;
+  return Math.round(Math.abs(l - r) / Math.max(l, r) * 100 * 10) / 10;
+}
+
+function onbComputeScores(data) {
+  var bmInfo = onbGetBenchmark(data.identity.sport, data.identity.position1, data.identity.gender);
+  var bm = bmInfo.bm;
+  var m = data.metrics;
+  var pCmj = onbScore(m.cmj_in, bm.cmj, false);
+  var pRsi = onbScore(m.drop_rsi, bm.rsi, false);
+  var pBroad = onbScore(m.broad_in, bm.broad, false);
+  var v010 = onbScore(m.sprint_010, bm.sprint_010, true);
+  var v2030 = onbScore(m.fly_2030, bm.fly_2030, true);
+  var isoRel = (m.iso_peak_lbs && data.identity.bwLbs) ? m.iso_peak_lbs / data.identity.bwLbs : null;
+  var sScore = onbScore(isoRel, bm.iso_per_bw, false);
+  var power = onbAvgScore([pCmj, pRsi, pBroad]);
+  var velocity = onbAvgScore([v010, v2030]);
+  var strength = sScore;
+  var allAround = onbAvgScore([power, velocity, strength]);
+  var asym = onbAsymmetry(m.sl_jump_l, m.sl_jump_r);
+  var asymFlag = asym != null ? (asym >= 15 ? 'RED' : asym >= 10 ? 'ORANGE' : 'OK') : null;
+  return {
+    power:power, velocity:velocity, strength:strength, allAround:allAround,
+    asymmetry:asym, asymmetryFlag:asymFlag,
+    isoPerBw: isoRel ? Math.round(isoRel * 100) / 100 : null,
+    breakdown: { power:{cmj:pCmj,rsi:pRsi,broad:pBroad}, velocity:{sprint_010:v010,fly_2030:v2030}, strength:{iso_rel:sScore} },
+    benchmarkSrc: bmInfo.src
+  };
+}
+
+function onbScoreColor(s) {
+  if (s == null) return '#9aa';
+  if (s >= 80) return '#2e7d32';
+  if (s >= 60) return '#558b2f';
+  if (s >= 40) return '#f9a825';
+  if (s >= 20) return '#e65100';
+  return '#c62828';
+}
+function onbScoreLabel(s) {
+  if (s == null) return 'No data';
+  if (s >= 80) return 'Elite';
+  if (s >= 60) return 'Above Avg';
+  if (s >= 40) return 'Average';
+  if (s >= 20) return 'Developing';
+  return 'Below Avg';
+}
+
+function onbRenderCard(data, scores) {
+  function fmt(v) { return v == null ? '—' : Math.round(v); }
+  function row(label, val, unit) {
+    return '<tr><td style="padding:5px 0;color:#444">' + label + '</td><td style="padding:5px 0;text-align:right;font-weight:700">' + (val == null ? '—' : val + (unit || '')) + '</td></tr>';
+  }
+  var html = '<div id="onb-print-card" style="background:#fff;color:#000;padding:24px;max-width:600px;margin:14px auto;font-family:Arial,sans-serif;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.4)">';
+  html += '<div style="text-align:center;border-bottom:3px solid #C9A228;padding-bottom:14px;margin-bottom:16px">';
+  html += '<div style="font-size:9px;color:#C9A228;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px">Odyssey Performance — Onboarding</div>';
+  html += '<div style="font-size:22px;font-weight:800">' + data.identity.first + ' ' + data.identity.last + '</div>';
+  html += '<div style="font-size:11px;color:#444;margin-top:4px">' + data.identity.sport + (data.identity.position1 ? ' · ' + data.identity.position1 : '') + ' · Class of ' + data.identity.gradYear + '</div>';
+  html += '</div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px">';
+  ['power','velocity','strength'].forEach(function(k) {
+    var s = scores[k], cap = k.charAt(0).toUpperCase() + k.slice(1);
+    var color = onbScoreColor(s);
+    html += '<div style="background:#f5f5f5;border-radius:8px;padding:12px;border-left:5px solid ' + color + '">';
+    html += '<div style="font-size:10px;color:#666;font-weight:700;text-transform:uppercase">' + cap + '</div>';
+    html += '<div style="font-size:28px;font-weight:800;color:' + color + ';line-height:1">' + fmt(s) + '<span style="font-size:14px;color:#999"> /100</span></div>';
+    html += '<div style="font-size:10px;color:#666;margin-top:2px">' + onbScoreLabel(s) + '</div>';
+    html += '</div>';
+  });
+  var aColor = onbScoreColor(scores.allAround);
+  html += '<div style="background:#0D1B2A;color:#fff;border-radius:8px;padding:12px;border-left:5px solid #C9A228">';
+  html += '<div style="font-size:10px;color:#C9A228;font-weight:700;text-transform:uppercase">All-Around</div>';
+  html += '<div style="font-size:28px;font-weight:800;color:' + aColor + ';line-height:1">' + fmt(scores.allAround) + '<span style="font-size:14px;color:#999"> /100</span></div>';
+  html += '<div style="font-size:10px;color:#aaa;margin-top:2px">' + onbScoreLabel(scores.allAround) + '</div>';
+  html += '</div></div>';
+  if (scores.asymmetry != null) {
+    var aBg = scores.asymmetryFlag === 'RED' ? '#FFEBEE' : scores.asymmetryFlag === 'ORANGE' ? '#FFF3E0' : '#E8F5E9';
+    var aFg = scores.asymmetryFlag === 'RED' ? '#C62828' : scores.asymmetryFlag === 'ORANGE' ? '#E65100' : '#2E7D32';
+    var aMsg = scores.asymmetryFlag === 'RED' ? 'Significant asymmetry — flag for screening' : scores.asymmetryFlag === 'ORANGE' ? 'Moderate asymmetry — monitor' : 'Within normal range';
+    html += '<div style="background:' + aBg + ';color:' + aFg + ';padding:10px 14px;border-radius:8px;margin-bottom:16px;font-size:12px;font-weight:600">⚖️ Single-Leg Jump Asymmetry: <strong>' + scores.asymmetry.toFixed(1) + '%</strong> — ' + aMsg + '</div>';
+  }
+  html += '<div style="font-size:10px;color:#666;font-weight:700;text-transform:uppercase;margin-bottom:6px">Raw Metrics</div>';
+  html += '<table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px">';
+  html += row('CMJ Height', data.metrics.cmj_in, ' in');
+  html += row('Drop Jump RSI', data.metrics.drop_rsi, '');
+  html += row('Broad Jump', data.metrics.broad_in, ' in');
+  html += row('0–10 Sprint', data.metrics.sprint_010, ' s');
+  html += row('20–30 Fly', data.metrics.fly_2030, ' s');
+  html += row('Iso Squat Peak', data.metrics.iso_peak_lbs, ' lbs');
+  if (scores.isoPerBw != null) html += row('Iso Squat / BW', scores.isoPerBw, '× BW');
+  html += row('Single-Leg Jump (L)', data.metrics.sl_jump_l, ' in');
+  html += row('Single-Leg Jump (R)', data.metrics.sl_jump_r, ' in');
+  html += row('Body Weight', data.identity.bwLbs, ' lbs');
+  html += '</table>';
+  if (data.notes) html += '<div style="background:#fafafa;padding:10px 12px;border-left:3px solid #C9A228;border-radius:4px;font-size:11px;color:#555;margin-bottom:14px"><strong>Coach Notes:</strong> ' + data.notes + '</div>';
+  html += '<div style="font-size:9px;color:#999;text-align:center;border-top:1px solid #eee;padding-top:10px;margin-top:8px">Comparison: NCAA freshman benchmark (' + scores.benchmarkSrc + ') · Session ' + data.sessionDate + '</div>';
+  html += '</div>';
+  html += '<div style="display:flex;gap:10px;margin-top:14px;padding:0 14px">';
+  html += '<button onclick="onbEmailForApproval()" style="flex:2;background:#C9A228;border:none;color:#000;border-radius:10px;padding:14px;font-size:14px;font-weight:800;cursor:pointer">📧 Email for Coach Approval</button>';
+  html += '<button onclick="window.print()" style="flex:1;background:#1e3a5f;border:none;color:#fff;border-radius:10px;padding:14px;font-size:13px;font-weight:700;cursor:pointer">🖨️ Print</button>';
+  html += '</div>';
+  return html;
+}
+
+function onbEmailForApproval() {
+  var data = window._onbCurrentData;
+  var scores = window._onbCurrentScores;
+  if (!data || !scores) { alert('Run Analyze first.'); return; }
+  var subject = 'Onboarding — ' + data.identity.first + ' ' + data.identity.last + ' — Pending Approval';
+  var L = [];
+  L.push('=== ONBOARDING SESSION ===');
+  L.push('Athlete: ' + data.identity.first + ' ' + data.identity.last);
+  L.push('Sport: ' + data.identity.sport + (data.identity.position1 ? ' · ' + data.identity.position1 : '') + (data.identity.position2 ? ' / ' + data.identity.position2 : ''));
+  L.push('Class of: ' + data.identity.gradYear + ' · Gender: ' + data.identity.gender);
+  L.push('BW: ' + (data.identity.bwLbs || '—') + ' lbs · Height: ' + (data.identity.heightIn || '—') + ' in · DOB: ' + (data.identity.dob || '—'));
+  L.push('');
+  L.push('=== SCORES (vs NCAA freshman, ' + scores.benchmarkSrc + ') ===');
+  L.push('Power: ' + (scores.power == null ? '—' : Math.round(scores.power)) + ' / 100');
+  L.push('Velocity: ' + (scores.velocity == null ? '—' : Math.round(scores.velocity)) + ' / 100');
+  L.push('Strength: ' + (scores.strength == null ? '—' : Math.round(scores.strength)) + ' / 100');
+  L.push('All-Around: ' + (scores.allAround == null ? '—' : Math.round(scores.allAround)) + ' / 100');
+  if (scores.asymmetry != null) L.push('Asymmetry: ' + scores.asymmetry.toFixed(1) + '% (' + scores.asymmetryFlag + ')');
+  L.push('');
+  L.push('=== RAW METRICS ===');
+  L.push('CMJ: ' + (data.metrics.cmj_in || '—') + ' in · Drop RSI: ' + (data.metrics.drop_rsi || '—') + ' · Broad: ' + (data.metrics.broad_in || '—') + ' in');
+  L.push('0-10: ' + (data.metrics.sprint_010 || '—') + ' s · 20-30 fly: ' + (data.metrics.fly_2030 || '—') + ' s');
+  L.push('Iso peak: ' + (data.metrics.iso_peak_lbs || '—') + ' lbs' + (scores.isoPerBw ? ' (' + scores.isoPerBw + '× BW)' : ''));
+  L.push('SL Jump L/R: ' + (data.metrics.sl_jump_l || '—') + ' / ' + (data.metrics.sl_jump_r || '—') + ' in');
+  if (data.notes) { L.push(''); L.push('=== COACH NOTES ==='); L.push(data.notes); }
+  L.push('');
+  L.push('=== JSON FOR ROSTER (paste into Claude) ===');
+  L.push(JSON.stringify({
+    name: data.identity.first + ' ' + data.identity.last,
+    gender: data.identity.gender,
+    bw_lbs: data.identity.bwLbs,
+    bw_kg: data.identity.bwLbs ? Math.round(data.identity.bwLbs / 2.205 * 100) / 100 : null,
+    height_in: data.identity.heightIn,
+    dob: data.identity.dob,
+    sport: data.identity.sport,
+    position: data.identity.position1,
+    position2: data.identity.position2 || null,
+    grad_year: parseInt(data.identity.gradYear) || null,
+    cmj_jh_in: data.metrics.cmj_in,
+    dj_rsi: data.metrics.drop_rsi,
+    broad_jump_in: data.metrics.broad_in,
+    best_010: data.metrics.sprint_010,
+    best_2030: data.metrics.fly_2030,
+    iso_peak_lbs: data.metrics.iso_peak_lbs,
+    iso_per_bw: scores.isoPerBw,
+    sl_jump_l_in: data.metrics.sl_jump_l,
+    sl_jump_r_in: data.metrics.sl_jump_r,
+    asymmetry_pct: scores.asymmetry,
+    scores: { power: scores.power == null ? null : Math.round(scores.power), velocity: scores.velocity == null ? null : Math.round(scores.velocity), strength: scores.strength == null ? null : Math.round(scores.strength), all_around: scores.allAround == null ? null : Math.round(scores.allAround) },
+    session_date: data.sessionDate,
+    source: 'onboarding'
+  }, null, 2));
+  L.push('');
+  L.push('=== APPROVAL ===');
+  L.push('Reply APPROVE to add to roster, or send corrections.');
+  mailtoCompose(subject, L.join('\n'));
 }
 
 // === Onboarding CSV auto-fill (VALD / Output Sports) ===
