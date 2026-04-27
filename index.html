@@ -1483,7 +1483,6 @@ body.overlay-open{overflow:hidden!important;position:fixed!important;width:100%!
     <button onclick="toolsSub('forty')" id="tsub-forty" class="tsub-btn">🏃 40-Yard</button>
     <button onclick="toolsSub('1rm')" id="tsub-1rm" class="tsub-btn">🏋️ 1RM</button>
     <button onclick="toolsSub('vbt')" id="tsub-vbt" class="tsub-btn">📈 VBT Zones</button>
-    <button onclick="toolsSub('quickcard')" id="tsub-quickcard" class="tsub-btn">📋 Quick Card</button>
     <button onclick="toolsSub('staff')" id="tsub-staff" class="tsub-btn tools-coach-only" style="display:none">👨‍💼 Staff</button>
     <button onclick="toolsSub('teamreport')" id="tsub-teamreport" class="tsub-btn tools-coach-only" style="display:none">📋 Team Report</button>
     <button onclick="toolsSub('program')" id="tsub-program" class="tsub-btn tools-master-only" style="display:none">📋 Program</button>
@@ -1671,47 +1670,7 @@ body.overlay-open{overflow:hidden!important;position:fixed!important;width:100%!
   </div>
   </div>
 
-  <!-- Quick Card panel -->
-  <div id="tpanel-quickcard" class="tools-panel" style="display:none">
-    <div style="max-width:520px;margin:0 auto;padding:16px 0">
-      <div style="margin-bottom:16px">
-        <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:4px">📋 Quick Assessment Card</div>
-        <div style="font-size:12px;color:#6a8aa8;line-height:1.5">Generate a printable profile card for any athlete — no system account needed. Percentiles calculated against the Odyssey database.</div>
-      </div>
-      <div class="na-card" style="margin-bottom:12px">
-        <div class="na-card-hdr">Athlete Info</div>
-        <div class="na-row">
-          <div class="na-field" style="flex:1"><label>First Name</label><input class="na-inp" id="qc-first" placeholder="First"></div>
-          <div class="na-field" style="flex:1"><label>Last Name</label><input class="na-inp" id="qc-last" placeholder="Last"></div>
-        </div>
-        <div class="na-row">
-          <div class="na-field" style="flex:1"><label>Gender</label><select class="na-inp" id="qc-gender"><option value="M">Male</option><option value="F">Female</option></select></div>
-          <div class="na-field" style="flex:1"><label>Grad Year</label><select class="na-inp" id="qc-year"><option value="">— Year —</option><option>2025</option><option>2026</option><option>2027</option><option>2028</option><option>2029</option><option>2030</option><option>2031</option><option>2032</option></select></div>
-        </div>
-        <div class="na-row">
-          <div class="na-field" style="flex:1"><label>Sport</label><select class="na-inp" id="qc-sport"><option value="">— Sport —</option><option>Baseball</option><option>Basketball</option><option>Cross Country</option><option>Football</option><option>Golf</option><option>Lacrosse</option><option>Soccer</option><option>Softball</option><option>Swimming</option><option>Tennis</option><option>Track &amp; Field</option><option>Volleyball</option><option>Wrestling</option><option>Other</option></select></div>
-          <div class="na-field" style="flex:1"><label>Position</label><input class="na-inp" id="qc-position" placeholder="e.g. QB, SS, PG"></div>
-        </div>
-      </div>
-      <div class="na-card" style="margin-bottom:12px">
-        <div class="na-card-hdr">Assessment Metrics</div>
-        <div class="na-row">
-          <div class="na-field" style="flex:1"><label>CMJ Height (in)</label><input class="na-inp" id="qc-cmj" type="number" step="0.1" placeholder="e.g. 22.5"></div>
-          <div class="na-field" style="flex:1"><label>RSI</label><input class="na-inp" id="qc-rsi" type="number" step="0.01" placeholder="e.g. 1.24"></div>
-        </div>
-        <div class="na-row">
-          <div class="na-field" style="flex:1"><label>0&#8211;10 Sprint (s)</label><input class="na-inp" id="qc-accel" type="number" step="0.01" placeholder="e.g. 1.65"></div>
-          <div class="na-field" style="flex:1"><label>20&#8211;30 Fly (s)</label><input class="na-inp" id="qc-fly" type="number" step="0.01" placeholder="e.g. 1.05"></div>
-        </div>
-        <div class="na-row">
-          <div class="na-field" style="flex:1"><label>Broad Jump (in)</label><input class="na-inp" id="qc-broad" type="number" step="0.5" placeholder="e.g. 98"></div>
-          <div class="na-field" style="flex:1"><label>Body Weight (lbs)</label><input class="na-inp" id="qc-bw" type="number" step="1" placeholder="e.g. 175"></div>
-        </div>
-      </div>
-      <button onclick="qcGenerateCard()" style="width:100%;background:#C9A228;border:none;color:#000000;border-radius:10px;padding:16px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:16px;letter-spacing:.5px">&#128203; Generate Profile Card</button>
-      <div id="qc-card-output" style="display:none;margin-top:4px"></div>
-    </div>
-  </div>
+  <!-- Quick Card panel removed — its functionality is now folded into the Onboarding Session overlay. -->
 
   <!-- Dashboard panel (coach only) -->
   <!-- Staff panel -->
