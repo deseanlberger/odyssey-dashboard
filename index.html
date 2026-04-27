@@ -1326,8 +1326,8 @@ body.overlay-open{overflow:hidden!important;position:fixed!important;width:100%!
 </div>
 
 <div class="nav-strip">
-  <button class="nav-tab active" id="nav-compare" onclick="navSwitch('compare')">⚡ Stack Up</button>
-  <button class="nav-tab" id="nav-lookup" onclick="navSwitch('lookup')">🔍 Athletes</button>
+  <button class="nav-tab active" id="nav-boards" onclick="navSwitch('boards')">🏆 Leaderboards</button>
+  <button class="nav-tab" id="nav-compare" onclick="navSwitch('compare')">⚡ Stack Up</button>
   <button class="nav-tab" id="nav-tools" onclick="navSwitch('tools')">🛠️ Tools</button>
 </div>
 
@@ -1341,8 +1341,8 @@ body.overlay-open{overflow:hidden!important;position:fixed!important;width:100%!
   <button onclick="openCore6()" style="background:#1e3a5f;border:1px solid #C9A228;color:#C9A228;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">📋 CORE 6 Eval</button>
 </div>
 
-<!-- ATHLETE LOOKUP TAB -->
-<div id="tab-lookup" class="tab-panel active">
+<!-- ATHLETE LOOKUP TAB (now reached via Tools → Athletes sub-button) -->
+<div id="tab-lookup" class="tab-panel">
 <!-- Public landing search (always visible) -->
 <div id="public-landing" style="display:block;padding:24px 16px;text-align:center">
   <!-- Big Logo -->
@@ -1407,6 +1407,26 @@ body.overlay-open{overflow:hidden!important;position:fixed!important;width:100%!
 </div>
 <div class="content" id="content"></div>
 </div><!-- end tab-lookup -->
+
+
+<!-- LEADERBOARDS TAB (top-level — was previously inside Tools) -->
+<div id="tab-boards" class="tab-panel active">
+  <div style="padding:14px">
+    <div style="font-size:20px;font-weight:900;color:#C9A228;letter-spacing:-0.5px;margin-bottom:2px">🏆 Leaderboards</div>
+    <div style="font-size:11px;color:#6a8aa8;margin-bottom:16px">Odyssey Performance · All-time top 5 per category</div>
+    <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
+      <div style="display:flex;gap:4px">
+        <button id="lb-male-btn" onclick="lbSetGender('M')" style="background:#1e3a5f;border:2px solid #C9A228;color:#C9A228;border-radius:8px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer">♂ Male</button>
+        <button id="lb-female-btn" onclick="lbSetGender('F')" style="background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer">♀ Female</button>
+      </div>
+      <select id="lb-sport-filter" onchange="renderLeaderboards()" style="background:#0f0f0f;color:#e6edf3;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:11px;cursor:pointer">
+        <option value="">All Sports</option>
+      </select>
+    </div>
+    <div id="lb-output"></div>
+  </div>
+</div>
+<!-- end tab-boards -->
 
 
 <!-- STACK UP (COMPARE) TAB -->
@@ -1479,7 +1499,7 @@ body.overlay-open{overflow:hidden!important;position:fixed!important;width:100%!
 <div style="padding:10px 0 0">
   <!-- Tools sub-nav -->
   <div id="tools-subnav" style="display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:10px 14px 0;-webkit-overflow-scrolling:touch;border-bottom:1px solid #1e3a5f;margin-bottom:0">
-    <button onclick="toolsSub('boards')" id="tsub-boards" class="tsub-btn tsub-active">🏆 Boards</button>
+    <button onclick="toolsSub('lookup')" id="tsub-lookup" class="tsub-btn tsub-active">🔍 Athletes</button>
     <button onclick="toolsSub('forty')" id="tsub-forty" class="tsub-btn">🏃 40-Yard</button>
     <button onclick="toolsSub('1rm')" id="tsub-1rm" class="tsub-btn">🏋️ 1RM</button>
     <button onclick="toolsSub('vbt')" id="tsub-vbt" class="tsub-btn">📈 VBT Zones</button>
@@ -1489,24 +1509,7 @@ body.overlay-open{overflow:hidden!important;position:fixed!important;width:100%!
     <button onclick="toolsSub('teamplan')" id="tsub-teamplan" class="tsub-btn tools-master-only" style="display:none">🗂️ Team Plan</button>
   </div>
 
-  <!-- Boards (leaderboards) panel -->
-  <div id="tpanel-boards" class="tools-panel">
-  <div style="padding:14px">
-  <div style="font-size:20px;font-weight:900;color:#C9A228;letter-spacing:-0.5px;margin-bottom:2px">🏆 Leaderboards</div>
-  <div style="font-size:11px;color:#6a8aa8;margin-bottom:16px">Odyssey Performance · All-time top 5 per category</div>
-  <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
-    <div style="display:flex;gap:4px">
-      <button id="lb-male-btn" onclick="lbSetGender('M')" style="background:#1e3a5f;border:2px solid #C9A228;color:#C9A228;border-radius:8px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer">♂ Male</button>
-      <button id="lb-female-btn" onclick="lbSetGender('F')" style="background:#0f0f0f;border:2px solid #2a4a6a;color:#6a8aa8;border-radius:8px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer">♀ Female</button>
-    </div>
-    <select id="lb-sport-filter" onchange="renderLeaderboards()" style="background:#0f0f0f;color:#e6edf3;border:1px solid #2a4a6a;border-radius:8px;padding:7px 10px;font-size:11px;cursor:pointer">
-      <option value="">All Sports</option>
-    </select>
-
-  </div>
-  <div id="lb-output"></div>
-  </div>
-  </div>
+  <!-- Boards moved to top-level tab-boards. Leaderboards button is now in the main nav. -->
 
   <!-- 40-Yard panel -->
   <div id="tpanel-forty" class="tools-panel" style="display:none">
@@ -2653,7 +2656,7 @@ function logoutCoach() {
   document.getElementById('coach-quickbar').style.display = 'none';
   document.getElementById('mode-label').textContent = 'Public view — coach login required to see body weight';
   // Tools wheel handles visibility
-  navSwitch('compare');
+  navSwitch('boards');
   updatePublicCoachView();
   render();
 }
@@ -3116,7 +3119,7 @@ function resetFilters() {
   render();
 }
 function switchTab(t) {
-  ['lookup','compare','tools'].forEach(p=>{
+  ['boards','lookup','compare','tools'].forEach(p=>{
     const el = document.getElementById('tab-'+p);
     if(el) el.classList.toggle('active', p===t);
   });
@@ -3126,14 +3129,17 @@ function navSwitch(t) {
   const btn = document.getElementById('nav-'+t);
   if(btn) btn.classList.add('active');
   switchTab(t);
-  if (t === 'tools') { renderLeaderboards(); renderStaffTab(); }
+  if (t === 'boards') { renderLeaderboards(); }
+  if (t === 'tools') { renderStaffTab(); }
   if (t === 'lookup') { renderPublicLeaderboards(); if (coachMode || masterMode) render(); }
 }
-var _toolsSub = 'boards';
+var _toolsSub = 'lookup';
 function toolsSub(name) {
   // Program and Team Plan open their own overlays — don't try to switch panel
   if (name === 'program') { if (masterMode) openPB(); return; }
   if (name === 'teamplan') { if (masterMode) openTeamPlan(); return; }
+  // Athletes lookup lives at top-level tab-lookup; route there instead of toggling a sub-panel
+  if (name === 'lookup') { navSwitch('lookup'); return; }
   _toolsSub = name;
   document.querySelectorAll('.tsub-btn').forEach(b=>b.classList.remove('tsub-active'));
   const btn = document.getElementById('tsub-'+name);
@@ -3141,7 +3147,6 @@ function toolsSub(name) {
   document.querySelectorAll('.tools-panel').forEach(p=>p.style.display='none');
   const panel = document.getElementById('tpanel-'+name);
   if(panel) panel.style.display='block';
-  if(name==='boards') renderLeaderboards();
   if(name==='staff') renderStaffTab();
   if(name==='teamreport') initTeamReportSports();
 }
